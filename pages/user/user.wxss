@@ -1,0 +1,143 @@
+/**user.wxss**/
+page {
+  width: 100%;
+  height: 100%;
+}
+
+.view_contain {
+  width: 100%;
+  height: 100%;
+}
+
+/* 第一部分 */
+
+.view_1 {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 35%;
+  background: #4095E5;
+  border-radius: 100rpx;
+  margin-top: -100rpx;
+}
+
+.white-box {
+  display: flex;
+  justify-content: center;
+  width: 650rpx;
+  height: 300rpx;
+  background-color: #fff;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  border-radius: 30rpx;
+  margin-top: 140rpx;
+}
+
+.view_image_text {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin-top: -10px;
+  margin-left: -150px;
+}
+
+.user_profile {
+  height: 60px;
+  width: 60px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.user_name{
+  margin-left: 5px;
+}
+
+.user_tag{
+  position: absolute;
+  margin-top: 50px;
+  margin-left: 60px;
+  width: 30px;
+  height: 20px;
+  background: #f0f8ff;
+  border: 1rpx solid #0281fe;
+  border-radius: 10rpx;
+  font-size: 12px;
+  text-align: center;
+  color: #0281fe;
+  line-height: 62rpx;
+}
+
+.user_info{
+  margin-top: 80px;
+  width: 50%;
+  color: rgb(173, 169, 169);
+  font-size: 35rpx;
+}
+
+.info_data{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.info_type{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+/* 第二部分 */
+
+.view_3 {
+  width: 100%;
+  height: 100%;
+  margin-top: 170rpx;
+}
+
+.list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 90rpx;
+  margin-top: 0rpx;
+  position: relative; /*父元素位置要设置为相对*/
+  background: white;
+}
+
+.item-image {
+  width: 60rpx;
+  height: 60rpx;
+  margin: 20rpx;
+}
+
+.item-text {
+  color: gray;
+  font-size: 35rpx;
+  margin-left: 0rpx;
+}
+
+.image-arrow {
+  width: 60rpx;
+  height: 60rpx;
+  position: absolute; /* 要约束所在位置的子元素的位置要设置成绝对 */
+  right: 0; /* 靠右调节 */
+  margin-right: 35rpx;
+}
+
+/* 黑线 使得产生阴影效果 */
+
+.line {
+  width: 100%;
+  height: 3rpx;
+  background: rgba(223, 220, 220, 0.521);
+  /* margin-left: 90rpx; */
+}
+
+

@@ -1,0 +1,25 @@
+<!--pages/show/show.wxml-->
+<view class="container">
+  <view class="add" bindtap="showPopup"><image class="add_icon" src="/image/show/add.png"/></view>
+
+  <view class="popup-container" wx:if="{{popupVisible}}">
+    <view class="overlay" bindtap="hidePopup"></view>
+    <view class="popup">
+      <view class="list-item" bindtap="goToPage_event">
+        <image class="item-image" src="/image/user/family.png"></image>
+        <text class="item-text">上传事件</text>
+      </view>
+      <view class="line"></view>
+      <view class="list-item" bindtap="goToPage_text">
+        <image class="item-image" src="/image/show/text.png"></image>
+        <text class="item-text">上传文字</text>
+      </view>
+      <view class="line"></view>
+      <view class="list-item" bindtap="goToPage_data">
+        <image class="item-image" src="/image/show/data.png"></image>
+        <text class="item-text">上传数据</text>
+      </view>
+    </view>
+  </view>
+</view>
+

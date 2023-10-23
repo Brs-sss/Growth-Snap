@@ -1,0 +1,26 @@
+/* pages/show/text/text.wxss */
+.container {
+  padding: 20rpx;
+}
+
+.input {
+  width: 100%;
+  height: 80rpx;
+  padding: 10rpx;
+  border: 1rpx solid #ccc;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.submit{
+  width: 100%;
+  height: 80rpx;
+  background-color: #007AFF;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.result {
+  margin-top: 20rpx;
+}

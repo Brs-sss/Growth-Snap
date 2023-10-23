@@ -1,0 +1,6 @@
+<!--pages/show/text/text.wxml-->
+<view class="container">
+  <input class="input" bindinput="handleInput" placeholder="请输入文本" />
+  <button class="submit" bindtap="handleSubmit">提交</button>
+  <view class="result">{{inputText}}</view>
+</view>

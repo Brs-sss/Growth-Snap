@@ -1,0 +1,10 @@
+<!--pages/show/event/event.wxml-->
+<view class="container">
+  <input class="input" bindinput="handleInput" placeholder="请输入标题" />
+  <view class="result">{{inputText}}</view>
+</view>
+<view class="container">
+  <button class="submit" bindtap="handleUpload">选择图片</button>
+  <image class="preview-image" src="{{imageUrl}}" mode="aspectFit"></image>
+</view>
+<button class="submit" bindtap="handleSubmit">提交</button>
