@@ -5,7 +5,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    inputText: ''
+    inputText: '',
+    imageList: []
   },
   handleInput(e) {
     this.setData({
@@ -18,15 +19,24 @@ Page({
   },
   handleUpload() {
     wx.chooseMedia({
-      count: 1,
+      count: 9 - this.data.imageList.length,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        const tempFilePaths = res.tempFiles[0].tempFilePath;
+        const tempFiles = res.tempFiles;
+        const imageList = this.data.imageList.concat(tempFiles.map((file) => file.tempFilePath));
         this.setData({
-          imageUrl: tempFilePaths
+          imageList: imageList.slice(0, 9)
         });
       }
+    });
+  },
+  handleDelete(event) {
+    const index = event.currentTarget.dataset.index;
+    const imageList = this.data.imageList;
+    imageList.splice(index, 1);
+    this.setData({
+      imageList: imageList
     });
   },
 

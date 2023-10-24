@@ -5,12 +5,16 @@ Page({
    * 页面的初始数据
    */
   data: {
-    inputText: ''
+    inputText: '',
   },
   handleInput(e) {
     this.setData({
       inputText: e.detail.value
     });
+  },
+  handleSubmit() {
+    console.log('提交的文本：', this.data.inputText);
+    // 进行其他处理或操作
   },
   handleSubmit() {
     console.log('提交的文本：', this.data.inputText);

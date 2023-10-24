@@ -1,6 +1,20 @@
 <!--pages/show/text/text.wxml-->
-<view class="container">
-  <input class="input" bindinput="handleInput" placeholder="请输入文本" />
-  <button class="submit" bindtap="handleSubmit">提交</button>
+<view class="container_1">
+  <view class="upload_title">标题</view>
+  <input class="input" bindinput="handleInput" placeholder="请输入" />
   <view class="result">{{inputText}}</view>
+</view>
+
+<view class="container_3">
+  <view class="upload_title">内容</view>
+  <textarea class="input_text" bindinput="handleInput" placeholder="请输入"/>
+  <view class="result">{{inputText}}</view>
+</view>
+
+<view class="container_4">
+  <view class="upload_title">选择tag</view>
+</view>
+
+<view class="container_5">
+  <button class="submit" bindtap="handleSubmit">提交</button>
 </view>

@@ -10,8 +10,7 @@
     "pages/generate/generate",
     "pages/user/user",
     "pages/user/family/family",
-    "pages/user/child/child",
-    "pages/upload/upload"
+    "pages/user/child/child"
   ],
   "tabBar":{
     "color": "#666666",

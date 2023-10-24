@@ -1,10 +1,33 @@
 <!--pages/show/event/event.wxml-->
-<view class="container">
-  <input class="input" bindinput="handleInput" placeholder="请输入标题" />
+<view class="container_1">
+  <view class="upload_title">标题</view>
+  <input class="input" bindinput="handleInput" placeholder="请输入" />
+</view>
+
+<view class="container_2">
+  <view class="upload_title" bindtap="handleUpload">添加图片<image class="upload_icon" src="/image/show/add.png"></image></view>
+  <scroll-view class="image-list" scroll-x="true">
+    <block wx:for="{{imageList}}" wx:key="index">
+      <view class="image-item">
+        <image src="{{item}}" mode="aspectFill"></image>
+        <view class="image_delete" bindtap="handleDelete" data-index="{{index}}">
+          <image src="/image/show/cross.png" style="height: 20px;"/>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+</view>
+
+<view class="container_3">
+  <view class="upload_title">内容</view>
+  <textarea class="input_text" bindinput="handleInput" placeholder="请输入"/>
   <view class="result">{{inputText}}</view>
 </view>
-<view class="container">
-  <button class="submit" bindtap="handleUpload">选择图片</button>
-  <image class="preview-image" src="{{imageUrl}}" mode="aspectFit"></image>
+
+<view class="container_4">
+  <view class="upload_title">选择tag</view>
 </view>
-<button class="submit" bindtap="handleSubmit">提交</button>
+
+<view class="container_5">
+  <button class="submit" bindtap="handleSubmit">提交</button>
+</view>
