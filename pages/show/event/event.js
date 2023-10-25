@@ -6,7 +6,12 @@ Page({
    */
   data: {
     inputText: '',
-    imageList: []
+    imageList: [],
+    tags: [], // 已保存的标签列表
+    selectedTags: [], // 已选中的标签列表
+    showInput: false, // 是否显示输入框
+    inputValue: '', // 输入框的值
+    isEditing: false // 是否处于编辑模式
   },
   handleInput(e) {
     this.setData({
@@ -39,7 +44,56 @@ Page({
       imageList: imageList
     });
   },
+  updateTag: function(e) {
+    var value = e.detail.value;
+    this.setData({
+      'tagText': value,
+      'inputValue': ''
+    });
+  },
+  toggleTag: function(e) {
+    const { index } = e.currentTarget.dataset;
+    const { selectedTags } = this.data;
+    const tag = this.data.tags[index].info;
+    const tagIndex = selectedTags.indexOf(tag);
+    console.log(selectedTags);
+    console.log("index",index)
+    console.log(this.data.tags[index].checked)
+    if (tagIndex !== -1) {
+      selectedTags.splice(tagIndex, 1); // 取消选中
+      this.data.tags[index].checked = true ;
+    } else {
+      selectedTags.push(tag); // 选中
+      this.data.tags[index].checked = false ;
+    }
+    this.setData({
+      selectedTags: selectedTags
+    });
+  },
 
+  showInput: function() {
+    this.setData({
+      showInput: true
+    });
+  },
+
+  addTag: function(e) {
+    const { value } = e.detail;
+    if (value.trim() !== '') {
+      const { tags } = this.data;
+      tags.push({info: value, checked: false});
+      this.setData({
+        tags: tags,
+        showInput: false,
+        inputValue: ''
+      });
+    } else {
+      this.setData({
+        showInput: false,
+        inputValue: ''
+      });
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */
