@@ -1,0 +1,212 @@
+/* pages/show/event/event.wxss */
+.container_1 {
+  padding: 20rpx;
+  font-size: 14px;
+}
+
+.input {
+  position: absolute;
+  width: 250px;
+  height: 20px;
+  margin-top: -38px;
+  margin-left: 40px;
+  padding: 10rpx;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+}
+
+.result {
+  margin-top: 20rpx;
+}
+
+.container_2 {
+  margin-top: 0px;
+  padding: 20rpx;
+  font-size: 14px;
+}
+
+.upload_title {
+  width: 200rpx;
+  height: 80rpx;
+  border-radius: 100px;
+  color: #ccc;
+}
+
+.upload_icon{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.container {
+  padding: 20rpx;
+}
+
+.image-list {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.image-item {
+  display: inline-block;
+  width: 200rpx;
+  text-align: center;
+  margin-right: 20rpx;
+}
+
+.image-item image {
+  width: 100%;
+  height: 180rpx;
+  margin-bottom: 10rpx;
+}
+
+.image_delete{
+  position: absolute;
+  margin-top: -80px;
+  width: 20px;
+}
+
+.image_delete_icon{
+  width: 10px;
+  height: 5px;
+}
+
+.container_3 {
+  position: absolute;
+  padding: 20rpx;
+  font-size: 14px;
+}
+
+.input_text {
+  width: 290px;
+  height: 200rpx;
+  padding: 10rpx;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+  margin-bottom: 20rpx;
+  font-size: 14px;
+}
+
+.stateChoose {
+  width: 206rpx;
+  height: 62rpx;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  font-weight: 400;
+  text-align: center;
+  color: #4095E5;
+  line-height: 62rpx;
+  margin-top: 46rpx;
+}
+ 
+.stateNotChoose {
+  width: 206rpx;
+  height: 62rpx;
+  background: #ffffff;
+  border: 1rpx solid #b3b3b3;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  font-weight: 400;
+  text-align: center;
+  color: #333333;
+  line-height: 62rpx;
+  margin-top: 46rpx;
+}
+
+.container_4 {
+  position: absolute;
+  padding: 20rpx;
+  margin-top: 140px;
+  font-size: 14px;
+}
+
+.container_tag{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 8px; /* 标签之间的间距 */
+}
+
+.tag {
+  height: 15px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #4095E5;
+  cursor: pointer;
+}
+
+.tag.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tag .tag-text {
+  margin-right: 4px;
+}
+
+.checkbox-container {
+  margin-left: 4px;
+}
+
+.add-tag {
+  display: flex;
+  height: 15px;
+  align-items: center;
+  padding: 4px 8px;
+  margin-right: 8px;
+  border-radius: 4px;
+  border: 1rpx solid #007bff65;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #007bff65;
+  cursor: pointer;
+}
+
+.add-tag .add-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.add-tag .add-text {
+  font-size: 14px;
+}
+
+.tag-input {
+  font-size: 16px;
+  width: 100px;
+  height: 15px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.container_5 {
+  position: absolute;
+  margin-left: 60px;
+  margin-top: 50px;
+  padding: 20rpx;
+  font-size: 14px;
+}
+
+.submit{
+  position: absolute;
+  margin-left: 100px;
+  margin-top: 250px;
+  width: 100%;
+  height: 80rpx;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+}
