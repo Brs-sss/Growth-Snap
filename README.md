@@ -18,13 +18,11 @@ git checkout -b <branch_name>
 - 在分支下开发新功能
 - 合并
 ```
-// 省略对于更改内容的add与commit
-git checkout dev
-git pull origin dev
-git merge <branch_name>
-// 发生冲突时，手动更改后add与commit即可
-git branch -d <branch_name> // 不再需要该分支时，删除
-git push origin dev
+git add <modified file>
+git commit -m "msg"
+git push origin <branch_name>
+// 进入仓库页面，提交merge申请
+// 进入pull request页面，确认申请（可能需要处理冲突）
 ```
 
 ### commit信息
