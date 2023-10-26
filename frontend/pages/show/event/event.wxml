@@ -5,7 +5,7 @@
   <view id="title-box1">
     <view class="upload_title">标题</view>
   </view>
-  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 24rpx; position: absolute; height: 70rpx; top: 100rpx" class="input" bindinput="handleInputTitle" placeholder="请输入" />
+  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 24rpx; position: absolute; height: 70rpx; top: 100rpx" class="input" bindinput="handleInput" placeholder="请输入" />
 </view>
 
 <view class="container_2 overall-outfit">
@@ -21,12 +21,9 @@
       </view>
     </block>
   </scroll-view> -->
-      <view id="image-grid-container" style="{{imgGridStyle}}">
-          <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="changeImage" data-index="{{index}}">
-              <image src="{{item}}" mode="aspectFill" data-index="{{index}}"></image> 
-              <view class="image_delete" catchtap="handleDelete" data-index="{{index}}">
-                  <image src="/image/show/cross.png" style="height: 20px;"/>
-              </view>
+      <view id="image-grid-container" style="{{imgGridStyle}}"    >
+          <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="chooseImage">
+              <image src="{{item}}" mode="aspectFill"></image> 
           </view>
           <view class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
   </view>
@@ -34,8 +31,8 @@
 
 <view class="container_3 overall-outfit">
   <view class="upload_title">内容</view>
-  <textarea class="input_text" bindinput="handleInputText" placeholder="请输入"/>
-  <!-- <view class="result">{{inputText}}</view> -->
+  <textarea class="input_text" bindinput="handleInput" placeholder="请输入"/>
+  <view class="result">{{inputText}}</view>
 </view>
 
 
@@ -50,7 +47,7 @@
       <text class="add-text">tag</text>
     </view>
     <input wx:if="{{showInput}}" type="text" class="tag-input" bindblur="addTag" placeholder="请输入标签" />
-    <!-- <text class="tag-text">{{selectedTags}}</text> -->
+    <text class="tag-text">{{selectedTags}}</text>
   </view>
 </view>
 
