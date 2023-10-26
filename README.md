@@ -37,7 +37,7 @@ git push origin dev
 4. refactor：重构代码结构（不改变功能）；
 5. merge：代码合并；
 6. revert：回滚到过去版本;
-7. docs：对文档内容的更改；
+7. doc：对文档内容的更改；
 8. res：对图片、音频等资源信息的更改；
 9. other：其他。
 
