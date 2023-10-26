@@ -1,11 +1,16 @@
 <!--pages/show/event/event.wxml-->
-<view class="container_1">
-  <view class="upload_title">标题</view>
+
+<view class="whole-page-grid">
+<view class="container_1 overall-outfit">
+  <view id="title-box1">
+    <view class="upload_title">标题</view>
+  </view>
   <input style="width: 554rpx; display: block; box-sizing: border-box; left: 24rpx; position: absolute; height: 70rpx; top: 100rpx" class="input" bindinput="handleInput" placeholder="请输入" />
 </view>
 
-<view class="container_2">
-  <view class="upload_title" bindtap="handleUpload">添加图片<image class="upload_icon" src="/image/show/add.png"></image></view>
+<view class="container_2 overall-outfit">
+  <view class="upload_title" bindtap="handleUpload">添加图片 </view>
+  <!-- <image class="upload_icon" src="/image/show/add.png"></image></view>
   <scroll-view class="image-list" scroll-x="true">
     <block wx:for="{{imageList}}" wx:key="index">
       <view class="image-item">
@@ -15,16 +20,23 @@
         </view>
       </view>
     </block>
-  </scroll-view>
+  </scroll-view> -->
+      <view id="image-grid-container" style="{{imgGridStyle}}"    >
+          <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="chooseImage">
+              <image src="{{item}}" mode="aspectFill"></image> 
+          </view>
+          <view class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
+  </view>
 </view>
 
-<view class="container_3">
+<view class="container_3 overall-outfit">
   <view class="upload_title">内容</view>
   <textarea class="input_text" bindinput="handleInput" placeholder="请输入"/>
   <view class="result">{{inputText}}</view>
 </view>
 
-<view class="container_4">
+
+<view class="container_4 overall-outfit">
   <view class="upload_title">选择tag</view>
   <view class="container_tag">
     <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
@@ -39,6 +51,8 @@
   </view>
 </view>
 
-<view class="container_5">
-  <button class="submit" bindtap="handleSubmit">提交</button>
+<view class="container_5 overall-outfit">
+  <button class="submit" bindtap="handleSubmit" style="position: absolute; left: 199rpx; top: 797rpx">提交</button>
+</view>
+
 </view>
