@@ -16,6 +16,7 @@
 
 .overall-outfit{
   padding: 20rpx;
+  width: 100%;
 }
 
 .container_1 {
@@ -55,7 +56,7 @@
   width: 100%;
   height: 5vh;
   border-radius: 100px;
-  color: #ccc;
+  color: #333;
 }
 
 .upload_icon{
@@ -71,12 +72,6 @@
   overflow-x: auto;
 }
 
-.image-item {
-  display: inline-block;
-  width: 200rpx;
-  text-align: center;
-  margin-right: 20rpx;
-}
 
 /* #image-grid-container{
   display: grid;
@@ -88,10 +83,11 @@
 }  */
 
 .image-grid-item{
+  /* border: 1px solid #000; */
   border: 1px solid rgba(0, 0, 0, 0);
+
   width: 25vw;
   height:25vw; /*设置高度宽度相等*/
-
 }
 
 .image-grid-item image{
@@ -128,12 +124,11 @@
 }
 
 .input_text {
-  width: 290px;
-  height: 200rpx;
+  width: 80vw;
+  height: 20vh;
   padding: 10rpx;
   border: 1rpx solid rgba(220, 220, 220, 0.5);
   border-radius: 4rpx;
-  margin-bottom: 20rpx;
   font-size: 14px;
 }
 
@@ -217,14 +212,25 @@
   width: 100%;
   justify-self: center;
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 垂直底部对齐 */
+  align-items: center; /* 水平居中 */
+}
+
+#button-box{
+    width: 50vw;
+    height: 10vh;
 }
 
 .submit{
+
   position: relative;
   left: 0px;
   bottom: 15px;
   /* margin-left: 100px; */
   margin-top: 30px;
+
   width: 100%;
   height: 80rpx;
   background-color: #4095E5;

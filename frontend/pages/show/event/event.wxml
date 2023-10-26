@@ -52,7 +52,10 @@
 </view>
 
 <view class="container_5 overall-outfit">
+
+<view id="button-box">
   <button class="submit" bindtap="handleSubmit">提交</button>
+</view>
 </view>
 
 </view>
