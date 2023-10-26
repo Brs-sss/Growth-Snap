@@ -84,8 +84,12 @@
 
 .image-grid-item{
   /* border: 1px solid #000; */
+<<<<<<< HEAD
+  position: relative;
+=======
   border: 1px solid rgba(0, 0, 0, 0);
 
+>>>>>>> cc02ea76430f0151e482b6c905658eadfda60453
   width: 25vw;
   height:25vw; /*设置高度宽度相等*/
 }
@@ -109,8 +113,15 @@
 
 .image_delete{
   position: absolute;
-  margin-top: -80px;
-  width: 20px;
+  top: 0; /* 调整顶部位置 */
+  left: 0; /* 调整左侧位置 */
+  width: 5vw;
+  height: 5vw;
+}
+
+.image_delete image{
+  width: 100%;
+  height: 100%;
 }
 
 .image_delete_icon{
