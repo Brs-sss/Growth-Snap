@@ -44,13 +44,6 @@ Page({
       imageList: imageList
     });
   },
-  updateTag: function(e) {
-    var value = e.detail.value;
-    this.setData({
-      'tagText': value,
-      'inputValue': ''
-    });
-  },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
     const { selectedTags } = this.data;
@@ -81,12 +74,26 @@ Page({
     const { value } = e.detail;
     if (value.trim() !== '') {
       const { tags } = this.data;
-      tags.push({info: value, checked: false});
-      this.setData({
-        tags: tags,
-        showInput: false,
-        inputValue: ''
-      });
+      const existingTag = tags.find(tag => tag.info === value);
+      if (existingTag) {
+        // 已存在相同的标签
+        wx.showToast({
+          title: '标签已存在',
+          icon: 'none'
+        });
+        this.setData({
+          tags: tags,
+          showInput: false,
+          inputValue: ''
+        });
+      } else {
+        tags.push({info: value, checked: false});
+        this.setData({
+          tags: tags,
+          showInput: false,
+          inputValue: ''
+        });
+      }
     } else {
       this.setData({
         showInput: false,
@@ -94,17 +101,7 @@ Page({
       });
     }
   },
-  // getDict(data) {
-  //   getDict(data).then((res)=>{
-  //       console.log(res);
-  //       let that = this;
-  //       if(res.code==200) {
-  //       that.setData({
-  //           tags: res.data
-  //       })
-  //       }
-  //   })
-// },
+  
 
   /**
    * 生命周期函数--监听页面加载
