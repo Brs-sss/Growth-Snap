@@ -11,6 +11,8 @@
   position: absolute;
   margin-top: 270px;
   margin-left: 240px;
+  bottom: 10px;
+  right: 10px;
 }
 
 .add_icon{
@@ -31,10 +33,12 @@
 
 .popup {
   position: absolute;
+  right: -40px;
+  bottom: 70px;
   margin-top: 145px;
   margin-left: 90px;
-  width: 100px;
-  height: 110px;
+  width: 210rpx;
+  height: 270rpx;
   transform: translateX(-50%);
   background-color: #fff;
   padding: 10rpx;
@@ -59,7 +63,7 @@
 
 .item-text {
   color: gray;
-  font-size: 35rpx;
+  font-size: 26rpx;
   margin-left: 0rpx;
 }
 
