@@ -56,19 +56,21 @@ Page({
     const { selectedTags } = this.data;
     const tag = this.data.tags[index].info;
     const tagIndex = selectedTags.indexOf(tag);
-    console.log(selectedTags);
-    console.log("index",index)
-    console.log(this.data.tags[index].checked)
     if (tagIndex !== -1) {
       selectedTags.splice(tagIndex, 1); // 取消选中
-      this.data.tags[index].checked = true ;
+      this.data.tags[index].checked = false ;
     } else {
       selectedTags.push(tag); // 选中
-      this.data.tags[index].checked = false ;
+      this.data.tags[index].checked = true ;
+      
     }
     this.setData({
       selectedTags: selectedTags
     });
+    console.log(selectedTags);
+    console.log("index",index)
+    console.log(this.data.tags[index].checked)
+    
   },
 
   showInput: function() {
@@ -94,11 +96,23 @@ Page({
       });
     }
   },
+  // getDict(data) {
+  //   getDict(data).then((res)=>{
+  //       console.log(res);
+  //       let that = this;
+  //       if(res.code==200) {
+  //       that.setData({
+  //           tags: res.data
+  //       })
+  //       }
+  //   })
+// },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    // this.getDict('tags')
   },
 
   /**

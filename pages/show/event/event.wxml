@@ -27,9 +27,21 @@
 <view class="container_4">
   <view class="upload_title">选择tag</view>
   <view class="container_tag">
+<<<<<<< HEAD
     <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
       <text class="tag-text">{{item.info}}</text>
     </view>
+=======
+    <!-- <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{tags[index].checked ? 'selected' : ''}}" bindtap="toggleTag">
+      <text class="tag-text">{{item.info}}</text>
+    </view> -->
+    <view wx:for="{{tags}}" wx:for-item="item" wx:key="index">
+      <view data-index='{{index}}' class="tag {{tags[index].checked ? 'selected' : ''}}" bindtap="toggleTag">
+        <text class="tag-text">{{item.info}}</text>
+      </view>
+    </view> 
+      
+>>>>>>> main
     <view class="add-tag" bindtap="showInput">
       <text class="add-icon">+</text>
       <text class="add-text">tag</text>

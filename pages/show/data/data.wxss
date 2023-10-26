@@ -1,1 +1,29 @@
 /* pages/show/data/data.wxss */
+.container_1 {
+  padding: 20rpx;
+  font-size: 14px;
+}
+
+.input {
+  position: absolute;
+  width: 250px;
+  height: 20px;
+  margin-top: -38px;
+  margin-left: 40px;
+  padding: 10rpx;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+}
+.container_tag{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 8px; /* 标签之间的间距 */
+}
+
+.upload_title {
+  width: 200rpx;
+  height: 80rpx;
+  border-radius: 100px;
+  color: #ccc;
+}

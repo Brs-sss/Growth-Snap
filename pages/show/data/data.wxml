@@ -1,2 +1,5 @@
 <!--pages/show/data/data.wxml-->
-<text>pages/show/data/data.wxml</text>
+<view class="container_1">
+  <view class="upload_title">身高</view>
+  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 24rpx; position: absolute; height: 70rpx; top: 100rpx" class="input" bindinput="handleInput" placeholder="请输入" />
+</view>
