@@ -35,6 +35,7 @@
       <text class="add-text">tag</text>
     </view>
     <input wx:if="{{showInput}}" type="text" class="tag-input" bindblur="addTag" placeholder="请输入标签" />
+    <text class="tag-text">{{selectedTags}}</text>
   </view>
 </view>
 

@@ -62,23 +62,21 @@ Page({
     } else {
       selectedTags.push(tag); // 选中
       this.data.tags[index].checked = true ;
-      
     }
     this.setData({
-      selectedTags: selectedTags
+      selectedTags: selectedTags,
+      ['tags[' + index + '].checked']: this.data.tags[index].checked 
     });
     console.log(selectedTags);
     console.log("index",index)
     console.log(this.data.tags[index].checked)
     
   },
-
   showInput: function() {
     this.setData({
       showInput: true
     });
   },
-
   addTag: function(e) {
     const { value } = e.detail;
     if (value.trim() !== '') {
