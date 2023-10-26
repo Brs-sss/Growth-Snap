@@ -6,7 +6,7 @@
     <view class="overlay" bindtap="hidePopup"></view>
     <view class="popup">
       <view class="list-item" bindtap="goToPage_event">
-        <image class="item-image" src="/image/user/family.png"></image>
+        <image class="item-image" src="/image/show/event.png"></image>
         <text class="item-text">上传事件</text>
       </view>
       <view class="line"></view>
