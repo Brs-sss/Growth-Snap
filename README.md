@@ -5,7 +5,7 @@ THU软件学院 大三课程 软件工程 大作业
 
 ## 项目开发规则
 ### 分支管理
-- master分支为主分支，dev为开发分支，不允许直接对两个分支进行更改；
+- master分支为主分支，不允许直接更改，项目创建者定期从dev合并；dev为开发分支，只允许通过分支的合并进行更改。
 - 开发新的功能模块时，应从dev下创建新的分支。新分支开发结束后，合并至dev分支；
 - 合并前，应预先拉取最新的dev分支
 
@@ -18,13 +18,11 @@ git checkout -b <branch_name>
 - 在分支下开发新功能
 - 合并
 ```
-// 省略对于更改内容的add与commit
-git pull origin dev
-git checkout dev
-git merge <branch_name>
-// 发生冲突时，手动更改后add与commit即可
-git branch -d <branch_name> // 不再需要该分支时，删除
-git push origin dev
+git add <modified file>
+git commit -m "msg"
+git push origin <branch_name>
+// 进入仓库页面，提交merge申请
+// 进入pull request页面，确认申请（可能需要处理冲突）
 ```
 
 ### commit信息
