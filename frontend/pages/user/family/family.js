@@ -5,9 +5,28 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    familyMembers: [
+      {
+        profile: "/image/user/profile/mom.png",
+        name: "小明妈",
+        tag: "妈妈",
+        signature: "这里是个性签名1"
+      },
+      {
+        profile: "/image/user/profile/dad.png",
+        name: "小明爸",
+        tag: "爸爸",
+        signature: "这里是个性签名2"
+      },
+      // 其他家庭成员...
+    ]
   },
-
+  goToPage_addmember() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/family/addmember/addmember',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
