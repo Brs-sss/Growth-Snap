@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-&al7&%wbwpt7#bgaxgun_$e0j6t*bn7e-@y7(p%3smyqtoezbj
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CSRF_COOKIE_SECURE = False
 
 # Application definition
 
@@ -37,18 +37,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', 
+    # 'wx.middlewares.MiddlewareHead',  # 允许进行跨域访问
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:9000',  # 允许的前端应用的地址
+]
 ROOT_URLCONF = 'wechat.urls'
 
 TEMPLATES = [
@@ -69,7 +76,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wechat.wsgi.application'
 
-
+APP_ID = 'wx740209c2191e034f'
+APP_SECRET  = '819fcef7fb1b60ef56dcb4062d1e465f'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
