@@ -84,12 +84,8 @@
 
 .image-grid-item{
   /* border: 1px solid #000; */
-<<<<<<< HEAD
-  position: relative;
-=======
   border: 1px solid rgba(0, 0, 0, 0);
-
->>>>>>> cc02ea76430f0151e482b6c905658eadfda60453
+  position: relative;
   width: 25vw;
   height:25vw; /*设置高度宽度相等*/
 }
