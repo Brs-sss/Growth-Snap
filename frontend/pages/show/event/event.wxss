@@ -20,7 +20,7 @@
 }
 
 .container_1 {
-  grid-area: "A";
+  grid-area: A;
   font-size: 14px;
 
 }
@@ -48,7 +48,7 @@
 }
 
 .container_2 {
-  grid-area: "B";
+  grid-area: B;
   font-size: 14px;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .container_3 {
-  grid-area: "C";
+  grid-area: C;
   font-size: 14px;
 }
 
@@ -141,7 +141,7 @@
 
 
 .container_4 {
-  grid-area: "D";
+  grid-area: D;
   font-size: 14px;
 }
 
@@ -215,7 +215,7 @@
 }
 
 .container_5 {
-  grid-area: "E";
+  grid-area: xwE;
   width: 100%;
   justify-self: center;
   font-size: 14px;
