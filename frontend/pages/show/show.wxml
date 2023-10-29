@@ -23,60 +23,9 @@
   </view>
 
   <view class="cards-container">
-    <view class="event-card">
-    <view class="date-author-block">
-      <view class="date-block">
-        <view class="day">30</view>
-        <view class="month">15月</view>
-      </view>
-      <view class="author-block">小明妈</view>
-    </view>
-
-    <view class="image-block">
-      <image src="/image/temp/colorring.png" mode="aspectFill"/> 
-    </view>
-    
-    <view class="text-block">
-      <view class="title-block">今天带小明感受大自然</view>
-      <view class="body-block">孩子很喜欢，放松身心很好</view>
-    </view>
-    </view>
-    <view class="event-card">
-    <view class="date-author-block">
-      <view class="date-block">
-        <view class="day">30</view>
-        <view class="month">15月</view>
-      </view>
-      <view class="author-block">小明妈</view>
-    </view>
-
-    <view class="image-block">
-      <image src="/image/temp/cloud.png" mode="aspectFill"/> 
-    </view>
-    
-    <view class="text-block">
-      <view class="title-block">今天带小明感受大自然</view>
-      <view class="body-block">孩子很喜欢，放松身心很好</view>
-    </view>
-    </view>
-    <view class="event-card">
-    <view class="date-author-block">
-      <view class="date-block">
-        <view class="day">30</view>
-        <view class="month">15月</view>
-      </view>
-      <view class="author-block">小明妈</view>
-    </view>
-
-    <view class="image-block">
-      <image src="/image/temp/star.jpeg" mode="aspectFill"/> 
-    </view>
-    
-    <view class="text-block">
-      <view class="title-block">今天带小明感受大自然</view>
-      <view class="body-block">孩子很喜欢，放松身心很好</view>
-    </view>
-    </view>
+    <event-card day="29" month="12月" author="爷爷" title="I like it" body="hahhh" imgSrc="/image/temp/colorring.png"></event-card>
+    <event-card day="30" month="5月" author="小明妈" title="今天带小明感受大自然" body="孩子很喜欢，放松身心很好" imgSrc="/image/temp/cloud.png"></event-card>
+    <event-card day="29" month="12月" author="爷爷" title="I like it" body="hahhh" imgSrc="/image/temp/star.jpeg"></event-card>
   </view>
   
 </view>
