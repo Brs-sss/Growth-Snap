@@ -24,8 +24,10 @@
 
   <view class="cards-container">
     <event-card day="29" month="12月" author="爷爷" title="I like it" body="hahhh" imgSrc="/image/temp/colorring.png"></event-card>
-    <event-card day="30" month="5月" author="小明妈" title="今天带小明感受大自然" body="孩子很喜欢，放松身心很好" imgSrc="/image/temp/cloud.png"></event-card>
+    <text-card day="30" month="5月" author="大壮" title="今天小明在学校犯贱，被大壮教训了" body="希望他长记性"></text-card>
+    <data-card day="29" month="10月" author="Cici" title="身高&体重记录" body="身高：122cm 体重：50kg"></data-card>
     <event-card day="29" month="12月" author="爷爷" title="I like it" body="hahhh" imgSrc="/image/temp/star.jpeg"></event-card>
+
   </view>
   
 </view>

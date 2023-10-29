@@ -1,18 +1,18 @@
 
-/*********************以下开始是event card的相关样式**********************************/
+/*********************以下开始是text card的相关样式**********************************/
 
 
-.event-card{
+
+.text-card{
   width: 100%;
-  height: 50vh;
+  height: 20vh;
   /* border: 1px black solid; */
   display: grid;
-  grid-template-rows: 5vh 1fr 10vh;
+  grid-template-rows: 5vh 15vh;
   grid-template-areas: 
   "A"
-  "B"
-  "C";
-  margin-bottom:2vh;
+  "B";
+  margin-bottom: 2vh;
 }
 
 .date-author-block{
@@ -69,13 +69,22 @@
   justify-content: flex-end; /* 垂直底部对齐 */
 }
 
-.image-block{
-  width: 90%;
-  height: calc(9*width/16);
+.main-block{
   grid-area: B;
-  /* border: 1px black solid; */
-  justify-self: center;
-  margin-top: 0.5vh;
+  width: 100%;
+  height: 15vh;
+  display: grid;
+  grid-template-columns: 14vh 1fr;
+  grid-template-areas: "img txt";
+}
+
+.image-block{
+  width: 11vh;
+  height: 11vh;
+  grid-area: img;
+  justify-self: right;
+  margin-top: 2vh;
+  
 }
 
 .image-block image{
@@ -87,8 +96,8 @@
 
 .text-block{
   width: 100%;
-  height: 10vh;
-  grid-area: C;
+  height: 15vh;
+  grid-area: txt;
   /* border: 1px black solid; */
   display: flex;
   flex-direction: column;
@@ -98,19 +107,19 @@
 
 .title-block{
   width: 90%;
-  height: 6vh;
+  height: 10vh;
   /* border: 1px black solid; */
   font-size: 1.3em;
   font-weight: bold;
   text-align:left;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .body-block{
   width: 90%;
-  height: 4vh;
+  height: 5vh;
   /* border: 1px black solid; */
   font-size: 1em;
   text-align:left;
