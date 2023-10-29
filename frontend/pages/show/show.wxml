@@ -21,5 +21,63 @@
       </view>
     </view>
   </view>
+
+  <view class="cards-container">
+    <view class="event-card">
+    <view class="date-author-block">
+      <view class="date-block">
+        <view class="day">30</view>
+        <view class="month">15月</view>
+      </view>
+      <view class="author-block">小明妈</view>
+    </view>
+
+    <view class="image-block">
+      <image src="/image/temp/colorring.png" mode="aspectFill"/> 
+    </view>
+    
+    <view class="text-block">
+      <view class="title-block">今天带小明感受大自然</view>
+      <view class="body-block">孩子很喜欢，放松身心很好</view>
+    </view>
+    </view>
+    <view class="event-card">
+    <view class="date-author-block">
+      <view class="date-block">
+        <view class="day">30</view>
+        <view class="month">15月</view>
+      </view>
+      <view class="author-block">小明妈</view>
+    </view>
+
+    <view class="image-block">
+      <image src="/image/temp/cloud.png" mode="aspectFill"/> 
+    </view>
+    
+    <view class="text-block">
+      <view class="title-block">今天带小明感受大自然</view>
+      <view class="body-block">孩子很喜欢，放松身心很好</view>
+    </view>
+    </view>
+    <view class="event-card">
+    <view class="date-author-block">
+      <view class="date-block">
+        <view class="day">30</view>
+        <view class="month">15月</view>
+      </view>
+      <view class="author-block">小明妈</view>
+    </view>
+
+    <view class="image-block">
+      <image src="/image/temp/star.jpeg" mode="aspectFill"/> 
+    </view>
+    
+    <view class="text-block">
+      <view class="title-block">今天带小明感受大自然</view>
+      <view class="body-block">孩子很喜欢，放松身心很好</view>
+    </view>
+    </view>
+  </view>
+  
 </view>
 
