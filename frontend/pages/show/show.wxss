@@ -71,6 +71,16 @@
   background: rgba(223, 220, 220, 0.521);
 }
 
+.cards-container{
+  width: 100vw;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  color: #222;
+}
+
 
 
 
