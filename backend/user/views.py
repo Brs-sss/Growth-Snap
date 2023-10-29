@@ -3,6 +3,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
+from .models import User, Family
 
 # Create your views here.
 
@@ -24,11 +25,57 @@ def login(request):
         errcode = data.get('errcode')
         errmsg = data.get('errmsg')
 
-        # 返回响应数据
-        return JsonResponse({
-            'openid': openid,
-            'session_key': session_key,
-            'unionid': unionid,
-            'errcode': errcode,
-            'errmsg': errmsg
-        })
+        # 检查这个用户是否已经存在
+        if User.objects.filter(openid=openid).exists():
+            # 如果存在，就直接返回响应数据
+            return JsonResponse({
+                'openid': openid,
+                'errcode': errcode,
+                'errmsg': errmsg,
+                'exists': 'true'
+            })
+        else:
+            
+            # 返回响应数据
+            return JsonResponse({
+                'openid': openid,
+                'errcode': errcode,
+                'errmsg': errmsg,
+                'exists': 'false'
+            })
+        
+# todo: 家庭口令的设置和验证
+def register(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        openid = data.get('openid')
+        label = data.get('label')
+        familyId = data.get('familyId')
+        print(username)
+        print(openid)
+        print(label)
+        print(familyId)
+        # 检查这个fammily是否已经存在
+        if not Family.objects.filter(familyId=familyId).exists():
+            Family.objects.create(familyId=familyId)
+        family = Family.objects.get(familyId=familyId)
+
+        # 检查这个用户是否已经存在
+        if User.objects.filter(username=username).exists():
+            # 如果存在，报错：username already exists
+            return JsonResponse({
+                'msg': 'username already exists'
+            })
+        else:
+            # 如果不存在，就创建新用户
+            user = User.objects.create(
+                username=username,
+                openid=openid,
+                label=label,
+                family=family
+            )
+            # 返回响应数据
+            return JsonResponse({
+                'msg': 'register success'
+            })
