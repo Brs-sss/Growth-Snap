@@ -10,6 +10,7 @@ Page({
     canIUseGetUserProfile: false,
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'), // 如需尝试获取用户信息可改为false
     host_: 'http://127.0.0.1:8090/',
+    openid: '', // 用户的openid
   },
   // 事件处理函数
   bindViewTap() {
@@ -64,27 +65,48 @@ Page({
             },
             success: function(res)
             {
-              console.log(res.data),
-              console.log(res.statusCode)
+              console.log(res.data)
               if (res.statusCode==200)
               {
                 // 登录成功
-                // TODO: 处理返回的信息，记录token等，以便二次访问微信接口
+                // TODO: 处理返回的信息，记录token，id等，以便二次访问微信接口
 
                 // wx.setStorage('csrftoken', res.cookies[0])
                 // wx.setStorage('sessionid', res.cookies[1])
-                wx.showToast({
-                  title: "登录成功",
-                  icon: 'success',
-                  duration: 2000,
-                  success: function () {
-                    setTimeout(function () {
-                      wx.switchTab({
-                        url: '/pages/show/show'
-                      })
-                    }, 2000)
-                  }
-                })
+
+                // 判断是否第一次登录
+                console.log(res.data.exists)
+                if (res.data.exists == 'false')
+                {
+                  wx.showToast({
+                    title: "请先完善信息",
+                    icon: 'none',
+                    duration: 2000,
+                    success: function () {
+                      setTimeout(function () {
+                        wx.redirectTo({
+                          url: '../register/register?openid='+res.data.openid
+                        })
+                      }, 2000)
+                    }
+                  })
+                }
+                else
+                {
+                  wx.showToast({
+                    title: "登录成功",
+                    icon: 'success',
+                    duration: 2000,
+                    success: function () {
+                      setTimeout(function () {
+                        wx.switchTab({
+                          url: '/pages/show/show'
+                        })
+                      }, 2000)
+                    }
+                  })
+                }
+                
                 // wx.switchTab({
                 //   url: '/pages/show/show'
                 // })
