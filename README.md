@@ -51,3 +51,9 @@ git push origin <branch_name>
 
 ## 项目框架
 前端使用微信小程序提供框架，后端使用django
+
+## 使用方式
+可以用vs打开整个项目，进入```backend```，输入```
+python manage.py runserver 8090
+```
+之后用微信开发者工具打开```frontend```，进行模拟。
