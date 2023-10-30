@@ -5,6 +5,7 @@ from django.http import JsonResponse
 import requests
 import json
 from .models import User, Family, Event
+from .utils import ListToString,StringToList
 
 # Create your views here.
 
@@ -84,16 +85,22 @@ def register(request):
 def submitEvent(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+        
+        openid=data.get('openid')
+        now_user=User.objects.get(openid=openid)
+        
         title = data.get('title')
         content = data.get('content')
         date = data.get('date')
-        time = data.get('time')
+        time = (data.get('time'))[:8]
         tags = data.get('tags') #现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
-        tags=[tag['info'] for tag in tags if tag['checked']]
-        #print(title,content,tags)  #aa ss ['j j j', 'dd']
-        new_event=Event(user=,date=date,time=time,title=title,content=content,tags=tags)
-        new_event.save()
+        tags=ListToString([tag['info'] for tag in tags if tag['checked']])
+        #print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
+        new_event=Event.objects.create(user=now_user,date=date,time=time,title=title,content=content,tags=tags)
         filtered_records = Event.objects.all()
-        print(filtered_records)
+        for rec in filtered_records:
+            print(rec)
+        return JsonResponse({'message': 'Data submitted successfully'})
+    else:
         return JsonResponse({'message': 'Data submitted successfully'})
     
