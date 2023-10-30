@@ -215,7 +215,7 @@
 }
 
 .container_5 {
-  grid-area: xwE;
+  grid-area: E;
   width: 100%;
   justify-self: center;
   font-size: 14px;
@@ -231,7 +231,6 @@
 }
 
 .submit{
-
   position: relative;
   left: 0px;
   bottom: 15px;

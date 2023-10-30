@@ -1,4 +1,6 @@
+from typing import Any
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 
@@ -37,13 +39,29 @@ class User(models.Model):
 class BaseRecord(models.Model):
     # 每一个用户都有自己的事件、想法、记录和计划，所以这里用外键可以实现一对多的关系(一个用户对应多个事件、想法、记录和计划)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # event, thought, data
-    type = models.CharField(max_length=20)
+    # event, text, data
+    record_type = models.CharField(max_length=10, default='event')
     # date
     date = models.DateField()
     # time
     time = models.TimeField()
     
     def __str__(self):
-        return self.type
+        return self.record_type 
+    
+class Event(BaseRecord):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.record_type ='event'
+    
+    
+    title = models.CharField(max_length=128)
+    content =models.CharField(max_length=1024)
+    tags = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return str(self.user)+" "+self.record_type+" "+self.title+" "+self.content+" "+self.tags+" "+str(self.date)+" "+str(self.time)
+    
+    
+    
 
