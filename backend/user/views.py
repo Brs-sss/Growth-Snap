@@ -1,9 +1,10 @@
+
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
-from .models import User, Family
+from .models import User, Family, Event
 
 # Create your views here.
 
@@ -79,3 +80,20 @@ def register(request):
             return JsonResponse({
                 'msg': 'register success'
             })
+
+def submitEvent(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        title = data.get('title')
+        content = data.get('content')
+        date = data.get('date')
+        time = data.get('time')
+        tags = data.get('tags') #现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
+        tags=[tag['info'] for tag in tags if tag['checked']]
+        #print(title,content,tags)  #aa ss ['j j j', 'dd']
+        new_event=Event(user=,date=date,time=time,title=title,content=content,tags=tags)
+        new_event.save()
+        filtered_records = Event.objects.all()
+        print(filtered_records)
+        return JsonResponse({'message': 'Data submitted successfully'})
+    
