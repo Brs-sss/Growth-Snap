@@ -148,7 +148,7 @@ def addEventImage(request):
         pic_index=request.POST.get('pic_index')
         event_id=request.POST.get('event_id')
         
-        image_path='./ImageBase/' +f'{event_id}/'
+        image_path='./static/ImageBase/' +f'{event_id}/'
         if not os.path.exists(image_path):
             os.mkdir(image_path)
         if uploaded_image:
@@ -161,6 +161,35 @@ def addEventImage(request):
     else:
         return JsonResponse({'message': '请使用POST方法'})
 
+#加载主页 只返回必要的信息
+def loadShowPage(request):
+    if request.method == 'GET':
+        openid=request.GET.get('openid')
+        now_user=User.objects.get(openid=openid)
+        #这里的Event将来应当替换成基类BaseRecord
+        now_user_blocks=Event.objects.filter(user=now_user).order_by("-date","-time")  #筛选的结果按照降序排列
+        blocks_list=[]
+        for db_block in now_user_blocks:
+            block_item={}
+            block_item['type']=db_block.record_type
+            block_item['title']=db_block.title
+            block_item['content']=db_block.content
+            block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+            date_string=str(db_block.date)
+            block_item['month']=str(int(date_string[5:7]))+"月"
+            block_item['year']=date_string[0:4]
+            block_item['day']=date_string[8:10]
+            block_item['event_id']=db_block.event_id
+            image_path='static/ImageBase/'+db_block.event_id
+            image_list = os.listdir(image_path)
+            block_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
+            blocks_list.append(block_item)
+        print(blocks_list)
+        return JsonResponse({'blocks_list': blocks_list})
+        
+        
+        
+            
 
 def addPlan(request):
     if request.method == 'POST':
@@ -174,3 +203,4 @@ def addPlan(request):
         print(openid,title)
         new_plan=Plan.objects.create(user=now_user,title=title)
         return JsonResponse({'message': 'Data submitted successfully'})
+

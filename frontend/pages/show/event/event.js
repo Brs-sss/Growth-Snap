@@ -54,6 +54,7 @@ Page({
     // 格式化日期为 "YYYY-MM-DD"
     var formattedDate = year + '-' + month + '-' + day;
     //时间为
+    const currentDateString =currentDateAndTime.toDateString();
     const currentTimeString = currentDateAndTime.toTimeString();
     
     // 获取存储的openid
@@ -63,7 +64,7 @@ Page({
         // 从本地存储中获取数据,在index.js文件中保存建立的
         let openid=res.data
         console.log('opeidd: ',openid) 
-        const event_text_id=openid+currentTimeString;
+        const event_text_id=openid+currentDateString+currentTimeString;
         //通过后端获取event_id(一个事件的唯一id为openid+发表时间的sha256值):
         wx.request({
           url: that.data.host_+'user/api/getSHA256'+'?text='+event_text_id, //url get传参数
@@ -71,7 +72,7 @@ Page({
           success:function(res){
             const event_id_sha256 = res.data.sha256;
             console.log('SHA-256 哈希值:',  event_id_sha256);
-            wx.request({
+            wx.request({ //上传非图片数据
               url: that.data.host_+'user/api/show/event/submit',
               method: 'POST',
               header:
@@ -85,7 +86,8 @@ Page({
                 'content':that.data.inputText,
                 'tags':that.data.tags,
                 'date':formattedDate,
-                'time':currentTimeString
+                'time':currentTimeString,
+                'author':"大壮", //todo
               },
               success:function(res){
                 console.log('success return')
@@ -107,8 +109,6 @@ Page({
                     }
                   });
                 }
-               
-
     
                 wx.navigateBack(1) //成功提交，返回上个页面
               },
