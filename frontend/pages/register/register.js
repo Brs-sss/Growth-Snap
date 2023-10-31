@@ -123,7 +123,17 @@ Page({
       success: function(res)
       {
         console.log(res.data)
-        if (res.statusCode==200)
+        console.log(res.statusCode)
+        if (res.data.msg == 'familyId does not exist')
+        {
+          wx.showToast({
+            title: '家庭口令不存在',
+            icon: 'error',
+            duration: 2000,
+            
+          })
+        }
+        if (res.data.msg=='register success')
         {
           console.log('register complete')
           wx.showToast({

@@ -58,6 +58,7 @@ def registerFamily(request):
 
         # 随机生成6位数字+字母的familyId
         familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+        Family.objects.create(familyId=familyId)
         print(familyId)
         return JsonResponse({
             'familyId': familyId
@@ -80,7 +81,9 @@ def register(request):
         print(familyId)
         # 检查这个fammily是否已经存在
         if not Family.objects.filter(familyId=familyId).exists():
-            Family.objects.create(familyId=familyId)
+            return JsonResponse({
+                'msg': 'familyId does not exist'
+            }, status=400)
         family = Family.objects.get(familyId=familyId)
 
         # 检查这个用户是否已经存在
