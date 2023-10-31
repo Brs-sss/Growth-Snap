@@ -6,6 +6,11 @@ import requests
 import json
 from .models import User, Family, Event
 from .utils import ListToString,StringToList
+import random
+import string
+import hashlib
+import os
+
 
 # Create your views here.
 
@@ -46,6 +51,21 @@ def login(request):
                 'exists': 'false'
             })
         
+def registerFamily(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+
+        # 随机生成6位数字+字母的familyId
+        familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+        print(familyId)
+        return JsonResponse({
+            'familyId': familyId
+        })
+
+
+
+
 # todo: 家庭口令的设置和验证
 def register(request):
     if request.method == 'POST':
@@ -81,6 +101,20 @@ def register(request):
             return JsonResponse({
                 'msg': 'register success'
             })
+            
+def getSHA256(request):
+    if request.method == 'GET':
+        text_to_hash=request.GET.get('text')
+        print('txt ',text_to_hash)
+        sha256 = hashlib.sha256()
+        sha256.update(text_to_hash.encode('utf-8'))
+        sha256_hash = sha256.hexdigest()
+        print('hash ',sha256_hash)
+        return JsonResponse({
+                'sha256': sha256_hash
+            })
+        
+        
 
 def submitEvent(request):
     if request.method == 'POST':
@@ -88,6 +122,7 @@ def submitEvent(request):
         
         openid=data.get('openid')
         now_user=User.objects.get(openid=openid)
+        event_id=data.get('event_id')
         
         title = data.get('title')
         content = data.get('content')
@@ -96,11 +131,30 @@ def submitEvent(request):
         tags = data.get('tags') #现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
         tags=ListToString([tag['info'] for tag in tags if tag['checked']])
         #print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
-        new_event=Event.objects.create(user=now_user,date=date,time=time,title=title,content=content,tags=tags)
+        new_event=Event.objects.create(user=now_user,date=date,time=time,title=title,content=content,tags=tags,event_id=event_id)
         filtered_records = Event.objects.all()
         for rec in filtered_records:
             print(rec)
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
-    
+
+def addEventImage(request):
+    if request.method == 'POST':
+        uploaded_image = request.FILES.get('image') 
+        pic_index=request.POST.get('pic_index')
+        event_id=request.POST.get('event_id')
+        
+        image_path='./ImageBase/' +f'{event_id}/'
+        if not os.path.exists(image_path):
+            os.mkdir(image_path)
+        if uploaded_image:
+            with open(image_path+f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+            return JsonResponse({'message': '文件上传成功'})
+        else:
+            return JsonResponse({'message': '文件不存在'})
+    else:
+        return JsonResponse({'message': '请使用POST方法'})
+            

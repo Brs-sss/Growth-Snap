@@ -58,6 +58,7 @@ class Event(BaseRecord):
     title = models.CharField(max_length=128)
     content =models.CharField(max_length=1024)
     tags = models.CharField(max_length=200)
+    event_id=models.CharField(max_length=65,default="")
     
     def __str__(self):
         return str(self.user)+" "+self.record_type+" "+self.title+" "+self.content+" "+self.tags+" "+str(self.date)+" "+str(self.time)

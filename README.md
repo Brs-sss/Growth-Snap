@@ -4,7 +4,7 @@ THU软件学院 大三课程 软件工程 大作业
 本项目目的是实现一个成长记录微信小程序，帮助家长更好的记录孩子成长的点点滴滴
 
 ## 公告区
-### <span style="color:red;">孩子成长传输协议GSTP v1.0发布！！详见md最下面</span>
+### <span style="color:red;">孩子成长传输协议GSTP v2.0发布！！详见md最下面</span>
 
 
 ## 项目开发规则
@@ -75,5 +75,23 @@ tags=ListToString([tag['info'] for tag in tags if tag['checked']])
 
 
 2. 数据库接受的日期的形式为YYYY-MM-DD，时间的形式为hh:mm:ss，与js中获取到的并不一样（js直接获取日期是Oct 30 2023，时间是18:49:30 GMT+8），所以需要转换日期时间格式才能存入数据库。这个转换目前是日期由前端做（前端相对好做一些），时间由后端做。之后可以再商量。
+
+3.每个event都有一个event_id唯一标识这个event（方便传图片），event_id生成原理：
+明文设为 这个event的上传者的openid 连接上 这个event的Date和Time（都是点击提交按钮的时间），然后取SHA256信息指纹。（这样可以保证唯一性，因为相当于usr和上传时间都固定了，一个usr不太可能同时点击两次提交按钮）。
+
+Date 和 Time指的是：
+```
+    const currentDateString =currentDateAndTime.toDateString();
+    const currentTimeString = currentDateAndTime.toTimeString();
+
+```
+
+如何获取SHA256？前端js无法获取。因此我在后端user/api/getSHA256提供了服务，可以用GET方法访问。（具体请参照event.js）
+
+
+4. 图片传输看这里
+   微信必须使用wx.uploadFile进行文件（包括图片）的传输，而且一次只能传一张（但可以在formData字段添加一些其他文本类型的数据）。因此，以event为例，想要传输多张图片，我们只能采取这样的策略：
+   1）前端处理：先wx.request传输event的其他信息，如时间、标签等，同时带上event_id。之后在success中开始循环用wx.uploadFile（路由需要根据情况自己写，可以参照view.addEventImage）传图片，每张图片的附带信息event_id。
+   2）后端处理：在你的处理路由中接受图片，在图片区域根目录下/ImageBase 中，以event_id为二级目录，存放每张图片，图片命名为"{序号}_{传过来的图片的名字}"，这里 传过来的图片的名字 并不是原本本地的图片名字，而是微信自动生成的。
 
 

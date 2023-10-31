@@ -33,7 +33,8 @@ Page({
     visibility_cancel: 'none',
     visibility_input: 'block',
     visibility_create: 'block',
-    visibility_text: 'none'
+    visibility_text: 'none',
+    firsttime_selected_img:true
   },
 
   handleInputUsername(e) {  //输入用户名的处理
@@ -48,14 +49,37 @@ Page({
     });
   },
   create_familyId(e){
-    this.setData({
-      is_disabled: true,
-      familyId_text: '111111',
-      visibility_cancel: 'block',
-      visibility_create: 'none',
-      visibility_input: 'none',
-      visibility_text: 'flex'
-    });
+   var that = this
+    wx.request({
+      url: this.data.host_+'user/api/register_family',
+      method: 'POST',
+      data: 
+      {
+        'openid': this.data.openid,
+      },
+      header:
+      {
+        'content-type': 'application/json'
+      },
+      success: function(res)
+      {
+        console.log(res.data)
+        if (res.statusCode==200)
+        {
+          that.setData({
+            is_disabled: true,
+            familyId_text: res.data.familyId,
+            inputFamilyId: res.data.familyId,
+            visibility_cancel: 'block',
+            visibility_create: 'none',
+            visibility_input: 'none',
+            visibility_text: 'flex'
+          });
+        }
+      }
+
+    })
+    
   },
   handleInputLabel(e) {  //输入家庭角色的处理
     this.setData({
@@ -78,7 +102,10 @@ Page({
     console.log('提交的文本：', this.data.inputLabel);
     console.log('提交的文本：', this.data.imageList[0]);
     console.log('提交的文本：', this.data.openid);
-
+    if (this.data.inputFamilyId == '')
+    {
+      this.data.inputFamilyId = this.data.familyId
+    }
     wx.request({
       url: this.data.host_+'user/api/register',
       method: 'POST',
@@ -133,13 +160,9 @@ Page({
         this.setData({
           imageList: imageList.slice(0, 9),
           imgGridStyle:getImageGridStyle(num_rows),
+          firsttime_selected_img:false,
           // profilePath: res.tempFilePath[0]
         });
-        // var query = wx.createSelectorQuery().select('#image-grid-container').boundingClientRect(function (gridContainer) { 
-        //     gridContainer.gridTemplateRows = `repeat(${num_rows}, 1fr)`;
-        //     let grid_height=30*num_rows;
-        //     gridContainer.height=`${grid_height}vw`;
-        //   }).exec();
       },
       fail: (res)=>{
         console.log(1)

@@ -1,7 +1,7 @@
 /* pages/register/register.wxss */
 .whole-page-grid{
   display: grid;
-  grid-template-rows: 10vh 1fr 30vh 10vh 1fr;
+  grid-template-rows: 10vh 2fr 15vh 10vh 3fr;
   grid-template-columns: 1fr;
   grid-template-areas:
   "A"
@@ -22,12 +22,14 @@
 .container_1 {
   grid-area: "A";
   font-size: 14px;
+  display: flex;
+  align-items: center;
 
 }
 
 #title-box1{
-  height: 100%;
-  width: 15%;
+  height: 20%;
+  /* width: 10%; */
   display: flex;
   align-items: center;
 }
@@ -61,15 +63,17 @@
   font-size: 14px;
   color: blue;
   text-decoration: underline;
+  display: block;
   float: right;
   margin-right: 30px;
   /* display: block; */
 }
 .upload_title {
-  width: 100%;
+  width: 8h;
   height: 5vh;
   border-radius: 100px;
   color: #333;
+  position: relative;
 }
 
 .upload_icon{
@@ -141,6 +145,11 @@
 .container_3 {
   grid-area: "C";
   font-size: 14px;
+  
+}
+.family{
+  display: flex;
+  align-items: center;
 }
 
 .input_text {
