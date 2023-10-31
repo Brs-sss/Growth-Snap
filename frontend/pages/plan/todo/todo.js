@@ -5,6 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    planValue: '',
     todos: [],
     newTodo: ''
   },
@@ -20,7 +21,9 @@ Page({
   },
   addTodo(e) {
     const value = e.detail.value;
+    console.log(value)
     if (!value) {
+      console.log("here");
       this.setData({
         showInput: false
       })
@@ -57,7 +60,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    const planValue = decodeURIComponent(options.plan);
+    console.log('Received plan value:', planValue);
+    this.setData({
+      planValue: planValue
+    });
   },
 
   /**

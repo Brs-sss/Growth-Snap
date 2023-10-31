@@ -1,9 +1,12 @@
 /* pages/plan/todo/todo.wxss */
+
+.plan-header {
+  font-size: 3vh;
+  margin-bottom: 4vh;
+}
+
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10vh;
+  margin-top: -1vh;
 }
 
 .list {
@@ -26,11 +29,10 @@
 
 .delete-btn {
   margin-left: auto;
-  width: 4vh;
-  background-color: #f44336;
-  color: #fff;
+  margin-right: 2vh;
+  /* background-color: #f44336; */
+  color: rgb(182, 1, 1);
   border-radius: 1vh;
-  border: none;
   font-size: 1.6vh;
 }
 
@@ -48,8 +50,8 @@
 
 .todo-input {
   position: relative;
-  height: 4vh;
-  margin-top: -2.5vh;
+  height: 5vh;
+  margin-top: -4vh;
   font-size: large;
   background-color: rgb(255, 255, 255);
   border: 0.2vh solid rgba(220, 220, 220, 0.5);

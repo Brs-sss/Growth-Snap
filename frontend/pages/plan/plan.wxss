@@ -3,46 +3,76 @@
 .container_todo{
   width: 80vh;
   margin-bottom: 3vh;
+  margin-top: 2vh;
+  margin-left: 2vh;
 }
 
 .todo-header {
   font-size: 4vh;
-  margin-bottom: 1vh;
+}
+
+.scroll-view {
+  height: 40vh; 
+  width: 50vh;
+  overflow-y: scroll; 
+  background-color: rgba(220, 220, 220, 0.1);
+  margin-top: 1vh;
+  border-radius: 1vh;
 }
 
 .todo-list {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .todo-item {
-  width: 40vh;
   padding: 2vh;
-  margin-bottom: 2vh;
-  background-color: #f2f2f2;
-  border-radius: 2vh;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
+  margin-bottom: 1vh;
+  height: 2vh;
+}
+
+.completed {
+  text-decoration: line-through;
 }
 
 .container_plan {
   width: 80vh;
+  margin-top: 2vh;
+  margin-left: 2vh;
 }
 
 .plan-header {
   font-size: 4vh;
-  margin-bottom: 1vh;
 }
 
 .plan-list {
   display: flex;
   flex-direction: column;
+  margin-top: 1vh;
 }
 
 .plan-item {
   padding: 2vh;
-  margin-bottom: 2vh;
-  background-color: #f2f2f2;
-  border-radius: 2vh;
+  width: 50vh;
+  height: 2vh;
+  font-size: large;
+  margin-bottom: 1vh;
+}
+
+.line {
+  width: 100%;
+  height: 3rpx;
+  background: rgba(220, 220, 220, 0.5);
+}
+
+.image-arrow {
+  width: 60rpx;
+  height: 60rpx;
+  margin-top: -5vh;
+  margin-left: 40vh;
+  right: 0; /* 靠右调节 */
 }
