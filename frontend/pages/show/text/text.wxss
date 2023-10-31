@@ -1,87 +1,17 @@
 /* pages/show/event/event.wxss */
-.container_1 {
-  padding: 20rpx;
-  font-size: 14px;
-}
 
-.input {
-  position: absolute;
-  width: 250px;
-  height: 20px;
-  margin-top: -38px;
-  margin-left: 40px;
-  padding: 10rpx;
-  border: 1rpx solid rgba(220, 220, 220, 0.5);
-  border-radius: 4rpx;
-}
+@import "/pages/show/event/event.wxss";
 
-.result {
-  margin-top: 20rpx;
-}
-
-.upload_title {
-  width: 200rpx;
-  height: 80rpx;
-  border-radius: 100px;
-  color: #ccc;
-}
-
-.upload_icon{
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  margin-top: 2px;
-}
-
-.container {
-  padding: 20rpx;
-  font-size: 14px;
-
-}
-
-
-.container_3 {
-  position: absolute;
-  padding: 20rpx;
-  font-size: 14px;
-
-}
-
-.input_text {
-  width: 290px;
-  height: 200rpx;
-  padding: 10rpx;
-  border: 1rpx solid rgba(220, 220, 220, 0.5);
-  border-radius: 4rpx;
-  margin-bottom: 20rpx;
-}
-
-.container_4 {
-  position: absolute;
-  margin-top: 150px;
-  padding: 20rpx;
-  font-size: 14px;
-
-}
-
-.container_5 {
-  position: absolute;
-  margin-left: 60px;
-  padding: 20rpx;
-  font-size: 14px;
-
-}
-
-.submit{
-  position: absolute;
-  margin-left: 100px;
-  margin-top: 60px;
-  width: 100%;
-  height: 80rpx;
-  background-color: #4095E5;
-  color: #fff;
-  border-radius: 100px;
-  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
-  font-size: 14px;
-
+.whole-page-grid-text{
+  display: grid;
+  grid-template-rows: 10vh 30vh 10vh 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+  "A"
+  "C"
+  "D"
+  "E";
+  height:100vh;
+  justify-content: stretch;
+  align-items: stretch; 
 }

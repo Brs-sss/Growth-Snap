@@ -9,7 +9,7 @@
 
     <view class="main-block">
       <view class="image-block">
-        <image src="/image/show/datagram.png"mode="aspectFill"/> 
+        <image src="/image/show/datagram.png" mode="aspectFill"/> 
       </view>
     
       <view class="text-block">

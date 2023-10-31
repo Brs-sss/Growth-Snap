@@ -1,20 +1,41 @@
 <!--pages/show/text/text.wxml-->
-<view class="container_1">
-  <view class="upload_title">标题</view>
-  <input class="input" bindinput="handleInput" placeholder="请输入" />
-  <view class="result">{{inputText}}</view>
+
+
+<view class="whole-page-grid-text">
+<view class="container_1 overall-outfit">
+  <view id="title-box1">
+    <view class="upload_title">标题</view>
+  </view>
+  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 24rpx; position: absolute; height: 70rpx; top: 100rpx" class="input" bindinput="handleInputTitle" placeholder="请输入" />
 </view>
 
-<view class="container_3">
+<view class="container_3 overall-outfit">
   <view class="upload_title">内容</view>
-  <textarea class="input_text" bindinput="handleInput" placeholder="请输入"/>
-  <view class="result">{{inputText}}</view>
+  <textarea class="input_text" bindinput="handleInputText" placeholder="请输入"/>
+  <!-- <view class="result">{{inputText}}</view> -->
 </view>
 
-<view class="container_4">
+
+<view class="container_4 overall-outfit">
   <view class="upload_title">选择tag</view>
+  <view class="container_tag">
+    <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
+      <text class="tag-text">{{item.info}}</text>
+    </view>
+    <view class="add-tag" bindtap="showInput">
+      <text class="add-icon">+</text>
+      <text class="add-text">tag</text>
+    </view>
+    <input wx:if="{{showInput}}" type="text" class="tag-input" bindblur="addTag" placeholder="请输入标签" />
+    <!-- <text class="tag-text">{{selectedTags}}</text> -->
+  </view>
 </view>
 
-<view class="container_5">
+<view class="container_5 overall-outfit">
+
+<view id="button-box">
   <button class="submit" bindtap="handleSubmit">提交</button>
+</view>
+</view>
+
 </view>
