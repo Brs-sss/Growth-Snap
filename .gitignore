@@ -12,3 +12,4 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+frontend/project.config.json
