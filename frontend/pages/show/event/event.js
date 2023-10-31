@@ -24,7 +24,8 @@ Page({
     inputText: '', // 输入框的值
     inputTag:'',
     isEditing: false, // 是否处于编辑模式
-    imgGridStyle:getImageGridStyle(1)
+    imgGridStyle:getImageGridStyle(1),
+    host_: 'http://127.0.0.1:8090/'
   },
 
   handleInputTitle(e) {  //输入标题的处理
@@ -40,8 +41,55 @@ Page({
   },
 
   handleSubmit() {
-    console.log('提交的文本：', this.data.inputTitle);
+    //console.log('提交的文本：', this.data.inputTitle);
     // 进行其他处理或操作
+    var that = this
+    const currentDateAndTime = new Date();
+    // 创建一个 Date 对象来表示当前日期
+    // 获取年、月、日
+    var year = currentDateAndTime.getFullYear();
+    var month = (currentDateAndTime.getMonth() + 1).toString().padStart(2, '0'); 
+    var day = currentDateAndTime.getDate().toString().padStart(2, '0');
+
+    // 格式化日期为 "YYYY-MM-DD"
+    var formattedDate = year + '-' + month + '-' + day;
+    const currentTimeString = currentDateAndTime.toTimeString();
+    // 获取存储的openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) {
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        let openid=res.data
+        console.log('opeidd: ',openid) 
+        wx.request({
+          url: that.data.host_+'user/api/show/event/submit',
+          method: 'POST',
+          header:
+          {
+            'content-type': 'application/json'
+          },
+          data:{
+            'openid':openid,
+            'title':that.data.inputTitle,
+            'content':that.data.inputText,
+            'tags':that.data.tags,
+            'date':formattedDate,
+            'time':currentTimeString
+          },
+          success:function(res){
+            console.log('success return')
+            //console.log()
+            wx.navigateBack(1) //成功提交，返回上个页面
+          },
+          fail:function(res){
+            console.log(that.data.host_+'user/api/show/event/submit')
+          }
+        })
+      },
+      fail: function (res) {
+        console.log('获取数据失败');
+      }
+    });
   },
 
   chooseImage:function(e){
@@ -196,7 +244,6 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
   },
 
   /**

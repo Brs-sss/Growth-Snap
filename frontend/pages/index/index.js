@@ -74,6 +74,18 @@ Page({
                 // wx.setStorage('csrftoken', res.cookies[0])
                 // wx.setStorage('sessionid', res.cookies[1])
 
+               // 存储数据
+                wx.setStorage({
+                  key: 'openid',  // 设置数据的键名
+                  data: res.data.openid,  // 要存储的数据
+                  success: function (res) {
+                    console.log('数据存储成功');
+                  },
+                  fail: function (res) {
+                    console.log('数据存储失败');
+                  }
+                });
+
                 // 判断是否第一次登录
                 console.log(res.data.exists)
                 if (res.data.exists == 'false')
