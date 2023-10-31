@@ -42,9 +42,9 @@ class BaseRecord(models.Model):
     # event, text, data
     record_type = models.CharField(max_length=10, default='event')
     # date
-    date = models.DateField()
+    date = models.DateField(null=True)
     # time
-    time = models.TimeField()
+    time = models.TimeField(null=True)
     
     def __str__(self):
         return self.record_type 
@@ -62,7 +62,20 @@ class Event(BaseRecord):
     
     def __str__(self):
         return str(self.user)+" "+self.record_type+" "+self.title+" "+self.content+" "+self.tags+" "+str(self.date)+" "+str(self.time)
+
     
+class Plan(BaseRecord):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.record_type ='plan'
+
+    title = models.CharField(max_length=128)
+
+
+
+
+class Todo(models.Model):
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     
     
 

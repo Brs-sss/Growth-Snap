@@ -4,8 +4,10 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
-from .models import User, Family, Event
+from .models import User, Family, Event, Plan
 from .utils import ListToString,StringToList
+import random
+import string
 import hashlib
 import os
 
@@ -49,6 +51,22 @@ def login(request):
                 'exists': 'false'
             })
         
+def registerFamily(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+
+        # 随机生成6位数字+字母的familyId
+        familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+        Family.objects.create(familyId=familyId)
+        print(familyId)
+        return JsonResponse({
+            'familyId': familyId
+        })
+
+
+
+
 # todo: 家庭口令的设置和验证
 def register(request):
     if request.method == 'POST':
@@ -63,7 +81,9 @@ def register(request):
         print(familyId)
         # 检查这个fammily是否已经存在
         if not Family.objects.filter(familyId=familyId).exists():
-            Family.objects.create(familyId=familyId)
+            return JsonResponse({
+                'msg': 'familyId does not exist'
+            }, status=400)
         family = Family.objects.get(familyId=familyId)
 
         # 检查这个用户是否已经存在
@@ -140,7 +160,7 @@ def addEventImage(request):
             return JsonResponse({'message': '文件不存在'})
     else:
         return JsonResponse({'message': '请使用POST方法'})
-    
+
 #加载主页 只返回必要的信息
 def loadShowPage(request):
     if request.method == 'GET':
@@ -170,3 +190,17 @@ def loadShowPage(request):
         
         
             
+
+def addPlan(request):
+    if request.method == 'POST':
+        print('enter add plan')
+        data = json.loads(request.body)
+        openid=data.get('openid')
+        now_user=User.objects.get(openid=openid)
+        title = data.get('title')
+        # date = data.get('date')
+        # time = (data.get('time'))[:8]
+        print(openid,title)
+        new_plan=Plan.objects.create(user=now_user,title=title)
+        return JsonResponse({'message': 'Data submitted successfully'})
+
