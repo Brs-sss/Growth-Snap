@@ -12,3 +12,7 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+frontend/project.config.json
+frontend/project.config.json
+backend/db.sqlite3
+frontend/project.config.json
