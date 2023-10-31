@@ -33,7 +33,8 @@ Page({
     visibility_cancel: 'none',
     visibility_input: 'block',
     visibility_create: 'block',
-    visibility_text: 'none'
+    visibility_text: 'none',
+    firsttime_selected_img:true
   },
 
   handleInputUsername(e) {  //输入用户名的处理
@@ -133,13 +134,9 @@ Page({
         this.setData({
           imageList: imageList.slice(0, 9),
           imgGridStyle:getImageGridStyle(num_rows),
+          firsttime_selected_img:false,
           // profilePath: res.tempFilePath[0]
         });
-        // var query = wx.createSelectorQuery().select('#image-grid-container').boundingClientRect(function (gridContainer) { 
-        //     gridContainer.gridTemplateRows = `repeat(${num_rows}, 1fr)`;
-        //     let grid_height=30*num_rows;
-        //     gridContainer.height=`${grid_height}vw`;
-        //   }).exec();
       },
       fail: (res)=>{
         console.log(1)
