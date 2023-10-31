@@ -27,6 +27,12 @@
     <text-card day="30" month="5月" author="大壮" title="今天小明在学校犯贱，被大壮教训了" body="希望他长记性"></text-card>
     <data-card day="29" month="10月" author="Cici" title="身高&体重记录" body="身高：122cm 体重：50kg"></data-card>
     <event-card day="29" month="12月" author="爷爷" title="I like it" body="hahhh" imgSrc="/image/temp/star.jpeg"></event-card>
+    <!-- 卡片根据类型event or text or data 三选一 -->
+    <view wx:for="{{blog_cards_list}}" wx:key="index" >
+        <event-card wx:if="{{item.type=='event'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}" imgSrc="{{item.imgSrc}}"></event-card>
+        <text-card wx:elif="{{item.type=='text'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}"></text-card>
+        <data-card wx:elif="{{item.type=='data'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}"></data-card>
+    </view>
 
   </view>
   
