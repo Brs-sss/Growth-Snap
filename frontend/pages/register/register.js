@@ -49,14 +49,37 @@ Page({
     });
   },
   create_familyId(e){
-    this.setData({
-      is_disabled: true,
-      familyId_text: '111111',
-      visibility_cancel: 'block',
-      visibility_create: 'none',
-      visibility_input: 'none',
-      visibility_text: 'flex'
-    });
+   var that = this
+    wx.request({
+      url: this.data.host_+'user/api/register_family',
+      method: 'POST',
+      data: 
+      {
+        'openid': this.data.openid,
+      },
+      header:
+      {
+        'content-type': 'application/json'
+      },
+      success: function(res)
+      {
+        console.log(res.data)
+        if (res.statusCode==200)
+        {
+          that.setData({
+            is_disabled: true,
+            familyId_text: res.data.familyId,
+            inputFamilyId: res.data.familyId,
+            visibility_cancel: 'block',
+            visibility_create: 'none',
+            visibility_input: 'none',
+            visibility_text: 'flex'
+          });
+        }
+      }
+
+    })
+    
   },
   handleInputLabel(e) {  //输入家庭角色的处理
     this.setData({
@@ -79,7 +102,10 @@ Page({
     console.log('提交的文本：', this.data.inputLabel);
     console.log('提交的文本：', this.data.imageList[0]);
     console.log('提交的文本：', this.data.openid);
-
+    if (this.data.inputFamilyId == '')
+    {
+      this.data.inputFamilyId = this.data.familyId
+    }
     wx.request({
       url: this.data.host_+'user/api/register',
       method: 'POST',
