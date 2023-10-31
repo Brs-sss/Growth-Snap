@@ -33,6 +33,8 @@
     "minifyWXSS": true,
     "showES6CompileOption": false,
     "minifyWXML": true,
+    "ignoreDevUnusedFiles": false,
+    "ignoreUploadUnusedFiles": false,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
