@@ -8,6 +8,7 @@
     "pages/show/text/text",
     "pages/show/data/data",
     "pages/plan/plan",
+    "pages/plan/todo/todo",
     "pages/generate/generate",
     "pages/user/user",
     "pages/user/family/family",

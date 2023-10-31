@@ -5,7 +5,16 @@ Page({
    * 页面的初始数据
    */
   data: {
+    todoList: ['任务 1', '任务 2', '任务 3', '任务 4', '任务 5'],
+    planList: ['计划 1', '计划 2', '计划 3', '计划 4', '计划 5'],
+  },
 
+  goToTodoList(e) {
+    const planValue = e.currentTarget.dataset.value;
+    console.log(planValue);
+    wx.navigateTo({
+      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue),
+    })
   },
 
   /**

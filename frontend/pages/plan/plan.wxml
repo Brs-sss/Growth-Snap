@@ -1,2 +1,17 @@
 <!--pages/plan/plan.wxml-->
-<text>pages/plan/plan.wxml</text>
+<view class="container_todo">
+  <text class="todo-header">七天内的任务</text>
+  <view class="todo-list">
+    <block wx:for="{{todoList}}" wx:key="index">
+      <view class="todo-item">{{item}}</view>
+    </block>
+  </view>
+</view>
+<view class="container_plan">
+  <text class="plan-header">计划列表</text>
+  <view class="plan-list">
+    <block wx:for="{{planList}}" wx:key="index">
+      <view class="plan-item"  data-value='{{item}}' bindtap="goToTodoList">{{item}}</view>
+    </block>
+  </view>
+</view>

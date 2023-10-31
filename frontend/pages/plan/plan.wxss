@@ -1,1 +1,48 @@
 /* pages/plan/plan.wxss */
+
+.container_todo{
+  width: 80vh;
+  margin-bottom: 3vh;
+}
+
+.todo-header {
+  font-size: 4vh;
+  margin-bottom: 1vh;
+}
+
+.todo-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.todo-item {
+  width: 40vh;
+  padding: 2vh;
+  margin-bottom: 2vh;
+  background-color: #f2f2f2;
+  border-radius: 2vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container_plan {
+  width: 80vh;
+}
+
+.plan-header {
+  font-size: 4vh;
+  margin-bottom: 1vh;
+}
+
+.plan-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-item {
+  padding: 2vh;
+  margin-bottom: 2vh;
+  background-color: #f2f2f2;
+  border-radius: 2vh;
+}
