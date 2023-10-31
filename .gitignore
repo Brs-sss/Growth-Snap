@@ -16,3 +16,4 @@ frontend/project.config.json
 frontend/project.config.json
 backend/db.sqlite3
 frontend/project.config.json
+*.json
