@@ -1,0 +1,57 @@
+/* pages/plan/todo/todo.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10vh;
+}
+
+.list {
+  width: 90vw;
+  margin-bottom: 2vh;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1vh;
+  height: 4vh;
+  border: 0.1vh solid rgba(220, 220, 220, 0.5);
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.delete-btn {
+  margin-left: auto;
+  width: 4vh;
+  background-color: #f44336;
+  color: #fff;
+  border-radius: 1vh;
+  border: none;
+  font-size: 1.6vh;
+}
+
+.add-todo {
+  width: 90vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 2;
+  height: 4vh;
+  border: 0.1vh solid rgba(220, 220, 220, 0.5);
+  margin-top: -2vh;
+  z-index: 2;
+}
+
+.todo-input {
+  position: relative;
+  height: 4vh;
+  margin-top: -2.5vh;
+  font-size: large;
+  background-color: rgb(255, 255, 255);
+  border: 0.2vh solid rgba(220, 220, 220, 0.5);
+  z-index: 1;
+}
