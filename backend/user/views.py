@@ -6,6 +6,8 @@ import requests
 import json
 from .models import User, Family, Event
 from .utils import ListToString,StringToList
+import random
+import string
 
 # Create your views here.
 
@@ -46,6 +48,21 @@ def login(request):
                 'exists': 'false'
             })
         
+def registerFamily(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+
+        # 随机生成6位数字+字母的familyId
+        familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+        print(familyId)
+        return JsonResponse({
+            'familyId': familyId
+        })
+
+
+
+
 # todo: 家庭口令的设置和验证
 def register(request):
     if request.method == 'POST':
