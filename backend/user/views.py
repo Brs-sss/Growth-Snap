@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
-from .models import User, Family, Event
+from .models import User, Family, Event, Plan
 from .utils import ListToString,StringToList
 import random
 import string
@@ -160,4 +160,17 @@ def addEventImage(request):
             return JsonResponse({'message': '文件不存在'})
     else:
         return JsonResponse({'message': '请使用POST方法'})
-            
+
+
+def addPlan(request):
+    if request.method == 'POST':
+        print('enter add plan')
+        data = json.loads(request.body)
+        openid=data.get('openid')
+        now_user=User.objects.get(openid=openid)
+        title = data.get('title')
+        # date = data.get('date')
+        # time = (data.get('time'))[:8]
+        print(openid,title)
+        new_plan=Plan.objects.create(user=now_user,title=title)
+        return JsonResponse({'message': 'Data submitted successfully'})
