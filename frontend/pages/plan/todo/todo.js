@@ -1,19 +1,17 @@
-// pages/plan/plan.js
+// pages/plan/todo/todo.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    todoList: ['任务 1', '任务 2', '任务 3', '任务 4', '任务 5', '任务 6',  '任务 7' ],
-    planList: ['英语能力提升', '钢琴计划', '计划 3', '计划 4', '计划 5'],
+    planValue: '',
+    todos: [],
+    newTodo: ''
   },
-
-  goToTodoList(e) {
-    const planValue = e.currentTarget.dataset.value;
-    console.log(planValue);
-    wx.navigateTo({
-      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue),
+  inputChange(e) {
+    this.setData({
+      newTodo: e.detail.value
     })
   },
   showInput: function() {
@@ -21,7 +19,7 @@ Page({
       showInput: true
     });
   },
-  addPlan(e) {
+  addTodo(e) {
     const value = e.detail.value;
     console.log(value)
     if (!value) {
@@ -31,11 +29,30 @@ Page({
       })
       return
     }
-    let planList = this.data.planList.slice()
-    planList.push(value)
+    let todos = this.data.todos.slice()
+    todos.push({
+      title: value,
+      completed: false
+    })
     this.setData({
-      planList: planList,
+      todos: todos,
       showInput: false
+    })
+  },
+  toggleComplete(e) {
+    const index = e.currentTarget.dataset.index
+    let todos = this.data.todos.slice()
+    todos[index].completed = !todos[index].completed
+    this.setData({
+      todos: todos
+    })
+  },
+  deleteTodo: function (e) {
+    const index = e.currentTarget.dataset.index
+    let todos = this.data.todos.slice()
+    todos.splice(index, 1)
+    this.setData({
+      todos: todos
     })
   },
 
@@ -43,7 +60,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    const planValue = decodeURIComponent(options.plan);
+    console.log('Received plan value:', planValue);
+    this.setData({
+      planValue: planValue
+    });
   },
 
   /**

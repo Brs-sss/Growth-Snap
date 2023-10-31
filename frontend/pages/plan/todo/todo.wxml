@@ -1,0 +1,21 @@
+<!--pages/plan/todo/todo.wxml-->
+<view class='container'>
+  <text class="plan-header">{{planValue}}</text>
+  <view class="list">
+    <block wx:for="{{todos}}" wx:for-index="index" wx:key="index">
+      <view class="item">
+        <checkbox value="{{item.completed}}" bindchange="toggleComplete" data-index="index"></checkbox>
+        <text class="{{item.completed ? 'completed' : ''}}">{{item.title}}</text>
+        <view class="delete-btn" bindtap="deleteTodo" data-index="{{index}}">
+          <image src="/image/plan/trash.png" style="height: 3vh; width: 3vh;opacity: 0.3;"/>
+        </view>
+      </view>
+    </block>
+  </view>
+  <view class="container_add">
+    <view class="add-todo" bindtap="showInput">
+      <text class="add-text">+待办</text>
+    </view>
+    <input wx:if="{{showInput}}" type="text" class="todo-input" bindblur="addTodo" placeholder="请添加待办"/>
+  </view>
+</view>
