@@ -58,6 +58,7 @@ def registerFamily(request):
 
         # 随机生成6位数字+字母的familyId
         familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+        Family.objects.create(familyId=familyId)
         print(familyId)
         return JsonResponse({
             'familyId': familyId
