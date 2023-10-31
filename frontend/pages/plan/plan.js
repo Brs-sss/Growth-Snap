@@ -7,6 +7,7 @@ Page({
   data: {
     todoList: ['任务 1', '任务 2', '任务 3', '任务 4', '任务 5', '任务 6',  '任务 7' ],
     planList: ['英语能力提升', '钢琴计划', '计划 3', '计划 4', '计划 5'],
+    host_: 'http://127.0.0.1:8090/'
   },
 
   goToTodoList(e) {
@@ -22,14 +23,41 @@ Page({
     });
   },
   addPlan(e) {
+    var that = this
     const value = e.detail.value;
     console.log(value)
-    if (!value) {
+    if (value) {
       console.log("here");
       this.setData({
-        showInput: false
+        showInput: false,
       })
-      return
+      wx.getStorage({
+        key: 'openid',
+        success: function(res)
+        {
+          let openid=res.data
+          console.log('get openid', openid)
+          wx.request({
+            url: that.data.host_+'user/api/plan/add_plan',
+            method: 'POST',
+              header:
+              {
+                'content-type': 'application/json'
+              },
+              data:{
+                'openid':openid,
+                'title':value,
+              },
+              success: function(res)
+              {
+                console.log("add plan")
+              },
+              fail: function(res){
+                console.log(res)
+              }
+          })
+        }
+      });
     }
     let planList = this.data.planList.slice()
     planList.push(value)
