@@ -16,6 +16,28 @@ Page({
       url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue),
     })
   },
+  showInput: function() {
+    this.setData({
+      showInput: true
+    });
+  },
+  addPlan(e) {
+    const value = e.detail.value;
+    console.log(value)
+    if (!value) {
+      console.log("here");
+      this.setData({
+        showInput: false
+      })
+      return
+    }
+    let planList = this.data.planList.slice()
+    planList.push(value)
+    this.setData({
+      planList: planList,
+      showInput: false
+    })
+  },
 
   /**
    * 生命周期函数--监听页面加载
