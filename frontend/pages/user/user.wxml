@@ -3,16 +3,16 @@
   <view class="view_1">
     <view class="white-box">
       <view class="view_image_text">
-        <image class="user_profile" src="/image/user/profile/mom.png" />
-        <text class="user_name">小明妈</text>
-        <text class="user_tag">妈妈</text>
+        <image class="user_profile" src="{{user_profile}}" />
+        <text class="user_name">{{username}}</text>
+        <text class="user_tag">{{user_label}}</text>
       </view>
       <view class="user_info">
-        <text class="info_data" id="data_1">10</text>
+        <text class="info_data" id="data_1">{{event_number}}</text>
         <text class="info_type">事件</text>
       </view>
       <view class="user_info">
-        <text class="info_data" id="data_plan">20</text>
+        <text class="info_data" id="data_plan">{{plan_number}}</text>
         <text class="info_type">计划</text>
       </view>
       <view class="user_info">

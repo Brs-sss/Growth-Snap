@@ -97,6 +97,7 @@ Page({
     })
   },
   handleSubmit() {
+    var that = this
     console.log('提交的文本：', this.data.inputUsername);
     console.log('提交的文本：', this.data.inputFamilyId);
     console.log('提交的文本：', this.data.inputLabel);
@@ -135,9 +136,24 @@ Page({
         }
         if (res.data.msg=='register success')
         {
+          wx.uploadFile({
+            url: that.data.host_+'user/api/register_profile_image', // 服务器地址
+            filePath: that.data.imageList[0], // 用户选择的图片文件路径
+            name: 'image', // 服务器接收文件的字段名
+            formData: {     // 可以传递其他表单数据
+              
+              'openid':  that.data.openid,  //用户的openid
+            },
+            success(res) {
+              console.log('上传成功', res.data);
+            },
+            fail(res) {
+              console.error('上传失败', res);
+            }
+          });
           console.log('register complete')
           wx.showToast({
-            title: "登录成功",
+            title: "注册成功",
             icon: 'success',
             duration: 2000,
             success: function () {

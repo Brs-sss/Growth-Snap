@@ -142,6 +142,25 @@ def submitEvent(request):
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
 
+def registerProfileImage(request):
+    if request.method == 'POST':
+        profile_image = request.FILES.get('image') 
+        openid=request.POST.get('openid')
+        image_path = './static/ImageBase/' + f'{openid}' + '/'
+        if not os.path.exists(image_path):
+            os.mkdir(image_path)
+        # 删除原有的图片
+        image_list = os.listdir(image_path)
+        for image in image_list:
+            os.remove(image_path + image)
+        if profile_image:
+            with open(image_path+f'{profile_image.name}', 'wb') as destination:
+                for chunk in profile_image.chunks():
+                    destination.write(chunk)
+        return JsonResponse({'message': 'profile image submitted successfully'})
+    else:
+        return JsonResponse({'message': 'please use POST'})
+
 def addEventImage(request):
     if request.method == 'POST':
         uploaded_image = request.FILES.get('image') 
@@ -188,7 +207,17 @@ def loadShowPage(request):
         return JsonResponse({'blocks_list': blocks_list})
         
         
-        
+def getUserInfo(request):
+    if request.method == 'GET':
+        openid=request.GET.get('openid')
+        now_user=User.objects.get(openid=openid)
+        image_path='static/ImageBase/'+openid
+        image_list = os.listdir(image_path)
+        profile_image='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
+        event_number=len(Event.objects.filter(user=now_user))
+        plan_number=len(Plan.objects.filter(user=now_user))
+
+        return JsonResponse({'username':now_user.username,'label':now_user.label,'profile_image':profile_image,'event_number':event_number,'plan_number':plan_number})  
             
 
 def addPlan(request):
