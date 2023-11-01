@@ -1,11 +1,51 @@
 // pages/user/user.js
+
+// const { noneParamsEaseFuncs } = require("XrFrame/xrFrameSystem")
+
+/* 与后端联系，获取user页的内容*/
+function LoadUserPage(that){
+  // 获取存储的openid
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/user/get_user_info'+'?openid='+openid,
+        method:'GET',
+        success:function(res){
+            that.setData({
+              user_profile:res.data.profile_image,
+              user_label: res.data.label,
+              username: res.data.username,
+              event_number: res.data.event_number,
+              plan_number:res.data.plan_number
+            })
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      
+      })
+    },
+    fail:function(res){
+      console.log('get openid failed: ',res)
+    }
+   })
+}
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    user_profile: '',
+    host_: 'http://127.0.0.1:8090/',
+    username: '',
+    user_label: '',
+    event_number: 0,
+    plan_number: 0
   },
   goToPage_family() {
     // TODO: 跳转到对应页面的处理逻辑
@@ -24,7 +64,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    var that = this
+    LoadUserPage(that)
   },
 
   /**
@@ -38,6 +79,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    var that = this
+    LoadUserPage(that)
 
   },
 
