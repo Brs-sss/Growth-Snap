@@ -10,6 +10,7 @@ import random
 import string
 import hashlib
 import os
+import datetime
 
 
 # Create your views here.
@@ -206,7 +207,40 @@ def loadShowPage(request):
         print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
         
-        
+
+def loadPlanPage(request):
+    if request.method == 'GET':
+        openid=request.GET.get('openid')
+        now_user=User.objects.get(openid=openid)
+        # 先获得最近7天的具体Todo，按照deadline排序
+        week_todos=Plan.objects.filter(user=now_user).order_by("deadline")
+        week_todos_expired_list=[]
+        week_todos_not_expired_list=[]
+        for todo in week_todos:
+            todo_item={}
+            todo_item['content']=todo.content
+            todo_item['deadline']=todo.deadline
+            if todo_item['deadline']<datetime.date.today():
+                print(f"expired {todo_item['content']} {todo_item['deadline']} today: {datetime.date.today()}")
+                week_todos_expired_list.append(todo_item)
+            else:
+                print(f"not expired {todo_item['content']} {todo_item['deadline']} today: {datetime.date.today()}")
+                week_todos_not_expired_list.append(todo_item)
+        now_user_plans=Plan.objects.filter(user=now_user)
+        plans_list=[]
+        for db_block in now_user_plans:
+            block_item={}
+            block_item['title']=db_block.title
+            plans_list.append(block_item)
+        print(plans_list)
+        return JsonResponse({
+            'week_todos_expired_list': week_todos_expired_list,
+            'week_todos_not_expired_list': week_todos_not_expired_list,
+            'plans_list': plans_list
+            
+        })
+
+
 def getUserInfo(request):
     if request.method == 'GET':
         openid=request.GET.get('openid')
