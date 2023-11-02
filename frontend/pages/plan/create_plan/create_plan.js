@@ -120,6 +120,13 @@ Page({
       method: 'GET',
       success:function(res){
         console.log(res.data)
+        let children_list = res.data.children_list
+        console.log(children_list.length)
+        for(let i = 0; i < children_list.length; i++)
+        {
+          let name = children_list[i].name
+          kidList.push({'info': name, 'checked': false})
+        }
         // that.setData({
         //   user_profile:res.data.profile_image,
         //   user_label: res.data.label,
