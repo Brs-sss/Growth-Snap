@@ -16,7 +16,7 @@ class Family(models.Model):
 class Child(models.Model):
     name = models.CharField(max_length=20)
     # birthday
-    birthday = models.DateField()
+    birthday = models.DateField(null=True)
     # family
     family = models.ForeignKey(Family, on_delete=models.CASCADE)
     def __str__(self):
