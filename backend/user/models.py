@@ -16,7 +16,7 @@ class Family(models.Model):
 class Child(models.Model):
     name = models.CharField(max_length=20)
     # birthday
-    birthday = models.DateField(null=True)
+    # birthday = models.DateField(null=True)
     # family
     family = models.ForeignKey(Family, on_delete=models.CASCADE)
     def __str__(self):
@@ -70,6 +70,8 @@ class Plan(BaseRecord):
         self.record_type ='plan'
 
     title = models.CharField(null=True, max_length=128)
+    children = models.ManyToManyField(Child)
+    tags = models.CharField(null=True, max_length=128)
 
 
 

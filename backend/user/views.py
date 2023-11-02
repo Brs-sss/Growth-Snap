@@ -263,8 +263,17 @@ def addPlan(request):
         title = data.get('title')
         # date = data.get('date')
         # time = (data.get('time'))[:8]
+        child = data.get('child') #现在的child是这样的：['bbbbb', 'bb']
+        tags = data.get('tags') #现在的tags是这样的：['2222']
+        print(f'child {child}')
+        print(f'tags {tags}')
         print(openid,title)
-        new_plan=Plan.objects.create(user=now_user,title=title)
+        new_plan=Plan.objects.create(user=now_user,title=title, tags=tags)
+        # 可能有多个孩子，所以把孩子们都加进去
+        for child_name in child:
+            print(f'child_name {child_name}')
+            child=Child.objects.get(name=child_name)
+            new_plan.children.add(child)
         return JsonResponse({'message': 'Data submitted successfully'})
 
 def getChildrenInfo(request):
@@ -277,7 +286,7 @@ def getChildrenInfo(request):
         for child in children:
             child_item = {}
             child_item['name'] = child.name
-            child_item['birthday'] = child.birthday
+            # child_item['birthday'] = child.birthday
             children_list.append(child_item)
         return JsonResponse({'children_list': children_list})
     
@@ -287,7 +296,7 @@ def addChild(request):
         openid=data.get('openid')
         now_user=User.objects.get(openid=openid)
         name = data.get('name')
-        birthday = data.get('birthday')
-        print(openid,name,birthday)
+        # birthday = data.get('birthday')
+        # print(openid,name,birthday)
         new_child=Child.objects.create(family=now_user.family,name=name)
         return JsonResponse({'message': 'Data submitted successfully'})
