@@ -280,3 +280,14 @@ def getChildrenInfo(request):
             child_item['birthday'] = child.birthday
             children_list.append(child_item)
         return JsonResponse({'children_list': children_list})
+    
+def addChild(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid=data.get('openid')
+        now_user=User.objects.get(openid=openid)
+        name = data.get('name')
+        birthday = data.get('birthday')
+        print(openid,name,birthday)
+        new_child=Child.objects.create(family=now_user.family,name=name)
+        return JsonResponse({'message': 'Data submitted successfully'})
