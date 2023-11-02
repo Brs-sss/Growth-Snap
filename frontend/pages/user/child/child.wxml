@@ -1,2 +1,16 @@
 <!--pages/user/child/child.wxml-->
-<text>pages/user/child/child.wxml</text>
+<!--pages/user/family/family.wxml-->
+
+<view class="kid-list">
+  <block wx:for="{{kidList}}" wx:key="index">
+    <view class="view_image_text">
+      <image class="user_profile" src="{{item.profile}}" />
+      <text class="user_name">{{item.name}}</text>
+      <text class="user_info">年龄：{{item.age}}岁，身高：{{item.height}}cm，体重：{{item.weight}}kg</text>
+    </view>
+  </block>
+</view>
+
+<button class="add" bindtap="goToPage_addchild">添加孩子</button>
+
+

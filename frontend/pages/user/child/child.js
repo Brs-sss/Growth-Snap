@@ -5,7 +5,29 @@ Page({
    * 页面的初始数据
    */
   data: {
+    kidList: [
+      {
+        profile: "/image/user/profile/xiaoming.png",
+        name: "小明",
+        age: "7",
+        height: "145",
+        weight: "45"
+      },
+      {
+        profile: "/image/user/profile/meimei.png",
+        name: "妹妹",
+        age: "5",
+        height: "132",
+        weight: "33"
+      },
+      // 其他家庭成员...
+    ]
+  },
 
+  goToPage_addchild(){
+    wx.navigateTo({
+      url: '/pages/user/child/addchild/addchild',
+    })
   },
 
   /**
