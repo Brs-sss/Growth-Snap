@@ -272,7 +272,7 @@ def addPlan(request):
         # 可能有多个孩子，所以把孩子们都加进去
         for child_name in child:
             print(f'child_name {child_name}')
-            child=Child.objects.get(name=child_name)
+            child=Child.objects.filter(name=child_name)[0]
             new_plan.children.add(child)
         return JsonResponse({'message': 'Data submitted successfully'})
 
@@ -340,3 +340,28 @@ def addChildImage(request):
         return JsonResponse({'message': 'child profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
+    
+
+# todo: signature 替换成数据, 更新credit的计算方法
+def getFamilyInfo(request):
+    if request.method == 'GET':
+        openid=request.GET.get('openid')
+        now_user=User.objects.get(openid=openid)
+        family=now_user.family
+        users = User.objects.filter(family=family)
+        family_list=[]
+        for user in users:
+            print(user.username, user.label)
+            user_item = {}
+            user_item['name'] = user.username
+            user_item['label'] = user.label
+            event_number=len(Event.objects.filter(user=user))
+            plan_number=len(Plan.objects.filter(user=user))
+            credit = event_number * 15 + plan_number * 10
+            user_item['signature'] = f'{user.label}的积分是{credit}分。'
+            image_path='static/ImageBase/'+user.openid
+            image_list = os.listdir(image_path)
+            user_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
+            family_list.append(user_item)
+        return JsonResponse({'family_list': family_list})
+        
