@@ -284,9 +284,18 @@ def getChildrenInfo(request):
         children_list=[]
         children = Child.objects.filter(family=family)
         for child in children:
+            print("test")
+            print(child.name, child.child_id)
             child_item = {}
             child_item['name'] = child.name
             # child_item['birthday'] = child.birthday
+            # todo: 添加孩子的真实信息
+            child_item['age'] = '5'
+            child_item['height'] = '144'
+            child_item['weight'] = '30'
+            image_path='static/ImageBase/'+openid+'+'+child.child_id
+            image_list = os.listdir(image_path)
+            child_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
             children_list.append(child_item)
         return JsonResponse({'children_list': children_list})
     
@@ -298,5 +307,36 @@ def addChild(request):
         name = data.get('name')
         # birthday = data.get('birthday')
         # print(openid,name,birthday)
-        new_child=Child.objects.create(family=now_user.family,name=name)
-        return JsonResponse({'message': 'Data submitted successfully'})
+        sha256 = hashlib.sha256()
+        sha256.update(name.encode('utf-8'))
+        sha256_hash = sha256.hexdigest()
+        print(f'sha256_hash {sha256_hash}')
+        new_child=Child.objects.create(family=now_user.family,name=name, child_id=str(sha256_hash))
+        # print(str(sha256_hash))
+        return JsonResponse({
+            'message': 'Data submitted successfully',
+            'child_id': sha256_hash
+        })
+    
+def addChildImage(request):
+    if request.method == 'POST':
+        print('enter')
+        uploaded_image = request.FILES.get('image') 
+        openid=request.POST.get('openid')
+        child_id=request.POST.get('child_id')
+        print(child_id)
+        image_path = './static/ImageBase/' + f'{openid}+{child_id}' + '/'
+        print(image_path)
+        if not os.path.exists(image_path):
+            os.mkdir(image_path)
+        # 删除原有的图片
+        image_list = os.listdir(image_path)
+        for image in image_list:
+            os.remove(image_path + image)
+        if uploaded_image:
+            with open(image_path+f'{uploaded_image.name}', 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+        return JsonResponse({'message': 'child profile image submitted successfully'})
+    else:
+        return JsonResponse({'message': 'please use POST'})

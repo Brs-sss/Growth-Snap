@@ -15,6 +15,7 @@ class Family(models.Model):
 # Child class
 class Child(models.Model):
     name = models.CharField(max_length=20)
+    child_id = models.CharField(max_length=65, default='')
     # birthday
     # birthday = models.DateField(null=True)
     # family

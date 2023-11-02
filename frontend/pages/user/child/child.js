@@ -1,4 +1,36 @@
 // pages/user/child/child.js
+
+
+/* 与后端联系，获取主页的内容*/
+function LoadChildPage(that){
+  // 获取存储的openid
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+        method:'GET',
+        success:function(res){
+            that.setData({
+              blog_cards_list:res.data.children_list
+            })
+            console.log(that.data.blog_cards_list)
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      
+      })
+    },
+    fail:function(res){
+      console.log('get openid failed: ',res)
+    }
+   })
+}
+
+
 Page({
 
   /**
@@ -21,7 +53,9 @@ Page({
         weight: "33"
       },
       // 其他家庭成员...
-    ]
+    ],
+    blog_cards_list:[],  //所有卡片BlogCard的list
+    host_: 'http://127.0.0.1:8090/'
   },
 
   goToPage_addchild(){
@@ -34,7 +68,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    var that = this
+    LoadChildPage(that)
   },
 
   /**
@@ -48,7 +83,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    var that = this
+    LoadChildPage(that)
   },
 
   /**

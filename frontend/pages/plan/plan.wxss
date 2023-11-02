@@ -8,7 +8,7 @@
 }
 
 .todo-header {
-  font-size: 4vh;
+  font-size: 3vh;
 }
 
 .scroll-view {
@@ -46,7 +46,7 @@
 }
 
 .plan-header {
-  font-size: 4vh;
+  font-size: 3vh;
 }
 
 .plan-list {
