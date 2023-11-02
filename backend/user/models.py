@@ -69,14 +69,14 @@ class Plan(BaseRecord):
         super().__init__(*args, **kwargs)
         self.record_type ='plan'
 
-    title = models.CharField(max_length=128)
+    title = models.CharField(null=True, max_length=128)
 
 
 
 
 class Todo(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    content = models.CharField(max_length=128)
+    content = models.CharField(null=True, max_length=128)
     is_finished = models.BooleanField(default=False)
     # 是否过期
     is_expired = models.BooleanField(default=False)
