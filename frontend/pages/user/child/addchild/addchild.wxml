@@ -1,0 +1,29 @@
+<!--pages/user/child/addchild/addchild.wxml-->
+
+<view class="whole-page-grid">
+<view class="container_1 overall-outfit">
+  <view id="title-box1">
+    <view class="upload_title">名字</view>
+  </view>
+  <input style="width: 554rpx; right: 50rpx; position: relative; height: 50rpx;top:20rpx" class="input" bindinput="handleInputName" placeholder="请输入" />
+</view>
+
+<view class="container_2 overall-outfit">
+  <view class="upload_title" bindtap="handleUpload">上传头像 </view>
+
+      <view id="image-grid-container" style="{{imgGridStyle}}">
+          <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="changeImage" data-index="{{index}}">
+              <image src="{{item}}" mode="aspectFill" data-index="{{index}}"></image> 
+          </view>
+          <view wx:if="{{firsttime_selected_img}}" class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
+  </view>
+</view>
+
+<view class="container_5 overall-outfit">
+
+<view id="button-box">
+  <button class="submit" bindtap="handleSubmit">提交</button>
+</view>
+</view>
+
+</view>

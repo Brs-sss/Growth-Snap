@@ -1,0 +1,270 @@
+/* pages/user/child/addchild/addchild.wxss */
+.whole-page-grid{
+  display: grid;
+  grid-template-rows: 10vh 2fr 15vh 10vh 3fr;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+  "A"
+  "B"
+  "C"
+  "D"
+  "E";
+  height:100vh;
+  justify-content: stretch;
+  align-items: stretch; 
+}
+
+.overall-outfit{
+  padding: 20rpx;
+  width: 100%;
+}
+
+.container_1 {
+  grid-area: "A";
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+
+}
+
+#title-box1{
+  height: 20%;
+  /* width: 10%; */
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  position: absolute;
+  width: 250px;
+  height: 20px;
+  margin-top: -38px;
+  margin-left: 40px;
+  padding: 10rpx;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+}
+
+.result {
+  margin-top: 20rpx;
+}
+
+.container_2 {
+  grid-area: "B";
+  font-size: 14px;
+}
+.create-familyId {
+  font-size: 14px;
+  color: blue;
+  text-decoration: underline;
+  float: left;
+}
+.cancel {
+  font-size: 14px;
+  color: blue;
+  text-decoration: underline;
+  display: block;
+  float: right;
+  margin-right: 30px;
+  /* display: block; */
+}
+.upload_title {
+  width: 8h;
+  height: 5vh;
+  border-radius: 100px;
+  color: #333;
+  position: relative;
+}
+
+.upload_icon{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+
+.image-list {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+
+/* #image-grid-container{
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  height:30vw;
+  border: 1px solid #000;
+}  */
+
+.image-grid-item{
+  /* border: 1px solid #000; */
+  border: 1px solid rgba(0, 0, 0, 0);
+  position: relative;
+  width: 25vw;
+  height:25vw; /*设置高度宽度相等*/
+}
+
+.image-grid-item image{
+  display: inline;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
+
+.add-image-butn{
+  background-color: #eee;
+  font-size: 3em;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+
+
+.image_delete{
+  position: absolute;
+  top: 0; /* 调整顶部位置 */
+  left: 0; /* 调整左侧位置 */
+  width: 5vw;
+  height: 5vw;
+}
+
+.image_delete image{
+  width: 100%;
+  height: 100%;
+}
+
+.image_delete_icon{
+  width: 10px;
+  height: 5px;
+}
+
+.container_3 {
+  grid-area: "C";
+  font-size: 14px;
+  
+}
+.family{
+  display: flex;
+  align-items: center;
+}
+
+.input_text {
+  width: 80vw;
+  height: 20vh;
+  padding: 10rpx;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+  font-size: 14px;
+}
+
+
+.container_4 {
+  grid-area: "D";
+  font-size: 14px;
+}
+
+.container_tag{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 8px; /* 标签之间的间距 */
+}
+
+.tag {
+  height: 15px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #4095E5;
+  cursor: pointer;
+}
+
+.tag.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tag .tag-text {
+  /* margin-bottom: 3px; */
+  font-size: 14px;
+}
+
+.checkbox-container {
+  margin-left: 4px;
+}
+
+.add-tag {
+  display: flex;
+  height: 15px;
+  align-items: center;
+  padding: 4px 8px;
+  margin-right: 8px;
+  border-radius: 4px;
+  border: 1rpx solid #007bff65;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #007bff65;
+  cursor: pointer;
+}
+
+.add-tag .add-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.add-tag .add-text {
+  font-size: 14px;
+}
+
+.tag-input {
+  margin-left: -70px;
+  font-size: 12px;
+  width: 70px;
+  border-radius: 4px;
+  border: 1px solid #007bff65;
+  color: #007bff65;
+  background-color: #fff;
+  padding-left: 6px;
+}
+
+.container_5 {
+  grid-area: "E";
+  width: 100%;
+  justify-self: center;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 垂直底部对齐 */
+  align-items: center; /* 水平居中 */
+}
+
+#button-box{
+    width: 50vw;
+    height: 10vh;
+}
+
+.submit{
+
+  position: relative;
+  left: 0px;
+  bottom: 15px;
+  /* margin-left: 100px; */
+  margin-top: 30px;
+
+  width: 100%;
+  height: 80rpx;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+}
