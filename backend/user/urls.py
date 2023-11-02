@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/register_profile_image',views.registerProfileImage,name='register_profile_image'),
     path('api/user/get_user_info',views.getUserInfo,name='get_user_info'),
     path('api/plan/all',views.loadPlanPage,name='load_planpage'),
+    path('api/user/children_info',views.getChildrenInfo,name='get_children_info'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

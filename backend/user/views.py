@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
-from .models import User, Family, Event, Plan
+from .models import User, Family, Event, Plan, Child
 from .utils import ListToString,StringToList
 import random
 import string
@@ -267,3 +267,16 @@ def addPlan(request):
         new_plan=Plan.objects.create(user=now_user,title=title)
         return JsonResponse({'message': 'Data submitted successfully'})
 
+def getChildrenInfo(request):
+    if request.method == 'GET':
+        openid=request.GET.get('openid')
+        now_user=User.objects.get(openid=openid)
+        family=now_user.family
+        children_list=[]
+        children = Child.objects.filter(family=family)
+        for child in children:
+            child_item = {}
+            child_item['name'] = child.name
+            child_item['birthday'] = child.birthday
+            children_list.append(child_item)
+        return JsonResponse({'children_list': children_list})
