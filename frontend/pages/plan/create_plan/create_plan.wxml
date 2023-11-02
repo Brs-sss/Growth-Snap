@@ -1,0 +1,43 @@
+<!--pages/plan/create_plan/create_plan.wxml-->
+<!--pages/show/event/event.wxml-->
+
+<view class="whole-page-grid">
+<view class="container_1 overall-outfit">
+  <view id="title-box1">
+    <view class="upload_title">计划名称</view>
+  </view>
+  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 45rpx; position: absolute; height: 70rpx; top: 95rpx" class="input" bindinput="handleInputTitle" placeholder="请输入" />
+</view>
+
+
+<view class="container_2 overall-outfit">
+  <view class="upload_title">选择孩子</view>
+  <view class="container_tag">
+    <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleKid">
+      <text class="tag-text">{{item.info}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="container_3 overall-outfit">
+  <view class="upload_title">选择tag</view>
+  <view class="container_tag">
+    <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
+      <text class="tag-text">{{item.info}}</text>
+    </view>
+    <view class="add-tag" bindtap="showInput">
+      <text class="add-icon">+</text>
+      <text class="add-text">tag</text>
+    </view>
+    <input wx:if="{{showInput}}" type="text" class="tag-input" bindblur="addTag" placeholder="请输入标签" />
+    <!-- <text class="tag-text">{{selectedTags}}</text> -->
+  </view>
+</view>
+
+<view class="container_4 overall-outfit">
+  <view id="button-box">
+    <button class="submit" bindtap="handleSubmit">提交</button>
+  </view>
+</view>
+
+</view>

@@ -22,21 +22,24 @@ Page({
     });
   },
   addPlan(e) {
-    const value = e.detail.value;
-    console.log(value)
-    if (!value) {
-      console.log("here");
-      this.setData({
-        showInput: false
-      })
-      return
-    }
-    let planList = this.data.planList.slice()
-    planList.push(value)
-    this.setData({
-      planList: planList,
-      showInput: false
+    wx.navigateTo({
+      url: '/pages/plan/create_plan/create_plan',
     })
+    // const value = e.detail.value;
+    // console.log(value)
+    // if (!value) {
+    //   console.log("here");
+    //   this.setData({
+    //     showInput: false
+    //   })
+    //   return
+    // }
+    // let planList = this.data.planList.slice()
+    // planList.push(value)
+    // this.setData({
+    //   planList: planList,
+    //   showInput: false
+    // })
   },
 
   /**
