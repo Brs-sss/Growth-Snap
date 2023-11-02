@@ -7,7 +7,8 @@ Page({
   data: {
     inputTitle: '', //标题的名称
     imageList: [],
-    kidList: [{info: "小明", checked: false},{info: "妹妹", checked: false}], // 孩子列表 加载页面时从后端获得
+    // kidList: [{info: "小明", checked: false},{info: "妹妹", checked: false}], // 孩子列表 加载页面时从后端获得
+    kidList: [],// 孩子列表 加载页面时从后端获得
     selectedKids: [], // 已选中的孩子列表
     tags: [], // 已保存的标签列表
     selectedTags: [], // 已选中的标签列表
@@ -15,7 +16,8 @@ Page({
     inputText: '', // 输入框的值
     inputTag:'',
     isEditing: false, // 是否处于编辑模式
-    host_: 'http://127.0.0.1:8090/'
+    host_: 'http://127.0.0.1:8090/',
+    openid: ''
   },
 
   toggleKid: function(e) {
@@ -103,7 +105,36 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    var that = this
+    let openid
+    // 获取存储的openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        openid=res.data
+        console.log("openid:",openid)
+        
+    wx.request({
+      url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+      method: 'GET',
+      success:function(res){
+        console.log(res.data)
+        // that.setData({
+        //   user_profile:res.data.profile_image,
+        //   user_label: res.data.label,
+        //   username: res.data.username,
+        //   event_number: res.data.event_number,
+        //   plan_number:res.data.plan_number
+        // })
+    },
+    fail:function(res){
+      console.log('load page failed: ',res)
+    }
+    })
+      }
+    })
+  
   },
 
   /**
