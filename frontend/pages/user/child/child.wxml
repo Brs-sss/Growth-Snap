@@ -1,13 +1,13 @@
 <!--pages/user/child/child.wxml-->
-<!--pages/user/family/family.wxml-->
 
 <view class="kid-list">
-  <block wx:for="{{kidList}}" wx:key="index">
-    <view class="view_image_text">
-      <image class="user_profile" src="{{item.profile}}" />
+  <block wx:for="{{blog_cards_list}}" wx:key="index">
+    <!-- <view class="view_image_text">
+      <image class="user_profile" src="{{item.imgSrc}}" />
       <text class="user_name">{{item.name}}</text>
       <text class="user_info">年龄：{{item.age}}岁，身高：{{item.height}}cm，体重：{{item.weight}}kg</text>
-    </view>
+    </view> -->
+    <child-card name="{{item.name}}" age="{{item.age}}" height="{{item.height}}" weight="{{item.weight}}" imgSrc="{{item.imgSrc}}"></child-card>
   </block>
 </view>
 

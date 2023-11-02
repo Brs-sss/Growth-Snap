@@ -39,6 +39,7 @@ Page({
 
   
   handleSubmit() {
+    var that = this
     wx.getStorage({
       key: 'openid',  // 要获取的数据的键名
       success: function (res) { 
@@ -47,23 +48,37 @@ Page({
         console.log('opeidd: ',openid) 
         wx.request({
           url: that.data.host_+'user/api/user/add_child', //url get传参数
-          method:'GET',
-          success:function(res){
-            wx.request({ //上传非图片数据
-              url: that.data.host_+'user/api/show/event/submit',
-              method: 'POST',
-              header:
+          method:'POST',
+          header:
               {
                 'content-type': 'application/json'
               },
               data:{
                 'openid': openid,
-                'name': inputName
+                'name': that.data.inputName
               },
-              fail:function(res){
-                console.log(that.data.host_+'user/api/show/event/submit')
+          success:function(res){
+            console.log('add ok');
+            console.log(res.data.child_id)
+            let child_id = res.data.child_id
+            wx.uploadFile({
+              url: that.data.host_+'user/api/user/add_child_image', // 服务器地址
+              filePath: that.data.imageList[0], // 用户选择的图片文件路径
+              name: 'image', // 服务器接收文件的字段名
+              formData: {     // 可以传递其他表单数据
+                'child_id': child_id,
+                'openid':  openid,  //用户的openid
+              },
+              success(res) {
+                console.log('上传成功', res.data);
+                wx.navigateBack(1) //成功提交，返回上个页面
+              },
+              fail(res) {
+                console.error('上传失败', res);
               }
-            })
+            });
+
+            
           },
           fail:function(res){
             console.log('failed to get sha256 value')
@@ -138,9 +153,17 @@ Page({
     // this.getDict('tags')
     console.log(options)
     let that = this
-    that.setData({
-      openid: options.openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        let openid=res.data
+        that.setData({
+          openid: openid
+        })
+      }
+      
     })
+    
   },
 
   /**
