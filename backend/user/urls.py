@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/plan/add_plan',views.addPlan,name='add_plan'),
     path('api/register_profile_image',views.registerProfileImage,name='register_profile_image'),
     path('api/user/get_user_info',views.getUserInfo,name='get_user_info'),
+    path('api/plan/all',views.loadPlanPage,name='load_planpage'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

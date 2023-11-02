@@ -76,6 +76,11 @@ class Plan(BaseRecord):
 
 class Todo(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    
+    content = models.CharField(max_length=128)
+    is_finished = models.BooleanField(default=False)
+    # 是否过期
+    is_expired = models.BooleanField(default=False)
+    # deadline
+    deadline = models.DateField(null=True)
     
 
