@@ -23,48 +23,24 @@ Page({
     });
   },
   addPlan(e) {
-    var that = this
-    const value = e.detail.value;
-    console.log(value)
-    if (value) {
-      console.log("here");
-      this.setData({
-        showInput: false,
-      })
-      wx.getStorage({
-        key: 'openid',
-        success: function(res)
-        {
-          let openid=res.data
-          console.log('get openid', openid)
-          wx.request({
-            url: that.data.host_+'user/api/plan/add_plan',
-            method: 'POST',
-              header:
-              {
-                'content-type': 'application/json'
-              },
-              data:{
-                'openid':openid,
-                'title':value,
-              },
-              success: function(res)
-              {
-                console.log("add plan")
-              },
-              fail: function(res){
-                console.log(res)
-              }
-          })
-        }
-      });
-    }
-    let planList = this.data.planList.slice()
-    planList.push(value)
-    this.setData({
-      planList: planList,
-      showInput: false
+    wx.navigateTo({
+      url: '/pages/plan/create_plan/create_plan',
     })
+    // const value = e.detail.value;
+    // console.log(value)
+    // if (!value) {
+    //   console.log("here");
+    //   this.setData({
+    //     showInput: false
+    //   })
+    //   return
+    // }
+    // let planList = this.data.planList.slice()
+    // planList.push(value)
+    // this.setData({
+    //   planList: planList,
+    //   showInput: false
+    // })
   },
 
   /**

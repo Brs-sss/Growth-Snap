@@ -23,10 +23,10 @@
       <view class="line"></view>
     </block>
     <view class="container_add">
-      <view class="add-plan" bindtap="showInput">
+      <view class="add-plan" bindtap="addPlan">
         <text class="add-text">+计划</text>
       </view>
-      <input wx:if="{{showInput}}" type="text" class="plan-input" bindblur="addPlan" placeholder="请添加计划"/>
+      <!-- <input wx:if="{{showInput}}" type="text" class="plan-input" bindblur="addPlan" placeholder="请添加计划"/> -->
     </view>
   </view>
 </scroll-view>

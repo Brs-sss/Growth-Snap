@@ -9,6 +9,7 @@
     "pages/show/data/data",
     "pages/plan/plan",
     "pages/plan/todo/todo",
+    "pages/plan/create_plan/create_plan",
     "pages/generate/generate",
     "pages/user/user",
     "pages/user/family/family",
