@@ -2,15 +2,17 @@ from typing import Any
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
+
 # Create your models here.
 
 # Family class
 class Family(models.Model):
     # family id
     familyId = models.CharField(max_length=20, unique=True, default='000000')
-    
+
     def __str__(self):
         return self.familyId
+
 
 # Child class
 class Child(models.Model):
@@ -20,6 +22,7 @@ class Child(models.Model):
     # birthday = models.DateField(null=True)
     # family
     family = models.ForeignKey(Family, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.name
 
@@ -32,6 +35,7 @@ class User(models.Model):
     # session_key = models.CharField(max_length=50)
     # family
     family = models.ForeignKey(Family, on_delete=models.CASCADE, null=True, blank=True)
+
     def __str__(self):
         return self.username
 
@@ -46,35 +50,64 @@ class BaseRecord(models.Model):
     date = models.DateField(null=True)
     # time
     time = models.TimeField(null=True)
-    
-    def __str__(self):
-        return self.record_type 
-    
+
+
 class Event(BaseRecord):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.record_type ='event'
-    
-    
-    title = models.CharField(max_length=128)
-    content =models.CharField(max_length=1024)
-    tags = models.CharField(max_length=200)
-    event_id=models.CharField(max_length=65,default="")
-    
-    def __str__(self):
-        return str(self.user)+" "+self.record_type+" "+self.title+" "+self.content+" "+self.tags+" "+str(self.date)+" "+str(self.time)
+        self.record_type = 'event'
 
-    
+    title = models.CharField(max_length=128)
+    content = models.CharField(max_length=1024)
+    tags = models.CharField(max_length=200)
+    event_id = models.CharField(max_length=65, default="")
+
+    def __str__(self):
+        return str(
+            self.user) + " " + self.record_type + " " + self.title + " " + self.content + " " + self.tags + " " + \
+            str(self.date) + " " + str(self.time)
+
+
+class Text(BaseRecord):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.record_type = 'event'
+
+    title = models.CharField(max_length=128)
+    content = models.CharField(max_length=1024)
+    tags = models.CharField(max_length=200)
+    text_id = models.CharField(max_length=65, default="")
+
+
+class Data(BaseRecord):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.record_type = 'data'
+
+    title = models.CharField(max_length=128)
+    content = models.CharField(max_length=128)
+    data_id = models.CharField(max_length=65, default="")
+
+    def __str__(self):
+        return str(self.user) + " " + self.record_type
+
+
+class Record(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(null=True)
+    time = models.TimeField(null=True)
+    key = models.CharField(max_length=24)
+    value = models.FloatField(max_length=24)
+
+
 class Plan(BaseRecord):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.record_type ='plan'
+        self.record_type = 'plan'
 
     title = models.CharField(null=True, max_length=128)
     children = models.ManyToManyField(Child)
     tags = models.CharField(null=True, max_length=128)
-
-
 
 
 class Todo(models.Model):
@@ -85,5 +118,3 @@ class Todo(models.Model):
     is_expired = models.BooleanField(default=False)
     # deadline
     deadline = models.DateField(null=True)
-    
-

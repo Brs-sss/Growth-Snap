@@ -17,3 +17,6 @@ frontend/project.config.json
 backend/db.sqlite3
 frontend/project.config.json
 *.json
+
+# Pycharm
+.idea
