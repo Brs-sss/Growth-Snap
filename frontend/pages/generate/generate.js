@@ -5,9 +5,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    activeIndex: 3
   },
-
+  navigateToPage(event) {
+    const index = event.currentTarget.dataset.index;
+    this.setData({
+      activeIndex: index
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */

@@ -1,2 +1,23 @@
 <!--pages/generate/generate.wxml-->
-<text>pages/generate/generate.wxml</text>
+<view class="sub-nav">
+  <text class="sub-nav-item {{activeIndex==0?'active':''}}" bindtap="navigateToPage" data-index="0">时间轴</text>
+  <text class="sub-nav-item {{activeIndex==1?'active':''}}" bindtap="navigateToPage" data-index="1">日记本</text>
+  <text class="sub-nav-item {{activeIndex==2?'active':''}}" bindtap="navigateToPage" data-index="2">小视频</text>
+  <text class="sub-nav-item {{activeIndex==3?'active':''}}" bindtap="navigateToPage" data-index="3">折线图</text>
+</view>
+
+<view class="container">
+  <!-- <text class="tag-text">{{activeIndex}}</text> -->
+  <block wx:if="{{activeIndex==0}}">
+    <view>时间轴页面</view>
+  </block>
+  <block wx:if="{{activeIndex==1}}">
+    <view>日记本页面</view>
+  </block>
+  <block wx:if="{{activeIndex==2}}">
+    <view>小视频页面</view>
+  </block>
+  <block wx:if="{{activeIndex==3}}">
+    <view>折线图页面</view>
+  </block>
+</view>

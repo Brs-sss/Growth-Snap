@@ -1,1 +1,25 @@
 /* pages/generate/generate.wxss */
+.sub-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 10vh;
+}
+
+.sub-nav-item {
+  font-size: 2.5vh;
+  color: #4095E5;
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+.sub-nav-item.active {
+  font-weight: bold;
+}
+
+.container {
+  margin-top: 3vh;
+  margin-left: 2vh;
+  margin-right: 2vh;
+}
