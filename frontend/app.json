@@ -11,6 +11,7 @@
     "pages/plan/todo/todo",
     "pages/plan/create_plan/create_plan",
     "pages/generate/generate",
+    "pages/generate/add_event/add_event",
     "pages/user/user",
     "pages/user/family/family",
     "pages/user/family/addmember/addmember",

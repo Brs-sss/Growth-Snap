@@ -8,14 +8,15 @@
 }
 
 .todo-header {
-  font-size: 3vh;
+  font-size: 4vh;
+  color: #4095E5;
 }
 
 .scroll-view {
   height: 40vh; 
   width: 50vh;
   overflow-y: scroll; 
-  background-color: rgb(250, 250, 250);
+  background-color: #4095e52c;
   margin-top: 1vh;
   border-radius: 1vh;
 }
@@ -46,7 +47,8 @@
 }
 
 .plan-header {
-  font-size: 3vh;
+  font-size: 4vh;
+  color: #4095E5;
 }
 
 .plan-list {
