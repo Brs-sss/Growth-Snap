@@ -2,16 +2,17 @@
 <view class="container_todo">
   <text class="todo-header">七天内的待办</text>
   <scroll-view class="scroll-view" scroll-y="true">
-  <view class="todo-list">
-    <block wx:for="{{todoList}}" wx:for-index="index" wx:key="index">
-      <view class="todo-item">
-        <checkbox value="{{item.completed}}" bindchange="toggleComplete" data-index="index"></checkbox>
-        <text class="{{item.completed ? 'completed' : ''}}">{{item}}</text>
-      </view>
-      <view class="line"></view>
-    </block>
-  </view>
-</scroll-view>
+    <view class="todo-list">
+      <block wx:for="{{todoList}}" wx:for-index="index" wx:key="index">
+        <view class="todo-item">
+          <checkbox value="{{item.completed}}" bindchange="toggleComplete" data-index="index"></checkbox>
+          <text class="{{item.completed ? 'completed' : ''}}">{{item}}</text>
+        </view>
+        <view class="line"></view>
+      </block>
+    </view>
+  </scroll-view>
+  <view class="btn-area"><button>完成</button></view>
 </view>
 <view class="container_plan">
   <text class="plan-header">所有计划</text>
