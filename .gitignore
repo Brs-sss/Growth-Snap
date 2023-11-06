@@ -18,13 +18,9 @@ backend/db.sqlite3
 frontend/project.config.json
 
 # Django
-<<<<<<< HEAD
 backend/user/__pycache__
 backend/wechat/__pycache__
 backend/user/migrations/__pycache__
-=======
-backend/wechat/__pycache__
->>>>>>> 8aa2a82dce960486d63e08548eccb9f1274b3dbd
 
 # Pycharm
 .idea
