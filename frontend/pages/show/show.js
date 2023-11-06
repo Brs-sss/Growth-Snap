@@ -31,6 +31,7 @@ function LoadShowPage(that){
             that.setData({
               blog_cards_list:res.data.blocks_list
             })
+            console.log(res.data.blocks_list)
         },
         fail:function(res){
           console.log('load page failed: ',res)

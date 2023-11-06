@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-.dataTag {
+.dataKey {
   position: relative;
   left: 5%;
   top: 50px;
