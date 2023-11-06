@@ -5,7 +5,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeIndex: 3
+    activeIndex: 0,
+    timelineList: [] // 时间轴模板列表数据
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
@@ -13,11 +14,27 @@ Page({
       activeIndex: index
     });
   },
+  addEvent(e) {
+    const category = e.currentTarget.dataset.category;
+    const index = e.currentTarget.dataset.index;
+    console.log(category);
+    console.log(index);
+    wx.navigateTo({
+      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index),
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    this.setData({
+      timelineList: [
+        { id: 0 , name:'美丽的模板'},
+        { id: 1 , name:'艺术的模板'},
+        { id: 2 , name:'无敌的模板'},
+        { id: 3 , name:'超级的模板'}
+      ]
+    });
   },
 
   /**

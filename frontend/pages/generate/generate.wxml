@@ -6,10 +6,17 @@
   <text class="sub-nav-item {{activeIndex==3?'active':''}}" bindtap="navigateToPage" data-index="3">折线图</text>
 </view>
 
-<view class="container">
+<view class="container" style="width: 700rpx; height: 1077rpx; display: flex; box-sizing: border-box">
   <!-- <text class="tag-text">{{activeIndex}}</text> -->
   <block wx:if="{{activeIndex==0}}">
-    <view>时间轴页面</view>
+    <view class="timeline-list">
+      <block wx:for="{{timelineList}}" wx:key="index">
+        <view class="timeline-item"  data-category="timeline" data-index="{{index}}" bindtap="addEvent">
+          <image class="timeline-image" src="/image/generate/timeline_{{index}}.png"></image>
+          <text class="timeline-name">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
   </block>
   <block wx:if="{{activeIndex==1}}">
     <view>日记本页面</view>

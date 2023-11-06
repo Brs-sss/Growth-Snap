@@ -23,3 +23,29 @@
   margin-left: 2vh;
   margin-right: 2vh;
 }
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -20vh;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2vh;
+}
+
+.timeline-image {
+  width: 50vh;
+  height: 25vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+}
+
+.timeline-name {
+  font-size: 14px;
+  color: #333;
+}
