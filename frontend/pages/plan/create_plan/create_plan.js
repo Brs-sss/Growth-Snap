@@ -17,7 +17,8 @@ Page({
     inputTag:'',
     isEditing: false, // 是否处于编辑模式
     host_: 'http://127.0.0.1:8090/',
-    openid: ''
+    openid: '',
+
   },
 
   toggleKid: function(e) {
@@ -62,6 +63,7 @@ Page({
 
     console.log("index",index)
     console.log(this.data.tags[index].checked)
+    console.log("tags:", this.data.tags)
   },
   showInput: function() {
     this.setData({
@@ -101,6 +103,44 @@ Page({
     }
   },
 
+  // 处理计划名称输入
+  handleInputTitle(e) {  //输入标题的处理
+    this.setData({
+      inputTitle: e.detail.value
+    });
+  },
+
+  // 提交计划
+  handleSubmit(){
+    var that = this
+    console.log(that.data.selectedKids)
+    console.log(that.data.inputTitle)
+    // console.log(that.data.tags)
+    console.log(that.data.selectedTags)
+    console.log("openid:",that.data.openid)
+    wx.request({
+      url: that.data.host_+'user/api/plan/add_plan',
+      method: 'POST',
+      header:
+      {
+        'content-type': 'application/json'
+      },
+      data:{
+        'openid':that.data.openid,
+        'child': that.data.selectedKids,
+        'tags': that.data.selectedTags,
+        'title': that.data.inputTitle
+      },
+      success: function(res)
+      {
+        console.log(res)
+        wx.navigateBack(1) //成功提交，返回上个页面
+      }
+    })
+
+
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -114,12 +154,28 @@ Page({
         // 从本地存储中获取数据,在index.js文件中保存建立的
         openid=res.data
         console.log("openid:",openid)
+        that.setData({
+          openid: openid
+        })
         
     wx.request({
       url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
       method: 'GET',
       success:function(res){
         console.log(res.data)
+        let children_list = res.data.children_list
+        console.log(children_list.length)
+        let temp_kidList = []
+        for(let i = 0; i < children_list.length; i++)
+        {
+          let name = children_list[i].name
+          console.log(name)
+          temp_kidList.push({'info': name, 'checked': false})
+          
+        }
+        that.setData({
+          kidList: temp_kidList
+        })
         // that.setData({
         //   user_profile:res.data.profile_image,
         //   user_label: res.data.label,
