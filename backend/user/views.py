@@ -263,8 +263,17 @@ def addPlan(request):
         title = data.get('title')
         # date = data.get('date')
         # time = (data.get('time'))[:8]
+        child = data.get('child') #现在的child是这样的：['bbbbb', 'bb']
+        tags = data.get('tags') #现在的tags是这样的：['2222']
+        print(f'child {child}')
+        print(f'tags {tags}')
         print(openid,title)
-        new_plan=Plan.objects.create(user=now_user,title=title)
+        new_plan=Plan.objects.create(user=now_user,title=title, tags=tags)
+        # 可能有多个孩子，所以把孩子们都加进去
+        for child_name in child:
+            print(f'child_name {child_name}')
+            child=Child.objects.filter(name=child_name)[0]
+            new_plan.children.add(child)
         return JsonResponse({'message': 'Data submitted successfully'})
 
 def getChildrenInfo(request):
@@ -275,8 +284,84 @@ def getChildrenInfo(request):
         children_list=[]
         children = Child.objects.filter(family=family)
         for child in children:
+            print("test")
+            print(child.name, child.child_id)
             child_item = {}
             child_item['name'] = child.name
-            child_item['birthday'] = child.birthday
+            # child_item['birthday'] = child.birthday
+            # todo: 添加孩子的真实信息
+            child_item['age'] = '5'
+            child_item['height'] = '144'
+            child_item['weight'] = '30'
+            image_path='static/ImageBase/'+openid+'+'+child.child_id
+            image_list = os.listdir(image_path)
+            child_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
             children_list.append(child_item)
         return JsonResponse({'children_list': children_list})
+    
+def addChild(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid=data.get('openid')
+        now_user=User.objects.get(openid=openid)
+        name = data.get('name')
+        # birthday = data.get('birthday')
+        # print(openid,name,birthday)
+        sha256 = hashlib.sha256()
+        sha256.update(name.encode('utf-8'))
+        sha256_hash = sha256.hexdigest()
+        print(f'sha256_hash {sha256_hash}')
+        new_child=Child.objects.create(family=now_user.family,name=name, child_id=str(sha256_hash))
+        # print(str(sha256_hash))
+        return JsonResponse({
+            'message': 'Data submitted successfully',
+            'child_id': sha256_hash
+        })
+    
+def addChildImage(request):
+    if request.method == 'POST':
+        print('enter')
+        uploaded_image = request.FILES.get('image') 
+        openid=request.POST.get('openid')
+        child_id=request.POST.get('child_id')
+        print(child_id)
+        image_path = './static/ImageBase/' + f'{openid}+{child_id}' + '/'
+        print(image_path)
+        if not os.path.exists(image_path):
+            os.mkdir(image_path)
+        # 删除原有的图片
+        image_list = os.listdir(image_path)
+        for image in image_list:
+            os.remove(image_path + image)
+        if uploaded_image:
+            with open(image_path+f'{uploaded_image.name}', 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+        return JsonResponse({'message': 'child profile image submitted successfully'})
+    else:
+        return JsonResponse({'message': 'please use POST'})
+    
+
+# todo: signature 替换成数据, 更新credit的计算方法
+def getFamilyInfo(request):
+    if request.method == 'GET':
+        openid=request.GET.get('openid')
+        now_user=User.objects.get(openid=openid)
+        family=now_user.family
+        users = User.objects.filter(family=family)
+        family_list=[]
+        for user in users:
+            print(user.username, user.label)
+            user_item = {}
+            user_item['name'] = user.username
+            user_item['label'] = user.label
+            event_number=len(Event.objects.filter(user=user))
+            plan_number=len(Plan.objects.filter(user=user))
+            credit = event_number * 15 + plan_number * 10
+            user_item['signature'] = f'{user.label}的积分是{credit}分。'
+            image_path='static/ImageBase/'+user.openid
+            image_list = os.listdir(image_path)
+            user_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
+            family_list.append(user_item)
+        return JsonResponse({'family_list': family_list})
+        
