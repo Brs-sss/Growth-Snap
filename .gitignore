@@ -16,7 +16,11 @@ frontend/project.config.json
 frontend/project.config.json
 backend/db.sqlite3
 frontend/project.config.json
-*.json
+
+# Django
+backend/user/__pycache__
+backend/wechat/__pycache__
+backend/user/migrations/__pycache__
 
 # Pycharm
 .idea
