@@ -179,7 +179,21 @@ def submitData(request):
 
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
-        return JsonResponse({'message': 'Data submitted successfully'})
+        return JsonResponse({'message': 'Please use POST'})
+
+
+def getKeys(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        now_user = User.objects.get(openid=openid)
+        keyList = list(Record.objects.filter(user=now_user).values_list('key', flat=True).distinct())
+        print(keyList)
+        return JsonResponse({
+            'message': 'Successfully get the keys',
+            'keyList': keyList
+        })
+    else:
+        return JsonResponse({'message': 'Please use GET'})
 
 
 def registerProfileImage(request):

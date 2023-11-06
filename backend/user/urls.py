@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/register', views.register, name='register'),
     path('api/show/event/submit', views.submitEvent, name='submit_event'),
     path('api/show/data/submit', views.submitData, name='submit_data'),
+    path('api/show/data/getkeys', views.getKeys, name='submit_data'),
     path('api/register_family', views.registerFamily, name='register_family'),
     path('api/getSHA256', views.getSHA256, name='getsha256'),
     path('api/show/event/upload_image', views.addEventImage, name='upload_image'),
