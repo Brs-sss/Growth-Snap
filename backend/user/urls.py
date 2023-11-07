@@ -7,15 +7,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('api/login', views.login, name='login'),
     path('api/register', views.register, name='register'),
-<<<<<<< HEAD
-    path('api/show/event/submit',views.submitEvent,name='submit_event'),
-    path('api/register_family',views.registerFamily,name='register_family'),
-    path('api/getSHA256',views.getSHA256,name='getsha256'),
-    path('api/show/event/upload_image',views.addEventImage,name='upload_image'),
-    path('api/show/all',views.loadShowPage,name='load_showpage'),
-    path('api/plan/add_plan',views.addPlan,name='add_plan'),
-    path('api/show/event/detail',views.loadEventDetail,name='event_detail'),
-=======
     path('api/show/event/submit', views.submitEvent, name='submit_event'),
     path('api/show/data/submit', views.submitData, name='submit_data'),
     path('api/show/data/getkeys', views.getKeys, name='submit_data'),
@@ -31,7 +22,7 @@ urlpatterns = [
     path('api/user/add_child', views.addChild, name='add_child'),
     path('api/user/add_child_image', views.addChildImage, name='add_child_image'),
     path('api/user/get_family_info', views.getFamilyInfo, name='get_family_info'),
->>>>>>> dev
+    path('api/show/event/detail',views.loadEventDetail,name='event_detail'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
