@@ -1,0 +1,116 @@
+/* pages/generate/generate.wxss */
+.nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 10vh;
+}
+
+.nav-item {
+  font-size: 2.5vh;
+  color: #4095E5;
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+.nav-item.active {
+  font-weight: bold;
+}
+
+.container {
+  margin-top: 3vh;
+  margin-left: 2vh;
+  margin-right: 2vh;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -20vh;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2vh;
+}
+
+.timeline-image {
+  width: 50vh;
+  height: 25vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.timeline-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.sub-nav{
+  margin-top: -18vh;
+  margin-left: -60vw;
+}
+
+.sub-nav-item {
+  font-size: 2vh;
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+  margin-left: 180rpx;
+}
+
+.sub-nav-item.active {
+  font-weight: 550;
+}
+
+.selected {
+  background-color: #f2f2f2; /* 选中时的背景色 */
+}
+
+.checkbox {
+  width: 20rpx;
+  height: 20rpx;
+  border: 1rpx solid #ccc;
+  display: inline-block;
+  margin-right: 10rpx;
+  text-align: center;
+  line-height: 20rpx;
+}
+
+
+.cover-list{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cover-item {
+  width: calc(33.3% - 10rpx); /* 每行显示三个cover元素，间隔为10rpx */
+  margin-bottom: 10rpx; /* 设置底部间距 */
+  box-sizing: border-box; /* 边框盒模型设置为border-box，包括padding和border在内的宽度不会超出设定的宽度 */
+}
+
+.cover-image {
+  width: 15vh;
+  height: 20vh;
+  border-radius: 1vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.selected-image {
+  position: relative;
+  width: 12vh;
+  height: 16vh;
+  border-radius: 1vh;
+  margin-top: 2vh;
+  margin-left: -65vw;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  z-index: 10;
+}

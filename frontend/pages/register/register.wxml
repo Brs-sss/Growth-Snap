@@ -1,0 +1,47 @@
+<!--pages/register/register.wxml-->
+
+<view class="whole-page-grid">
+<view class="container_1 overall-outfit">
+  <view id="title-box1">
+    <view class="upload_title">昵称</view>
+  </view>
+  <input style="width: 554rpx; right: 15rpx; position: relative; height: 50rpx;top:20rpx" class="input" bindinput="handleInputUsername" placeholder="请输入" />
+</view>
+
+<view class="container_2 overall-outfit">
+  <view class="upload_title" bindtap="handleUpload">上传头像 </view>
+
+      <view id="image-grid-container" style="{{imgGridStyle}}">
+          <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="changeImage" data-index="{{index}}">
+              <image src="{{item}}" mode="aspectFill" data-index="{{index}}"></image> 
+          </view>
+          <view wx:if="{{firsttime_selected_img}}" class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
+  </view>
+</view>
+
+<view class="container_3 overall-outfit">
+  <view class="family">
+    <view class="upload_title">家庭口令</view>
+    <input style="width: 554rpx; display: {{visibility_input}}; box-sizing: border-box; left: -50rpx; position: relative; height: 70rpx; top:20rpx" class="input" bindinput="handleInputFamilyId" placeholder="请输入" disabled='{{is_disabled}}' ></input>
+    <text style="width: 40%; display: {{visibility_text}}; position: relative; height: 5vh;left: 30rpx;" > {{familyId_text}}</text>
+  </view>
+  
+  <p class='create-familyId' bind:tap='create_familyId' style='display: {{visibility_create}}'>创建新家庭口令</p>
+  <p class='cancel' style='display: {{visibility_cancel}};' bind:tap='cancel'>取消</p>
+</view>
+
+
+
+<view class="container_4 overall-outfit">
+  <view class="upload_title">家庭角色</view>
+  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 50rpx; position: relative; height: 70rpx; top:-5px" class="input" bindinput="handleInputLabel" placeholder="请输入" />
+</view>
+
+<view class="container_5 overall-outfit">
+
+<view id="button-box">
+  <button class="submit" bindtap="handleSubmit">提交</button>
+</view>
+</view>
+
+</view>

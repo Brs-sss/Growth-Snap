@@ -1,0 +1,16 @@
+<!--pages/user/family/family.wxml-->
+
+<view class="family-list">
+  <block wx:for="{{blog_cards_list}}" wx:key="index">
+    <!-- <view class="view_image_text">
+      <image class="user_profile" src="{{item.imgSrc}}" />
+      <text class="user_name">{{item.name}}</text>
+      <text class="user_tag">{{item.tag}}</text>
+      <text class="user_signature">{{item.signature}}</text>
+    </view> -->
+    <family-card name="{{item.name}}" label="{{item.label}}" signature="{{item.signature}}" imgSrc="{{item.imgSrc}}"></family-card>
+  </block>
+</view>
+
+<button class="add" bindtap="goToPage_addmember">添加家庭成员</button>
+

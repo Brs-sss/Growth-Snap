@@ -1,0 +1,45 @@
+/* pages/user/child/child.wxss */
+
+.kid-list {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.view_image_text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280rpx;
+  background-color: #fff;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  border-radius: 30rpx;
+  margin-top: 10px;
+}
+
+.user_profile {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user_name {
+  margin-top: -20px;
+  font-size: 20px;
+}
+
+.user_info{
+  margin-top: 40px;
+  margin-left: -40px;
+}
+
+.add{
+  font-size: 20px;
+  margin-top: 30px;
+  height: 40px;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+}

@@ -1,0 +1,129 @@
+
+/*********************以下开始是event card的相关样式**********************************/
+
+
+.event-card{
+  width: 100%;
+  height: 50vh;
+  /* border: 1px black solid; */
+  display: grid;
+  grid-template-rows: 5vh 1fr 10vh;
+  grid-template-areas: 
+  "A"
+  "B"
+  "C";
+  margin-bottom:2vh;
+}
+
+.date-author-block{
+  width: 100%;
+  height: 5vh;
+  grid-area: A;
+  /* border: 1px black solid; */
+  display: grid;
+  grid-template-columns: 30vw 50vw 20vw;
+  grid-template-rows: 5vh;
+  grid-template-areas: "Bdate Bblank Bauthor";
+}
+
+.date-block{
+  height: 5vh;
+  width: 20vw;
+  grid-area: Bdate;
+  justify-self: center;
+  display: flex;
+}
+
+.day{
+  height: 5vh;
+  width: 8vw;
+  flex-grow: 1;
+  font-size: 2em;
+
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* 纵向排列 */
+  justify-content:center; /*垂直底部对齐  */
+}
+
+.month{
+  height: 5vh;
+  width: 8vw;
+  flex-grow: 1;
+  font-size: 1em;
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* 纵向排列 */
+  justify-content: flex-end; /* 垂直底部对齐 */
+}
+
+
+.author-block{
+  height: 5vh;
+  width: 20vw;
+  grid-area: Bauthor;
+  color: #777;
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* 纵向排列 */
+  justify-content: flex-end; /* 垂直底部对齐 */
+}
+
+.image-block{
+  width: 90%;
+  height: calc(9*width/16);
+  grid-area: B;
+  /* border: 1px black solid; */
+  justify-self: center;
+  margin-top: 0.5vh;
+}
+
+.image-block image{
+  display: inline;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
+
+.text-block{
+  width: 100%;
+  height: 10vh;
+  grid-area: C;
+  /* border: 1px black solid; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* white-space: nowrap; 防止文本换行 */
+  overflow: hidden; /* 隐藏多余的文本 */
+  text-overflow: ellipsis; /* 使用省略号来表示溢出的文本 */
+}
+
+.title-block{
+  width: 90%;
+  height: 6vh;
+  /* border: 1px black solid; */
+  font-size: 1.3em;
+  font-weight: bold;
+  text-align:left;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.body-block{
+  width: 90%;
+  height: 4vh;
+  /* border: 1px black solid; */
+  font-size: 1em;
+  text-align:left;
+  
+  display: -webkit-box;
+  word-wrap: break-word;
+  overflow: hidden; /* 隐藏多余的文本 */
+  text-overflow: ellipsis; /* 使用省略号来表示溢出的文本 */
+  white-space: normal ;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
