@@ -3,7 +3,8 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
-from .models import User, Family, BaseRecord, Event, Data, Record, Plan, Child
+from django.contrib.contenttypes.models import ContentType
+from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
 from .utils import ListToString, StringToList
 import random
 import string
@@ -13,6 +14,9 @@ import datetime
 
 
 # Create your views here.
+
+
+        
 
 
 def login(request):
@@ -133,14 +137,21 @@ def submitEvent(request):
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
         tags = ListToString([tag['info'] for tag in tags if tag['checked']])
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
-        new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content, tags=tags,
+        type=data.get('type')
+        if type == 'event':
+            new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content, tags=tags,
                                          event_id=event_id)
-        filtered_records = Event.objects.all()
-        for rec in filtered_records:
-            print(rec)
+        elif type == 'text':
+            new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content, tags=tags,
+                                         text_id=event_id)
+            # filtered_records = Text.objects.all()
+            # for rec in filtered_records:
+            #     print('yes',rec)
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
+    
+
 
 
 def submitData(request):
@@ -242,43 +253,39 @@ def loadShowPage(request):
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks = Data.objects.filter(user=now_user).order_by("-date", "-time")  # 筛选的结果按照降序排列
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time")  # 筛选的结果按照降序排列
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time")
+        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time")
+        now_user_blocks= sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),key=lambda x:(x.date,x.time),reverse=True)
         print(now_user_blocks.__len__())
         blocks_list = []
         for db_block in now_user_blocks:
+            block_item={}
+            block_item['type']=db_block.record_type
+            block_item['title']=db_block.title
+            block_item['content']=db_block.content
+            block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+            date_string=str(db_block.date)
+            block_item['month']=str(int(date_string[5:7]))+"月"
+            block_item['year']=date_string[0:4]
+            block_item['day']=date_string[8:10]
+            
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
-                block_item={}
-                block_item['type']=db_block.record_type
-                block_item['title']=db_block.title
-                block_item['content']=db_block.content
-                block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
-                date_string=str(db_block.date)
-                block_item['month']=str(int(date_string[5:7]))+"月"
-                block_item['year']=date_string[0:4]
-                block_item['day']=date_string[8:10]
                 block_item['event_id']=db_block.event_id
                 image_path='static/ImageBase/'+db_block.event_id
                 image_list = sorted(os.listdir(image_path))
                 block_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
-                blocks_list.append(block_item)
-            if db_block.record_type == 'data':
-                block_item = {}
-                block_item['type'] = db_block.record_type
-                block_item['title'] = db_block.title
-                block_item['content'] = db_block.content
-                block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
-                date_string = str(db_block.date)
-                block_item['month'] = str(int(date_string[5:7])) + "月"
-                block_item['year'] = date_string[0:4]
-                block_item['day'] = date_string[8:10]
-                block_item['data_id'] = db_block.data_id
-                pass
-            elif db_block.record_type == 'text':
-                pass
-            else:
-                pass
 
-        print(blocks_list)
+            if db_block.record_type == 'data':
+                block_item['data_id'] = db_block.data_id
+                
+            elif db_block.record_type == 'text':
+                block_item['text_id']=db_block.text_id
+                
+            blocks_list.append(block_item)
+
+
+        #print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
 
 
@@ -365,10 +372,27 @@ def loadEventDetail(request):
         block_item['month']=str(int(date_string[5:7]))+"月"
         block_item['year']=date_string[0:4]
         block_item['day']=date_string[8:10]
-        block_item['event_id']=db_block.event_id
+        #block_item['event_id']=db_block.event_id
         image_path='static/ImageBase/'+db_block.event_id
         image_list = sorted(os.listdir(image_path))
         block_item['imgSrcList']=['http://127.0.0.1:8090/'+f'{image_path}/'+image for image in image_list]
+        block_item['tags']=StringToList(db_block.tags)
+        return JsonResponse({'block_item': block_item})
+    
+def loadTextDetail(request):
+    if request.method == 'GET':
+        text_id=request.GET.get('text_id')
+        #返回渲染的list
+        db_block=Text.objects.get(text_id=text_id)
+        block_item={}
+        block_item['type']=db_block.record_type
+        block_item['title']=db_block.title
+        block_item['content']=db_block.content
+        block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+        date_string=str(db_block.date)
+        block_item['month']=str(int(date_string[5:7]))+"月"
+        block_item['year']=date_string[0:4]
+        block_item['day']=date_string[8:10]
         block_item['tags']=StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
 

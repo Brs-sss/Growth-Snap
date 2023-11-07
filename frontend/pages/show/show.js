@@ -85,19 +85,22 @@ Page({
   showDetail(e){  //进入详细展示页面
     const { index,type } = e.currentTarget.dataset;
     console.log("index: ",index,type)
-    let event_id=this.data.blog_cards_list[index].event_id;
+    
     if(type=="event"){
+      let event_id=this.data.blog_cards_list[index].event_id;
       wx.navigateTo({
         url: `/pages/show/event_detail/event_detail?event_id=${event_id}`,
       })
     }
     else if(type=="text"){
         //TODO
-
+        let text_id=this.data.blog_cards_list[index].text_id;
+        wx.navigateTo({
+          url: `/pages/show/text_detail/text_detail?text_id=${text_id}`,
+        })
 
     }else if(type=="data"){
         //TODO
-
 
     }
   },

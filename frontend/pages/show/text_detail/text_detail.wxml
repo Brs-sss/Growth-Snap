@@ -1,0 +1,14 @@
+<!--pages/show/event_detail/event_detail.wxml-->
+<view class="container">
+  <view class="body-container">
+      <view class="title-container">
+        {{title}}
+      </view>
+      <view class="text-container">{{text}}
+      </view>
+      <view class="tags-container">
+        {{tags_string}}
+      </view>
+      <view class="date-container">{{date}}</view>
+  </view>
+</view>

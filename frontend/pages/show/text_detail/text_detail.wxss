@@ -1,0 +1,61 @@
+/* pages/show/text_detail/text_detail.wxss *//* pages/show/event_detail/event_detail.wxss */
+
+.container{
+  width: 100%;
+  display: grid;
+  grid-template-rows: 5vh 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: 
+  "images"
+  "body";
+  padding: 0;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+
+.body-container{
+  width: 90%;
+  justify-self: center;
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 3vh;
+}
+
+.title-container{
+  width: 100%;
+  height: 100%;
+  /* border: 1px solid #000; */
+  font-size: 1.3em;
+  justify-self: center;
+  margin-bottom: 2vh;
+}
+
+
+.text-container{
+  width: 100%;
+  height: 100%;
+  /* border: 1px solid rgb(107, 101, 101); */
+  font-size: 1.1em;
+  justify-self: center;
+  white-space: pre-line;
+}
+
+.tags-container{
+  width: 100%;
+  height: 100%;
+  /* border: 1px solid #000; */
+  color: rgb(27,52,113);
+  font-size: 1.1em;
+}
+
+.date-container{
+  width: 100%;
+  height: 100%;
+  font-size: 0.9em;
+  color: #888;
+  margin-top: 2vh;
+  margin-bottom: 4vh;
+}
