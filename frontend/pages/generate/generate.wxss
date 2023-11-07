@@ -68,6 +68,17 @@
   font-weight: 550;
 }
 
+.selected-image {
+  position: absolute;
+  width: 12vh;
+  height: 16vh;
+  border-radius: 1vh;
+  margin-top: -12vh;
+  margin-left: -65vw;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  z-index: 10;
+}
+
 .selected {
   background-color: #f2f2f2; /* 选中时的背景色 */
 }
@@ -104,13 +115,7 @@
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
 }
 
-.selected-image {
-  position: relative;
-  width: 12vh;
-  height: 16vh;
+.scroll-view{
+  background-color:#e6e6e6;
   border-radius: 1vh;
-  margin-top: 2vh;
-  margin-left: -65vw;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
-  z-index: 10;
 }
