@@ -15,7 +15,7 @@
 </view>
 <view class="container_plan">
   <text class="plan-header">所有计划</text>
-  <scroll-view class="scroll-view" scroll-y="true">
+  <!-- <scroll-view class="scroll-view" scroll-y="true"> -->
   <view class="plan-list">
     <block wx:for="{{planList}}" wx:key="index">
       <view class="plan-item"  data-value='{{item}}' bindtap="goToTodoList">{{item}}</view>
@@ -29,5 +29,5 @@
       <!-- <input wx:if="{{showInput}}" type="text" class="plan-input" bindblur="addPlan" placeholder="请添加计划"/> -->
     </view>
   </view>
-</scroll-view>
+<!-- </scroll-view> -->
 </view>
