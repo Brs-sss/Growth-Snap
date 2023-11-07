@@ -246,38 +246,37 @@ def loadShowPage(request):
         print(now_user_blocks.__len__())
         blocks_list = []
         for db_block in now_user_blocks:
-            block_item = {}
-            block_item['type'] = db_block.record_type
-            block_item['title'] = db_block.title
-            block_item['content'] = db_block.content
-            block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
-            date_string = str(db_block.date)
-            block_item['month'] = str(int(date_string[5:7])) + "月"
-            block_item['year'] = date_string[0:4]
-            block_item['day'] = date_string[8:10]
-            block_item['data_id'] = db_block.data_id
-            blocks_list.append(block_item)
-            # if isinstance(db_block, Event):  # 检查是否与子类A相关if
-            #     block_item['type'] = db_block.record_type
-            #     block_item['title'] = db_block.title
-            #     block_item['content'] = db_block.content
-            #     block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
-            #     date_string = str(db_block.date)
-            #     block_item['month'] = str(int(date_string[5:7])) + "月"
-            #     block_item['year'] = date_string[0:4]
-            #     block_item['day'] = date_string[8:10]
-            #     block_item['event_id'] = db_block.event_id
-            #     image_path = 'static/ImageBase/' + db_block.event_id
-            #     image_list = os.listdir(image_path)
-            #     block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
-            #     print(block_item)
-            #     blocks_list.append(block_item)
-            # if db_block.record_type == 'data':
-            #     pass
-            # elif db_block.record_type == 'text':
-            #     pass
-            # else:
-            #     pass
+            if db_block.record_type == 'event':  # 检查是否与子类A相关if
+                block_item={}
+                block_item['type']=db_block.record_type
+                block_item['title']=db_block.title
+                block_item['content']=db_block.content
+                block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+                date_string=str(db_block.date)
+                block_item['month']=str(int(date_string[5:7]))+"月"
+                block_item['year']=date_string[0:4]
+                block_item['day']=date_string[8:10]
+                block_item['event_id']=db_block.event_id
+                image_path='static/ImageBase/'+db_block.event_id
+                image_list = sorted(os.listdir(image_path))
+                block_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
+                blocks_list.append(block_item)
+            if db_block.record_type == 'data':
+                block_item = {}
+                block_item['type'] = db_block.record_type
+                block_item['title'] = db_block.title
+                block_item['content'] = db_block.content
+                block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+                date_string = str(db_block.date)
+                block_item['month'] = str(int(date_string[5:7])) + "月"
+                block_item['year'] = date_string[0:4]
+                block_item['day'] = date_string[8:10]
+                block_item['data_id'] = db_block.data_id
+                pass
+            elif db_block.record_type == 'text':
+                pass
+            else:
+                pass
 
         print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
@@ -351,6 +350,27 @@ def addPlan(request):
             child = Child.objects.filter(name=child_name)[0]
             new_plan.children.add(child)
         return JsonResponse({'message': 'Data submitted successfully'})
+    
+def loadEventDetail(request):
+    if request.method == 'GET':
+        event_id=request.GET.get('event_id')
+        #返回渲染的list
+        db_block=Event.objects.get(event_id=event_id)
+        block_item={}
+        block_item['type']=db_block.record_type
+        block_item['title']=db_block.title
+        block_item['content']=db_block.content
+        block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+        date_string=str(db_block.date)
+        block_item['month']=str(int(date_string[5:7]))+"月"
+        block_item['year']=date_string[0:4]
+        block_item['day']=date_string[8:10]
+        block_item['event_id']=db_block.event_id
+        image_path='static/ImageBase/'+db_block.event_id
+        image_list = sorted(os.listdir(image_path))
+        block_item['imgSrcList']=['http://127.0.0.1:8090/'+f'{image_path}/'+image for image in image_list]
+        block_item['tags']=StringToList(db_block.tags)
+        return JsonResponse({'block_item': block_item})
 
 
 def getChildrenInfo(request):

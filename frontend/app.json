@@ -1,5 +1,5 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
     "pages/register/register",
     "pages/logs/logs",
@@ -14,9 +14,10 @@
     "pages/user/user",
     "pages/user/family/family",
     "pages/user/family/addmember/addmember",
-    "pages/user/child/child"
+    "pages/user/child/child",
+    "pages/show/event_detail/event_detail"
   ],
-  "tabBar":{
+  "tabBar": {
     "color": "#666666",
     "selectedColor": "#4095E5",
     "backgroundColor": "#ffffff",
@@ -48,14 +49,12 @@
       }
     ]
   },
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "Weixin",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"
 }
-
-
