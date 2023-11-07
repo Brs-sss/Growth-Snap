@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/show/event/upload_image',views.addEventImage,name='upload_image'),
     path('api/show/all',views.loadShowPage,name='load_showpage'),
     path('api/plan/add_plan',views.addPlan,name='add_plan'),
+    path('api/show/event/detail',views.loadEventDetail,name='event_detail'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -181,7 +181,7 @@ def loadShowPage(request):
             block_item['day']=date_string[8:10]
             block_item['event_id']=db_block.event_id
             image_path='static/ImageBase/'+db_block.event_id
-            image_list = os.listdir(image_path)
+            image_list = sorted(os.listdir(image_path))
             block_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
             blocks_list.append(block_item)
         print(blocks_list)
@@ -203,4 +203,24 @@ def addPlan(request):
         print(openid,title)
         new_plan=Plan.objects.create(user=now_user,title=title)
         return JsonResponse({'message': 'Data submitted successfully'})
-
+    
+def loadEventDetail(request):
+    if request.method == 'GET':
+        event_id=request.GET.get('event_id')
+        #返回渲染的list
+        db_block=Event.objects.get(event_id=event_id)
+        block_item={}
+        block_item['type']=db_block.record_type
+        block_item['title']=db_block.title
+        block_item['content']=db_block.content
+        block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+        date_string=str(db_block.date)
+        block_item['month']=str(int(date_string[5:7]))+"月"
+        block_item['year']=date_string[0:4]
+        block_item['day']=date_string[8:10]
+        block_item['event_id']=db_block.event_id
+        image_path='static/ImageBase/'+db_block.event_id
+        image_list = sorted(os.listdir(image_path))
+        block_item['imgSrcList']=['http://127.0.0.1:8090/'+f'{image_path}/'+image for image in image_list]
+        block_item['tags']=StringToList(db_block.tags)
+        return JsonResponse({'block_item': block_item})

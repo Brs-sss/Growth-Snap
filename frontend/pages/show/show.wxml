@@ -28,10 +28,10 @@
     <data-card day="29" month="10月" author="Cici" title="身高&体重记录" body="身高：122cm 体重：50kg"></data-card>
     <event-card day="29" month="12月" author="爷爷" title="I like it" body="hahhh" imgSrc="/image/temp/star.jpeg"></event-card>
     <!-- 卡片根据类型event or text or data 三选一 -->
-    <view wx:for="{{blog_cards_list}}" wx:key="index" >
-        <event-card wx:if="{{item.type=='event'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}" imgSrc="{{item.imgSrc}}"></event-card>
-        <text-card wx:elif="{{item.type=='text'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}"></text-card>
-        <data-card wx:elif="{{item.type=='data'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}"></data-card>
+    <view wx:for="{{blog_cards_list}}" wx:key="index" data-index='{{index}}' data-type='{{item.type}}' bindtap="showDetail">
+        <event-card wx:if="{{item.type=='event'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}" imgSrc="{{item.imgSrc}}" ></event-card>
+        <text-card wx:elif="{{item.type=='text'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}} " title="{{item.title}}" body="{{item.content}}" ></text-card>
+        <data-card wx:elif="{{item.type=='data'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}" ></data-card>
     </view>
 
   </view>

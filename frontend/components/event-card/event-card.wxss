@@ -94,6 +94,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  /* white-space: nowrap; 防止文本换行 */
+  overflow: hidden; /* 隐藏多余的文本 */
+  text-overflow: ellipsis; /* 使用省略号来表示溢出的文本 */
 }
 
 .title-block{
@@ -114,4 +118,12 @@
   /* border: 1px black solid; */
   font-size: 1em;
   text-align:left;
+  
+  display: -webkit-box;
+  word-wrap: break-word;
+  overflow: hidden; /* 隐藏多余的文本 */
+  text-overflow: ellipsis; /* 使用省略号来表示溢出的文本 */
+  white-space: normal ;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }

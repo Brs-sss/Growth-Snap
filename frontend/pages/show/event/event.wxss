@@ -131,12 +131,13 @@
 }
 
 .input_text {
-  width: 80vw;
+  width: 85vw;
   height: 20vh;
   padding: 10rpx;
   border: 1rpx solid rgba(220, 220, 220, 0.5);
   border-radius: 4rpx;
   font-size: 14px;
+  overflow: auto;
 }
 
 
