@@ -10,6 +10,7 @@
     "pages/plan/plan",
     "pages/plan/todo/todo",
     "pages/generate/generate",
+    "pages/generate/add_event/add_event",
     "pages/user/user",
     "pages/user/family/family",
     "pages/user/family/addmember/addmember",

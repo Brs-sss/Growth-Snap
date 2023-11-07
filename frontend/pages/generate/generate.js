@@ -5,13 +5,24 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeIndex: 0,
-    timelineList: [] // 时间轴模板列表数据
+    activeIndex: 1,
+    timelineList: [], // 时间轴模板列表数据
+    diaryActiveIndex: 0,
+    coverList: [],
+    coverSelected: 0,
+    paperList: [],
+    paperSelected: 0,
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
     this.setData({
       activeIndex: index
+    });
+  },
+  navigateToSubPage(event) {
+    const index = event.currentTarget.dataset.index;
+    this.setData({
+      diaryActiveIndex: index
     });
   },
   addEvent(e) {
@@ -23,6 +34,12 @@ Page({
       url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index),
     })
   },
+  selectCover(e){
+    const index = e.currentTarget.dataset.index;
+    this.setData({
+      coverSelected: index
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -33,6 +50,12 @@ Page({
         { id: 1 , name:'艺术的模板'},
         { id: 2 , name:'无敌的模板'},
         { id: 3 , name:'超级的模板'}
+      ],
+      coverList: [
+        { id: 0 , name:'美丽', selected:false},
+        { id: 1 , name:'艺术', selected:false},
+        { id: 2 , name:'无敌', selected:false},
+        { id: 3 , name:'超级', selected:false}
       ]
     });
   },

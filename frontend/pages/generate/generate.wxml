@@ -1,9 +1,9 @@
 <!--pages/generate/generate.wxml-->
-<view class="sub-nav">
-  <text class="sub-nav-item {{activeIndex==0?'active':''}}" bindtap="navigateToPage" data-index="0">时间轴</text>
-  <text class="sub-nav-item {{activeIndex==1?'active':''}}" bindtap="navigateToPage" data-index="1">日记本</text>
-  <text class="sub-nav-item {{activeIndex==2?'active':''}}" bindtap="navigateToPage" data-index="2">小视频</text>
-  <text class="sub-nav-item {{activeIndex==3?'active':''}}" bindtap="navigateToPage" data-index="3">折线图</text>
+<view class="nav">
+  <text class="nav-item {{activeIndex==0?'active':''}}" bindtap="navigateToPage" data-index="0">时间轴</text>
+  <text class="nav-item {{activeIndex==1?'active':''}}" bindtap="navigateToPage" data-index="1">日记本</text>
+  <text class="nav-item {{activeIndex==2?'active':''}}" bindtap="navigateToPage" data-index="2">小视频</text>
+  <text class="nav-item {{activeIndex==3?'active':''}}" bindtap="navigateToPage" data-index="3">折线图</text>
 </view>
 
 <view class="container" style="width: 700rpx; height: 1077rpx; display: flex; box-sizing: border-box">
@@ -12,14 +12,33 @@
     <view class="timeline-list">
       <block wx:for="{{timelineList}}" wx:key="index">
         <view class="timeline-item"  data-category="timeline" data-index="{{index}}" bindtap="addEvent">
-          <image class="timeline-image" src="/image/generate/timeline_{{index}}.png"></image>
+          <image class="timeline-image" src="/image/generate/timeline/timeline_{{index}}.png"></image>
           <text class="timeline-name">{{item.name}}</text>
         </view>
       </block>
     </view>
   </block>
   <block wx:if="{{activeIndex==1}}">
-    <view>日记本页面</view>
+    <view class="sub-nav">
+      <text class="sub-nav-item {{diaryActiveIndex==0?'active':''}}" bindtap="navigateToSubPage" data-index="0">封面</text>
+      <text class="sub-nav-item {{diaryActiveIndex==1?'active':''}}" bindtap="navigateToSubPage" data-index="1">纸张</text>
+    </view>
+    <block wx:if="{{diaryActiveIndex==0}}">
+      <!-- 封面 -->
+      <image class="selected-image" src="/image/generate/timeline/timeline_{{coverSelected}}.png"></image>
+      <scroll-view class="scroll-view" scroll-y="true">
+      <view class="cover-list">
+        <block wx:for="{{coverList}}" wx:key="index">
+          <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectCover">
+            <image class="cover-image" src="/image/generate/timeline/timeline_{{index}}.png"></image>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+    </block>
+    <block wx:if="{{diaryActiveIndex==1}}">
+      <!-- 纸张 -->
+    </block>
   </block>
   <block wx:if="{{activeIndex==2}}">
     <view>小视频页面</view>
