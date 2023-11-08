@@ -1,0 +1,6 @@
+<!--pages/plan/all_plan/all_plan.wxml-->
+<view class="line" style="margin-bottom: 3px;"></view>
+<view id="title_bar">
+  <text id="title" decode>计 &nbsp;划 &nbsp;表</text>
+</view>
+<view class="line" style="margin-top: 3px;"></view>

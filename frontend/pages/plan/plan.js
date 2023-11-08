@@ -5,9 +5,26 @@ Page({
    * 页面的初始数据
    */
   data: {
-    todoList: ['任务 1', '任务 2', '任务 3', '任务 4', '任务 5', '任务 6',  '任务 7' ],
-    planList: ['英语能力提升', '钢琴计划', '计划 3', '计划 4', '计划 5'],
+    todoList: [],
+    completeList: [],
+    planList: [],
     host_: 'http://127.0.0.1:8090/'
+  },
+
+  onLoad(options) {
+    // 加载近七天完成的任务
+    // 加载需要显示的plan
+    this.setData({
+      todoList: [{task: '任务 1', leftDay: '1', complete: false}, 
+                 {task: '任务 2', leftDay: '2', complete: false}, 
+                 {task: '任务 3', leftDay: '3', complete: false},
+                 {task: '任务 4', leftDay: '4', complete: false},
+                 {task: '任务 5', leftDay: '5', complete: false},
+                 {task: '任务 6', leftDay: '6', complete: true},
+                 {task: '任务 7', leftDay: '7', complete: true},
+                 {task: '任务 8', leftDay: '7', complete: true}],
+      planList: ['英语能力提升', '钢琴计划']
+    })
   },
 
   goToTodoList(e) {
@@ -17,37 +34,57 @@ Page({
       url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue),
     })
   },
-  showInput: function() {
-    this.setData({
-      showInput: true
-    });
-  },
-  addPlan(e) {
+
+  goToAllPlan(e) {
     wx.navigateTo({
-      url: '/pages/plan/create_plan/create_plan',
+      url: '/pages/plan/all_plan/all_plan',
     })
-    // const value = e.detail.value;
-    // console.log(value)
-    // if (!value) {
-    //   console.log("here");
-    //   this.setData({
-    //     showInput: false
-    //   })
-    //   return
-    // }
-    // let planList = this.data.planList.slice()
-    // planList.push(value)
-    // this.setData({
-    //   planList: planList,
-    //   showInput: false
-    // })
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-
+  completeTask(e) {
+    var taskN = parseInt(e.target.id.substring(8))
+    console.log('index: ', taskN)
+    var todoList = this.data.todoList
+    const task = todoList.splice(taskN, 1)[0] // 去掉第k个元素
+    var index
+    if(! task.complete) {
+      // 插入到 第一个已完成且剩余天数更多的元素 的位置
+      index = todoList.findIndex(obj => (obj.complete && obj.leftDay > task.leftDay))
+      if (index === -1) {
+        // 未找到，插入到最后
+        index = todoList.length 
+      }
+    }
+    else {
+      index = todoList.findIndex(obj => ! obj.complete)
+      console.log(index)
+      if (index === -1) {
+        // 不存在未完成元素，直接插入到开头
+        index = 0;
+        console.log(index)
+      }
+      else{
+        // 存在未完成元素，插入到 第一个未完成且剩余天数更多的元素 的位置
+        index = todoList.findIndex(obj => (! obj.complete && obj.leftDay > task.leftDay))
+        console.log(index)
+        if (index === -1) {
+          // 未找到，插入到 第一个已完成元素 的位置
+          index = todoList.findIndex(obj => obj.complete)
+          console.log(index)
+          if(index === -1){
+            // 未找到，插入到最后
+            index = todoList.length 
+            console.log(index)
+          }
+        }
+      }
+    }
+    task.complete = ! task.complete
+    console.log('final index: ', index)
+    todoList.splice(index, 0, task) // 插入
+    this.setData({
+      todoList: todoList
+    })
   },
 
   /**

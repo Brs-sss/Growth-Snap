@@ -13,11 +13,11 @@
   color: #4095E5;
 }
 
-.scroll-view {
-  height: 35vh; 
+.content {
+  height: auto; 
   width: 50vh;
   overflow-y: scroll; 
-  background-color: #4095e52c;
+  background-color: #78beff2c;
   margin-top: 1vh;
   border-radius: 1vh;
 }
@@ -33,35 +33,29 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 1vh;
+  margin-bottom: 1px;
+  margin-top: 1px;
   height: 2vh;
 }
 
-.completed {
-  text-decoration: line-through;
+.todo-item checkbox .wx-checkbox-input{
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
 }
 
-.btn-area{
-  width: 100%;
-  height: 5vh;
-  text-align: right;
+.task_name {
+  position: relative;
+  left: 1vw;
+  font-size: 16px;
 }
 
-.btn-area button{
-  margin-top: 1vh;
-  height: 4vh;
-  width: 5vh;
+.left_days {
+  position: absolute;
+  right: 5vw;
 
-  background: #f0f8ff;
-  border: 1rpx solid #4095E5;
-  border-radius: 10rpx;
-  font-size: 28rpx;
-  color: #4095E5;
-
-  display: flex;
-  float: right;
-  align-items: center;
-  justify-content: center;
+  color: rgb(150, 150, 150);
+  font-size: 15px;
 }
 
 .container_plan {
@@ -73,6 +67,8 @@
 }
 
 .plan-header {
+  display: flex;
+  width: 70vh;
   font-size: 4vh;
   color: #4095E5;
 }
@@ -113,9 +109,9 @@
 }
 
 .image-arrow {
-  width: 60rpx;
-  height: 60rpx;
-  margin-top: -5vh;
-  margin-left: 40vh;
+  width: 100rpx;
+  height: 100rpx;
+  margin-top: -16rpx;
+  position: absolute;
   right: 0; /* 靠右调节 */
 }

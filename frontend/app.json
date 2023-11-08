@@ -13,7 +13,9 @@
     "pages/user/user",
     "pages/user/family/family",
     "pages/user/family/addmember/addmember",
-    "pages/user/child/child"
+    "pages/user/child/child",
+    "pages/plan/all_plan/all_plan",
+    "pages/plan/create_plan/create_plan"
   ],
   "tabBar":{
     "color": "#666666",
