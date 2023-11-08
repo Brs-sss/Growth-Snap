@@ -1,3 +1,9 @@
 <!--pages/generate/add_event/add_event.wxml-->
 
-<text>选择事件，用{{templateIndex}}号模板导出{{generateCategory}}的界面</text>
+<view class="header">通过标签选择</view>
+<view class="container_tag">
+  <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
+    <text class="tag-text">{{item.info}}</text>
+  </view>
+</view>
+

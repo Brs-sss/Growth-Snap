@@ -6,9 +6,33 @@ Page({
    */
   data: {
     generateCategory:'',
-    templateIndex: ''
+    templateIndex: '',
+    tags: [], // 已保存的标签列表
+    selectedTags: [], // 已选中的标签列表
+    eventList: [], //事件列表
+    selectedEvents: [], //已选中的事件列表
   },
+  toggleTag: function(e) {
+    const { index } = e.currentTarget.dataset;
 
+    const { selectedTags } = this.data;
+    const tag = this.data.tags[index].info;
+    const tagIndex = selectedTags.indexOf(tag);
+    if (tagIndex !== -1) {
+      selectedTags.splice(tagIndex, 1); // 取消选中
+      this.data.tags[index].checked = false ;
+    } else {
+      selectedTags.push(tag); // 选中
+      this.data.tags[index].checked = true ;
+    }
+    this.setData({
+      selectedTags: selectedTags,
+      ['tags[' + index + '].checked']: this.data.tags[index].checked 
+    });
+
+    console.log("index",index)
+    console.log(this.data.tags[index].checked)
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -18,7 +42,13 @@ Page({
     console.log('category', category);
     this.setData({
       generateCategory: category,
-      templateIndex: index
+      templateIndex: index,
+      tags: [
+        {info: '亲子', checked: false},
+        {info: '自然', checked: false},
+        {info: '阅读', checked: false},
+        {info: '生日', checked: false},
+      ]
     });
   },
 
