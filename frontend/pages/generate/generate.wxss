@@ -106,6 +106,7 @@
   box-sizing: border-box; /* 边框盒模型设置为border-box，包括padding和border在内的宽度不会超出设定的宽度 */
 }
 
+
 .cover-image {
   width: 15vh;
   height: 20vh;
@@ -114,10 +115,24 @@
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
 }
 
+.cover-image.selected{
+  border: 0.6vh solid #4095E5; /* 设置边框宽度和颜色 */
+  border-radius: 1vh; /* 可选：设置边框圆角 */
+  /* padding: 8rpx; 可选：设置内边距，以使内容与边框之间有一些间距 */
+}
+
+.diary-input{
+  border: 0.1vh solid #4095E5;
+  background-color: #f7f5f5;
+  margin-top: -650rpx;
+  margin-left: 450rpx;
+  z-index: 100;
+  width: 210rpx;
+  height: 40rpx;
+}
+
 .submit{
   position: relative;
-  left: 240rpx;
-  top: -674rpx;
   height: 68rpx;
   background-color: #4095E5;
   color: #fff;

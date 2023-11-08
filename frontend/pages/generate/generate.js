@@ -5,13 +5,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeIndex: 1,
+    activeIndex: 1, // 当前显示的子页面
     timelineList: [], // 时间轴模板数据
     diaryActiveIndex: 0,
     coverList: [],  // 日记本封面模板数据 
     coverSelected: 0,
     paperList: [],  // 日记本纸张模板数据
     paperSelected: 0,
+    diaryTitle: '',// 日记本标题
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
@@ -44,6 +45,11 @@ Page({
     const index = e.currentTarget.dataset.index;
     this.setData({
       paperSelected: index
+    });
+  },
+  handleInputTitle(e) {  //输入标题的处理
+    this.setData({
+      diaryTitle: e.detail.value
     });
   },
   /**
