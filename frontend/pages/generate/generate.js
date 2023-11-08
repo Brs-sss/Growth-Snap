@@ -5,13 +5,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeIndex: 1,
-    timelineList: [], // 时间轴模板列表数据
+    activeIndex: 1, // 当前显示的子页面
+    timelineList: [], // 时间轴模板数据
     diaryActiveIndex: 0,
-    coverList: [],
+    coverList: [],  // 日记本封面模板数据 
     coverSelected: 0,
-    paperList: [],
+    paperList: [],  // 日记本纸张模板数据
     paperSelected: 0,
+    diaryTitle: '',// 日记本标题
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
@@ -40,6 +41,17 @@ Page({
       coverSelected: index
     });
   },
+  selectPaper(e){
+    const index = e.currentTarget.dataset.index;
+    this.setData({
+      paperSelected: index
+    });
+  },
+  handleInputTitle(e) {  //输入标题的处理
+    this.setData({
+      diaryTitle: e.detail.value
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -56,6 +68,17 @@ Page({
         { id: 1 , name:'艺术', selected:false},
         { id: 2 , name:'无敌', selected:false},
         { id: 3 , name:'超级', selected:false}
+      ],
+      paperList: [
+        { id: 0 , name:'美丽', selected:false},
+        { id: 1 , name:'艺术', selected:false},
+        { id: 2 , name:'无敌', selected:false},
+        { id: 3 , name:'超级', selected:false},
+        { id: 4 , name:'艺术', selected:false},
+        { id: 5 , name:'无敌', selected:false},
+        { id: 6 , name:'超级', selected:false},
+        { id: 7 , name:'艺术', selected:false},
+        { id: 8 , name:'艺术', selected:false},
       ]
     });
   },
