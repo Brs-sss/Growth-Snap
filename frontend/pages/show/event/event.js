@@ -87,7 +87,8 @@ Page({
                 'tags':that.data.tags,
                 'date':formattedDate,
                 'time':currentTimeString,
-                'author':"大壮", //todo
+                'author':"大壮", //todo,
+                'type':'event'
               },
               success:function(res){
                 console.log('success return')

@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/register', views.register, name='register'),
     path('api/show/event/submit', views.submitEvent, name='submit_event'),
     path('api/show/data/submit', views.submitData, name='submit_data'),
+    path('api/show/data/getkeys', views.getKeys, name='submit_data'),
     path('api/register_family', views.registerFamily, name='register_family'),
     path('api/getSHA256', views.getSHA256, name='getsha256'),
     path('api/show/event/upload_image', views.addEventImage, name='upload_image'),
@@ -21,6 +22,8 @@ urlpatterns = [
     path('api/user/add_child', views.addChild, name='add_child'),
     path('api/user/add_child_image', views.addChildImage, name='add_child_image'),
     path('api/user/get_family_info', views.getFamilyInfo, name='get_family_info'),
+    path('api/show/event/detail',views.loadEventDetail,name='event_detail'),
+    path('api/show/text/detail',views.loadTextDetail,name='text_detail'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

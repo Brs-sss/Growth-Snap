@@ -4,9 +4,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    keys: ['身高', '体重', '数学成绩', '语文成绩'],
-    loadedKeys: ['身高', '体重'],
-    unloadedKeys: ['数学成绩', '语文成绩'],
+    keys: [],
+    loadedKeys: [],
+    unloadedKeys: [],
     records: [],
 
     startAdd: false,
@@ -33,14 +33,26 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // get(api, items) & get(api, unloadedItems)
-    // this.setData({
-    //   unloadedItems: this.data.keys
-    // })
-
-    // this.setData({
-    //   submitHeight: String.toString(window.innerHeights - 140)
-    // })
+    var pointer = this
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        var openid = res.data
+        wx.request({
+          url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
+          method:'GET',
+          success:function(res){
+            pointer.setData({
+              keys: res.data.keyList,
+              unloadedKeys: res.data.keyList
+            })
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
+    })
 
     // 设置提交按钮高度
     this.updataSubmitHeight()

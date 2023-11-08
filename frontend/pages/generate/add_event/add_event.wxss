@@ -1,1 +1,38 @@
 /* pages/generate/add_event/add_event.wxss */
+
+.header{
+  margin-top: 2vh;
+  margin-left: 2vh;
+}
+
+.container_tag{
+  margin-top: 2vh;
+  margin-left: 2vh;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 15px; /* 标签之间的间距 */
+}
+
+.tag {
+  height: 15px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #4095E5;
+  cursor: pointer;
+}
+
+.tag.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tag .tag-text {
+  /* margin-bottom: 3px; */
+  font-size: 14px;
+}
