@@ -1,6 +1,6 @@
 <!--pages/plan/plan.wxml-->
 <view class="container_todo">
-  <text class="todo-header"> 七天内的待办</text>
+  <text class="todo-header"> 七天内的TODO</text>
   <view class="content" scroll-y="true">
     <view class="todo-list">
       <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
@@ -29,7 +29,7 @@
 </view>
 <view class="container_plan">
   <view class="plan-header">
-    <view> 计划表 </view>
+    <view> 所有计划 </view>
     <image class="image-arrow" src="/image/user/arrow.png" bind:tap="goToAllPlan"></image>
   </view>
   <view class="content">

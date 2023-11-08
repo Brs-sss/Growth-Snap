@@ -2,20 +2,20 @@
 
 .container_todo{
   position: relative;
-  left: 7.5%;
-  width: 80%;
+  left: 5%;
+  width: 90%;
   margin-bottom: 3vh;
   margin-top: 3vh;
 }
 
 .todo-header {
-  font-size: 4vh;
+  font-size: 3vh;
   color: #4095E5;
 }
 
 .content {
   height: auto; 
-  width: 50vh;
+  width: 100%;
   overflow-y: scroll; 
   background-color: #78beff2c;
   margin-top: 1vh;
@@ -60,16 +60,16 @@
 
 .container_plan {
   position: relative;
-  left: 7.5%;
-  width: 80%;
+  left: 5%;
+  width: 90%;
   margin-bottom: 3vh;
-  margin-top: 3vh;
+  margin-top: 4vh;
 }
 
 .plan-header {
   display: flex;
   width: 70vh;
-  font-size: 4vh;
+  font-size: 3vh;
   color: #4095E5;
 }
 
@@ -77,11 +77,12 @@
   display: flex;
   flex-direction: column;
   margin-top: 1vh;
+  width: 100%;
 }
 
 .plan-item {
   padding: 2vh;
-  width: 50vh;
+  width: 100%;
   height: 2vh;
   font-size: large;
   margin-bottom: 1vh;
@@ -109,8 +110,8 @@
 }
 
 .image-arrow {
-  width: 100rpx;
-  height: 100rpx;
+  width: 90rpx;
+  height: 90rpx;
   margin-top: -16rpx;
   position: absolute;
   right: 0; /* 靠右调节 */
