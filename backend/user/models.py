@@ -71,7 +71,7 @@ class Event(BaseRecord):
 class Text(BaseRecord):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.record_type = 'event'
+        self.record_type = 'text'
 
     title = models.CharField(max_length=128)
     content = models.CharField(max_length=1024)

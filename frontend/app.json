@@ -18,6 +18,7 @@
     "pages/user/child/child",
     "pages/user/child/addchild/addchild",
     "pages/show/event_detail/event_detail"
+    "pages/show/text_detail/text_detail"
   ],
   "tabBar": {
     "color": "#666666",
