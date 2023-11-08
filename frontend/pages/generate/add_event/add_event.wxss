@@ -36,3 +36,75 @@
   /* margin-bottom: 3px; */
   font-size: 14px;
 }
+
+
+.event-list{
+  position: absolute;
+  margin-top: 100rpx;
+  margin-left: 50rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-item {
+  display: flex;
+  flex-direction: column;
+  width: calc(50% - 10rpx); /* 每行显示三个元素，间隔为10rpx */
+  margin-top: 10rpx; /* 设置底部间距 */
+  box-sizing: border-box; /* 边框盒模型设置为border-box，包括padding和border在内的宽度不会超出设定的宽度 */
+}
+
+.event-image {
+  width: 18vh;
+  height: 18vh;
+  border-radius: 1vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.event-title{
+  font-size: 1.8vh;
+  white-space: nowrap; /* 防止文本换行 */
+  overflow: hidden;     /* 隐藏超出容器的部分文本 */
+  text-overflow: ellipsis; /* 超出部分显示省略号 */
+  max-width: 300rpx; /* 设置文本容器的最大宽度*/
+  margin-bottom: 1vh;
+  margin-top: 12vh;
+}
+
+.event-image.selected{
+  width: 17vh;
+  height: 17vh;
+  border: 0.5vh solid #4095E5; /* 设置边框宽度和颜色 */
+  border-radius: 1vh; /* 可选：设置边框圆角 */
+  /* padding: 8rpx; 可选：设置内边距，以使内容与边框之间有一些间距 */
+}
+
+.select-icon{
+  margin-top: -300rpx;
+  margin-left: 170rpx;
+  height: 8vh;
+  width: 8vh;
+  z-index: -1;
+}
+
+.select-icon.selected{
+  z-index: 1;
+}
+
+.container-button{
+  position: relative;
+}
+
+.submit{
+  position: fixed;
+  margin-top: 1150rpx;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 3vh;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 2.5vh;
+  left: 200rpx; 
+}
