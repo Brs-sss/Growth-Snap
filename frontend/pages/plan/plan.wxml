@@ -1,33 +1,50 @@
 <!--pages/plan/plan.wxml-->
 <view class="container_todo">
-  <text class="todo-header">七天内的待办</text>
-  <scroll-view class="scroll-view" scroll-y="true">
-  <view class="todo-list">
-    <block wx:for="{{todoList}}" wx:for-index="index" wx:key="index">
-      <view class="todo-item">
-        <checkbox value="{{item.completed}}" bindchange="toggleComplete" data-index="index"></checkbox>
-        <text class="{{item.completed ? 'completed' : ''}}">{{item}}</text>
-      </view>
-      <view class="line"></view>
-    </block>
+  <text class="todo-header"> 七天内的待办</text>
+  <view class="content" scroll-y="true">
+    <view class="todo-list">
+      <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
+        <!-- 还未完成的计划项 -->
+        <view class="todo-item" wx:if="{{!item.complete}}">
+          <checkbox-group id="checkbox{{index}}" bindchange="completeTask">
+            <checkbox></checkbox>
+          </checkbox-group>
+          <view class="task_name">{{item.task}}</view>
+          <view class="left_days" style="color:rgb(245, 15, 64)" wx:if="{{item.leftDay < 3}}">
+          剩余{{item.leftDay}}天</view>
+          <view class="left_days" wx:else>剩余{{item.leftDay}}天</view>
+        </view>
+        <!-- 已经完成的计划项 -->
+        <view class="todo-item" wx:else>
+          <checkbox-group id="checkbox{{index}}" bindchange="completeTask">
+            <checkbox value="{{item.task}}" checked="ture" bindChange="completeTask"></checkbox>
+          </checkbox-group>
+          <view class="task_name" style="color: lightgray">{{item.task}}</view>
+          <view class="left_days" style="color: lightgray">已完成</view>
+        </view>
+        <view class="line"></view>
+      </block>
+    </view>
   </view>
-</scroll-view>
 </view>
 <view class="container_plan">
-  <text class="plan-header">所有计划</text>
-  <!-- <scroll-view class="scroll-view" scroll-y="true"> -->
+  <view class="plan-header">
+    <view> 计划表 </view>
+    <image class="image-arrow" src="/image/user/arrow.png" bind:tap="goToAllPlan"></image>
+  </view>
+  <view class="content">
   <view class="plan-list">
     <block wx:for="{{planList}}" wx:key="index">
       <view class="plan-item"  data-value='{{item}}' bindtap="goToTodoList">{{item}}</view>
-      <image class="image-arrow" src="/image/user/arrow.png"></image>
+      <!-- <image class="image-arrow" src="/image/user/arrow.png"></image> -->
       <view class="line"></view>
     </block>
     <view class="container_add">
-      <view class="add-plan" bindtap="addPlan">
-        <text class="add-text">+计划</text>
+      <view class="add-plan" bindtap="goToAllPlan">
+        <text class="add-text">管理所有计划</text>
       </view>
       <!-- <input wx:if="{{showInput}}" type="text" class="plan-input" bindblur="addPlan" placeholder="请添加计划"/> -->
     </view>
   </view>
-<!-- </scroll-view> -->
+</view>
 </view>

@@ -1,10 +1,11 @@
 /* pages/plan/plan.wxss */
 
 .container_todo{
-  width: 80vh;
+  position: relative;
+  left: 7.5%;
+  width: 80%;
   margin-bottom: 3vh;
-  margin-top: 2vh;
-  margin-left: 2vh;
+  margin-top: 3vh;
 }
 
 .todo-header {
@@ -12,11 +13,11 @@
   color: #4095E5;
 }
 
-.scroll-view {
-  height: 40vh; 
+.content {
+  height: auto; 
   width: 50vh;
   overflow-y: scroll; 
-  background-color: #4095e52c;
+  background-color: #78beff2c;
   margin-top: 1vh;
   border-radius: 1vh;
 }
@@ -32,21 +33,42 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 1vh;
+  margin-bottom: 1px;
+  margin-top: 1px;
   height: 2vh;
 }
 
-.completed {
-  text-decoration: line-through;
+.todo-item checkbox .wx-checkbox-input{
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.task_name {
+  position: relative;
+  left: 1vw;
+  font-size: 16px;
+}
+
+.left_days {
+  position: absolute;
+  right: 5vw;
+
+  color: rgb(150, 150, 150);
+  font-size: 15px;
 }
 
 .container_plan {
-  width: 80vh;
-  margin-top: 2vh;
-  margin-left: 2vh;
+  position: relative;
+  left: 7.5%;
+  width: 80%;
+  margin-bottom: 3vh;
+  margin-top: 3vh;
 }
 
 .plan-header {
+  display: flex;
+  width: 70vh;
   font-size: 4vh;
   color: #4095E5;
 }
@@ -87,9 +109,9 @@
 }
 
 .image-arrow {
-  width: 60rpx;
-  height: 60rpx;
-  margin-top: -5vh;
-  margin-left: 40vh;
+  width: 100rpx;
+  height: 100rpx;
+  margin-top: -16rpx;
+  position: absolute;
   right: 0; /* 靠右调节 */
 }
