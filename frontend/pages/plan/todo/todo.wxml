@@ -5,7 +5,7 @@
     <checkbox-group wx:for="{{todos}}" wx:for-index="index" wx:key="index" bindchange="toggleComplete">
       <view class="item">
         <checkbox value="{{item.value}}"  data-index="index"></checkbox>
-        <text class="{{item.completed ? 'completed' : ''}}">{{item.value}}</text>
+        <text class="{{item.checkd ? 'checkd' : ''}}">{{item.value}}</text>
         
       </view>
       
@@ -24,14 +24,14 @@
     <text class="today">{{today}}</text>
       <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
         <!-- 还未完成的计划项 -->
-        <view class="todo-item" wx:if="{{!item.complete}}">
+        <view class="todo-item" wx:if="{{!item.check}}">
           <view class="todo-checkbox-text">
-            <checkbox-group id="checkbox{{index}}" bindchange="completeTask">
+            <checkbox-group id="checkbox{{index}}" bindchange="checkTask">
               <checkbox></checkbox>
             </checkbox-group>
             <view class="task_name">{{item.task}}</view>
           </view>
-          <view class="left_days" style="color:rgb(245, 15, 64)" wx:if="{{item.ddl < '2023-11-10'}}">
+          <view class="left_days" style="color:rgb(245, 15, 64)" wx:if="{{item.ddl < a_week_later }}">
           {{item.ddl}}</view>
           <view class="left_days" wx:else>{{item.ddl}}</view>
             <view class="delete-btn" bindtap="deleteTodo" data-index="{{index}}">
@@ -51,8 +51,8 @@
         </view>
         <!-- 已经完成的计划项 -->
         <view class="todo-item" wx:else>
-          <checkbox-group id="checkbox{{index}}" bindchange="completeTask">
-            <checkbox value="{{item.task}}" checked="ture" bindChange="completeTask"></checkbox>
+          <checkbox-group id="checkbox{{index}}" bindchange="checkTask">
+            <checkbox value="{{item.task}}" checked="ture" bindChange="checkTask"></checkbox>
           </checkbox-group>
           <view class="task_name" style="color: lightgray; text-decoration: line-through;">{{item.task}}</view>
           <view class="left_days" style="color: lightgray">已完成</view>

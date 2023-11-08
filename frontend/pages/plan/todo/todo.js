@@ -7,14 +7,15 @@ Page({
   data: {
     planValue: '',
     icon: '',
-    todoList: [{task: '软工ppt', ddl: '2023-11-08', complete: false}, 
-                 {task: '软工中期答辩', ddl: '2023-11-09', complete: false}, 
-                 {task: 'buflab', ddl: '2023-11-20', complete: false},
-                 {task: 'FTP验收', ddl: '2023-11-4', complete: true},
-                 {task: 'Project FTP', ddl: '2023-10-23', complete: true}],
-    completeList: [],
+    todoList: [{task: '软工ppt', ddl: '2023-11-08', check: false}, 
+                 {task: '软工中期答辩', ddl: '2023-11-09', check: false}, 
+                 {task: 'buflab', ddl: '2023-11-20', check: false},
+                 {task: 'FTP验收', ddl: '2023-11-04', check: true},
+                 {task: 'Project FTP', ddl: '2023-10-23', check: true}],
+    checkList: [],
     newTodo: '',
-    today:''
+    today:'',
+    a_week_later:''
   },
   inputChange(e) {
     this.setData({
@@ -40,13 +41,13 @@ Page({
     todoList.push({
       task: value,
       ddl: 9,
-      completed: false
+      check: false
     })
     let taskN = todoList.length-1
     const task = todoList.splice(taskN, 1)[0] // 去掉第k个元素
     var index
      {
-      index = todoList.findIndex(obj => ! obj.complete)
+      index = todoList.findIndex(obj => ! obj.check)
       console.log(index)
       if (index === -1) {
         // 不存在未完成元素，直接插入到开头
@@ -55,11 +56,11 @@ Page({
       }
       else{
         // 存在未完成元素，插入到 第一个未完成且剩余天数更多的元素 的位置
-        index = todoList.findIndex(obj => (! obj.complete && obj.ddl < task.ddl))
+        index = todoList.findIndex(obj => (! obj.check && obj.ddl < task.ddl))
         console.log(index)
         if (index === -1) {
           // 未找到，插入到 第一个已完成元素 的位置
-          index = todoList.findIndex(obj => obj.complete)
+          index = todoList.findIndex(obj => obj.check)
           console.log(index)
           if(index === -1){
             // 未找到，插入到最后
@@ -86,18 +87,17 @@ Page({
     // console.log(todos)
     // console.log(e.detail.value)
     for (let i = 0, lenI = todos.length; i < lenI; ++i) {
-      // todos[i].completed = false
-      console.log(todos[i].completed, todos[i].checked)
+      // todos[i].checkd = false
 
       for (let j = 0, lenJ = values.length; j < lenJ; ++j) {
         if (todos[i].value === values[j]) {
-          todos[i].completed = true
+          todos[i].checkd = true
           break
         }
       }
     }
-    //todos[index].completed = !todos[index].completed
-    //console.log(index, todos[index].completed)
+    //todos[index].checkd = !todos[index].checkd
+    //console.log(index, todos[index].checkd)
     this.setData({
       todos: todos
     })
@@ -113,10 +113,51 @@ Page({
   },
   bindDateChange: function(e) {
     console.log('picker发送选择改变，携带值为', e.detail.value)
-    const index = e.currentTarget.dataset.index
+    let index = e.currentTarget.dataset.index
     let todoList = this.data.todoList
     console.log(index)
+    console.log("here11")
     todoList[index].ddl = e.detail.value
+    console.log("here")
+    const task = todoList.splice(index, 1)[0] // 去掉第k个元素
+    console.log("task:", task)
+    if(task.check) {
+      // 已完成的改变时间
+      // 插入到 第一个已完成且剩余天数更多的元素 的位置
+      index = todoList.findIndex(obj => (obj.check && this.calculateDaysDifference(obj.ddl) > this.calculateDaysDifference(task.ddl)))
+      if (index === -1) {
+        // 未找到，插入到最后
+        index = todoList.length 
+      }
+    }
+    else {
+      // 未完成的改变时间
+      index = todoList.findIndex(obj => ! obj.check)
+      console.log(index)
+      if (index === -1) {
+        // 不存在未完成元素，直接插入到开头
+        index = 0;
+        console.log(index)
+      }
+      else{
+        // 存在未完成元素，插入到 第一个未完成且ddl更后的元素 的位置
+        console.log("difference:", this.calculateDaysDifference(task.ddl))
+        index = todoList.findIndex(obj => (! obj.check && this.calculateDaysDifference(obj.ddl) >= this.calculateDaysDifference(task.ddl)))
+        console.log(index)
+        if (index === -1) {
+          // 未找到，插入到 第一个已完成元素 的位置
+          index = todoList.findIndex(obj => obj.check)
+          console.log(index)
+          if(index === -1){
+            // 未找到，插入到最后
+            index = todoList.length 
+            console.log(index)
+          }
+        }
+      }
+    }
+    console.log('final index: ', index)
+    todoList.splice(index, 0, task) // 插入
     this.setData({
       todoList: todoList
     })
@@ -135,22 +176,24 @@ Page({
     return daysDiff;
   },
   
-  completeTask(e) {
+  checkTask(e) {
     var taskN = parseInt(e.target.id.substring(8))
     console.log('index: ', taskN)
     var todoList = this.data.todoList
     const task = todoList.splice(taskN, 1)[0] // 去掉第k个元素
     var index
-    if(! task.complete) {
+    if(! task.check) {
+      // 没完成的要更新为完成的
       // 插入到 第一个已完成且剩余天数更多的元素 的位置
-      index = todoList.findIndex(obj => (obj.complete && obj.ddl > task.ddl))
+      index = todoList.findIndex(obj => (obj.check && this.calculateDaysDifference(obj.ddl) > this.calculateDaysDifference(task.ddl)))
       if (index === -1) {
         // 未找到，插入到最后
         index = todoList.length 
       }
     }
     else {
-      index = todoList.findIndex(obj => ! obj.complete)
+      // 完成的要更新为未完成
+      index = todoList.findIndex(obj => ! obj.check)
       console.log(index)
       if (index === -1) {
         // 不存在未完成元素，直接插入到开头
@@ -158,12 +201,13 @@ Page({
         console.log(index)
       }
       else{
-        // 存在未完成元素，插入到 第一个未完成且剩余天数更多的元素 的位置
-        index = todoList.findIndex(obj => (! obj.complete && obj.ddl > task.ddl))
+        // 存在未完成元素，插入到 第一个未完成且ddl更后的元素 的位置
+        console.log("difference:", this.calculateDaysDifference(task.ddl))
+        index = todoList.findIndex(obj => (! obj.check && this.calculateDaysDifference(obj.ddl) > this.calculateDaysDifference(task.ddl)))
         console.log(index)
         if (index === -1) {
           // 未找到，插入到 第一个已完成元素 的位置
-          index = todoList.findIndex(obj => obj.complete)
+          index = todoList.findIndex(obj => obj.check)
           console.log(index)
           if(index === -1){
             // 未找到，插入到最后
@@ -173,7 +217,7 @@ Page({
         }
       }
     }
-    task.complete = ! task.complete
+    task.check = ! task.check
     console.log('final index: ', index)
     todoList.splice(index, 0, task) // 插入
     this.setData({
@@ -190,10 +234,23 @@ Page({
     let today = new Date()
     console.log(today.toLocaleString())
     let today_formatted = today.toLocaleDateString();
+    // 获取今天的时间戳（以毫秒为单位）
+    var timestamp = today.getTime();
+    // 计算一周后的时间戳（7天后）
+    var oneWeekLaterTimestamp = timestamp + (7 * 24 * 60 * 60 * 1000);
+    // 创建表示一周后日期的 Date 对象
+    var oneWeekLater = new Date(oneWeekLaterTimestamp);
+    let oneWeekLater_formatted = oneWeekLater.toLocaleDateString();
+    console.log(oneWeekLater_formatted)
+    // 使用字符串操作方法拆分日期字符串
+    var parts = oneWeekLater_formatted.split('/');
+    // 构建转换后的日期字符串
+    var formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
     this.setData({
       planValue: Value.title,
       icon:Value.icon,
-      today: today_formatted
+      today: today_formatted,
+      a_week_later: formattedDate
     });
   },
 
