@@ -17,7 +17,7 @@
   height: auto; 
   width: 100%;
   overflow-y: scroll; 
-  background-color: #78beff2c;
+  /* background-color: #78beff2c; */
   margin-top: 1vh;
   border-radius: 1vh;
 }
@@ -82,10 +82,16 @@
 
 .plan-item {
   padding: 2vh;
+  padding-left: 1vh;
   width: 100%;
   height: 2vh;
   font-size: large;
   margin-bottom: 1vh;
+}
+.plan-name{
+  padding-left: 1vh;
+  position: relative;
+  top: -1vh;
 }
 
 .add-plan{

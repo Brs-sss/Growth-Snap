@@ -23,15 +23,15 @@ Page({
                  {task: '钢琴二级考试', leftDay: '0', complete: true},
                  {task: 'FTP验收', leftDay: '0', complete: true},
                  {task: 'Project FTP', leftDay: '0', complete: true}],
-      planList: ['代码能力提升', '钢琴计划']
+      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}]
     })
   },
 
   goToTodoList(e) {
     const planValue = e.currentTarget.dataset.value;
-    console.log(planValue);
+    console.log(planValue.title);
     wx.navigateTo({
-      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue),
+      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue.title),
     })
   },
 
