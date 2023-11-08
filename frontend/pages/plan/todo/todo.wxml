@@ -54,7 +54,7 @@
           <checkbox-group id="checkbox{{index}}" bindchange="completeTask">
             <checkbox value="{{item.task}}" checked="ture" bindChange="completeTask"></checkbox>
           </checkbox-group>
-          <view class="task_name" style="color: lightgray">{{item.task}}</view>
+          <view class="task_name" style="color: lightgray; text-decoration: line-through;">{{item.task}}</view>
           <view class="left_days" style="color: lightgray">已完成</view>
           <view class="delete-btn" bindtap="deleteTodo" data-index="{{index}}">
           <image src="/image/plan/trash.png" style="height: 3vh; width: 3vh;opacity: 0.3;"/>
