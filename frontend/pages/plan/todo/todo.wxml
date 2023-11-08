@@ -14,9 +14,14 @@
   </view> -->
   
   <view class="container_todo">
-  <text class="todo-header"> {{planValue}}</text>
+  <view>
+    <image src="{{icon}}" style="height: 5vh; width: 5vh; top: 1.5vh; position: relative;"/>
+    <text class="todo-header"> {{planValue}}</text>
+
+  </view>
   <view class="content">
     <view class="todo-list">
+    <text class="today">{{today}}</text>
       <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
         <!-- 还未完成的计划项 -->
         <view class="todo-item" wx:if="{{!item.complete}}">

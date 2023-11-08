@@ -6,13 +6,15 @@ Page({
    */
   data: {
     planValue: '',
+    icon: '',
     todoList: [{task: '软工ppt', ddl: '2023-11-08', complete: false}, 
                  {task: '软工中期答辩', ddl: '2023-11-09', complete: false}, 
                  {task: 'buflab', ddl: '2023-11-20', complete: false},
                  {task: 'FTP验收', ddl: '2023-11-4', complete: true},
                  {task: 'Project FTP', ddl: '2023-10-23', complete: true}],
     completeList: [],
-    newTodo: ''
+    newTodo: '',
+    today:''
   },
   inputChange(e) {
     this.setData({
@@ -183,10 +185,15 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    const planValue = decodeURIComponent(options.plan);
-    console.log('Received plan value:', planValue);
+    const Value = JSON.parse(decodeURIComponent(options.plan));
+    console.log('Received plan value:', Value);
+    let today = new Date()
+    console.log(today.toLocaleString())
+    let today_formatted = today.toLocaleDateString();
     this.setData({
-      planValue: planValue
+      planValue: Value.title,
+      icon:Value.icon,
+      today: today_formatted
     });
   },
 

@@ -29,9 +29,9 @@ Page({
 
   goToTodoList(e) {
     const planValue = e.currentTarget.dataset.value;
-    console.log(planValue.title);
+    console.log(planValue);
     wx.navigateTo({
-      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue.title),
+      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(JSON.stringify(planValue))
     })
   },
 
