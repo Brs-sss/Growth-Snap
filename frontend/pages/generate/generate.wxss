@@ -79,22 +79,21 @@
   z-index: 10;
 }
 
-.selected {
-  background-color: #f2f2f2; /* 选中时的背景色 */
-}
-
-.checkbox {
-  width: 20rpx;
-  height: 20rpx;
-  border: 1rpx solid #ccc;
-  display: inline-block;
-  margin-right: 10rpx;
-  text-align: center;
-  line-height: 20rpx;
+.scroll-view{
+  /* position: relative; 
+  left: -1rpx; 
+  top: 250rpx; */
+  margin-top: 300rpx;
+  overflow-y: scroll; 
+  background-color:#e6e6e6;
+  border-radius: 1vh;
 }
 
 
 .cover-list{
+  position: absolute;
+  margin-top: 100rpx;
+  margin-left: 20rpx;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -103,7 +102,7 @@
 
 .cover-item {
   width: calc(33.3% - 10rpx); /* 每行显示三个cover元素，间隔为10rpx */
-  margin-bottom: 10rpx; /* 设置底部间距 */
+  margin-top: 10rpx; /* 设置底部间距 */
   box-sizing: border-box; /* 边框盒模型设置为border-box，包括padding和border在内的宽度不会超出设定的宽度 */
 }
 
@@ -115,7 +114,16 @@
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
 }
 
-.scroll-view{
-  background-color:#e6e6e6;
-  border-radius: 1vh;
+.submit{
+  position: relative;
+  left: 240rpx;
+  top: -674rpx;
+  height: 68rpx;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+  display: block;
+  box-sizing: border-box;
 }
