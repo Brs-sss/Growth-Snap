@@ -34,6 +34,7 @@
           <block wx:for="{{coverList}}" wx:key="index">
             <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectCover">
               <image class="cover-image {{index==coverSelected ? 'selected' : ''}}" src="/image/generate/cover/cover_{{index}}.png"></image>
+              <image class="select-icon  {{index==coverSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
             </view>
           </block>
         </view>
@@ -46,6 +47,7 @@
           <block wx:for="{{paperList}}" wx:key="index">
             <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectPaper">
               <image class="cover-image {{index==paperSelected ? 'selected' : ''}}" src="/image/generate/paper/paper_{{index}}.png"></image>
+              <image class="select-icon  {{index==paperSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
             </view>
           </block>
         </view>
