@@ -82,6 +82,7 @@ Page({
     //const index = e.currentTarget.dataset.index
     let todos = this.data.todos
     let values = e.detail.value
+    console.log(e)
     console.log(values)
     console.log(e.currentTarget)
     // console.log(todos)
@@ -229,6 +230,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log(options)
     const Value = JSON.parse(decodeURIComponent(options.plan));
     console.log('Received plan value:', Value);
     let today = new Date()

@@ -3,9 +3,16 @@
   <image src="/image/show/add.png" bind:tap="goToCreate"></image>
 </view>
 
-<view wx:for="{{planList}}" wx:for-index="index" class='planContent' wx:key="*this">
-  <image src="/image/plan/planBg/bg{{bgList[index]}}.jpg" class="bgImg"></image>
-  <view class="planName">{{item}}</view>
+<image src="/image/plan/planBg/beach.jpg" class="bgImg"></image>
+<!-- <view id="mainBg"></view> -->
+
+<view wx:for="{{planList}}" wx:for-index="index" wx:key="*this" 
+  bind:tap="goToTodo" class='planContent' data-value='{{item}}'>
+  <!-- <image src="/image/plan/planBg/bg{{bgList[index]}}.jpg" class="bgImg"></image> -->
+  <view class="iconBg"></view>
+  <image class="planIcon" src="{{item.icon}}"/>
+  <text class="planName">{{item.title}}</text>
+  <view class="edit">编辑</view>
 </view>
 
 <view id="placeHolder" style="height: 30px;"></view>

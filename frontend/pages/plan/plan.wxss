@@ -79,6 +79,7 @@
   flex-direction: column;
   margin-top: 1vh;
   width: 100%;
+  overflow: hidden;
 }
 
 .plan-item {

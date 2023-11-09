@@ -5,7 +5,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    planList: ['钢琴计划', '英语', '物理竞赛', '少儿编程', '软工迭代计划', '阴阳师爬塔', '原神', '王者荣耀'],
+    planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},
+               {title:'钢琴计划', icon:'/image/plan/icons/piano.png'},
+               {title:'英语考级', icon:'/image/plan/icons/piano.png'},
+               {title:'阴阳师', icon:'/image/plan/icons/piano.png'},
+               {title:'王者荣耀', icon:'/image/plan/icons/piano.png'},
+               {title:'原神', icon:'/image/plan/icons/piano.png'},],
   },
 
   /**
@@ -27,6 +32,14 @@ Page({
     console.log(e)
     wx.navigateTo({
       url: '/pages/plan/create_plan/create_plan',
+    })
+  },
+
+  goToTodo(e) {
+    const planValue = e.currentTarget.dataset.value;
+    console.log(planValue);
+    wx.navigateTo({
+      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(JSON.stringify(planValue))
     })
   },
 
