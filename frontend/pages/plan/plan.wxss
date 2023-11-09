@@ -2,8 +2,8 @@
 
 .container_todo{
   position: relative;
-  left: 7.5%;
-  width: 80%;
+  left: calc(10vw - 2px);
+  width: 80vw;
   margin-bottom: 3vh;
   margin-top: 3vh;
 }
@@ -15,9 +15,10 @@
 
 .content {
   height: auto; 
-  width: 50vh;
+  width: 80vw;
   overflow-y: scroll; 
-  background-color: #78beff2c;
+  background-color: rgba(135, 207, 235, 0.1);
+  border: 2px solid #4095e580;
   margin-top: 1vh;
   border-radius: 1vh;
 }
@@ -60,7 +61,7 @@
 
 .container_plan {
   position: relative;
-  left: 7.5%;
+  left: calc(10vw - 2px);
   width: 80%;
   margin-bottom: 3vh;
   margin-top: 3vh;

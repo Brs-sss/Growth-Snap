@@ -1,6 +1,11 @@
 <!--pages/plan/all_plan/all_plan.wxml-->
-<view class="line" style="margin-bottom: 3px;"></view>
-<view id="title_bar">
-  <text id="title" decode>计 &nbsp;划 &nbsp;表</text>
+<view id="bar"> 
+  <image src="/image/show/add.png" bind:tap="goToCreate"></image>
 </view>
-<view class="line" style="margin-top: 3px;"></view>
+
+<view wx:for="{{planList}}" wx:for-index="index" class='planContent' wx:key="*this">
+  <image src="/image/plan/planBg/bg{{bgList[index]}}.jpg" class="bgImg"></image>
+  <view class="planName">{{item}}</view>
+</view>
+
+<view id="placeHolder" style="height: 30px;"></view>
