@@ -15,15 +15,15 @@ Page({
     // 加载近七天完成的任务
     // 加载需要显示的plan
     this.setData({
-      todoList: [{task: '任务 1', leftDay: '1', complete: false}, 
-                 {task: '任务 2', leftDay: '2', complete: false}, 
-                 {task: '任务 3', leftDay: '3', complete: false},
-                 {task: '任务 4', leftDay: '4', complete: false},
-                 {task: '任务 5', leftDay: '5', complete: false},
-                 {task: '任务 6', leftDay: '6', complete: true},
-                 {task: '任务 7', leftDay: '7', complete: true},
-                 {task: '任务 8', leftDay: '7', complete: true}],
-      planList: ['英语能力提升', '钢琴计划']
+      todoList: [{task: '软工ppt', leftDay: '1', complete: false}, 
+                 {task: '软工中期答辩', leftDay: '2', complete: false}, 
+                 {task: 'buflab', leftDay: '12', complete: false},
+                 {task: '钢琴比赛', leftDay: '18', complete: false},
+                 {task: '钢琴四级考试', leftDay: '22', complete: false},
+                 {task: '钢琴二级考试', leftDay: '0', complete: true},
+                 {task: 'FTP验收', leftDay: '0', complete: true},
+                 {task: 'Project FTP', leftDay: '0', complete: true}],
+      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}]
     })
   },
 
@@ -31,11 +31,12 @@ Page({
     const planValue = e.currentTarget.dataset.value;
     console.log(planValue);
     wx.navigateTo({
-      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(planValue),
+      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(JSON.stringify(planValue))
     })
   },
 
   goToAllPlan(e) {
+    console.log('gotoallpage')
     wx.navigateTo({
       url: '/pages/plan/all_plan/all_plan',
     })

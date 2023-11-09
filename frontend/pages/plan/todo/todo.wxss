@@ -19,8 +19,8 @@
   flex-direction: row;
   align-items: center;
   margin-bottom: 1vh;
-  height: 4vh;
-  border: 0.1vh solid rgba(220, 220, 220, 0.5);
+  height: 5vh;
+  border-bottom: 0.1vh solid rgba(220, 220, 220, 0.5);
 }
 
 .completed {
@@ -29,7 +29,8 @@
 
 .delete-btn {
   margin-left: auto;
-  margin-right: 2vh;
+  margin-top: 0.5vh;
+  margin-right: 1vh;
   /* background-color: #f44336; */
   color: rgb(182, 1, 1);
   border-radius: 1vh;
@@ -38,22 +39,109 @@
 
 .add-todo {
   width: 90vw;
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   z-index: 2;
   height: 4vh;
-  border: 0.1vh solid rgba(220, 220, 220, 0.5);
-  margin-top: -2vh;
-  z-index: 2;
+  /* border: 0.1vh solid rgba(220, 220, 220, 0.5); */
+  margin-top: 10vh;
+  left: 20px;
+  bottom: 40px;
 }
 
 .todo-input {
   position: relative;
   height: 5vh;
-  margin-top: -4vh;
+  /* margin-top: -4vh; */
   font-size: large;
   background-color: rgb(255, 255, 255);
-  border: 0.2vh solid rgba(220, 220, 220, 0.5);
+  border-bottom: 0.2vh solid rgba(220, 220, 220, 0.5);
   z-index: 1;
+}
+
+
+.container_todo{
+  position: relative;
+  left: 4%;
+  width: 92%;
+  margin-bottom: 3vh;
+  margin-top: 3vh;
+}
+
+.todo-header {
+  font-size: 3vh;
+  color: #4095E5;
+  /* margin-left: 1vh; */
+}
+.today{
+  margin-top: 1vh;
+  margin-left: 2vh;
+  margin-bottom: 1vh;
+}
+.content {
+  height: auto; 
+  width: 100%;
+  overflow-y: scroll; 
+  /* background-color: #78beff2c; */
+  margin-top: 2vh;
+  border-radius: 1vh;
+}
+
+.todo-list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.todo-item {
+  padding: 2vh;
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+  margin-bottom: 1px;
+  margin-top: 1px;
+  height: 5vh;
+}
+
+.todo-item checkbox .wx-checkbox-input{
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border-color: #4095E5;
+}
+
+.task_name {
+  position: relative;
+  left: 1vw;
+  font-size: 16px;
+}
+
+.left_days {
+  position: absolute;
+  margin-top: 7vw;
+  left: 5vw;
+  color: rgb(150, 150, 150);
+  font-size: 15px;
+}
+
+.line {
+  width: 100%;
+  height: 3rpx;
+  background: rgba(220, 220, 220, 0.5);
+}
+
+.image-arrow {
+  width: 100rpx;
+  height: 100rpx;
+  margin-top: -16rpx;
+  position: absolute;
+  right: 0; /* 靠右调节 */
+}
+
+.todo-checkbox-text{
+  display: flex;
+  flex-direction: row;
+  margin-top: -1vw;
 }
