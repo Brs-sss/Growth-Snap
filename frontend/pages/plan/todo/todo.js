@@ -40,7 +40,7 @@ Page({
     let todoList = this.data.todoList.slice()
     todoList.push({
       task: value,
-      ddl: 9,
+      ddl: this.data.today,
       check: false
     })
     let taskN = todoList.length-1
@@ -248,10 +248,14 @@ Page({
     var parts = oneWeekLater_formatted.split('/');
     // 构建转换后的日期字符串
     var formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+    var parts = today_formatted.split('/');
+    // 构建转换后的日期字符串
+    var formattedToday = parts[2] + '-' + parts[0] + '-' + parts[1];
+
     this.setData({
       planValue: Value.title,
       icon:Value.icon,
-      today: today_formatted,
+      today: formattedToday,
       a_week_later: formattedDate
     });
   },

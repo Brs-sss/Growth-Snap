@@ -1,4 +1,6 @@
 <!--pages/plan/plan.wxml-->
+<image src="/image/plan/planBg/beach.jpg" class="bgImg"></image>
+<!-- <view class='placeHolder'></view> -->
 <view class="container_todo">
   <text class="todo-header"> 七天内的TODO</text>
   <view class="content" scroll-y="true">
@@ -19,8 +21,8 @@
           <checkbox-group id="checkbox{{index}}" bindchange="completeTask">
             <checkbox value="{{item.task}}" checked="ture" bindChange="completeTask"></checkbox>
           </checkbox-group>
-          <view class="task_name" style="color: lightgray; text-decoration: line-through;">{{item.task}}</view>
-          <view class="left_days" style="color: lightgray">已完成</view>
+          <view class="task_name" style="color: rgb(70, 101, 109); text-decoration: line-through;">{{item.task}}</view>
+          <view class="left_days" style="color: rgb(70, 101, 109)">已完成</view>
         </view>
         <view class="line"></view>
       </block>
@@ -28,9 +30,9 @@
   </view>
 </view>
 <view class="container_plan">
-  <view class="plan-header">
+  <view class="plan-header" bind:tap="goToAllPlan">
     <view> 所有计划 </view>
-    <image class="image-arrow" src="/image/user/arrow.png" bind:tap="goToAllPlan"></image>
+    <!-- <image class="image-arrow" src="/image/user/arrow.png" bind:tap="goToAllPlan"></image> -->
   </view>
   <view class="content">
   <view class="plan-list">

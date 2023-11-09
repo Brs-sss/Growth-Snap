@@ -1,5 +1,7 @@
 /* pages/plan/todo/todo.wxss */
-
+.placeHolder{
+  height: 10vh;
+}
 .plan-header {
   font-size: 3vh;
   margin-bottom: 4vh;
@@ -44,20 +46,23 @@
   flex-direction: row;
   align-items: center;
   z-index: 2;
-  height: 4vh;
+  height: 6vh;
   /* border: 0.1vh solid rgba(220, 220, 220, 0.5); */
-  margin-top: 10vh;
+  margin-top: 20vh;
   left: 20px;
   bottom: 40px;
+  background-color: rgba(240, 242, 243, 0.397);
+  box-shadow: 2px 2px 6px rgb(141, 137, 137);
+  border-radius: 2vh;
 }
 
 .todo-input {
   position: relative;
-  height: 5vh;
+  height: 7vh;
   /* margin-top: -4vh; */
   font-size: large;
-  background-color: rgb(255, 255, 255);
-  border-bottom: 0.2vh solid rgba(220, 220, 220, 0.5);
+  margin-left: 2vh;
+  /* border-bottom: 0.2vh solid rgba(220, 220, 220, 0.5); */
   z-index: 1;
 }
 
@@ -67,12 +72,18 @@
   left: 4%;
   width: 92%;
   margin-bottom: 3vh;
-  margin-top: 3vh;
+  top:3vh;
+  /* margin-top: 3vh; */
+  background-color: rgba(240, 242, 243, 0.397);
+  box-shadow: 2px 2px 6px rgb(141, 137, 137);
+  border-radius: 2vh;
+  backdrop-filter: blur(10px);
+
 }
 
 .todo-header {
   font-size: 3vh;
-  color: #4095E5;
+  color: #0759a5;
   /* margin-left: 1vh; */
 }
 .today{
@@ -85,8 +96,12 @@
   width: 100%;
   overflow-y: scroll; 
   /* background-color: #78beff2c; */
+  /* background-color: rgba(243, 248, 250, 0.336);
+  box-shadow: 2px 2px 6px rgb(141, 137, 137); */
   margin-top: 2vh;
   border-radius: 1vh;
+  /* backdrop-filter: blur(10px); */
+
 }
 
 .todo-list {
@@ -122,7 +137,7 @@
   position: absolute;
   margin-top: 7vw;
   left: 5vw;
-  color: rgb(150, 150, 150);
+  color: #494955;
   font-size: 15px;
 }
 
@@ -144,4 +159,13 @@
   display: flex;
   flex-direction: row;
   margin-top: -1vw;
+}
+
+
+.bgImg {
+  position: absolute;
+  height: 100%;
+  width: calc(100% + 2px);
+  opacity: 0.65;
+  /* filter: blur(3px); */
 }

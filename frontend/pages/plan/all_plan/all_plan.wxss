@@ -8,27 +8,33 @@
 #bar {
   width: 100vw; 
   height: 48px; 
-  background-color: rgb(135, 207, 235);
+  /* background-color: rgb(135, 207, 235); */
 
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
+
 #bar image{
   position: absolute;
   right: 5%;
   width: 36px;
   height: 36px;
+  backdrop-filter: blur(10px);
+  /* background-color: rgba(243, 248, 250, 0.2); */
+  background-color: rgba(240, 242, 243, 0.486);
+  border-radius: 50%;
 }
 .planContent {
   position: relative;
   left: 6vw;
   width: 88vw;
   height: 80px;
-  margin-top: 20px;
-  box-shadow: 2px 2px 6px lightgray;
-  border: 2px solid skyblue;
+  margin-bottom: 20px;
+  top: 5vh;
+  box-shadow: 2px 2px 6px rgb(141, 137, 137);
+  /* border: 2px solid skyblue; */
   border-radius: 10px;
 
   display: flex;
@@ -36,6 +42,8 @@
   align-items: center;
 
   backdrop-filter: blur(10px);
+  /* background-color: rgba(243, 248, 250, 0.2); */
+  background-color: rgba(240, 242, 243, 0.3);
   overflow: hidden;
 }
 
@@ -52,7 +60,7 @@
   width: 30px;
   height: 30px;
 
-  background-color: #FFF;
+  /* background-color: #FFF; */
   border-radius: 50%;
 }
 
@@ -60,11 +68,11 @@
   position: absolute;
   left: calc(6vw + 42px);
 
-  color: #FFF;
-  font-size: 24px;
-  font-weight: bold;
+  /* color: #FFF; */
+  font-size: 22px;
+  /* font-weight: bold; */
 
-  text-shadow: 2px 2px 4px rgba(128, 128, 128, 0.75);
+  /* text-shadow: 2px 2px 4px rgba(128, 128, 128, 0.75); */
   -webkit-text-stroke: 0.5rpx #000;
 }
 

@@ -1,7 +1,4 @@
 <!--pages/plan/all_plan/all_plan.wxml-->
-<view id="bar"> 
-  <image src="/image/show/add.png" bind:tap="goToCreate"></image>
-</view>
 
 <image src="/image/plan/planBg/beach.jpg" class="bgImg"></image>
 <!-- <view id="mainBg"></view> -->
@@ -15,4 +12,7 @@
   <view class="edit">编辑</view>
 </view>
 
-<view id="placeHolder" style="height: 30px;"></view>
+<view id="placeHolder" style="height: 35px;"></view>
+<view id="bar"> 
+  <image src="/image/show/add.png" bind:tap="goToCreate"></image>
+</view>
