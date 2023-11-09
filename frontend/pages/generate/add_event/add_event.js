@@ -1,16 +1,53 @@
 // pages/generate/add_event/add_event.js
+
+/* 与后端联系，获取主页的内容*/
+function loadPageInfo(that){
+  // 获取存储的openid
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/show/all'+'?openid='+openid,
+        method:'GET',
+        success:function(res){
+            const eventList = res.data.blocks_list.map((blogCard) => {
+              const { imgSrc, title, id } = blogCard;
+              return { imgSrc, title, id, checked: false };
+            });
+            that.setData({
+              blog_cards_list: res.data.blocks_list,
+              eventList: res.data.blocks_list,
+            })
+            console.log(res.data.blocks_list)
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      })
+    },
+    fail:function(res){
+      console.log('get openid failed: ',res)
+    }
+   })
+}
+
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    host_: 'http://127.0.0.1:8090/',
     generateCategory:'',
     templateIndex: '',
     tags: [], // 已保存的标签列表
     selectedTags: [], // 已选中的标签列表
     eventList: [], //事件列表
     selectedEvents: [], //已选中的事件列表
+    blog_cards_list: []
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -43,7 +80,7 @@ Page({
   selectEvent: function(e) {
     const { index } = e.currentTarget.dataset;
     const { selectedEvents } = this.data;
-    const event = this.data.eventList[index].info;
+    const event = this.data.eventList[index].title;
     const eventIndex = selectedEvents.indexOf(event);
     if (eventIndex !== -1) {
       selectedEvents.splice(eventIndex, 1); // 取消选中
@@ -61,8 +98,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 获取要生成的类型
     // const category = decodeURIComponent(options.category);
     // const index = decodeURIComponent(options.index);
+    var that = this
+    loadPageInfo(that)
     this.setData({
       // generateCategory: category,
       // templateIndex: index,
@@ -71,11 +111,6 @@ Page({
         {info: '自然', checked: false},
         {info: '阅读', checked: false},
         {info: '生日', checked: false},
-      ],
-      eventList: [
-        {id: 0, title: '今天带小明感受大自然', tags: ['亲子', '自然'], checked: false},
-        {id: 1, title: '小明在书店买了自己喜欢的书', tags: ['亲子', '阅读'], checked: false},
-        {id: 2, title: '小明七岁生日', tags: ['生日'], checked: false},
       ]
     });
   },
