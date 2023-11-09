@@ -5,14 +5,29 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    planList: ['钢琴计划', '英语', '物理竞赛', '少儿编程', '软工迭代计划', '阴阳师爬塔', '原神', '王者荣耀'],
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    var bgList = []
+    var bgNum = 7
+    for(var i = 0; i < this.data.planList.length; i++){
+      bgList.push(i % bgNum)
+    }
+    console.log(bgList)
+    this.setData({
+      bgList: bgList
+    })
+  },
 
+  goToCreate(e) {
+    console.log(e)
+    wx.navigateTo({
+      url: '/pages/plan/create_plan/create_plan',
+    })
   },
 
   /**

@@ -1,23 +1,50 @@
-/* pages/plan/all_plan/all_plan.wxss */
+#bar {
+  width: 100vw; 
+  height: 48px; 
+  background-color: rgba(135, 207, 235, 0.25);
 
-#title_bar {
   display: flex;
-  justify-content: center; /* Horizontally center the elements */
-  align-items: center; /* Vertically center the elements */
-  width: calc(100vw - 4px);
-  height: 5vh;
-  border: 2px solid #4095e5b2;
-  background-color: rgba(106, 213, 255, 0.151);
-
-  font-weight: bold;
-  color: #4095E5;
+  flex-direction: row;
   align-items: center;
 }
 
-.line {
-  border: 1px solid #4095e5b2;
+#bar image{
+  position: absolute;
+  right: 5%;
+  width: 36px;
+  height: 36px;
+}
+.planContent {
+  position: relative;
+  left: 6vw;
+  width: 88vw;
+  height: 80px;
+  margin-top: 20px;
+  box-shadow: 2px 2px 6px lightgray;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  overflow: hidden;
 }
 
-#title {
-  font-size: 3vh;
+.planName {
+  position: absolute;
+  left: 10vw;
+
+  color: #FFF;
+  font-size: 24px;
+  font-weight: bold;
+
+  text-shadow: 2px 2px 4px rgba(128, 128, 128, 0.75);
+  -webkit-text-stroke: 0.5rpx #000;
+}
+
+.bgImg {
+  position: absolute;
+  height: 100%;
+  width: calc(100% + 2px);
+  opacity: 0.65;
 }
