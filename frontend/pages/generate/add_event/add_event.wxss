@@ -62,6 +62,7 @@
   border-radius: 1vh;
   margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  z-index: 10;
 }
 
 .event-title{
