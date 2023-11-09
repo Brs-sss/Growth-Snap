@@ -2,13 +2,14 @@
 
 <view class="family-list">
   <block wx:for="{{blog_cards_list}}" wx:key="index">
-    <!-- <view class="view_image_text">
+    <view class="view_image_text">
       <image class="user_profile" src="{{item.imgSrc}}" />
       <text class="user_name">{{item.name}}</text>
-      <text class="user_tag">{{item.tag}}</text>
+      <text class="user_tag">{{item.label}}</text>
       <text class="user_signature">{{item.signature}}</text>
-    </view> -->
-    <family-card name="{{item.name}}" label="{{item.label}}" signature="{{item.signature}}" imgSrc="{{item.imgSrc}}"></family-card>
+    </view>
+    <family-card name="{{item.name}}" label="{{item.label}}" signature="{{itesignature}}" imgSrc="{{item.imgSrc}}"></family-card>
+    
   </block>
 </view>
 
