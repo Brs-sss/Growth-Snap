@@ -12,13 +12,23 @@ function loadPageInfo(that){
         url: that.data.host_+'user/api/show/all'+'?openid='+openid,
         method:'GET',
         success:function(res){
+            const tags = [];
             const eventList = res.data.blocks_list.map((blogCard) => {
-              const { imgSrc, title, id } = blogCard;
-              return { imgSrc, title, id, checked: false };
+              const { imgSrc, title, event_id , tags} = blogCard;
+              return { imgSrc, title, event_id, tags, checked: false };
+            });
+            eventList.forEach(event => {
+              // 遍历每个事件的tags列表，并将其元素添加到tagList中（去重）
+              event.tags.forEach(tag => {
+                if (!tags.includes(tag)) {
+                  tags.push({info: tag, checked: false});
+                }
+              });
             });
             that.setData({
               blog_cards_list: res.data.blocks_list,
-              eventList: res.data.blocks_list,
+              eventList: eventList,
+              tags: tags
             })
             console.log(res.data.blocks_list)
         },
@@ -51,12 +61,14 @@ Page({
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
-    const { selectedTags, eventList } = this.data;
+    const { selectedTags, selectedEvents, eventList } = this.data;
     const tag = this.data.tags[index].info;
     const tagIndex = selectedTags.indexOf(tag);
     if (tagIndex !== -1) {
       eventList.forEach(event => {
-        if (selectedTags.some(selectedTag => event.tags.includes(selectedTag))) {
+        if (event.tags.includes(tag)) {
+          const eventIndex = selectedEvents.indexOf(event);
+          selectedEvents.splice(eventIndex, 1);
           event.checked = false;
         }
       });
@@ -66,13 +78,16 @@ Page({
       selectedTags.push(tag); // 选中
       this.data.tags[index].checked = true ;
       eventList.forEach(event => {
-        if (selectedTags.some(selectedTag => event.tags.includes(selectedTag))) {
+        if (event.tags.includes(tag)) {
+          selectedEvents.push(event); 
           event.checked = true;
         }
       });
     }
+    console.log(selectedEvents);
     this.setData({
       selectedTags: selectedTags,
+      selectedEvents: selectedEvents,
       eventList: eventList,
       ['tags[' + index + '].checked']: this.data.tags[index].checked 
     });
@@ -106,12 +121,12 @@ Page({
     this.setData({
       // generateCategory: category,
       // templateIndex: index,
-      tags: [
-        {info: '亲子', checked: false},
-        {info: '自然', checked: false},
-        {info: '阅读', checked: false},
-        {info: '生日', checked: false},
-      ]
+      // tags: [
+      //   {info: '超级帅哥', checked: false},
+      //   {info: '自然', checked: false},
+      //   {info: '阅读', checked: false},
+      //   {info: '生日', checked: false},
+      // ]
     });
   },
 

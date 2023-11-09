@@ -269,13 +269,14 @@ def loadShowPage(request):
             block_item['month']=str(int(date_string[5:7]))+"月"
             block_item['year']=date_string[0:4]
             block_item['day']=date_string[8:10]
+            block_item['tags']=StringToList(db_block.tags)
             
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id']=db_block.event_id
                 image_path='static/ImageBase/'+db_block.event_id
                 image_list = sorted(os.listdir(image_path))
                 block_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
-
+                
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
                 
