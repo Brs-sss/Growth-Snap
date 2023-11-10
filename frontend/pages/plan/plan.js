@@ -23,7 +23,8 @@ Page({
                  {task: '钢琴二级考试', leftDay: '0', complete: true},
                  {task: 'FTP验收', leftDay: '0', complete: true},
                  {task: 'Project FTP', leftDay: '0', complete: true}],
-      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}],
+      // planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}],
+      planList: [],
       moreThan2: true
     })
   },
@@ -81,6 +82,23 @@ Page({
     })
   },
 
+
+  goToShow() {
+    wx.switchTab({
+      url: '../show/show',
+    })
+  },
+
+  goToGenerate() {
+    wx.switchTab({
+      url: '../generate/generate',
+    })
+  },
+  goToUser() {
+    wx.switchTab({
+      url: '../user/user',
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

@@ -104,6 +104,24 @@ Page({
 
     }
   },
+
+  // tabbar 跳转
+  goToPlan() {
+    wx.switchTab({
+      url: '../plan/plan',
+    })
+  },
+
+  goToGenerate() {
+    wx.switchTab({
+      url: '../generate/generate',
+    })
+  },
+  goToUser() {
+    wx.switchTab({
+      url: '../user/user',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */

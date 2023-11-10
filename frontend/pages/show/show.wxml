@@ -1,4 +1,7 @@
 <!--pages/show/show.wxml-->
+<!-- <image src="/image/plan/planBg/beach.jpg" class="bgImg"></image> -->
+<view class='placeHolder'></view>
+
 <view class="container">
   <view class="add" bindtap="showPopup"><image class="add_icon" src="/image/show/add.png"/></view>
 
@@ -36,5 +39,19 @@
 
   </view>
   
+</view>
+<view class='custom-tabbar'>
+  <view class='icons'>
+    <image src="/image/tabBar/home_selected.png" style="height: 4vh; width: 4vh"></image>
+    <image src="/image/tabBar/plan.png" style="height: 4vh; width: 4vh" bind:tap="goToPlan"></image>
+    <image src="/image/tabBar/export.png" style="height: 4vh; width: 4vh" bind:tap="goToGenerate"></image>
+    <image src="/image/tabBar/user.png" style="height: 4vh; width: 4vh" bind:tap="goToUser"></image>
+  </view>
+  <view class='icons-text'>
+    <text class='selected-text'>主页</text>
+    <text>计划</text>
+    <text>导出</text>
+    <text>我的</text>
+  </view>
 </view>
 

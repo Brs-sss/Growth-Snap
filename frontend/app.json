@@ -22,6 +22,7 @@
     "pages/show/text_detail/text_detail"
   ],
   "tabBar": {
+    "custom": true,
     "color": "#666666",
     "selectedColor": "#4095E5",
     "backgroundColor": "#ffffff",
