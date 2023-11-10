@@ -134,7 +134,17 @@ Page({
       success: function(res)
       {
         console.log(res)
-        wx.navigateBack(1) //成功提交，返回上个页面
+        wx.showToast({
+          title: "新建成功",
+          icon: 'success',
+          duration: 2000,
+          success: function () {
+            setTimeout(function () {
+              wx.navigateBack(1) //成功提交，返回上个页面
+            }, 2000)
+          }
+        })
+        
       }
     })
 
