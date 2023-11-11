@@ -1,10 +1,13 @@
 <!--pages/generate/add_event/add_event.wxml-->
 
-<view class="header">通过标签选择</view>
-<view class="container_tag">
-  <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
-    <text class="tag-text">{{item.info}}</text>
-  </view>
+<view class='head-container'>
+    <button class="submitButton" bindtap="handleSubmit">提交</button>
+    <view class="header">通过标签选择</view>
+    <view class="container_tag">
+      <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ?     'selected' : ''}}" bindtap="toggleTag">
+        <text class="tag-text">{{item.info}}</text>
+      </view>
+    </view>
 </view>
 
 <view class="container_event">
@@ -19,6 +22,6 @@
   </view>
 </view>
 
-<view class="container_button">
+<!-- <view class="container_button">
   <button class="submit" bindtap="handleSubmit">提交</button>
-</view>
+</view> -->
