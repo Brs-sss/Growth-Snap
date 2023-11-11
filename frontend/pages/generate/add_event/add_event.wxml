@@ -1,6 +1,8 @@
 <!--pages/generate/add_event/add_event.wxml-->
 
 <view class='head-container'>
+    <button class="allButton" bindtap="selectAll">全选</button>
+    <button class="allNotButton" bindtap="disSelectAll">全部取消</button>
     <button wx:if="{{selectedNum!==0}}" class="submitButton" bindtap="handleSubmit">提交({{selectedNum}})</button>
     <button wx:else class="submitButton disabledButton">提交</button>
     <view class="header">通过标签选择</view>

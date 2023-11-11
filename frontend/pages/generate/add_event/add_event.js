@@ -9,12 +9,24 @@ function loadPageInfo(that){
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       wx.request({
-        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&types=et', //et表示只求取event和text
+        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&types=et&tags=true', //et表示只求取event和text
         method:'GET',
         success:function(res){
-            const eventList = res.data.blocks_list.map((blogCard) => {
+          let uniqueTags = new Set();
+          let tag_to_eventIndex_dict = {}
+          const eventList = res.data.blocks_list.map((blogCard,index) => {
               let {imgSrc}=blogCard;
-              const {  title, type } = blogCard;
+              const { title, type, tags } = blogCard;
+              tags.forEach(tag=>{
+                uniqueTags.add(tag);
+                if(tag_to_eventIndex_dict[tag]==undefined){
+                  tag_to_eventIndex_dict[tag]=[index]
+                }
+                else{
+                  tag_to_eventIndex_dict[tag].push(index)
+                }
+              })
+
               var id;
               if(type=='event'){
                 const {event_id}=blogCard
@@ -26,12 +38,15 @@ function loadPageInfo(that){
               }
               
               (imgSrc==undefined)?imgSrc='/image/show/txt.png':null;
-              return { imgSrc, title, id, type, checked: false };
+              return { imgSrc, title, id, type, tags, checked: false };
             });
             that.setData({
               blog_cards_list: res.data.blocks_list,
               eventList: eventList,
+              tags:Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}}),
+              tag_to_event_index_dict:tag_to_eventIndex_dict,
             })
+            console.log(that.data.tag_to_event_index_dict)
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -57,38 +72,71 @@ Page({
     tags: [], // 已保存的标签列表
     selectedTags: [], // 已选中的标签列表
     eventList: [], //事件列表
-    selectedEvents: [], //已选中的事件列表
+    selectedEvents: [], //已选中的事件列表(存的是index)
     selectedNum:0,
     blog_cards_list: [],
+    tag_to_event_index_dict:{},
   },
+
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
-    const { selectedTags, eventList } = this.data;
+    const { selectedTags, eventList} = this.data;
+    let { selectedEvents,selectedNum }=this.data;
     const tag = this.data.tags[index].info;
     const tagIndex = selectedTags.indexOf(tag);
+    const relatedEvents=this.data.tag_to_event_index_dict[tag]
     if (tagIndex !== -1) {
-      eventList.forEach(event => {
-        if (selectedTags.some(selectedTag => event.tags.includes(selectedTag))) {
-          event.checked = false;
-        }
-      });
-      selectedTags.splice(tagIndex, 1); // 取消选中
+      relatedEvents.forEach(idx=>{
+        eventList[idx].checked=false;  //改变前端 
+        selectedEvents=selectedEvents.filter(ele=>ele!==idx) //留下那些不在relatedEvents中的事件idx，改变发送表单
+      })
+      selectedNum=selectedEvents.length;
+      selectedTags.splice(tagIndex, 1); // 取消选中标签
       this.data.tags[index].checked = false ;
     } else {
       selectedTags.push(tag); // 选中
       this.data.tags[index].checked = true ;
-      eventList.forEach(event => {
-        if (selectedTags.some(selectedTag => event.tags.includes(selectedTag))) {
-          event.checked = true;
-        }
-      });
+      relatedEvents.forEach(idx=>{
+        eventList[idx].checked=true;  //改变前端 
+      })
+      selectedEvents=[...new Set([...selectedEvents,...relatedEvents])]
+      selectedNum=selectedEvents.length
+
     }
     this.setData({
       selectedTags: selectedTags,
       eventList: eventList,
+      selectedEvents:selectedEvents,
+      selectedNum:selectedNum,
       ['tags[' + index + '].checked']: this.data.tags[index].checked 
     });
   },
+
+  selectAll(e){
+    let { eventList } = this.data;
+    for(var i=0;i<eventList.length;i++){
+      eventList[i].checked=true;
+    }
+    this.setData({
+      eventList:eventList,
+      selectedEvents:Array.from({ length: eventList.length }, (_, index) => index),
+      selectedNum:eventList.length,
+    })
+  },
+
+  disSelectAll(e){
+    let { eventList } = this.data;
+    for(var i=0;i<eventList.length;i++){
+      eventList[i].checked=false;
+    }
+    this.setData({
+      eventList:eventList,
+      selectedEvents:[],
+      selectedNum:0
+    })
+  },
+
+
   
   selectEvent: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -124,20 +172,7 @@ Page({
     // const index = decodeURIComponent(options.index);
     var that = this
     loadPageInfo(that)
-    this.setData({
-      // generateCategory: category,
-      // templateIndex: index,
-      tags: [
-        {info: '亲子', checked: false},
-        {info: '自然', checked: false},
-        {info: '阅读', checked: false},
-        {info: '生日', checked: false},
-        {info: '亲子活动', checked: false},
-        {info: '自然世界', checked: false},
-        {info: '阅读快乐', checked: false},
-        {info: '生日派对真不错', checked: false},
-      ]
-    });
+
   },
 
   

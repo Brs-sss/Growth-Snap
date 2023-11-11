@@ -14,7 +14,6 @@
 }
 
 button{
-  
   justify-self: center;
   width: 15vw !important;
   height: 9vw;
@@ -33,6 +32,19 @@ button{
   background-color: #4095E5;
   color: #fff;
   grid-area: 1/4/2/5;
+}
+
+.allButton{
+  background-color: #4095E5;
+  color: #fff;
+  grid-area: 1/1/2/2;
+}
+
+.allNotButton{
+  width: 20vw !important;
+  background-color: #4095E5;
+  color: #fff;
+  grid-area: 1/2/2/3;
 }
 
 .disabledButton{
@@ -114,7 +126,6 @@ button{
   width: calc(50% - 10rpx); /* 每行显示三个元素，间隔为10rpx */
   grid-template-rows: 20vh,3vh;
   grid-template-areas: "img""title";
-  margin-top: 1vh; /* 设置底部间距 */
   margin-bottom: 2vh;
   box-sizing: border-box; /* 边框盒模型设置为border-box，包括padding和border在内的宽度不会超出设定的宽度 */
   position: relative;
@@ -156,7 +167,7 @@ button{
   white-space: nowrap; /* 防止文本换行 */
   overflow: hidden;     /* 隐藏超出容器的部分文本 */
   text-overflow: ellipsis; /* 超出部分显示省略号 */
-  max-width: 19vh; /* 设置文本容器的最大宽度*/
+  max-width: 18vh; /* 设置文本容器的最大宽度*/
   margin-left: 1vh;
 
   display: flex;
@@ -168,7 +179,7 @@ button{
   position: absolute;
   height: 8vh;
   width: 8vh;
-  right: 1vh;
+  right: 2vh;
   top: 0vh;
   visibility: hidden;
   z-index: 1;
