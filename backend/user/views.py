@@ -152,7 +152,24 @@ def submitEvent(request):
         return JsonResponse({'message': 'Data submitted successfully'})
     
 
+def addEventImage(request):
+    if request.method == 'POST':
+        uploaded_image = request.FILES.get('image')
+        pic_index = request.POST.get('pic_index')
+        event_id = request.POST.get('event_id')
 
+        image_path = './static/ImageBase/' + f'{event_id}/'
+        if not os.path.exists(image_path):
+            os.mkdir(image_path)
+        if uploaded_image:
+            with open(image_path + f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+            return JsonResponse({'message': '文件上传成功'})
+        else:
+            return JsonResponse({'message': '文件不存在'})
+    else:
+        return JsonResponse({'message': '请使用POST方法'})
 
 def submitData(request):
     if request.method == 'POST':
@@ -227,35 +244,18 @@ def registerProfileImage(request):
         return JsonResponse({'message': 'please use POST'})
 
 
-def addEventImage(request):
-    if request.method == 'POST':
-        uploaded_image = request.FILES.get('image')
-        pic_index = request.POST.get('pic_index')
-        event_id = request.POST.get('event_id')
-
-        image_path = './static/ImageBase/' + f'{event_id}/'
-        if not os.path.exists(image_path):
-            os.mkdir(image_path)
-        if uploaded_image:
-            with open(image_path + f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
-                for chunk in uploaded_image.chunks():
-                    destination.write(chunk)
-            return JsonResponse({'message': '文件上传成功'})
-        else:
-            return JsonResponse({'message': '文件不存在'})
-    else:
-        return JsonResponse({'message': '请使用POST方法'})
 
 
 # 加载主页 只返回必要的信息
 def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
+        types = request.GET.get('types',"etd") #缺省值为event&text&data
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time")  # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time")
-        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time")
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time") if 'e' in types else [] # 筛选的结果按照降序排列
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else [] 
+        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else [] 
         now_user_blocks= sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),key=lambda x:(x.date,x.time),reverse=True)
         print(now_user_blocks.__len__())
         blocks_list = []

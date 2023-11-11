@@ -9,7 +9,7 @@ function loadPageInfo(that){
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       wx.request({
-        url: that.data.host_+'user/api/show/all'+'?openid='+openid,
+        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&types=et', //et表示只求取event和text
         method:'GET',
         success:function(res){
             const eventList = res.data.blocks_list.map((blogCard) => {
@@ -18,7 +18,7 @@ function loadPageInfo(that){
             });
             that.setData({
               blog_cards_list: res.data.blocks_list,
-              eventList: res.data.blocks_list,
+              eventList: eventList,
             })
             console.log(res.data.blocks_list)
         },
@@ -77,6 +77,7 @@ Page({
       ['tags[' + index + '].checked']: this.data.tags[index].checked 
     });
   },
+  
   selectEvent: function(e) {
     const { index } = e.currentTarget.dataset;
     const { selectedEvents } = this.data;
@@ -111,6 +112,10 @@ Page({
         {info: '自然', checked: false},
         {info: '阅读', checked: false},
         {info: '生日', checked: false},
+        {info: '亲子活动', checked: false},
+        {info: '自然世界', checked: false},
+        {info: '阅读快乐', checked: false},
+        {info: '生日派对真不错', checked: false},
       ]
     });
   },
