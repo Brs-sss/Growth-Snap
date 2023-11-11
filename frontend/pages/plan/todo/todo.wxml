@@ -1,9 +1,9 @@
 <!--pages/plan/todo/todo.wxml-->
-<image src="/image/plan/planBg/beach.jpg" class="bgImg"></image>
+<image src="/image/plan/planBg/bg9.jpg" class="bgImg"></image>
 <!-- <view class='placeHolder'></view> -->
   <view class="container_todo">
   <view>
-    <image src="{{icon}}" style="height: 5vh; width: 5vh; top: 1.5vh; position: relative; left: 0.5vh;"/>
+    <image src="{{icon}}" style="height: 5vh; width: 5vh; top: 1.5vh; position: relative; margin-left: 3vh;"/>
     <text class="todo-header"> {{planValue}}</text>
 
   </view>

@@ -16,9 +16,13 @@ page {
   justify-content: center;
   width: 100%;
   height: 35%;
-  background: #4095E5;
+  background: #4095e5c4;
   border-radius: 100rpx;
   margin-top: -100rpx;
+  /* background-color: rgba(240, 242, 243, 0.397); */
+  box-shadow: 2px 2px 6px rgb(141, 137, 137);
+  /* border-radius: 3vh; */
+  backdrop-filter: blur(10px);
 }
 
 .white-box {
@@ -30,6 +34,10 @@ page {
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
   border-radius: 30rpx;
   margin-top: 140rpx;
+  /* background-color: rgba(240, 242, 243, 0.397); */
+  box-shadow: 2px 2px 6px rgb(141, 137, 137);
+  /* border-radius: 3vh; */
+  backdrop-filter: blur(10px);
 }
 
 .view_image_text {
@@ -51,7 +59,7 @@ page {
 }
 
 .user_name{
-  margin-left: 5px;
+  margin-left: 8px;
 }
 
 .user_tag{
@@ -95,9 +103,14 @@ page {
 /* 第二部分 */
 
 .view_3 {
-  width: 100%;
-  height: 100%;
+  margin-left: 5%;
+  width: 90%;
+  /* height: 100%; */
   margin-top: 170rpx;
+  background-color: rgba(240, 242, 243, 0.397);
+  box-shadow: 2px 2px 6px rgb(141, 137, 137);
+  border-radius: 3vh;
+  backdrop-filter: blur(10px);
 }
 
 .list-item {
@@ -108,7 +121,8 @@ page {
   height: 90rpx;
   margin-top: 0rpx;
   position: relative; /*父元素位置要设置为相对*/
-  background: white;
+  /* background: white; */
+  margin-bottom: 1px;
 }
 
 .item-image {

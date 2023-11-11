@@ -23,7 +23,7 @@
   height: 36px;
   backdrop-filter: blur(10px);
   /* background-color: rgba(243, 248, 250, 0.2); */
-  background-color: rgba(240, 242, 243, 0.486);
+  background-color: rgba(240, 242, 243, 0.623);
   border-radius: 50%;
 }
 .planContent {
@@ -80,8 +80,8 @@
   position: absolute;
   right: 6vw;
 
-  color: gray;
-  text-shadow: 1px 1px 2px #FFF;
+  color: #494955;
+  text-shadow: 1px 1px 2px rgb(197, 230, 245);
 }
 
 .bgImg {

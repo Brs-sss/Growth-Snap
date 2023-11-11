@@ -35,7 +35,7 @@
 .content {
   height: auto; 
   width: 100%;
-  overflow-y: scroll; 
+  /* overflow-y: scroll;  */
   /* background-color: #78beff2c; */
   margin-top: 1vh;
   border-radius: 1vh;
@@ -67,7 +67,8 @@
 .task_name {
   position: relative;
   left: 1vw;
-  font-size: 16px;
+  font-size: 2.2vh;
+  /* font-size: 16px; */
 }
 
 .left_days {
@@ -75,7 +76,8 @@
   right: 5vw;
 
   color: #494955;
-  font-size: 15px;
+  /* font-size: 15px; */
+  font-size: 2vh;
 }
 
 .container_plan {
@@ -113,7 +115,8 @@
   padding-left: 1vh;
   width: 100%;
   height: 1.5vh;
-  font-size: large;
+  /* font-size: large; */
+  font-size: 2.3vh;
   margin-bottom: 1vh;
 }
 .plan-name{
@@ -124,6 +127,7 @@
 .add-text{
   color: rgb(56, 98, 109);
   margin-bottom: 1vh;
+  font-size: 2.2vh;
 }
 .add-plan{
   padding: 2vh;

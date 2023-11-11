@@ -1,21 +1,75 @@
 /* pages/generate/add_event/add_event.wxss */
 
+.head-container{
+  width: 100vw;
+  height: 20vh;
+  display: grid;
+  grid-template-columns: 30vw 20vw 20vw 30vw;
+  grid-template-rows: 8vh 4vh 8vh;
+  justify-content: center;
+  align-items: center;
+  background-color:rgb(250,250,250);
+  position: fixed;
+  z-index: 5;
+}
+
+button{
+  justify-self: center;
+  width: 15vw !important;
+  height: 9vw;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 1vh;
+  /* box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16); */
+  font-size: 0.9em !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  display: flex; /* 使用 flex 布局 */
+  align-items: center; /* 在交叉轴上垂直居中（对于单行文本，如果有多行文本可能需要其他方法） */
+  justify-content: center; /* 在主轴上水平居中 */
+}
+
+.submitButton{
+  grid-area: 1/4/2/5;
+}
+
+
 .header{
-  margin-top: 2vh;
-  margin-left: 2vh;
+  width: 40vw;
+  height: 4vh;
+  grid-area: 2/1/3/3;
+  justify-self: center;
 }
 
 .container_tag{
-  margin-top: 2vh;
-  margin-left: 2vh;
+  grid-area: 3/1/4/5;
+  width: 90vw;
+  height: 8vh;
   display: flex;
-  flex-wrap: wrap;
+  overflow: scroll;
+  flex-wrap: nowrap;
+  justify-self: center;
   align-items: center; /* 标签垂直居中对齐 */
   gap: 15px; /* 标签之间的间距 */
 }
 
+/* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
+.container_tag::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.container_tag::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.container_tag::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
 .tag {
-  height: 15px;
+  display: inline-block;
+  height: 5vw;
   padding: 4px 8px;
   border-radius: 4px;
   background: #f0f8ff;
@@ -25,6 +79,7 @@
   text-align: center;
   color: #4095E5;
   cursor: pointer;
+  white-space: nowrap; 
 }
 
 .tag.selected {
@@ -40,7 +95,7 @@
 
 .event-list{
   position: absolute;
-  margin-top: 100rpx;
+  margin-top: 22vh;
   margin-left: 50rpx;
   display: flex;
   flex-wrap: wrap;
@@ -62,6 +117,13 @@
   border-radius: 1vh;
   margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  border: 0.5vh solid white /* 设置边框宽度和颜色 */;
+  z-index: 0;
+
+  /* display: inline;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto; */
 }
 
 .event-title{
@@ -75,8 +137,8 @@
 }
 
 .event-image.selected{
-  width: 17vh;
-  height: 17vh;
+  width: 18vh;
+  height: 18vh;
   border: 0.5vh solid #4095E5; /* 设置边框宽度和颜色 */
   border-radius: 1vh; /* 可选：设置边框圆角 */
   /* padding: 8rpx; 可选：设置内边距，以使内容与边框之间有一些间距 */
@@ -87,24 +149,13 @@
   margin-left: 170rpx;
   height: 8vh;
   width: 8vh;
-  z-index: -1;
-}
-
-.select-icon.selected{
+  visibility: hidden;
   z-index: 1;
 }
 
-.container-button{
-  position: relative;
+.select-icon.selected{
+  visibility: visible;
 }
 
-.submit{
-  position: fixed;
-  margin-top: 1150rpx;
-  background-color: #4095E5;
-  color: #fff;
-  border-radius: 3vh;
-  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
-  font-size: 2.5vh;
-  left: 200rpx; 
-}
+
+

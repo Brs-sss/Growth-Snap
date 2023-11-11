@@ -38,7 +38,10 @@
   border-radius: 1vh;
   font-size: 1.6vh;
 }
+.add-text{
+  font-size: 2vh;
 
+}
 .add-todo {
   width: 90vw;
   position: relative;
@@ -54,6 +57,7 @@
   background-color: rgba(240, 242, 243, 0.397);
   box-shadow: 2px 2px 6px rgb(141, 137, 137);
   border-radius: 2vh;
+  backdrop-filter: blur(10px);
 }
 
 .todo-input {
@@ -130,7 +134,9 @@
 .task_name {
   position: relative;
   left: 1vw;
-  font-size: 16px;
+  /* font-size: 16px; */
+  font-size: 2vh;
+
 }
 
 .left_days {
@@ -138,7 +144,8 @@
   margin-top: 7vw;
   left: 5vw;
   color: #494955;
-  font-size: 15px;
+  /* font-size: 15px; */
+  font-size: 2vh;
 }
 
 .line {
