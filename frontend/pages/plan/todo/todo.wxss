@@ -57,6 +57,7 @@
   background-color: rgba(240, 242, 243, 0.397);
   box-shadow: 2px 2px 6px rgb(141, 137, 137);
   border-radius: 2vh;
+  backdrop-filter: blur(10px);
 }
 
 .todo-input {

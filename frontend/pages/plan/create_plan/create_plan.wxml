@@ -5,7 +5,7 @@
   <view id="title-box1">
     <view class="upload_title">计划名称</view>
   </view>
-  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 45rpx; position: absolute; height: 70rpx; top: 95rpx" class="input" bindinput="handleInputTitle" placeholder="请输入" />
+  <input style="width: 554rpx; display: block; box-sizing: border-box; left: 80rpx; position: absolute; height: 70rpx; top: 95rpx" class="input" bindinput="handleInputTitle" placeholder="请输入" />
 </view>
 
 
