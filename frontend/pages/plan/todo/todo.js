@@ -17,18 +17,22 @@ Page({
     today:'',
     a_week_later:''
   },
+
   inputChange(e) {
     this.setData({
       newTodo: e.detail.value
     })
   },
+
   showInput: function() {
     this.setData({
       showInput: true
     });
   },
+
   addTodo(e) {
     const value = e.detail.value;
+    var pointer = this
     console.log(value)
     if (!value) {
       console.log("here");
@@ -76,7 +80,39 @@ Page({
       todoList: todoList,
       showInput: false
     })
+
+    // 与后端通信，新建Todo
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        var openid = res.data
+        wx.request({
+          url: pointer.data.host_ + 'user/api/plan/add_todo',
+          method:'POST',
+          header:{
+            'content-type': 'application/json'
+          },
+          data:{
+            'openid':openid,
+            'title':pointer.data.planValue,
+            'deadline':pointer.data.records,
+            'date':formattedDate,
+            'time':currentTimeString,
+          },
+          success: function(res) {
+            wx.navigateBack(1) //成功提交，返回上个页面
+          },
+          fail: function(res) {
+            console.error('上传失败', res);
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
+    })
   },
+
   toggleComplete(e) {
     console.log('enter')
     //const index = e.currentTarget.dataset.index
@@ -103,6 +139,7 @@ Page({
       todos: todos
     })
   },
+
   deleteTodo: function (e) {
     const index = e.currentTarget.dataset.index
     console.log(index)
@@ -112,6 +149,7 @@ Page({
       todoList: todos
     })
   },
+
   bindDateChange: function(e) {
     console.log('picker发送选择改变，携带值为', e.detail.value)
     let index = e.currentTarget.dataset.index
@@ -247,11 +285,11 @@ Page({
     // 使用字符串操作方法拆分日期字符串
     var parts = oneWeekLater_formatted.split('/');
     // 构建转换后的日期字符串
-    var formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+    var formattedDate = parts[0] + '-' + parts[2] + '-' + parts[1];
     var parts = today_formatted.split('/');
     // 构建转换后的日期字符串
-    var formattedToday = parts[2] + '-' + parts[0] + '-' + parts[1];
-
+    var formattedToday = parts[0] + '-' + parts[2] + '-' + parts[1];
+    console.log(formattedToday)
     this.setData({
       planValue: Value.title,
       icon:Value.icon,

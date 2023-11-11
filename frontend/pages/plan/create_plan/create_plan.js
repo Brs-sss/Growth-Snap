@@ -121,14 +121,12 @@ Page({
     wx.request({
       url: that.data.host_+'user/api/plan/add_plan',
       method: 'POST',
-      header:
-      {
+      header:{
         'content-type': 'application/json'
       },
       data:{
         'openid':that.data.openid,
         'child': that.data.selectedKids,
-        'tags': that.data.selectedTags,
         'title': that.data.inputTitle
       },
       success: function(res)
