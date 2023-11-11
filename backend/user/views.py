@@ -11,6 +11,7 @@ import string
 import hashlib
 import os
 import datetime
+import shutil
 
 
 # Create your views here.
@@ -395,7 +396,26 @@ def loadTextDetail(request):
         block_item['day']=date_string[8:10]
         block_item['tags']=StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
-
+    
+def deleteEvent(request):
+     if request.method == 'GET':
+        event_id=request.GET.get('event_id')
+        #返回渲染的list
+        try: 
+            shutil.rmtree('static/ImageBase/'+event_id)
+            Event.objects.get(event_id=event_id).delete()
+        except: return JsonResponse({'msg': 'error'})
+        return JsonResponse({'msg': 'ok'})
+    
+def deleteText(request):
+     if request.method == 'GET':
+        text_id=request.GET.get('text_id')
+        #返回渲染的list
+        try: 
+            Text.objects.get(text_id=text_id).delete()
+        except: return JsonResponse({'msg': 'error'})
+        return JsonResponse({'msg': 'ok'})
+        
 
 def getChildrenInfo(request):
     if request.method == 'GET':
