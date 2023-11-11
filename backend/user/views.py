@@ -292,15 +292,13 @@ def loadPlanPage(request):
     print('Enter load plan page')
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        print(openid)
         now_user = User.objects.get(openid=openid)
         # 先获得最近7天的Todo
-        todos = Todo.objects.all()
+        todos = Todo.objects.filter(user=now_user)
         finished_todo_list = []
         not_finished_todo_list = []
         today = datetime.date.today()
         seven_days_later = today + datetime.timedelta(days=7)
-        print(today, seven_days_later)
         for todo in todos:
             if today < todo.deadline < seven_days_later:
                 left_days = (todo.deadline - today).days
@@ -309,9 +307,9 @@ def loadPlanPage(request):
                     finished_todo_list.append(todo_item)
                 else:
                     not_finished_todo_list.append(todo_item)
-        print(today, seven_days_later)
         # 获取部分计划
-        now_user_plans = Plan.objects.filter()
+        now_user_plans = Plan.objects.filter(user=now_user)
+        print(list(now_user_plans))
         plan_list = []
         for db_block in now_user_plans:
             block_item = {'title': db_block.title, 'icon': db_block.icon}
@@ -363,7 +361,7 @@ def addPlan(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         title = data.get('title')
-        if Plan.object.filter(user=now_user, title=title).exists():
+        if Plan.objects.filter(user=now_user, title=title).exists():
             return JsonResponse({'message': 'Duplicate plan name'})
         child = data.get('child')  # 现在的child是这样的：['bbbbb', 'bb']
         new_plan = Plan.objects.create(user=now_user, title=title, icon='/image/plan/icons/computer.png')
@@ -372,6 +370,7 @@ def addPlan(request):
             print(f'child_name {child_name}')
             child = Child.objects.filter(name=child_name)[0]
             new_plan.children.add(child)
+        print(new_plan)
         return JsonResponse({'message': 'Successfully add the plan.'})
 
 
