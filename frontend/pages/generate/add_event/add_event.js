@@ -13,14 +13,25 @@ function loadPageInfo(that){
         method:'GET',
         success:function(res){
             const eventList = res.data.blocks_list.map((blogCard) => {
-              const { imgSrc, title, id } = blogCard;
-              return { imgSrc, title, id, checked: false };
+              let {imgSrc}=blogCard;
+              const {  title, type } = blogCard;
+              var id;
+              if(type=='event'){
+                const {event_id}=blogCard
+                id=event_id
+              }
+              else if(type=='text'){
+                const {text_id}=blogCard
+                id=text_id
+              }
+              
+              (imgSrc==undefined)?imgSrc='/image/show/txt.png':null;
+              return { imgSrc, title, id, type, checked: false };
             });
             that.setData({
               blog_cards_list: res.data.blocks_list,
               eventList: eventList,
             })
-            console.log(res.data.blocks_list)
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -47,7 +58,8 @@ Page({
     selectedTags: [], // 已选中的标签列表
     eventList: [], //事件列表
     selectedEvents: [], //已选中的事件列表
-    blog_cards_list: []
+    selectedNum:0,
+    blog_cards_list: [],
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -80,21 +92,29 @@ Page({
   
   selectEvent: function(e) {
     const { index } = e.currentTarget.dataset;
-    const { selectedEvents } = this.data;
-    const event = this.data.eventList[index].title;
-    const eventIndex = selectedEvents.indexOf(event);
+    let { selectedEvents,selectedNum } = this.data;
+    const eventIndex = selectedEvents.indexOf(index);
     if (eventIndex !== -1) {
       selectedEvents.splice(eventIndex, 1); // 取消选中
+      selectedNum--;
       this.data.eventList[index].checked = false ;
     } else {
-      selectedEvents.push(event); // 选中
+      selectedEvents.push(index); // 选中
+      selectedNum++;
       this.data.eventList[index].checked = true ;
     }
     this.setData({
       selectedEvents: selectedEvents,
+      selectedNum:selectedNum,
       ['eventList[' + index + '].checked']: this.data.eventList[index].checked 
     });
   },
+
+  handleSubmit(e){
+
+  },
+
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -119,6 +139,8 @@ Page({
       ]
     });
   },
+
+  
 
   /**
    * 生命周期函数--监听页面初次渲染完成

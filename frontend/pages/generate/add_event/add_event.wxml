@@ -1,7 +1,8 @@
 <!--pages/generate/add_event/add_event.wxml-->
 
 <view class='head-container'>
-    <button class="submitButton" bindtap="handleSubmit">提交</button>
+    <button wx:if="{{selectedNum!==0}}" class="submitButton" bindtap="handleSubmit">提交({{selectedNum}})</button>
+    <button wx:else class="submitButton disabledButton">提交</button>
     <view class="header">通过标签选择</view>
     <view class="container_tag">
       <view wx:for="{{tags}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ?     'selected' : ''}}" bindtap="toggleTag">
@@ -14,7 +15,9 @@
   <view class="event-list" style="left: 1rpx;">
     <block wx:for="{{eventList}}" wx:key="index">
       <view class="event-item"  data-index="{{index}}" bindtap="selectEvent">
-        <image class="event-image {{item.checked ? 'selected' : ''}}" src="{{item.imgSrc}}"></image>
+        <view class="image-container {{item.checked ? 'selected' : ''}}">
+            <image class="event-image " src="{{item.imgSrc}}" mode="aspectFill" ></image>
+        </view>
         <image class="select-icon  {{item.checked ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
         <text class="event-title">{{item.title}}</text>
       </view>
@@ -22,6 +25,3 @@
   </view>
 </view>
 
-<!-- <view class="container_button">
-  <button class="submit" bindtap="handleSubmit">提交</button>
-</view> -->
