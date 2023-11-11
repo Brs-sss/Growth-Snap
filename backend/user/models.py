@@ -100,21 +100,18 @@ class Record(models.Model):
     value = models.FloatField(max_length=24)
 
 
-class Plan(BaseRecord):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-        self.record_type = 'plan'
-
-    title = models.CharField(null=True, max_length=128)
+class Plan(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     children = models.ManyToManyField(Child)
-    tags = models.CharField(null=True, max_length=128)
+    title = models.CharField(max_length=128, default="", null=True, blank=True)
+    icon = models.CharField(max_length=128, null=True, blank=True)
 
 
 class Todo(models.Model):
-    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    content = models.CharField(null=True, max_length=128)
-    is_finished = models.BooleanField(default=False)
-    # 是否过期
-    is_expired = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(max_length=128, default="", null=True, blank=True)
+    # 是否完成
+    is_finished = models.BooleanField(default=False, null=True, blank=True)
     # deadline
-    deadline = models.DateField(null=True)
+    deadline = models.DateField(null=True, blank=True)

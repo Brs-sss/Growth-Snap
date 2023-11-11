@@ -17,14 +17,25 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    var bgList = []
-    var bgNum = 7
-    for(var i = 0; i < this.data.planList.length; i++){
-      bgList.push(i % bgNum)
-    }
-    console.log(bgList)
-    this.setData({
-      bgList: bgList
+    var pointer = this
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        var openid = res.data
+        wx.request({
+          url: pointer.data.host_ + 'user/api/plan/certain_plan' + '?openid=' + openid,
+          method:'GET',
+          success:function(res){
+            pointer.setData({
+              keys: res.data.keyList,
+              unloadedKeys: res.data.keyList
+            })
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
     })
   },
 

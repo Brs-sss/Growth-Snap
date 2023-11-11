@@ -4,7 +4,7 @@ from django.http import JsonResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
-from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
+from .models import User, Family, Event, Text, Data, Record, Plan, Todo, Child
 from .utils import ListToString, StringToList
 import random
 import string
@@ -14,9 +14,6 @@ import datetime
 
 
 # Create your views here.
-
-
-        
 
 
 def login(request):
@@ -82,7 +79,7 @@ def register(request):
         print(openid)
         print(label)
         print(familyId)
-        # 检查这个fammily是否已经存在
+        # 检查这个family是否已经存在
         if not Family.objects.filter(familyId=familyId).exists():
             return JsonResponse({
                 'msg': 'familyId does not exist'
@@ -137,21 +134,21 @@ def submitEvent(request):
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
         tags = ListToString([tag['info'] for tag in tags if tag['checked']])
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
-        type=data.get('type')
+        type = data.get('type')
         if type == 'event':
-            new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content, tags=tags,
-                                         event_id=event_id)
+            new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
+                                             tags=tags,
+                                             event_id=event_id)
         elif type == 'text':
-            new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content, tags=tags,
-                                         text_id=event_id)
+            new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
+                                            tags=tags,
+                                            text_id=event_id)
             # filtered_records = Text.objects.all()
             # for rec in filtered_records:
             #     print('yes',rec)
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
-    
-
 
 
 def submitData(request):
@@ -256,69 +253,89 @@ def loadShowPage(request):
         now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time")  # 筛选的结果按照降序排列
         now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time")
         now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time")
-        now_user_blocks= sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),key=lambda x:(x.date,x.time),reverse=True)
+        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
+                                 key=lambda x: (x.date, x.time), reverse=True)
         print(now_user_blocks.__len__())
         blocks_list = []
         for db_block in now_user_blocks:
-            block_item={}
-            block_item['type']=db_block.record_type
-            block_item['title']=db_block.title
-            block_item['content']=db_block.content
-            block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
-            date_string=str(db_block.date)
-            block_item['month']=str(int(date_string[5:7]))+"月"
-            block_item['year']=date_string[0:4]
-            block_item['day']=date_string[8:10]
-            
+            block_item = {}
+            block_item['type'] = db_block.record_type
+            block_item['title'] = db_block.title
+            block_item['content'] = db_block.content
+            block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+            date_string = str(db_block.date)
+            block_item['month'] = str(int(date_string[5:7])) + "月"
+            block_item['year'] = date_string[0:4]
+            block_item['day'] = date_string[8:10]
+
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
-                block_item['event_id']=db_block.event_id
-                image_path='static/ImageBase/'+db_block.event_id
+                block_item['event_id'] = db_block.event_id
+                image_path = 'static/ImageBase/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc']='http://127.0.0.1:8090/'+f'{image_path}/'+image_list[0]
+                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
-                
+
             elif db_block.record_type == 'text':
-                block_item['text_id']=db_block.text_id
-                
+                block_item['text_id'] = db_block.text_id
+
             blocks_list.append(block_item)
 
-
-        #print(blocks_list)
+        # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
 
 
 def loadPlanPage(request):
+    print('Enter load plan page')
     if request.method == 'GET':
         openid = request.GET.get('openid')
+        print(openid)
         now_user = User.objects.get(openid=openid)
-        # 先获得最近7天的具体Todo，按照deadline排序
-        week_todos = Plan.objects.filter(user=now_user).order_by("deadline")
-        week_todos_expired_list = []
-        week_todos_not_expired_list = []
-        for todo in week_todos:
-            todo_item = {}
-            todo_item['content'] = todo.content
-            todo_item['deadline'] = todo.deadline
-            if todo_item['deadline'] < datetime.date.today():
-                print(f"expired {todo_item['content']} {todo_item['deadline']} today: {datetime.date.today()}")
-                week_todos_expired_list.append(todo_item)
-            else:
-                print(f"not expired {todo_item['content']} {todo_item['deadline']} today: {datetime.date.today()}")
-                week_todos_not_expired_list.append(todo_item)
-        now_user_plans = Plan.objects.filter(user=now_user)
-        plans_list = []
+        # 先获得最近7天的Todo
+        todos = Todo.objects.all()
+        finished_todo_list = []
+        not_finished_todo_list = []
+        today = datetime.date.today()
+        seven_days_later = today + datetime.timedelta(days=7)
+        print(today, seven_days_later)
+        for todo in todos:
+            if today < todo.deadline < seven_days_later:
+                left_days = (todo.deadline - today).days
+                todo_item = {'task': todo.title, 'leftDay': left_days, 'complete': todo.is_finished}
+                if todo.is_finished:
+                    finished_todo_list.append(todo_item)
+                else:
+                    not_finished_todo_list.append(todo_item)
+        print(today, seven_days_later)
+        # 获取部分计划
+        now_user_plans = Plan.objects.filter()
+        plan_list = []
         for db_block in now_user_plans:
-            block_item = {}
-            block_item['title'] = db_block.title
-            plans_list.append(block_item)
-        print(plans_list)
+            block_item = {'title': db_block.title, 'icon': db_block.icon}
+            plan_list.append(block_item)
+            if plan_list.__len__() >= 2:
+                break
+        print(plan_list)
         return JsonResponse({
-            'week_todos_expired_list': week_todos_expired_list,
-            'week_todos_not_expired_list': week_todos_not_expired_list,
-            'plans_list': plans_list
+            'finished_todo_list': finished_todo_list,
+            'not_finished_todo_list': not_finished_todo_list,
+            'plan_list': plan_list
+        })
 
+
+def loadCertainPlan(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        now_user = User.objects.filter(openid=openid)
+        planTitle = request.GET.get('plan')
+        plan = Plan.objects.filter(user=now_user, title=planTitle)
+        todos = plan.todo_set.all()
+        print(todos)
+        return JsonResponse({
+            'message': 'ok'
+            # 'icon': icon_path,
+            # 'todos': todoList,
         })
 
 
@@ -340,60 +357,75 @@ def addPlan(request):
     if request.method == 'POST':
         print('enter add plan')
         data = json.loads(request.body)
+        print(data)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         title = data.get('title')
-        # date = data.get('date')
-        # time = (data.get('time'))[:8]
+        if Plan.object.filter(user=now_user, title=title).exists():
+            return JsonResponse({'message': 'Duplicate plan name'})
         child = data.get('child')  # 现在的child是这样的：['bbbbb', 'bb']
-        tags = data.get('tags')  # 现在的tags是这样的：['2222']
-        print(f'child {child}')
-        print(f'tags {tags}')
-        print(openid, title)
-        new_plan = Plan.objects.create(user=now_user, title=title, tags=tags)
-        # 可能有多个孩子，所以把孩子们都加进去
+        new_plan = Plan.objects.create(user=now_user, title=title, icon='/image/plan/icons/computer.png')
+        # 可能有多个孩子，因此需依次添加
         for child_name in child:
             print(f'child_name {child_name}')
             child = Child.objects.filter(name=child_name)[0]
             new_plan.children.add(child)
-        return JsonResponse({'message': 'Data submitted successfully'})
-    
+        return JsonResponse({'message': 'Successfully add the plan.'})
+
+
+def addTodo(request):
+    if request.method == 'POST':
+        print('enter add todo')
+        data = json.loads(request.body)
+        print(data)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        title = data.get('title')
+        planTitle = data.get('planTitle')
+        deadline = data.get('deadline')
+
+        plan = Plan.objects.filter(title=planTitle)
+        new_todo = Todo.objects.create(user=now_user, plan=plan, title=title, deadline=deadline)
+        return JsonResponse({'message': 'Successfully add the todo.'})
+
+
 def loadEventDetail(request):
     if request.method == 'GET':
-        event_id=request.GET.get('event_id')
-        #返回渲染的list
-        db_block=Event.objects.get(event_id=event_id)
-        block_item={}
-        block_item['type']=db_block.record_type
-        block_item['title']=db_block.title
-        block_item['content']=db_block.content
-        block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
-        date_string=str(db_block.date)
-        block_item['month']=str(int(date_string[5:7]))+"月"
-        block_item['year']=date_string[0:4]
-        block_item['day']=date_string[8:10]
-        #block_item['event_id']=db_block.event_id
-        image_path='static/ImageBase/'+db_block.event_id
+        event_id = request.GET.get('event_id')
+        # 返回渲染的list
+        db_block = Event.objects.get(event_id=event_id)
+        block_item = {}
+        block_item['type'] = db_block.record_type
+        block_item['title'] = db_block.title
+        block_item['content'] = db_block.content
+        block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+        date_string = str(db_block.date)
+        block_item['month'] = str(int(date_string[5:7])) + "月"
+        block_item['year'] = date_string[0:4]
+        block_item['day'] = date_string[8:10]
+        # block_item['event_id']=db_block.event_id
+        image_path = 'static/ImageBase/' + db_block.event_id
         image_list = sorted(os.listdir(image_path))
-        block_item['imgSrcList']=['http://127.0.0.1:8090/'+f'{image_path}/'+image for image in image_list]
-        block_item['tags']=StringToList(db_block.tags)
+        block_item['imgSrcList'] = ['http://127.0.0.1:8090/' + f'{image_path}/' + image for image in image_list]
+        block_item['tags'] = StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
-    
+
+
 def loadTextDetail(request):
     if request.method == 'GET':
-        text_id=request.GET.get('text_id')
-        #返回渲染的list
-        db_block=Text.objects.get(text_id=text_id)
-        block_item={}
-        block_item['type']=db_block.record_type
-        block_item['title']=db_block.title
-        block_item['content']=db_block.content
-        block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
-        date_string=str(db_block.date)
-        block_item['month']=str(int(date_string[5:7]))+"月"
-        block_item['year']=date_string[0:4]
-        block_item['day']=date_string[8:10]
-        block_item['tags']=StringToList(db_block.tags)
+        text_id = request.GET.get('text_id')
+        # 返回渲染的list
+        db_block = Text.objects.get(text_id=text_id)
+        block_item = {}
+        block_item['type'] = db_block.record_type
+        block_item['title'] = db_block.title
+        block_item['content'] = db_block.content
+        block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+        date_string = str(db_block.date)
+        block_item['month'] = str(int(date_string[5:7])) + "月"
+        block_item['year'] = date_string[0:4]
+        block_item['day'] = date_string[8:10]
+        block_item['tags'] = StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
 
 

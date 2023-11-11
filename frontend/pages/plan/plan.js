@@ -9,11 +9,29 @@ Page({
     completeList: [],
     planList: [],
     host_: 'http://127.0.0.1:8090/'
-  },
+  },  
 
   onLoad(options) {
-    // 加载近七天完成的任务
-    // 加载需要显示的plan
+    var pointer = this
+    wx.getStorage({
+      key: 'openid',  // 获取openid
+      success: function (res) { 
+        var openid = res.data
+        // 获取7天内的Todo
+        wx.request({
+          url: pointer.data.host_ + 'user/api/plan/main?openid=' + openid,
+          method: 'GET',
+          success:function(res){
+            // console.log(res.data)
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
+    })
+
+
     this.setData({
       todoList: [{task: '软工ppt', leftDay: '1', complete: false}, 
                  {task: '软工中期答辩', leftDay: '2', complete: false}, 
@@ -23,7 +41,8 @@ Page({
                  {task: '钢琴二级考试', leftDay: '0', complete: true},
                  {task: 'FTP验收', leftDay: '0', complete: true},
                  {task: 'Project FTP', leftDay: '0', complete: true}],
-      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}],
+      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},
+                 {title:'钢琴计划', icon:'/image/plan/icons/piano.png'}],
       moreThan2: true
     })
   },
@@ -34,6 +53,10 @@ Page({
     wx.navigateTo({
       url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(JSON.stringify(planValue))
     })
+
+  wx.request({
+    url: 'url',
+  })
   },
 
   goToAllPlan(e) {
