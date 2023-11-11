@@ -18,7 +18,8 @@ Page({
     isEditing: false, // 是否处于编辑模式
     host_: 'http://127.0.0.1:8090/',
     openid: '',
-
+    iconList: ['../../../image/plan/icons/basketball.png', '../../../image/plan/icons/biking.png', '../../../image/plan/icons/book.png', '../../../image/plan/icons/clock.png', '../../../image/plan/icons/computer.png', '../../../image/plan/icons/pencil.png', '../../../image/plan/icons/piano.png', '../../../image/plan/icons/shirt.png', '../../../image/plan/icons/swimmer.png', '../../../image/plan/icons/cat.png', '../../../image/plan/icons/carrot.png', '../../../image/plan/icons/brush.png', '../../../image/plan/icons/travel.png', '../../../image/plan/icons/fish.png'],
+    selected_icon_index: 0
   },
 
   toggleKid: function(e) {
@@ -110,13 +111,24 @@ Page({
     });
   },
 
+  // 获取选择的图标
+  iconChange(e){
+    const { index } = e.currentTarget.dataset;
+    console.log(index)
+    this.setData({
+      selected_icon_index: index
+    })
+  },
+
   // 提交计划
   handleSubmit(){
     var that = this
     console.log(that.data.selectedKids)
     console.log(that.data.inputTitle)
     // console.log(that.data.tags)
-    console.log(that.data.selectedTags)
+    let index = that.data.selected_icon_index
+    let icon = that.data.iconList[index]
+    console.log("icon:", icon)
     console.log("openid:",that.data.openid)
     wx.request({
       url: that.data.host_+'user/api/plan/add_plan',
@@ -128,7 +140,7 @@ Page({
       data:{
         'openid':that.data.openid,
         'child': that.data.selectedKids,
-        'tags': that.data.selectedTags,
+        'icon': icon,
         'title': that.data.inputTitle
       },
       success: function(res)
@@ -137,11 +149,11 @@ Page({
         wx.showToast({
           title: "新建成功",
           icon: 'success',
-          duration: 2000,
+          duration: 1000,
           success: function () {
             setTimeout(function () {
               wx.navigateBack(1) //成功提交，返回上个页面
-            }, 2000)
+            }, 1000)
           }
         })
         
