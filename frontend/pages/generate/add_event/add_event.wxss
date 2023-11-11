@@ -17,8 +17,6 @@ button{
   justify-self: center;
   width: 15vw !important;
   height: 9vw;
-  background-color: #4095E5;
-  color: #fff;
   border-radius: 1vh;
   /* box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16); */
   font-size: 0.9em !important;
@@ -31,7 +29,27 @@ button{
 }
 
 .submitButton{
+  background-color: #4095E5;
+  color: #fff;
   grid-area: 1/4/2/5;
+}
+
+.allButton{
+  background-color: #4095E5;
+  color: #fff;
+  grid-area: 1/1/2/2;
+}
+
+.allNotButton{
+  width: 20vw !important;
+  background-color: #4095E5;
+  color: #fff;
+  grid-area: 1/2/2/3;
+}
+
+.disabledButton{
+  background-color: #3b5a77;
+  color: rgb(173, 173, 173);
 }
 
 
@@ -96,7 +114,6 @@ button{
 .event-list{
   position: absolute;
   margin-top: 22vh;
-  margin-left: 50rpx;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -104,51 +121,66 @@ button{
 }
 
 .event-item {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  height:23vh;
   width: calc(50% - 10rpx); /* 每行显示三个元素，间隔为10rpx */
-  margin-top: 10rpx; /* 设置底部间距 */
+  grid-template-rows: 20vh,3vh;
+  grid-template-areas: "img""title";
+  margin-bottom: 2vh;
   box-sizing: border-box; /* 边框盒模型设置为border-box，包括padding和border在内的宽度不会超出设定的宽度 */
+  position: relative;
+  justify-content: center;
+  align-items: center;
 }
 
-.event-image {
+.image-container{
+  grid-area: img;
   width: 18vh;
   height: 18vh;
   border-radius: 1vh;
-  margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
-  border: 0.5vh solid white /* 设置边框宽度和颜色 */;
+  border: 1vh solid white /* 设置边框宽度和颜色 */;
   z-index: 0;
-
-  /* display: inline;
-  object-fit: cover;
-  max-width: 100%;
-  height: auto; */
 }
 
+.image-container image{
+  display: inline;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
+
+.image-container.selected{
+  width: 18vh;
+  height: 18vh;
+  border: 1vh solid #4095E5; /* 设置边框宽度和颜色 */
+  border-radius: 1vh; /* 可选：设置边框圆角 */
+}
+
+
+
 .event-title{
-  font-size: 1.8vh;
+  width: 100%;
+  height: 3vh;
+  grid-area: title;
+  font-size: 2vh;
   white-space: nowrap; /* 防止文本换行 */
   overflow: hidden;     /* 隐藏超出容器的部分文本 */
   text-overflow: ellipsis; /* 超出部分显示省略号 */
-  max-width: 300rpx; /* 设置文本容器的最大宽度*/
-  margin-bottom: 1vh;
-  margin-top: 12vh;
+  max-width: 18vh; /* 设置文本容器的最大宽度*/
+  margin-left: 1vh;
+
+  display: flex;
+  align-items: flex-end; /* 将内容垂直对齐到底部 */
 }
 
-.event-image.selected{
-  width: 18vh;
-  height: 18vh;
-  border: 0.5vh solid #4095E5; /* 设置边框宽度和颜色 */
-  border-radius: 1vh; /* 可选：设置边框圆角 */
-  /* padding: 8rpx; 可选：设置内边距，以使内容与边框之间有一些间距 */
-}
 
 .select-icon{
-  margin-top: -300rpx;
-  margin-left: 170rpx;
+  position: absolute;
   height: 8vh;
   width: 8vh;
+  right: 2vh;
+  top: 0vh;
   visibility: hidden;
   z-index: 1;
 }
