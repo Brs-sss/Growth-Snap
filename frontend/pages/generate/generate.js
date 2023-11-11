@@ -29,8 +29,8 @@ Page({
   addEvent(e) {
     const category = e.currentTarget.dataset.category;
     const index = e.currentTarget.dataset.index;
-    console.log(category);
-    console.log(index);
+    console.log('generate_category:',category);
+    console.log('generate_index:',index);
     wx.navigateTo({
       url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index),
     })

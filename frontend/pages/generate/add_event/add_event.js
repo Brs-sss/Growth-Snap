@@ -76,6 +76,7 @@ Page({
     selectedNum:0,
     blog_cards_list: [],
     tag_to_event_index_dict:{},
+    comeFrom:null,
   },
 
   toggleTag: function(e) {
@@ -101,7 +102,6 @@ Page({
       })
       selectedEvents=[...new Set([...selectedEvents,...relatedEvents])]
       selectedNum=selectedEvents.length
-
     }
     this.setData({
       selectedTags: selectedTags,
@@ -170,9 +170,12 @@ Page({
     // 获取要生成的类型
     // const category = decodeURIComponent(options.category);
     // const index = decodeURIComponent(options.index);
+    this.setData({
+      comeFrom:options.category,
+    })
+    console.log(this.data.comeFrom)
     var that = this
     loadPageInfo(that)
-
   },
 
   
