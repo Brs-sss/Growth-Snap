@@ -24,3 +24,6 @@ backend/user/migrations/__pycache__
 
 # Pycharm
 .idea
+
+# data
+backend/static/ImageBase
