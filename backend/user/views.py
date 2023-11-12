@@ -150,7 +150,7 @@ def submitEvent(request):
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
-    
+
 
 def addEventImage(request):
     if request.method == 'POST':
@@ -170,6 +170,7 @@ def addEventImage(request):
             return JsonResponse({'message': '文件不存在'})
     else:
         return JsonResponse({'message': '请使用POST方法'})
+
 
 def submitData(request):
     if request.method == 'POST':
@@ -244,19 +245,19 @@ def registerProfileImage(request):
         return JsonResponse({'message': 'please use POST'})
 
 
-
-
 # 加载主页 只返回必要的信息
 def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        types = request.GET.get('types',"etd") #缺省值为event&text&data
+        types = request.GET.get('types', "etd")  # 缺省值为event&text&data
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time") if 'e' in types else [] # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else [] 
-        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else [] 
-        now_user_blocks= sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),key=lambda x:(x.date,x.time),reverse=True)
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else []
+        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
+                                 key=lambda x: (x.date, x.time), reverse=True)
         print(now_user_blocks.__len__())
         blocks_list = []
         for db_block in now_user_blocks:
@@ -294,15 +295,18 @@ def loadPlanPage(request):
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
         # 先获得最近7天的Todo
-        todos = Todo.objects.filter(user=now_user)
         finished_todo_list = []
         not_finished_todo_list = []
         today = datetime.date.today()
         seven_days_later = today + datetime.timedelta(days=7)
+        todos = Todo.objects.filter(user=now_user).order_by('deadline')
         for todo in todos:
-            if today < todo.deadline < seven_days_later:
+            print(todo.deadline)
+            print(today <= todo.deadline <= seven_days_later)
+            if today <= todo.deadline <= seven_days_later:
                 left_days = (todo.deadline - today).days
-                todo_item = {'task': todo.title, 'leftDay': left_days, 'complete': todo.is_finished}
+                todo_item = {'task': todo.title, 'leftDay': left_days, 'complete': todo.is_finished,
+                             'todo_id': todo.todo_id}
                 if todo.is_finished:
                     finished_todo_list.append(todo_item)
                 else:
@@ -324,18 +328,40 @@ def loadPlanPage(request):
         })
 
 
+def loadAllPlanPage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        print(openid)
+        now_user = User.objects.get(openid=openid)
+        # 获得所有计划
+        plans = Plan.objects.filter(user=now_user)
+        plan_list = []
+        for plan in plans:
+            plan_list.append({'title': plan.title, 'icon': plan.icon})
+        print(plan_list)
+        return JsonResponse({
+            'plan_list': plan_list,
+        })
+
+
 def loadCertainPlan(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        now_user = User.objects.filter(openid=openid)
+        now_user = User.objects.get(openid=openid)
         planTitle = request.GET.get('plan')
-        plan = Plan.objects.filter(user=now_user, title=planTitle)
-        todos = plan.todo_set.all()
-        print(todos)
+        plan = Plan.objects.filter(user=now_user, title=planTitle).first()
+        icon = plan.icon
+        todos = plan.todo_set.all().order_by("deadline")
+        todo_list = []
+        for todo in todos:
+            todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
+                         'todo_id': todo.todo_id}
+            todo_list.append(todo_item)
+        print(todo_list)
         return JsonResponse({
-            'message': 'ok'
-            # 'icon': icon_path,
-            # 'todos': todoList,
+            'message': 'ok',
+            'icon': icon,
+            'todos': todo_list,
         })
 
 
@@ -363,8 +389,9 @@ def addPlan(request):
         title = data.get('title')
         if Plan.objects.filter(user=now_user, title=title).exists():
             return JsonResponse({'message': 'Duplicate plan name'})
+        icon = data.get('icon')
         child = data.get('child')  # 现在的child是这样的：['bbbbb', 'bb']
-        new_plan = Plan.objects.create(user=now_user, title=title, icon='/image/plan/icons/computer.png')
+        new_plan = Plan.objects.create(user=now_user, title=title, icon=icon)
         # 可能有多个孩子，因此需依次添加
         for child_name in child:
             print(f'child_name {child_name}')
@@ -378,16 +405,39 @@ def addTodo(request):
     if request.method == 'POST':
         print('enter add todo')
         data = json.loads(request.body)
-        print(data)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
-        title = data.get('title')
         planTitle = data.get('planTitle')
+        plan = Plan.objects.get(user=now_user, title=planTitle)
+        title = data.get('title')
         deadline = data.get('deadline')
-
-        plan = Plan.objects.filter(title=planTitle)
-        new_todo = Todo.objects.create(user=now_user, plan=plan, title=title, deadline=deadline)
+        todo_id = data.get('id')
+        new_todo = Todo.objects.create(user=now_user, plan=plan, title=title, deadline=deadline, todo_id=todo_id)
         return JsonResponse({'message': 'Successfully add the todo.'})
+
+
+def updateTodo(request):
+    if request.method == 'POST':
+        print('enter update todo')
+        data = json.loads(request.body)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        todo_id = data.get('id')
+        todo = Todo.objects.get(user=now_user, todo_id=todo_id)
+        content = data.get('content')
+        print(content)
+        if content == 'ddl':
+            ddl = data.get('ddl')
+            todo.deadline = ddl
+            print(ddl)
+            todo.save()
+        elif content == 'finish':
+            finish = data.get('finish')
+            todo.is_finished = finish
+            todo.save()
+        elif content == 'delete':
+            todo.delete()
+        return JsonResponse({'message': 'Successfully update the todo.'})
 
 
 def loadEventDetail(request):
@@ -428,26 +478,30 @@ def loadTextDetail(request):
         block_item['day'] = date_string[8:10]
         block_item['tags'] = StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
-    
+
+
 def deleteEvent(request):
-     if request.method == 'GET':
-        event_id=request.GET.get('event_id')
-        #返回渲染的list
-        try: 
-            shutil.rmtree('static/ImageBase/'+event_id)
+    if request.method == 'GET':
+        event_id = request.GET.get('event_id')
+        # 返回渲染的list
+        try:
+            shutil.rmtree('static/ImageBase/' + event_id)
             Event.objects.get(event_id=event_id).delete()
-        except: return JsonResponse({'msg': 'error'})
+        except:
+            return JsonResponse({'msg': 'error'})
         return JsonResponse({'msg': 'ok'})
-    
+
+
 def deleteText(request):
-     if request.method == 'GET':
-        text_id=request.GET.get('text_id')
-        #返回渲染的list
-        try: 
+    if request.method == 'GET':
+        text_id = request.GET.get('text_id')
+        # 返回渲染的list
+        try:
             Text.objects.get(text_id=text_id).delete()
-        except: return JsonResponse({'msg': 'error'})
+        except:
+            return JsonResponse({'msg': 'error'})
         return JsonResponse({'msg': 'ok'})
-        
+
 
 def getChildrenInfo(request):
     if request.method == 'GET':

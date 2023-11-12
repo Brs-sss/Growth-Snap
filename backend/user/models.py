@@ -115,3 +115,5 @@ class Todo(models.Model):
     is_finished = models.BooleanField(default=False, null=True, blank=True)
     # deadline
     deadline = models.DateField(null=True, blank=True)
+    # 唯一id
+    todo_id = models.CharField(max_length=65, default="")
