@@ -250,10 +250,12 @@ def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
         types = request.GET.get('types', "etd")  # 缺省值为event&text&data
+        used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
         now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
-                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+                                                                              "-time") if 'e' in types else []  #
+        # 筛选的结果按照降序排列
         now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
         now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else []
         now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
@@ -264,12 +266,16 @@ def loadShowPage(request):
             block_item = {}
             block_item['type'] = db_block.record_type
             block_item['title'] = db_block.title
-            block_item['content'] = db_block.content
-            block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
-            date_string = str(db_block.date)
-            block_item['month'] = str(int(date_string[5:7])) + "月"
-            block_item['year'] = date_string[0:4]
-            block_item['day'] = date_string[8:10]
+
+            if used_by_addEvent_page:
+                block_item['tags'] = StringToList(db_block.tags)
+            else:
+                block_item['content'] = db_block.content
+                block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+                date_string = str(db_block.date)
+                block_item['month'] = str(int(date_string[5:7])) + "月"
+                block_item['year'] = date_string[0:4]
+                block_item['day'] = date_string[8:10]
 
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id'] = db_block.event_id
