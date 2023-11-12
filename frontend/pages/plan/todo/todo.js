@@ -104,10 +104,6 @@ Page({
     }
     console.log('final index: ', index)
     todoList.splice(index, 0, task) // 插入
-    this.setData({
-      todoList: todoList,
-      showInput: false
-    })
 
     // 与后端通信，新建Todo
     wx.getStorage({
@@ -122,6 +118,7 @@ Page({
           method:'GET',
           success:function(res){
             const todo_id = res.data.sha256;
+            todoList[index].todo_id = todo_id
             wx.request({  // 上传todo
               url: pointer.data.host_ + 'user/api/plan/add_todo',
               method:'POST',
@@ -148,6 +145,11 @@ Page({
       fail: function(res) {
         console.error('获取本地储存失败', res);
       }
+    })
+
+    this.setData({
+      todoList: todoList,
+      showInput: false
     })
   },
 
