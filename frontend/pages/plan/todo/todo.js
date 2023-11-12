@@ -421,10 +421,19 @@ Page({
     // 使用字符串操作方法拆分日期字符串
     var parts = oneWeekLater_formatted.split('/');
     // 构建转换后的日期字符串
-    var formattedDate = parts[0] + '-' + parts[1] + '-' + parts[2];
-    var parts = today_formatted.split('/');
+    var formattedDate;
+    var parts_today = today_formatted.split('/');
     // 构建转换后的日期字符串
-    var formattedToday = parts[0] + '-' + parts[1] + '-' + parts[2];
+    var formattedToday;
+    if (parts_today[0].length == 4) {
+      formattedToday = parts_today[0] + '-' + parts_today[1] + '-' + parts_today[2];
+      formattedDate = parts[0] + '-' + parts[1] + '-' + parts[2];
+    }
+    else if (parts_today[2].length == 4){
+      formattedToday = parts_today[2] + '-' + parts_today[0] + '-' + parts_today[1];
+      formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+    }
+    
     console.log(formattedToday)
     this.setData({
       planTitle: Value.title,
