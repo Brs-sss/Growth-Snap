@@ -1,0 +1,46 @@
+<!--pages/generate/preview/preview.wxml-->
+<view class="container">
+  <view class="preview_container">
+    <view class="image-player">
+      <image src="/image/temp/page.png" mode="aspectFill"/>
+    </view>
+  </view>
+  <view class="select_container">
+    <block wx:if="{{activeIndex==1}}">
+        <view class="sub-nav">
+          <text class="sub-nav-item {{diaryActiveIndex==0?'active':''}}"    bindtap="navigateToSubPage" data-index="0">封面</text>
+          <text class="sub-nav-item {{diaryActiveIndex==1?'active':''}}"    bindtap="navigateToSubPage" data-index="1">纸张</text>
+        </view>
+        <image class="selected-image" bindtap="navigateToSubPage" data-index="0" src="/image/generate/cover/cover_{{coverSelected}}.png"></image>
+        <image class="selected-image" bindtap="navigateToSubPage" data-index="1"  src="/image/generate/paper/paper_{{paperSelected}}.png" style="margin-left: -5vw;"></image>
+        <input class="diary-input" bindinput="handleInputTitle" placeholder="请输入标题" />
+        <button class="submit" data-category="diary" data-index="{{100*coverSelected    +paperSelected}}" bindtap="addEvent" style="width: 180rpx; height: 68rpx; display: block;     box-sizing: border-box; left: 230rpx; top: -674rpx">生成</button>
+        <block wx:if="{{diaryActiveIndex==0}}">
+          <!-- 封面 -->
+          <!-- <scroll-view class="scroll-view" scroll-y="true"> -->
+            <view class="cover-list" style="left: 1rpx;">
+              <block wx:for="{{coverList}}" wx:key="index">
+                <view class="cover-item"  data-category="diary" data-index="{{index}}"    bindtap="selectCover">
+                  <image class="cover-image {{index==coverSelected ? 'selected' : ''}}" src="/image/generate/cover/cover_{{index}}.png"></image>
+                  <image class="select-icon  {{index==coverSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
+                </view>
+              </block>
+            </view>
+          <!-- </scroll-view> -->
+        </block>
+        <block wx:if="{{diaryActiveIndex==1}}">
+          <!-- 纸张 -->
+          <!-- <scroll-view class="scroll-view" scroll-y="true"> -->
+            <view class="cover-list" style="left: 1rpx;">
+              <block wx:for="{{paperList}}" wx:key="index">
+                <view class="cover-item"  data-category="diary" data-index="{{index}}"     bindtap="selectPaper">
+                  <image class="cover-image {{index==paperSelected ? 'selected' : ''}}"src="/image/generate/paper/paper_{{index}}.png"></image>
+                  <image class="select-icon  {{index==paperSelected ? 'selected' : ''}}"src="/image/generate/check-circle.png"></image>
+                </view>
+              </block>
+            </view>
+          <!-- </scroll-view> -->
+        </block>
+      </block>
+  </view>
+</view>

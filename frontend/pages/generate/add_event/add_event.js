@@ -79,6 +79,7 @@ Page({
     comeFrom:null,
     cover_index:null,
     paper_index:null,
+    diary_title:null,
   },
 
   toggleTag: function(e) {
@@ -104,6 +105,7 @@ Page({
       })
       selectedEvents=[...new Set([...selectedEvents,...relatedEvents])]
       selectedNum=selectedEvents.length
+
     }
     this.setData({
       selectedTags: selectedTags,
@@ -167,26 +169,48 @@ Page({
       return {"id":eventList[ele].id,
               "type":eventList[ele].type}
     })
-    wx.request({
-      url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
-      method:'POST',
-      header:
-      {
-        'content-type': 'application/json'
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        let openid=res.data
+        wx.request({
+          url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
+          method:'POST',
+          header:
+          {
+            'content-type': 'application/json'
+          },
+          data:{
+            'openid':openid,
+            'list':id_list,
+            'cover_index':that.data.cover_index,
+            'paper_index':that.data.paper_index,
+            'name':that.data.diary_title,
+          },
+          success:function(res){
+            wx.showToast({
+              title: "提交成功",
+              icon: 'success',
+              duration: 1000,
+              success: function () {
+                setTimeout(function () {
+                  wx.navigateTo({
+                    url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title,
+                  })//成功提交，返回上个页面
+                }, 1000)
+              }
+            })
+          },
+          fail:function(res){
+            console.log('load page failed: ',res)
+          }
+        })
       },
-      data:{
-        'list':id_list,
-        'cover_index':that.data.cover_index,
-        'paper_index':that.data.paper_index,
-        'name':'快乐大金毛',
-      },
-      success:function(res){
-        
-      },
-      fail:function(res){
-        console.log('load page failed: ',res)
-      }
-    })
+      fail: function (res) {
+       console.log('获取数据失败');
+     }
+   });
 
   },
 
@@ -202,11 +226,13 @@ Page({
       comeFrom:options.category,
       cover_index:options.cover,
       paper_index:options.paper,
+      diary_title:options.title,
     })
 
-    console.log(this.data.comeFrom,this.data.paper_index,this.data.cover_index)
+    console.log(this.data.diary_title)
     var that = this
     loadPageInfo(that)
+
   },
 
   
