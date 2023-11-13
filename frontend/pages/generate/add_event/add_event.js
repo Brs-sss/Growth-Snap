@@ -76,6 +76,9 @@ Page({
     selectedNum:0,
     blog_cards_list: [],
     tag_to_event_index_dict:{},
+    comeFrom:null,
+    cover_index:null,
+    paper_index:null,
   },
 
   toggleTag: function(e) {
@@ -101,7 +104,6 @@ Page({
       })
       selectedEvents=[...new Set([...selectedEvents,...relatedEvents])]
       selectedNum=selectedEvents.length
-
     }
     this.setData({
       selectedTags: selectedTags,
@@ -159,6 +161,32 @@ Page({
   },
 
   handleSubmit(e){
+    const { eventList }=this.data;
+    var that=this;
+    let id_list=that.data.selectedEvents.map(ele=>{
+      return {"id":eventList[ele].id,
+              "type":eventList[ele].type}
+    })
+    wx.request({
+      url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
+      method:'POST',
+      header:
+      {
+        'content-type': 'application/json'
+      },
+      data:{
+        'list':id_list,
+        'cover_index':that.data.cover_index,
+        'paper_index':that.data.paper_index,
+        'name':'快乐大金毛',
+      },
+      success:function(res){
+        
+      },
+      fail:function(res){
+        console.log('load page failed: ',res)
+      }
+    })
 
   },
 
@@ -170,9 +198,15 @@ Page({
     // 获取要生成的类型
     // const category = decodeURIComponent(options.category);
     // const index = decodeURIComponent(options.index);
+    this.setData({
+      comeFrom:options.category,
+      cover_index:options.cover,
+      paper_index:options.paper,
+    })
+
+    console.log(this.data.comeFrom,this.data.paper_index,this.data.cover_index)
     var that = this
     loadPageInfo(that)
-
   },
 
   
