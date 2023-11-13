@@ -30,8 +30,8 @@ Page({
     var that=this
     const category = e.currentTarget.dataset.category;
     const index = e.currentTarget.dataset.index;
-    console.log('generate_category:',category);
-    console.log('generate_index:',index);
+    console.log(category);
+    console.log(index);
     wx.navigateTo({
       url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected,
     })
