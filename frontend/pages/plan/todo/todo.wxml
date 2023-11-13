@@ -4,7 +4,7 @@
   <view class="container_todo">
   <view>
     <image src="{{icon}}" style="height: 5vh; width: 5vh; top: 1.5vh; position: relative; margin-left: 3vh;"/>
-    <text class="todo-header"> {{planValue}}</text>
+    <text class="todo-header"> {{planTitle}}</text>
 
   </view>
   <view class="content">
