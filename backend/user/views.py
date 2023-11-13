@@ -5,7 +5,7 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
-from .utils import ListToString, StringToList
+from .utils import ListToString, StringToList, GenerateDiaryPDF
 import random
 import string
 import hashlib
@@ -17,7 +17,7 @@ import shutil
 # Create your views here.
 
 
-        
+event_image_base_path='static/ImageBase/'
 
 
 def login(request):
@@ -513,3 +513,45 @@ def getFamilyInfo(request):
             user_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
             family_list.append(user_item)
         return JsonResponse({'family_list': family_list})
+    
+def generateDiary(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        to_render_list=[]
+        event_text_list=data.get('list')
+        for item in event_text_list:
+            if item['type']=="event":
+                event_id=item['id']
+                now_event=Event.objects.get(event_id=event_id)
+                date_string=str(now_event.date)
+                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+                image_path=event_image_base_path+event_id
+                image_list = sorted(os.listdir(image_path))
+                to_render_list.append({
+                    'title':now_event.title,
+                    'content':now_event.content,
+                    'date':date_string,
+                    'event_id':event_id,
+                    'imgList':image_list,
+                })
+            else: #text
+                text_id=item['id']
+                now_event=Text.objects.get(text_id=text_id)
+                date_string=str(now_event.date)
+                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+                to_render_list.append({
+                    'title':now_event.title,
+                    'content':now_event.content,
+                    'date':date_string,
+                })
+        
+        output_base='static/diary/'
+        output_path=output_base+data.get('name')+'.pdf'
+        GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
+        return JsonResponse({'msg': 'success'})
+    return JsonResponse({'msg': 'POST only'})
+
+
+
+
+

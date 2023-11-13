@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/show/text/detail',views.loadTextDetail,name='text_detail'),
     path('api/show/event/delete',views.deleteEvent,name='event_delete'),
     path('api/show/text/delete',views.deleteText,name='text_delete'),
+    path('api/generate/diary',views.generateDiary, name='generate_diary'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
