@@ -1,6 +1,4 @@
 // pages/plan/create_plan/create_plan.js
-const app = getApp()
-
 Page({
 
   /**
@@ -18,9 +16,9 @@ Page({
     inputText: '', // 输入框的值
     inputTag:'',
     isEditing: false, // 是否处于编辑模式
-    host_: `${app.globalData.localUrl}`,
+    host_: 'http://127.0.0.1:8090/',
     openid: '',
-    iconList: ['../../../image/plan/icons/basketball.png', '../../../image/plan/icons/biking.png', '../../../image/plan/icons/book.png', '../../../image/plan/icons/clock.png', '../../../image/plan/icons/computer.png', '../../../image/plan/icons/pencil.png', '../../../image/plan/icons/piano.png', '../../../image/plan/icons/shirt.png', '../../../image/plan/icons/swimmer.png', '../../../image/plan/icons/cat.png', '../../../image/plan/icons/carrot.png', '../../../image/plan/icons/brush.png', '../../../image/plan/icons/travel.png', '../../../image/plan/icons/fish.png'],
+    iconList: ['/image/plan/icons/basketball.png', '/image/plan/icons/biking.png', '/image/plan/icons/book.png', '/image/plan/icons/clock.png', '/image/plan/icons/computer.png', '/image/plan/icons/pencil.png', '/image/plan/icons/piano.png', '/image/plan/icons/shirt.png', '/image/plan/icons/swimmer.png', '/image/plan/icons/cat.png', '/image/plan/icons/carrot.png', '/image/plan/icons/brush.png', '/image/plan/icons/travel.png', '/image/plan/icons/fish.png'],
     selected_icon_index: 0
   },
 
@@ -68,6 +66,7 @@ Page({
     console.log(this.data.tags[index].checked)
     console.log("tags:", this.data.tags)
   },
+
   showInput: function() {
     this.setData({
       showInput: true
@@ -135,8 +134,7 @@ Page({
     wx.request({
       url: that.data.host_+'user/api/plan/add_plan',
       method: 'POST',
-      header:
-      {
+      header:{
         'content-type': 'application/json'
       },
       data:{
@@ -148,17 +146,25 @@ Page({
       success: function(res)
       {
         console.log(res)
-        wx.showToast({
-          title: "新建成功",
-          icon: 'success',
-          duration: 1000,
-          success: function () {
-            setTimeout(function () {
-              wx.navigateBack(1) //成功提交，返回上个页面
-            }, 1000)
-          }
-        })
-        
+        if(res.data.message == "Duplicate plan name"){
+          wx.showToast({
+            title: "计划名称重复",
+            icon: 'error',
+            duration: 1000
+          })
+        }
+        else{
+          wx.showToast({
+            title: "新建成功",
+            icon: 'success',
+            duration: 1000,
+            success: function () {
+              setTimeout(function () {
+                wx.navigateBack(1) //成功提交，返回上个页面
+              }, 1000)
+            }
+          })
+        }   
       }
     })
 
