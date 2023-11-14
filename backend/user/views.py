@@ -5,7 +5,7 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
-from .utils import ListToString, StringToList, GenerateDiaryPDF
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail
 import random
 import string
 import hashlib
@@ -562,10 +562,10 @@ def loadPDFThumbnail(request):
         openid = request.GET.get('openid')
         pdf_name=request.GET.get('file_name')
         pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
-        
-
-
-        return JsonResponse({'imageList': "thumbnail_list"})
+        output_path='static/diary/'+openid+'/thumbnails/'+pdf_name+'/'
+        num=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+        thumbnail_list=['http://127.0.0.1:8090/' + output_path+ f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
+        return JsonResponse({'imageList': thumbnail_list})
     return JsonResponse({'msg': 'GET only'})
 
 

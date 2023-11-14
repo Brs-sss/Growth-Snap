@@ -3,6 +3,7 @@ from datetime import datetime
 from jinja2 import Template
 import random
 from urllib.parse import quote
+from pdf2image import convert_from_path
 import os
 
 # 指定 wkhtmltopdf 可执行文件路径
@@ -24,6 +25,8 @@ def StringToList(tag_string):
     return tag_string.split(",")
 ###########################    end block 1
 
+
+##########################    block 2: 把带{{ }}的html模版用Jinja2渲染成填了空的html
 
 def render_template(template_html,context_dict):
     with open(template_html, "r", encoding="utf-8") as file:
@@ -78,6 +81,23 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
         os.remove(file)
     
     print(f"Diary PDF generated at: {output_path}")
+    
+###########################    end block 3
+
+
+##########################    block 4: pdf转图片，用到pdf2image，依赖poppler
+
+def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
+    images = convert_from_path(pdf_path,first_page=1,last_page=max_page, dpi=resolution) #如果总页数小于max_page，会自动处理
+    for i, image in enumerate(images):
+        thumbnail_path = f"{output_folder}/thumbnail_page_{i + 1}.jpg"
+        image.save(thumbnail_path, 'JPEG')
+    
+    return len(images)
+
+
+
+   
 
 
 
