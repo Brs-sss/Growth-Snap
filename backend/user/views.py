@@ -12,7 +12,6 @@ import hashlib
 import os
 import datetime
 import shutil
-import fitz
 
 
 # Create your views here.
@@ -534,6 +533,7 @@ def generateDiary(request):
                     'date':date_string,
                     'event_id':event_id,
                     'imgList':image_list,
+                    'type':'event',
                 })
             else: #text
                 text_id=item['id']
@@ -544,6 +544,7 @@ def generateDiary(request):
                     'title':now_event.title,
                     'content':now_event.content,
                     'date':date_string,
+                    'type':'text',
                 })
         
         output_base='static/diary/'+data.get('openid')+'/'
