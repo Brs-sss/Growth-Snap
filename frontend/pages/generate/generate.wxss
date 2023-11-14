@@ -101,22 +101,22 @@
 }
 
 .cover-item {
-  width: calc(33.3% - 10rpx); /* 每行显示三个cover元素，间隔为10rpx */
+  width: calc(25% - 10rpx); /* 每行显示三个cover元素，间隔为10rpx */
   margin-top: 2rpx; 
   box-sizing: border-box; 
 }
 
 
 .cover-image {
-  width: 15vh;
-  height: 20vh;
+  width: 12vh;
+  height: 16vh;
   border-radius: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
 }
 
 .cover-image.selected{
-  width: 14vh;
-  height: 19vh;
+  width: 11vh;
+  height: 15vh;
   border: 0.6vh solid #4095E5; /* 设置边框宽度和颜色 */
   border-radius: 1vh; /* 可选：设置边框圆角 */
   /* padding: 8rpx; 可选：设置内边距，以使内容与边框之间有一些间距 */

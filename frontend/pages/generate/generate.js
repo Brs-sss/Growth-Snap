@@ -31,6 +31,11 @@ Page({
       diaryActiveIndex: index
     });
   },
+  navigateTochart(e){
+    wx.navigateTo({
+      url: '/pages/generate/chart/chart',
+    })
+  },
   addEvent(e) {
     var that=this
     const category = e.currentTarget.dataset.category;
@@ -107,7 +112,11 @@ Page({
       ]
     });
   },
-
+  generateChart(e){
+    wx.navigateTo({
+      url: '/pages/generate/chart/chart'
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

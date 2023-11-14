@@ -34,6 +34,8 @@ function LoadUserPage(that){
    })
 }
 
+const app = getApp();
+
 Page({
 
   /**
@@ -41,7 +43,7 @@ Page({
    */
   data: {
     user_profile: '',
-    host_: 'http://127.0.0.1:8090/',
+    host_: `${app.globalData.localUrl}`,
     username: '',
     user_label: '',
     event_number: 0,
