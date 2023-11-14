@@ -56,6 +56,7 @@
   </block>
   <block wx:if="{{activeIndex==2}}">
     <view>小视频页面</view>
+    <button bind:tap="addVideo" data-category="video">generate video</button>
   </block>
   <block wx:if="{{activeIndex==3}}">
     <button class="submit" bindtap="navigateTochart">生成折线图</button>

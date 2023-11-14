@@ -5,7 +5,7 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
-from .utils import ListToString, StringToList, GenerateDiaryPDF
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateVideo
 import random
 import string
 import hashlib
@@ -568,6 +568,42 @@ def loadPDFThumbnail(request):
         return JsonResponse({'imageList': "thumbnail_list"})
     return JsonResponse({'msg': 'GET only'})
 
-
+def generateVideo(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        image_path_list=[]
+        event_text_list=data.get('list')
+        for item in event_text_list:
+            if item['type']=="event":
+                event_id=item['id']
+                now_event=Event.objects.get(event_id=event_id)
+                date_string=str(now_event.date)
+                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+                image_path=event_image_base_path+event_id
+                print(f"image_path {image_path}")
+                print(f'os.list: {os.listdir(image_path)}')
+                for path in os.listdir(image_path):
+                    # print(f'path {path}')
+                    image_path_list.append(image_path+'/'+path)
+                # image_list = sorted(os.listdir(image_path))
+                # to_render_list.append({
+                #     'title':now_event.title,
+                #     'content':now_event.content,
+                #     'date':date_string,
+                #     'event_id':event_id,
+                #     'imgList':image_list,
+                #     'type':'event',
+                # })
+                # image_path_list.append(image_list)
+        # print(image_path_list)
+        GenerateVideo(image_path_list)
+        
+        # output_base='static/diary/'+data.get('openid')+'/'
+        # if not os.path.exists(output_base):
+        #     os.mkdir(output_base)
+        # output_path=output_base+data.get('name')+'.pdf'
+        # GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
+        return JsonResponse({'msg': 'success'})
+    return JsonResponse({'msg': 'POST only'})
 
 

@@ -36,6 +36,16 @@ Page({
       url: '/pages/generate/chart/chart',
     })
   },
+  addVideo(e){
+    var that=this
+    const category = e.currentTarget.dataset.category;
+    // const index = e.currentTarget.dataset.index;
+    console.log('generate_category:',category);
+    // console.log('generate_index:',index);
+    wx.navigateTo({
+      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category)
+    })
+  },
   addEvent(e) {
     var that=this
     const category = e.currentTarget.dataset.category;
