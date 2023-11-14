@@ -1,9 +1,20 @@
 // pages/generate/preview/preview.js
 
+<<<<<<< HEAD
 //const pdfjsLib = require('../../../miniprogram_npm/miniprogram_npm/pdf.js');
 // const pdfjs = require('pdfjs-dist/webpack');
 const app = getApp();
 
+=======
+//const pdfjsLib = require('pdfjs-dist/build/pdf');
+<<<<<<< HEAD
+=======
+const app = getApp();
+
+
+>>>>>>> 94794c89b1c04078054250ea507e9dd77d398987
+
+>>>>>>> dev
 Page({
 
   /**
@@ -11,9 +22,16 @@ Page({
    */
   data: {
     previewList:[],
+<<<<<<< HEAD
+    host_: 'http://127.0.0.1:8090/',
+=======
     host_: `${app.globalData.localUrl}`,
+<<<<<<< HEAD
     pdf_url:null,
     pdf_name:null,
+=======
+>>>>>>> 94794c89b1c04078054250ea507e9dd77d398987
+>>>>>>> dev
   },
 
   renderPDF: function(url) {
