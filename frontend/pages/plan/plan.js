@@ -1,4 +1,7 @@
 // pages/plan/plan.js
+
+const app = getApp()
+
 Page({
 
   /**
@@ -8,7 +11,7 @@ Page({
     todoList: [],
     completeList: [],
     planList: [],
-    host_: 'http://127.0.0.1:8090/'
+    host_: `${app.globalData.localUrl}`,
   },
 
   onLoad(options) {

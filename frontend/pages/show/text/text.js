@@ -1,4 +1,7 @@
 // pages/show/text/text.js
+
+const app = getApp();
+
 Page({
 
   /**
@@ -13,7 +16,7 @@ Page({
     inputText: '', // 输入框的值
     inputTag:'',
     isEditing: false, // 是否处于编辑模式
-    host_: 'http://127.0.0.1:8090/'
+    host_: `${app.globalData.localUrl}`,
   },
   handleInputTitle(e) {  //输入标题的处理
     this.setData({

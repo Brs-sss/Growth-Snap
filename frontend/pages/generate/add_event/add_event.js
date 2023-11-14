@@ -60,6 +60,7 @@ function loadPageInfo(that){
    })
 }
 
+const app = getApp();
 
 Page({
 
@@ -67,7 +68,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    host_: 'http://127.0.0.1:8090/',
+    host_: `${app.globalData.localUrl}`,
     generateCategory:'',
     templateIndex: '',
     tags: [], // 已保存的标签列表

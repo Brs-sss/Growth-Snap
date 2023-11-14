@@ -1,6 +1,6 @@
 // pages/show/event_detail/event_detail.js
 
-
+const app = getApp();
 
 Page({
 
@@ -17,7 +17,7 @@ Page({
       text:null,
       tags:[],
       tags_string:null,
-      host_: 'http://127.0.0.1:8090/',
+      host_: `${app.globalData.localUrl}`,
       event_id:null,
   },
 
