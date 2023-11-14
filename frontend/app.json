@@ -19,7 +19,8 @@
     "pages/user/child/child",
     "pages/user/child/addchild/addchild",
     "pages/show/event_detail/event_detail",
-    "pages/show/text_detail/text_detail"
+    "pages/show/text_detail/text_detail",
+    "pages/generate/preview/preview"
   ],
   "tabBar": {
     "color": "#666666",
@@ -57,7 +58,8 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "Weixin",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "default"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

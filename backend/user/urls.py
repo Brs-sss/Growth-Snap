@@ -24,6 +24,10 @@ urlpatterns = [
     path('api/user/get_family_info', views.getFamilyInfo, name='get_family_info'),
     path('api/show/event/detail',views.loadEventDetail,name='event_detail'),
     path('api/show/text/detail',views.loadTextDetail,name='text_detail'),
+    path('api/show/event/delete',views.deleteEvent,name='event_delete'),
+    path('api/show/text/delete',views.deleteText,name='text_delete'),
+    path('api/generate/diary',views.generateDiary, name='generate_diary'),
+    path('api/generate/diary/preview',views.loadPDFThumbnail,name="diary_preview"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

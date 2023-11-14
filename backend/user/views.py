@@ -5,18 +5,20 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
-from .utils import ListToString, StringToList
+from .utils import ListToString, StringToList, GenerateDiaryPDF
 import random
 import string
 import hashlib
 import os
 import datetime
+import shutil
+import fitz
 
 
 # Create your views here.
 
 
-        
+event_image_base_path='static/ImageBase/'
 
 
 def login(request):
@@ -152,7 +154,24 @@ def submitEvent(request):
         return JsonResponse({'message': 'Data submitted successfully'})
     
 
+def addEventImage(request):
+    if request.method == 'POST':
+        uploaded_image = request.FILES.get('image')
+        pic_index = request.POST.get('pic_index')
+        event_id = request.POST.get('event_id')
 
+        image_path = './static/ImageBase/' + f'{event_id}/'
+        if not os.path.exists(image_path):
+            os.mkdir(image_path)
+        if uploaded_image:
+            with open(image_path + f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+            return JsonResponse({'message': '文件上传成功'})
+        else:
+            return JsonResponse({'message': '文件不存在'})
+    else:
+        return JsonResponse({'message': '请使用POST方法'})
 
 def submitData(request):
     if request.method == 'POST':
@@ -227,35 +246,19 @@ def registerProfileImage(request):
         return JsonResponse({'message': 'please use POST'})
 
 
-def addEventImage(request):
-    if request.method == 'POST':
-        uploaded_image = request.FILES.get('image')
-        pic_index = request.POST.get('pic_index')
-        event_id = request.POST.get('event_id')
-
-        image_path = './static/ImageBase/' + f'{event_id}/'
-        if not os.path.exists(image_path):
-            os.mkdir(image_path)
-        if uploaded_image:
-            with open(image_path + f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
-                for chunk in uploaded_image.chunks():
-                    destination.write(chunk)
-            return JsonResponse({'message': '文件上传成功'})
-        else:
-            return JsonResponse({'message': '文件不存在'})
-    else:
-        return JsonResponse({'message': '请使用POST方法'})
 
 
 # 加载主页 只返回必要的信息
 def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
+        types = request.GET.get('types',"etd") #缺省值为event&text&data
+        used_by_addEvent_page=(request.GET.get('tags',"false")== "true")
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time")  # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time")
-        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time")
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time") if 'e' in types else [] # 筛选的结果按照降序排列
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else [] 
+        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else [] 
         now_user_blocks= sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),key=lambda x:(x.date,x.time),reverse=True)
         print(now_user_blocks.__len__())
         blocks_list = []
@@ -263,13 +266,17 @@ def loadShowPage(request):
             block_item={}
             block_item['type']=db_block.record_type
             block_item['title']=db_block.title
-            block_item['content']=db_block.content
-            block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
-            date_string=str(db_block.date)
-            block_item['month']=str(int(date_string[5:7]))+"月"
-            block_item['year']=date_string[0:4]
-            block_item['day']=date_string[8:10]
-            block_item['tags']=StringToList(db_block.tags)
+            
+            if used_by_addEvent_page:
+                block_item['tags']=StringToList(db_block.tags)
+            else:
+                block_item['content']=db_block.content
+                block_item['author']=db_block.user.label  #爸爸、妈妈、大壮、奶奶
+                date_string=str(db_block.date)
+                block_item['month']=str(int(date_string[5:7]))+"月"
+                block_item['year']=date_string[0:4]
+                block_item['day']=date_string[8:10]
+                    
             
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id']=db_block.event_id
@@ -396,7 +403,26 @@ def loadTextDetail(request):
         block_item['day']=date_string[8:10]
         block_item['tags']=StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
-
+    
+def deleteEvent(request):
+     if request.method == 'GET':
+        event_id=request.GET.get('event_id')
+        #返回渲染的list
+        try: 
+            shutil.rmtree('static/ImageBase/'+event_id)
+            Event.objects.get(event_id=event_id).delete()
+        except: return JsonResponse({'msg': 'error'})
+        return JsonResponse({'msg': 'ok'})
+    
+def deleteText(request):
+     if request.method == 'GET':
+        text_id=request.GET.get('text_id')
+        #返回渲染的list
+        try: 
+            Text.objects.get(text_id=text_id).delete()
+        except: return JsonResponse({'msg': 'error'})
+        return JsonResponse({'msg': 'ok'})
+        
 
 def getChildrenInfo(request):
     if request.method == 'GET':
@@ -488,3 +514,59 @@ def getFamilyInfo(request):
             user_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
             family_list.append(user_item)
         return JsonResponse({'family_list': family_list})
+    
+def generateDiary(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        to_render_list=[]
+        event_text_list=data.get('list')
+        for item in event_text_list:
+            if item['type']=="event":
+                event_id=item['id']
+                now_event=Event.objects.get(event_id=event_id)
+                date_string=str(now_event.date)
+                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+                image_path=event_image_base_path+event_id
+                image_list = sorted(os.listdir(image_path))
+                to_render_list.append({
+                    'title':now_event.title,
+                    'content':now_event.content,
+                    'date':date_string,
+                    'event_id':event_id,
+                    'imgList':image_list,
+                })
+            else: #text
+                text_id=item['id']
+                now_event=Text.objects.get(text_id=text_id)
+                date_string=str(now_event.date)
+                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+                to_render_list.append({
+                    'title':now_event.title,
+                    'content':now_event.content,
+                    'date':date_string,
+                })
+        
+        output_base='static/diary/'+data.get('openid')+'/'
+        if not os.path.exists(output_base):
+            os.mkdir(output_base)
+        output_path=output_base+data.get('name')+'.pdf'
+        GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
+        return JsonResponse({'msg': 'success'})
+    return JsonResponse({'msg': 'POST only'})
+
+
+#进入日记本预览界面时，要生成最多5张的缩略图，便于用户查看效果。
+def loadPDFThumbnail(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        pdf_name=request.GET.get('file_name')
+        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
+        
+
+
+        return JsonResponse({'imageList': "thumbnail_list"})
+    return JsonResponse({'msg': 'GET only'})
+
+
+
+

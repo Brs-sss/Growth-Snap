@@ -23,7 +23,8 @@ Page({
                  {task: '钢琴二级考试', leftDay: '0', complete: true},
                  {task: 'FTP验收', leftDay: '0', complete: true},
                  {task: 'Project FTP', leftDay: '0', complete: true}],
-      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}]
+      planList: [{title:'代码能力提升', icon:'/image/plan/icons/computer.png'},{title:'钢琴计划', icon:'/image/plan/icons/piano.png'}],
+      moreThan2: true
     })
   },
 
@@ -36,7 +37,6 @@ Page({
   },
 
   goToAllPlan(e) {
-    console.log('gotoallpage')
     wx.navigateTo({
       url: '/pages/plan/all_plan/all_plan',
     })
@@ -44,7 +44,6 @@ Page({
 
   completeTask(e) {
     var taskN = parseInt(e.target.id.substring(8))
-    console.log('index: ', taskN)
     var todoList = this.data.todoList
     const task = todoList.splice(taskN, 1)[0] // 去掉第k个元素
     var index
@@ -58,30 +57,24 @@ Page({
     }
     else {
       index = todoList.findIndex(obj => ! obj.complete)
-      console.log(index)
       if (index === -1) {
         // 不存在未完成元素，直接插入到开头
         index = 0;
-        console.log(index)
       }
       else{
         // 存在未完成元素，插入到 第一个未完成且剩余天数更多的元素 的位置
         index = todoList.findIndex(obj => (! obj.complete && obj.leftDay > task.leftDay))
-        console.log(index)
         if (index === -1) {
           // 未找到，插入到 第一个已完成元素 的位置
           index = todoList.findIndex(obj => obj.complete)
-          console.log(index)
           if(index === -1){
             // 未找到，插入到最后
             index = todoList.length 
-            console.log(index)
           }
         }
       }
     }
     task.complete = ! task.complete
-    console.log('final index: ', index)
     todoList.splice(index, 0, task) // 插入
     this.setData({
       todoList: todoList

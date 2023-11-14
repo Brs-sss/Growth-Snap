@@ -20,6 +20,9 @@
       <view class="tags-container">
         {{tags_string}}
       </view>
-      <view class="date-container">{{date}}</view>
+      <view class="date-delete-container">
+        <view class="date-container">{{date}}</view>
+        <view class="delete-container" bindtap="deleteThis">删除</view>
+      </view>
   </view>
 </view>

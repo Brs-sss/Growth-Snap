@@ -11,6 +11,50 @@ Page({
     tags:[],
     tags_string:null,
     host_: 'http://127.0.0.1:8090/',
+    text_id:null,
+},
+deleteThis(e){
+  var that = this
+  wx.showModal({
+    title: '确认操作',
+    content: '确定删除此篇文字',
+    success: function (res) {
+      if (res.confirm) {
+        wx.request({
+          url: that.data.host_+'user/api/show/text/delete'+'?text_id='+that.data.text_id,
+          method:'GET',
+          success:function(res){
+            if(res.data.msg='ok'){
+                wx.showToast({
+                  title: "删除成功",
+                  icon: 'success',
+                  duration: 1000,
+                  success: function () {
+                    setTimeout(function () {
+                      wx.navigateBack(1) //成功提交，返回上个页面
+                    }, 1000)
+                  }
+                })
+            }
+            else{
+              wx.showToast({
+                title: "删除失败",
+                icon: 'error',
+                duration: 1000,
+              })
+            }
+          },
+          fail:function(res){
+
+          }
+        })
+      } else if (res.cancel) {
+        return;
+      }
+    }
+  });
+  
+
 },
 
   /**
@@ -19,6 +63,9 @@ Page({
    onLoad(options) {
     var that = this
     const text_id=options.text_id;
+    this.setData({
+      text_id:text_id,
+    })
     console.log('detail text id:',text_id)
     wx.request({
       url: that.data.host_+'user/api/show/text/detail'+'?text_id='+text_id,
