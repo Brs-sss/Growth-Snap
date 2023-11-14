@@ -196,7 +196,7 @@ Page({
               success: function () {
                 setTimeout(function () {
                   wx.navigateTo({
-                    url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title,
+                    url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
                   })//成功提交，返回上个页面
                 }, 1000)
               }

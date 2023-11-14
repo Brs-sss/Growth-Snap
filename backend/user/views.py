@@ -12,6 +12,7 @@ import hashlib
 import os
 import datetime
 import shutil
+import fitz
 
 
 # Create your views here.
@@ -553,6 +554,18 @@ def generateDiary(request):
         return JsonResponse({'msg': 'success'})
     return JsonResponse({'msg': 'POST only'})
 
+
+#进入日记本预览界面时，要生成最多5张的缩略图，便于用户查看效果。
+def loadPDFThumbnail(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        pdf_name=request.GET.get('file_name')
+        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
+        
+
+
+        return JsonResponse({'imageList': "thumbnail_list"})
+    return JsonResponse({'msg': 'GET only'})
 
 
 
