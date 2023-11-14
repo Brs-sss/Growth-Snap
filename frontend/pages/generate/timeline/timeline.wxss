@@ -1,10 +1,5 @@
 /* pages/generate/timeline/timeline.wxss */
 
-.scroll-view{
-  overflow-y: scroll; 
-  background-color:#e6e6e6;
-  border-radius: 1vh;
-}
 
 .ec-container {
   display: flex;
@@ -14,9 +9,22 @@
   width: 100vw;
   height: 150vh;
   overflow: scroll; /* 允许内容滚动 */
+  z-index: 0;
 }
 
 ec-canvas {
   width: 100%;
   height: 100%;
+  z-index: 0;
+}
+
+.submit{
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+  display: block;
+  box-sizing: border-box;
+  margin-bottom: 10rpx;
 }

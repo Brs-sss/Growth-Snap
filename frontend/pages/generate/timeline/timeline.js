@@ -3,7 +3,7 @@ import * as echarts from '../../../components/ec-canvas/echarts';
 
 const graphData = [
   ['2023-02-01', 1000],
-  ['2023-03-10', 1000],
+  ['2023-03-05', 1000],
   ['2023-04-20', 1000],
   ['2023-06-04', 1000],
   ['2023-07-09', 1000]
@@ -115,7 +115,33 @@ Page({
       onInit: initChart
     }
   },
+  handleSave() {
+    const ecComponent = this.selectComponent('#echart');
 
+    // 先保存图片到临时的本地文件，然后存入系统相册
+    ecComponent.canvasToTempFilePath({
+      success: res => {
+        console.log("tempFilePath:", res.tempFilePath)
+
+        // 存入系统相册
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath || '',
+          success: res => {
+            console.log("success", res);
+            wx.showToast({
+              title: "已保存到本地",
+              icon: 'success',
+              duration: 1000,
+            })
+          },
+          fail: res => {
+            console.log("fail", res)
+          }
+        })
+      },
+      fail: res => console.log(res)
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */

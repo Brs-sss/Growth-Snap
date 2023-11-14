@@ -1,5 +1,8 @@
 <!--pages/generate/timeline/timeline.wxml-->
 
+<button class="submit" bindtap="handleSave">导出</button>
+
 <view class="ec-container">
-    <ec-canvas canvas-id="echart" ec="{{ec}}"></ec-canvas>
+    <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
 </view>
+
