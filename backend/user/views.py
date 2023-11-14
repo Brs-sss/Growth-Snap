@@ -4,13 +4,8 @@ from django.http import JsonResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
-<<<<<<< HEAD
-from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
+from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
 from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail
-=======
-from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Todo, Child
-from .utils import ListToString, StringToList, GenerateDiaryPDF
->>>>>>> 524b4a34306392d3e14d25beef708bd93202d90a
 import random
 import string
 import hashlib
