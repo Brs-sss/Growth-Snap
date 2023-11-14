@@ -26,6 +26,11 @@ Page({
       diaryActiveIndex: index
     });
   },
+  navigateTochart(e){
+    wx.navigateTo({
+      url: '/pages/generate/chart/chart',
+    })
+  },
   addEvent(e) {
     const category = e.currentTarget.dataset.category;
     const index = e.currentTarget.dataset.index;

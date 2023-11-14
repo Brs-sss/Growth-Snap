@@ -58,6 +58,6 @@
     <view>小视频页面</view>
   </block>
   <block wx:if="{{activeIndex==3}}">
-    <view>折线图页面</view>
+    <button class="submit" bindtap="navigateTochart">生成折线图</button>
   </block>
 </view>
