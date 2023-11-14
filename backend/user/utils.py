@@ -110,7 +110,7 @@ def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
 
 
 # 生成视频第一步：统一大小
-def resizeVideoImage(image_path_list):
+def resizeVideoImage(image_path_list, video_title, label):
     print(image_path_list)
     resized_image_path_list = []
     resized_image_path = 'static/video/resized/'
@@ -119,12 +119,11 @@ def resizeVideoImage(image_path_list):
     black = cv2.imread('static/video/black.png')
     # 1024：768 = 640：480
     black = cv2.resize(black, (1024, 768), interpolation=cv2.INTER_CUBIC)
-    title = 'A Short Video Of GouGou'
-    author = 'MAMA'
+    
     date = datetime.now().strftime('%Y-%m-%d')
 
-    cv2.putText(black, title, (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (255, 255, 255), 1)
-    black = cv2.putText(black, author, (100, 150), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
+    cv2.putText(black, video_title, (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (255, 255, 255), 1)
+    black = cv2.putText(black, label, (100, 150), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
     black = cv2.putText(black, date, (100, 200), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
     cv2.imwrite('static/video/resized/title.png', black)
     resized_image_path_list.append('static/video/resized/title.png')
@@ -155,8 +154,8 @@ def resizeVideoImage(image_path_list):
     return resized_image_path_list
 
 
-def GenerateVideo(image_path_list):
-    resized_image_path_list = resizeVideoImage(image_path_list)
+def GenerateVideo(image_path_list, audio_index, video_title, label):
+    resized_image_path_list = resizeVideoImage(image_path_list, video_title, label)
     print(resized_image_path_list)
     # # 合成视频
     video_dir = 'static/video/temp.mp4'      # 输出视频的保存路径
@@ -183,7 +182,7 @@ def GenerateVideo(image_path_list):
     # video = VideoFileClip(video_dir)
     video = VideoFileClip('static/video/temp.mp4')
     duration = video.duration  # 视频时长
-    videos = video.set_audio(AudioFileClip('static/video/audio/黑桃A.mp3').subclip(0, duration))  # 音频文件
+    videos = video.set_audio(AudioFileClip(f'static/video/audio/audio_{audio_index}.mp3').subclip(0, duration))  # 音频文件
     videos.write_videofile('static/video/result.mp4', audio_codec='aac')  # 保存合成视频，注意加上参数audio_codec='aac'，否则音频无声音/
     # 删除resized文件夹
     shutil.rmtree('static/video/resized')

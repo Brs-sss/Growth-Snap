@@ -661,8 +661,13 @@ def loadPDFThumbnail(request):
 def generateVideo(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        label = now_user.label
         image_path_list=[]
         event_text_list=data.get('list')
+        video_title = data.get('name')
+        audio_index = data.get('audio_index')
         for item in event_text_list:
             if item['type']=="event":
                 event_id=item['id']
@@ -686,7 +691,7 @@ def generateVideo(request):
                 # })
                 # image_path_list.append(image_list)
         # print(image_path_list)
-        GenerateVideo(image_path_list)
+        GenerateVideo(image_path_list, audio_index, video_title, label)
         
         # output_base='static/diary/'+data.get('openid')+'/'
         # if not os.path.exists(output_base):

@@ -55,8 +55,22 @@
     </block>
   </block>
   <block wx:if="{{activeIndex==2}}">
-    <view>小视频页面</view>
-    <button bind:tap="addVideo" data-category="video">generate video</button>
+  <view class='pick-video-title'>
+    <text>视频标题</text>
+    <input class="audio-input" bindinput="handleInputVideoTitle" placeholder="请输入标题" />
+  </view>
+    
+    <view class='pick-audio'>选择配乐</view>
+    <view class="audio-list">
+    
+      <block wx:for="{{audioList}}" wx:key="index">
+        <view class="timeline-item"  data-category="audio" data-index="{{index}}" bindtap="addAudio">
+          <image class="audio-image" src="/image/generate/audio/audio_{{index}}.png"></image>
+          <text class="timeline-name">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+    <button bind:tap="addEvent" data-category="video">generate video</button>
   </block>
   <block wx:if="{{activeIndex==3}}">
     <button class="submit" bindtap="navigateTochart">生成折线图</button>
