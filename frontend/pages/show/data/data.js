@@ -1,4 +1,6 @@
 // pages/show/data/data.js
+const app = getApp()
+
 Page({
   /**
    * 页面的初始数据
@@ -16,7 +18,7 @@ Page({
     areaH: 0,
     windowH: 0,
 
-    host_: 'http://127.0.0.1:8090/'
+    host_: `${app.globalData.localUrl}`,
   },
 
   updataSubmitHeight() {

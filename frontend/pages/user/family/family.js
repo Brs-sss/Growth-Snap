@@ -27,6 +27,8 @@ function LoadFamilyPage(that){
    })
 }
 
+const app = getApp();
+
 Page({
 
   /**
@@ -49,7 +51,7 @@ Page({
       // 其他家庭成员...
     ],
     blog_cards_list:[],  //所有卡片BlogCard的list
-    host_: 'http://127.0.0.1:8090/'
+    host_: `${app.globalData.localUrl}`,
   },
   goToPage_addmember() {
     // TODO: 跳转到对应页面的处理逻辑
