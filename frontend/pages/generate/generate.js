@@ -1,4 +1,9 @@
 // pages/generate/generate.js
+function isEmpty(x){
+  return  x.trim()==''
+}
+
+
 Page({
 
   /**
@@ -30,10 +35,18 @@ Page({
     var that=this
     const category = e.currentTarget.dataset.category;
     const index = e.currentTarget.dataset.index;
-    console.log(category);
-    console.log(index);
+    console.log('generate_category:',category);
+    console.log('generate_index:',index);
+    if(isEmpty(that.data.diaryTitle)){
+      wx.showToast({
+        title: "标题不能为空",
+        icon: 'error',
+        duration: 1000,
+      })
+      return;
+    }
     wx.navigateTo({
-      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected,
+      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected+"&title="+that.data.diaryTitle,
     })
   },
   selectCover(e){
