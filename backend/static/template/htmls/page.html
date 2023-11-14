@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0; /* 可以考虑去除默认的 margin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: url("{{ background_img }}") no-repeat center center fixed;
+            background-size: 100% 100%;
+            position: relative;
+        }
+        .date{
+            color: #666;
+            font-family: 'SimHei', sans-serif;
+            font-size: 19px;
+            margin-top: 0;
+
+        }
+        h1 {
+            margin: 0;
+            color: #000d6d;
+        }
+        p {
+            line-height: 1.5;
+            color: #666;
+        }
+
+        .page{
+            width: 178.3mm;
+            height: 246.2mm;
+            position: absolute;
+            left: 19mm;
+            top: 25.4mm;
+        }
+
+        .image-box{
+            width: 100%;
+            height: auto;
+            /*display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; */   /*wkhtmltopdf不支持glex grid*/
+
+            text-align: center;
+        }
+        .image-box img{
+            display: inline-block;
+            width: 100mm;
+            height: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="date">{{ date }}</div>
+        <h1>{{ title }}</h1>
+        <p>{{ text }}</p>
+        <div class="image-box">
+            <img src="{{ image }}"/>
+            <!-- <img src="漫天闪电.png"/> -->
+        </div>
+        
+    </div>
+</body>
+</html>
