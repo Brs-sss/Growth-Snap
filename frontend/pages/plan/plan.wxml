@@ -26,6 +26,11 @@
         </view>
         <view class="line"></view>
       </block>
+      <view class="todo-item" wx:if="{{todoList.length == 0}}" style="height: 60px;">
+        <text style="color: darkgray;">当前暂无待办Todo
+
+        可在计划页面中进行编辑</text>
+      </view>
     </view>
   </view>
 </view>
