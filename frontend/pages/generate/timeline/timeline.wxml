@@ -1,0 +1,5 @@
+<!--pages/generate/timeline/timeline.wxml-->
+
+<view class="ec-container">
+    <ec-canvas canvas-id="echart" ec="{{ec}}"></ec-canvas>
+</view>
