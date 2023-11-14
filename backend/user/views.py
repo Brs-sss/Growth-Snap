@@ -12,7 +12,6 @@ import hashlib
 import os
 import datetime
 import shutil
-import fitz
 
 
 # Create your views here.

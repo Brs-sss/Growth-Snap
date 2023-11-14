@@ -81,7 +81,15 @@ Page({
         { id: 0 , name:'美丽', selected:false},
         { id: 1 , name:'艺术', selected:false},
         { id: 2 , name:'无敌', selected:false},
-        { id: 3 , name:'超级', selected:false}
+        { id: 3 , name:'超级', selected:false},
+        { id: 4 , name:'美丽', selected:false},
+        { id: 5 , name:'艺术', selected:false},
+        { id: 6 , name:'艺术', selected:false},
+        { id: 7 , name:'艺术', selected:false},
+        { id: 8 , name:'艺术', selected:false},
+        { id: 9 , name:'艺术', selected:false},
+        { id: 10 , name:'艺术', selected:false},
+        { id: 11 , name:'艺术', selected:false}
       ],
       paperList: [
         { id: 0 , name:'美丽', selected:false},
@@ -93,6 +101,9 @@ Page({
         { id: 6 , name:'超级', selected:false},
         { id: 7 , name:'艺术', selected:false},
         { id: 8 , name:'艺术', selected:false},
+        { id: 9 , name:'艺术', selected:false},
+        { id: 10 , name:'艺术', selected:false},
+        { id: 11 , name:'艺术', selected:false},
       ]
     });
   },
