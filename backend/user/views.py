@@ -4,8 +4,8 @@ from django.http import JsonResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
-from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Todo, Child
-from .utils import ListToString, StringToList, GenerateDiaryPDF
+from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail
 import random
 import string
 import hashlib
@@ -650,8 +650,10 @@ def generateDiary(request):
 def loadPDFThumbnail(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        pdf_name = request.GET.get('file_name')
-        pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
-
-        return JsonResponse({'imageList': "thumbnail_list"})
+        pdf_name=request.GET.get('file_name')
+        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
+        output_path='static/diary/'+openid+'/thumbnails/'+pdf_name+'/'
+        num=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+        thumbnail_list=['http://127.0.0.1:8090/' + output_path+ f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
+        return JsonResponse({'imageList': thumbnail_list})
     return JsonResponse({'msg': 'GET only'})

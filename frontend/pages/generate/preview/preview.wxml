@@ -2,8 +2,11 @@
 <view class="container">
   <view class="preview_container">
     <view class="image-player">
-      <!-- <image wx:for="{{previewList}}" wx:key="index" src="{{item}}" mode="aspectFill"/> -->
-      <canvas canvas-id="pdf-canvas" style="width: 100%; height: 100vh;"></canvas>
+      <view wx:for="{{previewList}}" wx:key="index" class='image-container'>
+         <image src="{{item}}" mode="aspectFill"/>
+      </view>
+      <!-- PDF.js的 现在似乎用不了<canvas canvas-id="pdf-canvas" style="width: 100%; height: 100vh;"></canvas> -->
+      <!-- <wx-pdf src="{{pdfUrl}}" bindload="pdfLoaded" binderror="pdfError"></wx-pdf> -->
     </view>
   </view>
 </view>
