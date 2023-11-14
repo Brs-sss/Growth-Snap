@@ -28,16 +28,9 @@ urlpatterns = [
     path('api/user/add_child', views.addChild, name='add_child'),
     path('api/user/add_child_image', views.addChildImage, name='add_child_image'),
     path('api/user/get_family_info', views.getFamilyInfo, name='get_family_info'),
-<<<<<<< HEAD
-    path('api/show/event/detail',views.loadEventDetail,name='event_detail'),
-    path('api/show/text/detail',views.loadTextDetail,name='text_detail'),
     path('api/show/event/delete',views.deleteEvent,name='event_delete'),
     path('api/show/text/delete',views.deleteText,name='text_delete'),
     path('api/generate/diary',views.generateDiary, name='generate_diary'),
-=======
-    path('api/show/event/delete', views.deleteEvent, name='event_delete'),
-    path('api/show/text/delete', views.deleteText, name='text_delete'),
->>>>>>> dev
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

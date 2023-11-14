@@ -1,9 +1,5 @@
 // pages/show/event/event.js
 
-function isEmpty(x){
-  return  x.trim()==''
-}
-
 function getImageGridStyle(num_rows){
   return `display: grid;
   grid-template-rows: repeat(${num_rows}, 1fr);
@@ -48,23 +44,6 @@ Page({
     //console.log('提交的文本：', this.data.inputTitle);
     // 进行其他处理或操作
     var that = this
-    //检验输入的合法性
-    if(isEmpty(that.data.inputTitle)){
-      wx.showToast({
-        title: "标题不能为空",
-        icon: 'error',
-        duration: 1000,
-      })
-      return;
-    }
-    if(that.data.imageList.length==0){
-      wx.showToast({
-        title: "照片不能为空",
-        icon: 'error',
-        duration: 1000,
-      })
-      return;
-    }
     const currentDateAndTime = new Date();
     // 创建一个 Date 对象来表示当前日期
     // 获取年、月、日
