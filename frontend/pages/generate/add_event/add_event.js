@@ -60,6 +60,51 @@ function loadPageInfo(that){
    })
 }
 
+export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title){
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/generate/diary', //et表示只求取event和text
+        method:'POST',
+        header:
+        {
+          'content-type': 'application/json'
+        },
+        data:{
+          'openid':openid,
+          'list':id_list,
+          'cover_index':cover_index,
+          'paper_index':paper_index,
+          'name':diary_title,
+        },
+        success:function(res){
+          wx.showToast({
+            title: "提交成功",
+            icon: 'success',
+            duration: 1000,
+            success: function () {
+              setTimeout(function () {
+                wx.navigateTo({
+                  url: '/pages/generate/preview/preview'+'?title='+diary_title+'&category=diary'+"&cover="+cover_index+"&paper="+paper_index,
+                })//成功提交,前往preview页面
+              }, 1000)
+            }
+          })
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      })
+    },
+    fail: function (res) {
+    console.log('获取数据失败');
+    }
+  });
+}
+
 const app = getApp();
 
 Page({
@@ -82,7 +127,8 @@ Page({
     cover_index:null,
     paper_index:null,
     diary_title:null,
-    timeline_template:null
+    timeline_template:null,
+    buttonDisabled:false,
   },
 
   toggleTag: function(e) {
@@ -174,59 +220,30 @@ Page({
 
   handleSubmit(e){
     const { eventList } = this.data;
+    let { buttonDisabled }=this.data
+    if(buttonDisabled) return  //防止用户多次点按钮
+    this.setData({
+      buttonDisabled: true
+    });
+    setTimeout(function () {
+      that.setData({
+        buttonDisabled: false
+      });
+    }, 1500); 
     var that = this;
     var category = that.data.comeFrom;
     let id_list=that.data.selectedEvents.map(ele=>{
       return {"id":eventList[ele].id,
               "type":eventList[ele].type}
     })
+    wx.setStorageSync('generate_id_list', id_list);
     if(category=="timeline"){
       wx.navigateTo({
         url: '/pages/generate/timeline/timeline',
       })
     }else{
-      wx.getStorage({
-        key: 'openid',  // 要获取的数据的键名
-        success: function (res) { 
-          // 从本地存储中获取数据,在index.js文件中保存建立的
-          let openid=res.data
-          wx.request({
-            url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
-            method:'POST',
-            header:
-            {
-              'content-type': 'application/json'
-            },
-            data:{
-              'openid':openid,
-              'list':id_list,
-              'cover_index':that.data.cover_index,
-              'paper_index':that.data.paper_index,
-              'name':that.data.diary_title,
-            },
-            success:function(res){
-              wx.showToast({
-                title: "提交成功",
-                icon: 'success',
-                duration: 1000,
-                success: function () {
-                  setTimeout(function () {
-                    wx.navigateTo({
-                      url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
-                    })//成功提交，返回上个页面
-                  }, 1000)
-                }
-              })
-            },
-            fail:function(res){
-              console.log('load page failed: ',res)
-            }
-          })
-        },
-        fail: function (res) {
-        console.log('获取数据失败');
-        }
-      });
+      const {cover_index,paper_index,diary_title}=that.data
+      generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title)
     }
   },
 
