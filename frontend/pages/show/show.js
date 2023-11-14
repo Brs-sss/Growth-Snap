@@ -45,6 +45,8 @@ function LoadShowPage(that){
    })
 }
 
+const app = getApp();
+
 Page({
   /**
    * 页面的初始数据
@@ -52,7 +54,7 @@ Page({
   data: {
     popupVisible: false, // 控制浮窗气泡显示隐藏的状态
     blog_cards_list:[],  //所有卡片BlogCard的list
-    host_: 'http://127.0.0.1:8090/'
+    host_: `${app.globalData.localUrl}`,
   },
   showPopup() {
     this.setData({

@@ -13,6 +13,7 @@
     "pages/plan/all_plan/all_plan",
     "pages/generate/generate",
     "pages/generate/add_event/add_event",
+    "pages/generate/chart/chart",
     "pages/user/user",
     "pages/user/family/family",
     "pages/user/family/addmember/addmember",

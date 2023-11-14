@@ -121,6 +121,7 @@ button{
 }
 
 .event-item {
+
   display: grid;
   height:23vh;
   width: calc(50% - 10rpx); /* 每行显示三个元素，间隔为10rpx */
@@ -139,6 +140,7 @@ button{
   height: 18vh;
   border-radius: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+
   border: 1vh solid white /* 设置边框宽度和颜色 */;
   z-index: 0;
 }
@@ -167,6 +169,7 @@ button{
   white-space: nowrap; /* 防止文本换行 */
   overflow: hidden;     /* 隐藏超出容器的部分文本 */
   text-overflow: ellipsis; /* 超出部分显示省略号 */
+
   max-width: 18vh; /* 设置文本容器的最大宽度*/
   margin-left: 1vh;
 
@@ -188,6 +191,4 @@ button{
 .select-icon.selected{
   visibility: visible;
 }
-
-
 
