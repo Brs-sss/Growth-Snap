@@ -82,6 +82,7 @@ Page({
     cover_index:null,
     paper_index:null,
     diary_title:null,
+    timeline_template:null
   },
 
   toggleTag: function(e) {
@@ -172,55 +173,61 @@ Page({
   },
 
   handleSubmit(e){
-    const { eventList }=this.data;
-    var that=this;
+    const { eventList } = this.data;
+    var that = this;
+    var category = that.data.comeFrom;
     let id_list=that.data.selectedEvents.map(ele=>{
       return {"id":eventList[ele].id,
               "type":eventList[ele].type}
     })
-    wx.getStorage({
-      key: 'openid',  // 要获取的数据的键名
-      success: function (res) { 
-        // 从本地存储中获取数据,在index.js文件中保存建立的
-        let openid=res.data
-        wx.request({
-          url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
-          method:'POST',
-          header:
-          {
-            'content-type': 'application/json'
-          },
-          data:{
-            'openid':openid,
-            'list':id_list,
-            'cover_index':that.data.cover_index,
-            'paper_index':that.data.paper_index,
-            'name':that.data.diary_title,
-          },
-          success:function(res){
-            wx.showToast({
-              title: "提交成功",
-              icon: 'success',
-              duration: 1000,
-              success: function () {
-                setTimeout(function () {
-                  wx.navigateTo({
-                    url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
-                  })//成功提交，返回上个页面
-                }, 1000)
-              }
-            })
-          },
-          fail:function(res){
-            console.log('load page failed: ',res)
-          }
-        })
-      },
-      fail: function (res) {
-       console.log('获取数据失败');
-     }
-   });
-
+    if(category=="timeline"){
+      wx.navigateTo({
+        url: '/pages/generate/timeline/timeline',
+      })
+    }else{
+      wx.getStorage({
+        key: 'openid',  // 要获取的数据的键名
+        success: function (res) { 
+          // 从本地存储中获取数据,在index.js文件中保存建立的
+          let openid=res.data
+          wx.request({
+            url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
+            method:'POST',
+            header:
+            {
+              'content-type': 'application/json'
+            },
+            data:{
+              'openid':openid,
+              'list':id_list,
+              'cover_index':that.data.cover_index,
+              'paper_index':that.data.paper_index,
+              'name':that.data.diary_title,
+            },
+            success:function(res){
+              wx.showToast({
+                title: "提交成功",
+                icon: 'success',
+                duration: 1000,
+                success: function () {
+                  setTimeout(function () {
+                    wx.navigateTo({
+                      url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
+                    })//成功提交，返回上个页面
+                  }, 1000)
+                }
+              })
+            },
+            fail:function(res){
+              console.log('load page failed: ',res)
+            }
+          })
+        },
+        fail: function (res) {
+        console.log('获取数据失败');
+        }
+      });
+    }
   },
 
 
@@ -229,16 +236,22 @@ Page({
    */
   onLoad(options) {
     // 获取要生成的类型
-    // const category = decodeURIComponent(options.category);
+    const category = decodeURIComponent(options.category);
     // const index = decodeURIComponent(options.index);
-    this.setData({
-      comeFrom:options.category,
-      cover_index:options.cover,
-      paper_index:options.paper,
-      diary_title:options.title,
-    })
-
-    console.log(this.data.diary_title,this.data.comeFrom)
+    if(category=="timeline"){
+      this.setData({
+        comeFrom:options.category,
+        timeline_template:options.index,
+      })
+      console.log(this.data.comeFrom,this.data.timeline_template)
+    }else{
+      this.setData({
+        comeFrom:options.category,
+        cover_index:options.cover,
+        paper_index:options.paper,
+        diary_title:options.title,
+      })
+    }
     var that = this
     loadPageInfo(that)
   },
