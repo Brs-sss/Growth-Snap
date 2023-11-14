@@ -93,13 +93,13 @@ Page({
                   wx.showToast({
                     title: "请先完善信息",
                     icon: 'none',
-                    duration: 2000,
+                    duration: 1000,
                     success: function () {
                       setTimeout(function () {
                         wx.redirectTo({
                           url: '../register/register?openid='+res.data.openid
                         })
-                      }, 2000)
+                      }, 1000)
                     }
                   })
                 }
@@ -108,13 +108,13 @@ Page({
                   wx.showToast({
                     title: "登录成功",
                     icon: 'success',
-                    duration: 2000,
+                    duration: 1000,
                     success: function () {
                       setTimeout(function () {
                         wx.switchTab({
                           url: '/pages/show/show'
                         })
-                      }, 2000)
+                      }, 1000)
                     }
                   })
                 }

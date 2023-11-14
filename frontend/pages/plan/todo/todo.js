@@ -40,7 +40,7 @@ Page({
     let todoList = this.data.todoList.slice()
     todoList.push({
       task: value,
-      ddl: 9,
+      ddl: this.data.today,
       check: false
     })
     let taskN = todoList.length-1
@@ -82,6 +82,7 @@ Page({
     //const index = e.currentTarget.dataset.index
     let todos = this.data.todos
     let values = e.detail.value
+    console.log(e)
     console.log(values)
     console.log(e.currentTarget)
     // console.log(todos)
@@ -229,6 +230,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log(options)
     const Value = JSON.parse(decodeURIComponent(options.plan));
     console.log('Received plan value:', Value);
     let today = new Date()
@@ -246,10 +248,14 @@ Page({
     var parts = oneWeekLater_formatted.split('/');
     // 构建转换后的日期字符串
     var formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+    var parts = today_formatted.split('/');
+    // 构建转换后的日期字符串
+    var formattedToday = parts[2] + '-' + parts[0] + '-' + parts[1];
+
     this.setData({
       planValue: Value.title,
       icon:Value.icon,
-      today: today_formatted,
+      today: formattedToday,
       a_week_later: formattedDate
     });
   },

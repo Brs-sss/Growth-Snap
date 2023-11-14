@@ -155,13 +155,13 @@ Page({
           wx.showToast({
             title: "注册成功",
             icon: 'success',
-            duration: 2000,
+            duration: 1000,
             success: function () {
               setTimeout(function () {
                 wx.switchTab({
                   url: '/pages/show/show'
                 })
-              }, 2000)
+              }, 1000)
             }
           })
         }

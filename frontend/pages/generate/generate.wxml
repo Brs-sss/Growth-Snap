@@ -24,9 +24,9 @@
       <text class="sub-nav-item {{diaryActiveIndex==1?'active':''}}" bindtap="navigateToSubPage" data-index="1">纸张</text>
     </view>
     <image class="selected-image" bindtap="navigateToSubPage" data-index="0" src="/image/generate/cover/cover_{{coverSelected}}.png"></image>
-    <image class="selected-image" bindtap="navigateToSubPage" data-index="1" src="/image/generate/cover/cover_{{coverSelected}}.png" src="/image/generate/paper/paper_{{paperSelected}}.png" style="margin-left: -5vw;"></image>
+    <image class="selected-image" bindtap="navigateToSubPage" data-index="1" src="/image/generate/paper/paper_{{paperSelected}}.png" style="margin-left: -5vw;"></image>
     <input class="diary-input" bindinput="handleInputTitle" placeholder="请输入标题" />
-    <button class="submit" data-category="{{diaryTitle}}" data-index="{{100*coverSelected+paperSelected}}" bindtap="addEvent" style="width: 180rpx; height: 68rpx; display: block; box-sizing: border-box; left: 230rpx; top: -674rpx">生成</button>
+    <button class="submit" data-category="diary" data-index="{{100*coverSelected+paperSelected}}" bindtap="addEvent" style="width: 180rpx; height: 68rpx; display: block; box-sizing: border-box; left: 230rpx; top: -674rpx">生成</button>
     <block wx:if="{{diaryActiveIndex==0}}">
       <!-- 封面 -->
       <!-- <scroll-view class="scroll-view" scroll-y="true"> -->

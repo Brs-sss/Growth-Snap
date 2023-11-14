@@ -78,7 +78,17 @@ Page({
                 'type':'text',
               },
               success:function(res){
-                wx.navigateBack(1) //成功提交，返回上个页面
+                wx.showToast({
+                  title: "上传成功",
+                  icon: 'success',
+                  duration: 1000,
+                  success: function () {
+                    setTimeout(function () {
+                      wx.navigateBack(1) //成功提交，返回上个页面
+                    }, 1000)
+                  }
+                })
+                // wx.navigateBack(1) //成功提交，返回上个页面
               },
               fail:function(res){
                 console.log(that.data.host_+'user/api/show/text/submit')
