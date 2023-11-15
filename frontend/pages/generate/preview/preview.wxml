@@ -1,12 +1,25 @@
 <!--pages/generate/preview/preview.wxml-->
 <view class="container">
   <view class="preview_container">
+    <view class="banner">共生成{{ pages_num }}页，最多预览5页</view>
     <view class="image-player">
       <view wx:for="{{previewList}}" wx:key="index" class='image-container'>
          <image src="{{item}}" mode="aspectFill"/>
       </view>
       <!-- PDF.js的 现在似乎用不了<canvas canvas-id="pdf-canvas" style="width: 100%; height: 100vh;"></canvas> -->
-      <!-- <wx-pdf src="{{pdfUrl}}" bindload="pdfLoaded" binderror="pdfError"></wx-pdf> -->
+    </view>
+
+    <view id="button-box">
+          <button class="submit" bindtap="reselectEvent">更换事件</button>
+    </view>
+    <view id="button-box">
+          <button class="submit" bindtap="reselectTemplate">更换模版</button>
+    </view>
+    <view id="button-box">
+          <button class="submit" bindtap="handleDownload">保存到本地</button>
+    </view>
+    <view id="button-box">
+          <button class="submit" bindtap="handleShare">分享</button>
     </view>
   </view>
 </view>

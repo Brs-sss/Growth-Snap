@@ -8,6 +8,8 @@ import numpy as np
 import shutil
 # from mutagen.mp3 import MP3
 from pdf2image import convert_from_path
+from PIL import Image
+import PyPDF2
 import os
 os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
 from moviepy.editor import VideoFileClip, AudioFileClip
@@ -60,7 +62,7 @@ diary_options = {
         'margin-left': '0mm',
         'encoding': 'utf-8',
         "enable-local-file-access":True,
-        "disable-smart-shrinking":True,   #终于好了，该死的wkhtmltopdf，愚蠢至极。
+        "disable-smart-shrinking":True,    #终于好了，该死的wkhtmltopdf，愚蠢至极。
         'dpi': 96,
     }
 
@@ -98,14 +100,28 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
 
 def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
     images = convert_from_path(pdf_path,first_page=1,last_page=max_page, dpi=resolution) #如果总页数小于max_page，会自动处理
+    with open(pdf_path, 'rb') as file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        page_count = len(pdf_reader.pages)
+    
     for i, image in enumerate(images):
         thumbnail_path = f"{output_folder}/thumbnail_page_{i + 1}.jpg"
         image.save(thumbnail_path, 'JPEG')
     
-    return len(images)
+    return len(images),page_count
 
+###########################    end block 4
 
+##########################    block 5: pdf（8页以内）转长图，用到pdf2image，依赖poppler
 
+def GenerateLongImage(pdf_path, output_path,resolution=100):
+    images = convert_from_path(pdf_path, dpi=resolution) #如果总页数小于max_page，会自动处理
+    width, height = images[0].size
+    result = Image.new('RGB', (width, height * len(images)))
+    for i, img in enumerate(images):
+        result.paste(img, (0, i * height))
+    result.save(output_path)
+###########################    end block 5
    
 
 

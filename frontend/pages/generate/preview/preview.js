@@ -1,20 +1,14 @@
 // pages/generate/preview/preview.js
 
-<<<<<<< HEAD
-//const pdfjsLib = require('../../../miniprogram_npm/miniprogram_npm/pdf.js');
-// const pdfjs = require('pdfjs-dist/webpack');
+
 const app = getApp();
 
-=======
+
 //const pdfjsLib = require('pdfjs-dist/build/pdf');
-<<<<<<< HEAD
-=======
-const app = getApp();
 
 
->>>>>>> 94794c89b1c04078054250ea507e9dd77d398987
 
->>>>>>> dev
+
 Page({
 
   /**
@@ -22,16 +16,14 @@ Page({
    */
   data: {
     previewList:[],
-<<<<<<< HEAD
-    host_: 'http://127.0.0.1:8090/',
-=======
     host_: `${app.globalData.localUrl}`,
-<<<<<<< HEAD
     pdf_url:null,
     pdf_name:null,
-=======
->>>>>>> 94794c89b1c04078054250ea507e9dd77d398987
->>>>>>> dev
+    pages_num:null,
+    openid:null,
+    category:null,
+    cover_index:null,
+    paper_index:null,
   },
 
   renderPDF: function(url) {
@@ -64,22 +56,25 @@ Page({
     })
   },
 
-  WXpreviewPDF(pdf_url){
+  downloadPDF(){
+    var that=this
     wx.showLoading({
       title: '加载中...',
     });
     wx.downloadFile({
-      url: pdf_url, // 替换成你的后端 API 地址
+      url: that.data.pdf_url,
       success: function (res) {
         if (res.statusCode === 200) {
           const filePath = res.tempFilePath;
-          wx.openDocument({
-            filePath: filePath,
-            success: function (res) {
-              console.log('打开文档成功');
+          wx.saveFile({
+            tempFilePath: res.tempFilePath,
+            success: function (saveRes) {
+              const savedFilePath = saveRes.savedFilePath;
+              console.log('文件保存成功：', savedFilePath);
+              // 这里可以进行其他操作，比如分享或打开文件等
             },
-            fail: function (res) {
-              console.log('打开文档失败', res);
+            fail: function (saveErr) {
+              console.log('文件保存失败：', saveErr);
             },
             complete: function () {
               wx.hideLoading();
@@ -106,9 +101,9 @@ Page({
       method:'GET',
       success:function(res){
           that.setData({
-            previewList:res.data.imageList
+            previewList:res.data.imageList,
+            pages_num:res.data.pageNum,
           })
-          console.log(res.data.imageList)
       },
       fail:function(res){
         console.log('load page failed: ',res)
@@ -126,6 +121,98 @@ Page({
     console.error('PDF加载失败', e);
   },
 
+  handleDownload(){
+    var that=this
+    let itemList=[]
+    const {openid,category,pdf_name}=this.data
+    if(that.data.pages_num>8) //太长的不能导出为图
+    {
+       itemList=['保存为PDF']
+    }
+    else{
+       itemList=['保存为PDF', '保存为长图']
+    }
+    wx.showActionSheet({
+      itemList: itemList,
+      success(res) {
+        if (!res.cancel) {
+          if (res.tapIndex === 0) {　// 执行导出为PDF的操作
+            that.downloadPDF(that.data.pdf_url)
+          } else if (res.tapIndex === 1) {　// 执行导出为图片的操作
+              wx.showLoading({
+                title: '加载中...',
+              });
+              wx.request({
+                url: that.data.host_+'user/api/generate/'+category+'/longimage'+'?openid='+openid+'&file_name='+pdf_name,
+                method:'GET',
+                success:function(res){
+                   that.saveImageToAlbum(res.data.long_image_url)
+                },
+                fail:function(res){
+                  wx.showToast({
+                    title: "文件已过期",
+                    icon: 'error',
+                    duration: 1000,
+                  })
+                },
+                complete: function () {
+                  wx.hideLoading();
+                }
+              })
+          }
+        }
+      },
+      fail(res) {
+        console.log(res)
+      }
+    })
+  },
+
+  saveImageToAlbum: function (url) {
+    wx.getImageInfo({
+      src: url,
+      success: function (res) {
+        wx.saveImageToPhotosAlbum({
+          filePath: res.path,
+          success: function () {
+            wx.showToast({
+              title: '保存成功',
+              icon: 'success',
+              duration: 1000
+            });
+          },
+          fail: function (err) {
+            console.log(err);
+            wx.showToast({
+              title: '保存失败',
+              icon: 'error',
+              duration: 1000
+            });
+          }
+        });
+      },
+      fail: function (err) {
+        console.log(err);
+        wx.showToast({
+          title: '获取图片信息失败',
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    });
+  },
+
+  reselectEvent(){
+    wx.navigateBack(1)
+  },
+
+  reselectTemplate(){
+    var that=this
+    wx.navigateTo({
+      url: '/pages/generate/reselect/diarytemplate/diarytemplate?cover='+that.data.cover_index+"&paper="+that.data.paper_index+'&diary_title='+that.data.pdf_name
+    })
+  },
+
 
   /**
    * 生命周期函数--监听页面加载
@@ -139,7 +226,12 @@ Page({
       success: function (res) { 
         // 从本地存储中获取数据,在index.js文件中保存建立的
         let openid=res.data
-        
+        that.setData({
+          openid:openid,
+          category:category,
+          cover_index:options.cover,
+          paper_index:options.paper,
+        })
         let pdf_url=that.data.host_+'static/diary/'+openid+'/'+pdf_name+'.pdf'
         //that.renderPDF(pdf_url);
         //that.WXpreviewPDF(pdf_url)

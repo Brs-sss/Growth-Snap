@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage
 import random
 import string
 import hashlib
@@ -653,10 +653,25 @@ def loadPDFThumbnail(request):
         pdf_name=request.GET.get('file_name')
         pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
         output_path='static/diary/'+openid+'/thumbnails/'+pdf_name+'/'
-        num=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+        try:
+            num,pages=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+        except:
+            return HttpResponse("Request failed", status=500)
         thumbnail_list=['http://127.0.0.1:8090/' + output_path+ f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
-        return JsonResponse({'imageList': thumbnail_list})
+        return JsonResponse({'imageList': thumbnail_list,'pageNum':pages})
     return JsonResponse({'msg': 'GET only'})
+
+
+def generateDiaryLongImage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        pdf_name=request.GET.get('file_name')
+        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
+        output_path='static/diary/'+openid+'/'+pdf_name+'.jpg'
+        GenerateLongImage(pdf_path,output_path,resolution=100)
+        return JsonResponse({'long_image_url': 'http://127.0.0.1:8090/'+output_path })
+    return JsonResponse({'msg': 'GET only'})
+
 
 def generateVideo(request):
     if request.method == 'POST':
