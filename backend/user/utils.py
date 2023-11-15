@@ -3,8 +3,16 @@ from datetime import datetime
 from jinja2 import Template
 import random
 from urllib.parse import quote
+import cv2
+import numpy as np
+import shutil
+# from mutagen.mp3 import MP3
 from pdf2image import convert_from_path
 import os
+os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
+from moviepy.editor import VideoFileClip, AudioFileClip
+import imageio
+from PIL import Image
 
 # 指定 wkhtmltopdf 可执行文件路径
 config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
@@ -101,8 +109,87 @@ def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
    
 
 
+# 生成视频第一步：统一大小
+def resizeVideoImage(image_path_list, video_title, label):
+    print(image_path_list)
+    resized_image_path_list = []
+    resized_image_path = 'static/video/resized/'
+    if not os.path.exists(resized_image_path):
+        os.makedirs(resized_image_path)
+    black = cv2.imread('static/video/black.png')
+    # 1024：768 = 640：480
+    black = cv2.resize(black, (1024, 768), interpolation=cv2.INTER_CUBIC)
+    
+    date = datetime.now().strftime('%Y-%m-%d')
+
+    cv2.putText(black, video_title, (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (255, 255, 255), 1)
+    black = cv2.putText(black, label, (100, 150), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
+    black = cv2.putText(black, date, (100, 200), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
+    cv2.imwrite('static/video/resized/title.png', black)
+    resized_image_path_list.append('static/video/resized/title.png')
+    i = 0
+    for image_path in image_path_list:
+        img = cv2.imread(image_path)
+        
+        height, width = img.shape[:2]
+        target_width = 1024
+        target_height = int((target_width / width) * height)
+        if target_height >= 768:
+            img = cv2.resize(img, (1024, target_height), interpolation=cv2.INTER_CUBIC)
+            middle = int(target_height/2)
+            img = img[middle-384:middle+384, :, :]
+        else:
+            target_height = 768
+            target_width = int((target_height / height) * width)
+            img = cv2.resize(img, (target_width, 768), interpolation=cv2.INTER_CUBIC)
+            middle = int(target_width/2)
+            img = img[:, middle-512:middle+512, :]
+        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.resize(img, (1024, 768), interpolation=cv2.INTER_CUBIC)
+        print(img.shape)
+        out_path = os.path.join(resized_image_path, str(i) + '.png')
+        cv2.imwrite(out_path, img)
+        resized_image_path_list.append(out_path)
+        i += 1
+    return resized_image_path_list
 
 
+def GenerateVideo(image_path_list, audio_index, video_title, label):
+    resized_image_path_list = resizeVideoImage(image_path_list, video_title, label)
+    print(resized_image_path_list)
+    # # 合成视频
+    video_dir = 'static/video/temp.mp4'      # 输出视频的保存路径
+    fps = 0.5     # 帧率
+    # img_size = (640, 480)      # 图片尺寸
+    # fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
+    # videoWriter = cv2.VideoWriter(video_dir, fourcc, fps, img_size)
+    # for img_path in image_path_list:
+    #     frame = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
+    #     frame = cv2.resize(frame, img_size)  # 生成视频   图片尺寸和设定尺寸相同
+    #     videoWriter.write(frame)  # 将图片写进视频里
+    #     print(img_path)
+    # videoWriter.release()  # 释放资源
+
+
+    with imageio.get_writer(video_dir, fps=fps) as video:
+        for image_path in resized_image_path_list:
+            image = Image.open(image_path)
+            image = np.array(image)
+            # frame = image.convert('RGB')
+            video.append_data(image)
+
+    # 加入音频
+    # video = VideoFileClip(video_dir)
+    video = VideoFileClip('static/video/temp.mp4')
+    duration = video.duration  # 视频时长
+    videos = video.set_audio(AudioFileClip(f'static/video/audio/audio_{audio_index}.mp3').subclip(0, duration))  # 音频文件
+    videos.write_videofile('static/video/result.mp4', audio_codec='aac')  # 保存合成视频，注意加上参数audio_codec='aac'，否则音频无声音/
+    # 删除resized文件夹
+    shutil.rmtree('static/video/resized')
+    # 删除temp.mp4
+    os.remove('static/video/temp.mp4')
+    # video.reader.close()
+    # video.audio.reader.close_proc()
 
 
 
