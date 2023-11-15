@@ -49,7 +49,7 @@ Page({
     var that=this
     const {coverSelected,paperSelected,diary_title}=that.data
     var id_list = wx.getStorageSync('generate_id_list');
-    generateDiaryPDF(that,id_list,coverSelected,paperSelected,diary_title)
+    generateDiaryPDF(that,id_list,coverSelected,paperSelected,diary_title,false)
   },
 
   /**

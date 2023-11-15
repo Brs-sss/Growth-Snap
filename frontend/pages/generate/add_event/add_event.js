@@ -60,7 +60,7 @@ function loadPageInfo(that){
    })
 }
 
-export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title){
+export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
     success: function (res) { 
@@ -87,9 +87,26 @@ export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_titl
             duration: 1000,
             success: function () {
               setTimeout(function () {
-                wx.navigateTo({
-                  url: '/pages/generate/preview/preview'+'?title='+diary_title+'&category=diary'+"&cover="+cover_index+"&paper="+paper_index,
-                })//成功提交,前往preview页面
+                if(new_page){
+                  wx.navigateTo({
+                    url: '/pages/generate/preview/preview'+'?title='+diary_title+'&category=diary'+"&cover="+cover_index+"&paper="+paper_index,
+                  })//成功提交,前往preview页面
+                }
+                else{
+                  var pages = getCurrentPages();
+                  var previousPage=pages[pages.length-2];
+                  previousPage.setData({
+                    cover_index:cover_index,
+                    paper_index:paper_index,
+                    pdf_name:diary_title,
+                  })
+                  previousPage.Refresh()
+                  wx.navigateBack({
+                    delta:1,
+                    success:function(){
+                    }
+                  })
+                }
               }, 1000)
             }
           })
@@ -246,49 +263,8 @@ Page({
     }
     else if (category=='diary'){
       const {cover_index,paper_index,diary_title}=that.data
+      console.log(cover_index,paper_index,diary_title )
       generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title)
-      wx.getStorage({
-        key: 'openid',  // 要获取的数据的键名
-        success: function (res) { 
-          // 从本地存储中获取数据,在index.js文件中保存建立的
-          let openid=res.data
-          wx.request({
-            url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
-            method:'POST',
-            header:
-            {
-              'content-type': 'application/json'
-            },
-            data:{
-              'openid':openid,
-              'list':id_list,
-              'cover_index':that.data.cover_index,
-              'paper_index':that.data.paper_index,
-              'name':that.data.diary_title,
-            },
-            success:function(res){
-              wx.showToast({
-                title: "提交成功",
-                icon: 'success',
-                duration: 1000,
-                success: function () {
-                  setTimeout(function () {
-                    wx.navigateTo({
-                      url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
-                    })//成功提交，返回上个页面
-                  }, 1000)
-                }
-              })
-            },
-            fail:function(res){
-              console.log('load page failed: ',res)
-            }
-          })
-        },
-        fail: function (res) {
-        console.log('获取数据失败');
-        }
-      });
     }else if (category=='video')
     {
       wx.getStorage({

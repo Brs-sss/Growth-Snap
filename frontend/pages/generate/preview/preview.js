@@ -7,6 +7,44 @@ const app = getApp();
 //const pdfjsLib = require('pdfjs-dist/build/pdf');
 
 
+function loadPreview(that,options){
+  let pdf_name=options.title
+  let category=options.category
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      let pdf_url=that.data.host_+'static/diary/'+openid+'/'+pdf_name+'.pdf'
+      that.setData({
+        openid:openid,
+        category:category,
+        cover_index:options.cover,
+        paper_index:options.paper,
+        pdf_url:pdf_url,
+        pdf_name:pdf_name,
+        hasLoaded:true,
+      })
+      //that.renderPDF(pdf_url);
+      //that.WXpreviewPDF(pdf_url)
+      that.AskForPreviewImages(that,openid,pdf_name,category)
+
+    },
+    fail: function (res) {
+     console.log('获取数据失败');
+   }
+ });
+}
+
+function showPreview(that){
+  const {pdf_name, openid, category,cover_index  }=that.data
+  console.log('showPreview:',that.data.cover_index,that.data.paper_index)
+  let pdf_url=that.data.host_+'static/diary/'+openid+'/'+pdf_name+'.pdf'
+  that.setData({
+    pdf_url:pdf_url,
+  })
+  that.AskForPreviewImages(that,openid,pdf_name,category)
+}
 
 
 Page({
@@ -17,6 +55,7 @@ Page({
   data: {
     previewList:[],
     host_: `${app.globalData.localUrl}`,
+    hasLoaded:false,
     pdf_url:null,
     pdf_name:null,
     pages_num:null,
@@ -208,9 +247,15 @@ Page({
 
   reselectTemplate(){
     var that=this
+    console.log('reselect:',that.data.cover_index,that.data.paper_index)
     wx.navigateTo({
       url: '/pages/generate/reselect/diarytemplate/diarytemplate?cover='+that.data.cover_index+"&paper="+that.data.paper_index+'&diary_title='+that.data.pdf_name
     })
+  },
+
+  Refresh(){
+    var that=this
+    showPreview(that)
   },
 
 
@@ -219,33 +264,7 @@ Page({
    */
   onLoad(options) {
     var that=this
-    let pdf_name=options.title
-    let category=options.category
-    wx.getStorage({
-      key: 'openid',  // 要获取的数据的键名
-      success: function (res) { 
-        // 从本地存储中获取数据,在index.js文件中保存建立的
-        let openid=res.data
-        that.setData({
-          openid:openid,
-          category:category,
-          cover_index:options.cover,
-          paper_index:options.paper,
-        })
-        let pdf_url=that.data.host_+'static/diary/'+openid+'/'+pdf_name+'.pdf'
-        //that.renderPDF(pdf_url);
-        //that.WXpreviewPDF(pdf_url)
-        that.AskForPreviewImages(that,openid,pdf_name,category)
-        that.setData({
-          pdf_url:pdf_url,
-          pdf_name:pdf_name,
-        })
-
-      },
-      fail: function (res) {
-       console.log('获取数据失败');
-     }
-   });
+    loadPreview(that,options)
   },
 
 
@@ -260,7 +279,12 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    // var that=this
 
+    // console.log("onshow t")
+    // if(that.data.hasLoaded) {
+    //   showPreview(that)
+    //   console.log("onshow s")}
   },
 
   /**
