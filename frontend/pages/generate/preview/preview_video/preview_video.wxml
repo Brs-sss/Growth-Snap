@@ -1,0 +1,25 @@
+<!--pages/generate/preview/preview_video/preview_video.wxml-->
+<view>
+  <view class="weui-form__text-area">
+			<h2 class="weui-form__title">{{video_title}}</h2>
+			<view class="weui-form__desc">预览小视频，可进行更换、保存与分享</view>
+		</view>
+  <!-- <view class="title">{{video_title}}</view> -->
+  <video class="video" src="{{video_src}}" binderror="videoErrorCallback" bindenterpictureinpicture='bindVideoEnterPictureInPicture' bindleavepictureinpicture='bindVideoLeavePictureInPicture' object-fit="contain" show-fullscreen-btn="true" direction="0">
+  </video>
+</view>
+
+<view class='custom-tabbar'>
+  <view class='icons'>
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="goToShow"></image>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="goToPlan"></image>
+    <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="goToUser"></image>
+  </view>
+  <view class='icons-text'>
+    <text>更换事件</text>
+    <text>更换模板</text>
+    <text>保存到本地</text>
+    <text>分享</text>
+  </view>
+</view>
