@@ -164,6 +164,7 @@ Page({
         { id: 4 , name:'起风了'},
         { id: 5 , name:'你的眼神'},
         { id: 6 , name:'黑桃A'},
+        { id: 7 , name:'EverytimeWeTouch'},
       ]
     });
   },
