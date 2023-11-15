@@ -92,7 +92,8 @@ Page({
     console.log(index)
     console.log(this.data.audioList[index].name)
     this.setData({
-      audioSelected: index
+      audioSelected: index,
+      
     })
   },
   selectCover(e){

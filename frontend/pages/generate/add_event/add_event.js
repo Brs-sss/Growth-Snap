@@ -130,7 +130,8 @@ Page({
     timeline_template:null,
     buttonDisabled:false,
     audio_index:null,
-    video_title:null
+    video_title:null,
+    video_src: ''
   },
 
   toggleTag: function(e) {
@@ -316,8 +317,13 @@ Page({
                 duration: 1000,
                 success: function () {
                   setTimeout(function () {
+                    console.log(that.data.video_title)
+                    console.log('host is defined:', that.data.host_)
+                    that.setData({
+                      video_src: that.data.host_+'user/api/generate/video/preview'+'/'+openid+'/'+that.data.video_title
+                    })
                     wx.navigateTo({
-                      url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
+                      url: '/pages/generate/preview/preview_video/preview_video'+'?video_title='+that.data.video_title+'&category='+that.data.comeFrom+'&openid='+openid,
                     })//成功提交，返回上个页面
                   }, 1000)
                 }
@@ -363,6 +369,7 @@ Page({
         comeFrom:options.category,
         audio_index:options.index,
         video_title:options.title,
+        
       })
     }
     var that = this

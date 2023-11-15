@@ -1,0 +1,62 @@
+/* pages/generate/preview/preview_video/preview_video.wxss */
+
+.video {
+  position: relative;
+  padding-bottom: 54%;
+  height: 0;
+  width: 96%;
+  margin-left: 2%;
+  margin-top: 3vh;
+}
+.weui-form__text-area {
+  margin-top: 3vh;
+}
+
+.custom-tabbar{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: 20vh;
+  /* bottom: 0vh; */
+  margin-left: 5%;
+  width: 90%;
+  /* backdrop-filter: blur(10px);
+  background-color: rgba(240, 242, 243, 0.3);
+  border-radius: 20px; */
+  background-color: rgba(240, 242, 243, 0.397);
+  /* box-shadow: 2px 2px 6px rgb(141, 137, 137); */
+  border-radius: 2vh;
+  backdrop-filter: blur(10px);
+}
+
+.title {
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+  margin-left: 5vh;
+  font-size: 3vh;
+}
+
+.icons {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1vh;
+  margin-left: 10%;
+  width: 80%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icons-text {
+  font-size: 1.3vh;
+  display: flex;
+  flex-direction: row;
+  margin-left: 9.5%;
+  width: 77%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1vh;
+}
+
+.selected-text{
+  color: #0759a5;
+}

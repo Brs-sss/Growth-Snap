@@ -32,6 +32,7 @@
 }
 .audio-list {
   /* grid-area: 3/1/4/5; */
+  position: relative;
   width: 90vw;
   height: 35vh;
   display: flex;
@@ -40,6 +41,12 @@
   justify-self: center;
   align-items: center; /* 标签垂直居中对齐 */
   gap: 25px; /* 标签之间的间距 */
+  top: -5vh;
+}
+.weui-form__opr-area {
+  position: fixed;
+  bottom: 20vh;
+  margin-bottom: 0;
 }
 
 
@@ -65,7 +72,7 @@
 }
 .pick-audio {
   position: relative;
-  left: -20vh;
+  /* left: -20vh; */
 }
 .audio-image {
   width: 25vh;
@@ -193,4 +200,10 @@
   font-size: 14px;
   display: block;
   box-sizing: border-box;
+}
+
+.weui-form__control-area {
+  position: relative;
+  margin: 1vh;
+  top: -15vh
 }
