@@ -60,6 +60,13 @@ button{
   justify-self: center;
 }
 
+.tag-cont{
+  grid-area: 3/1/4/5;
+  width: 90vw;
+  height: 8vh;
+  justify-self: center ;
+}
+
 .container_tag{
   grid-area: 3/1/4/5;
   width: 90vw;
