@@ -102,7 +102,7 @@
             </view>
           </block>
         </view>
-        <button bind:tap="addEvent"     data-category="video">generate video</button>
+        <button bind:tap="addEvent"     data-category="video">生成</button>
     </view>
 
     <!-- <view class="weui-form__opr-area">
