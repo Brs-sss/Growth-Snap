@@ -1,17 +1,26 @@
 // pages/generate/timeline/timeline.js
 import * as echarts from '../../../components/ec-canvas/echarts';
 
-var timeline_template = 0;
+var timeline_template = 2;
 
-var eventData=[];
 
 
 //时间轴需要的数据
+var eventData = [];
 var graphData = [];
+var titleData = [];
+var links; 
+var yAxisData = [];
 
-var links;
-
-//时间轴1号需要的数据处理
+const IMG = [
+  '/image/generate/events/event_0.png',
+  '/image/generate/events/event_1.png',
+  '/image/generate/events/event_2.png',
+  'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F061H0102U6%2F20061G02U6-12-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644314407&t=aa49089b06c80ff5c9e3404d3ec85382',
+  'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp09%2F21042G339292K3-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644314407&t=e3a817c74754fdade94aa51858689928',
+  'https://scpic.chinaz.net/Files/pic/icons128/8308/d5.png',
+  'https://scpic.chinaz.net/Files/pic/icons128/8304/e7.png'
+]
 
 function initData(){
   eventData=[
@@ -19,8 +28,10 @@ function initData(){
     {date:'2023-03-05', title:'小明学会了第一首曲子'},
     {date:'2023-04-20', title:'在上钢琴课时，小明说好喜欢弹钢琴'},
     {date:'2023-06-04', title:'小明开始准备第一次考级'},
-    {date:'2023-07-09', title:'和小明说好，考级过了就可以买一台自己的钢琴'}
+    {date:'2023-07-09', title:'和小明说好，考级过了就可以买一台自己的钢琴'},
+    {date:'2023-09-15', title:'小明通过了考级'}
   ];
+  titleData = eventData.map(event => event.title);
   if(timeline_template == 0){
     //0号时间轴
     graphData = eventData.map(event => [event.date, 1000]);
@@ -34,8 +45,30 @@ function initData(){
     //1号时间轴
     graphData = eventData.map(event => ({
       value: eventData.indexOf(event) * 5 + 10,
-      name: `${event.date} ${event.title}`
+      name: `${event.date} \n ${event.title}`
     }));
+  }else if(timeline_template == 2){
+    eventData.forEach(function(event) {
+      var dataItem = {
+          value: event.title, 
+          name:  event.title,   // Set name to the current day
+          label: {
+              rich: {}
+          }
+      };
+      // Set common properties for rich content
+      dataItem.label.rich[event.title] = {
+          height: 50,
+          width: 50,
+          backgroundColor: {
+              image: IMG[0]
+          }
+          // Add other common properties if needed
+      };
+  
+      // Add the data item to yAxisRichData
+      yAxisData.push(dataItem);
+  });
   }
 }
 
@@ -121,14 +154,65 @@ function initChart(canvas, width, height, dpr) {
         {
           name: 'Pyramid',
           type: 'funnel',
-          width: '20%',
+          width: '10%',
           height: '80%',
           left: '5%',
           sort: 'ascending',
           funnelAlign: 'left',
-          data: graphData
+          data: graphData,
         },
         
+      ]
+    },
+    //2号时间轴
+    {
+      backgroundColor: '#0f375f',
+      grid: {
+        left: '3%',
+        right: '10%',
+        containLabel: true
+      },
+      yAxis: {
+        axisTick: { show: false },
+        type: 'category',
+        data: yAxisData,
+      },
+      xAxis: {
+        type: 'value',
+        splitLine: { show: false },
+        axisTick: { show: false },
+        axisLine: { show: false },
+        axisLabel: { show: false }
+      },
+      series: [
+        {
+          data: [120, 200, 150, 80, 70, 110],
+          name: 'line',
+          type: 'bar',
+          barGap: '-100%',
+          barWidth: 10,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(20,200,212,0.5)' },
+              { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
+              { offset: 1, color: 'rgba(20,200,212,0)' }
+            ])
+          },
+          z: -12,
+        },
+        {
+          name: 'dotted',
+          type: 'pictorialBar',
+          symbol: 'rect',
+          itemStyle: {
+            color: '#0f375f'
+          },
+          symbolRepeat: true,
+          symbolSize: [12, 4],
+          symbolMargin: 1,
+          z: -10,
+          data: [120, 200, 150, 80, 70, 110]
+        }
       ]
     }
   ]; 
