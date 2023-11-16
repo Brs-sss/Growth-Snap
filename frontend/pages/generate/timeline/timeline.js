@@ -1,9 +1,8 @@
 // pages/generate/timeline/timeline.js
 import * as echarts from '../../../components/ec-canvas/echarts';
 
-var timeline_template = 2;
-
-
+var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
+var timeline_template = 0;
 
 //时间轴需要的数据
 var eventData = [];
@@ -14,6 +13,7 @@ var lineData = [];
 var imgData = {};
 var links; 
 var yAxisData = [];
+var timelineTypeGlobal = [];
 
 //3号时间轴数据（还需要转化）
 const colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
@@ -351,6 +351,7 @@ function initData(){
     {date:'2023-09-15', title:'小明通过了考级'}
   ];
   titleData = eventData.map(event => event.title);
+  console.log(timeline_template);
   if(timeline_template == 0){
     //0号时间轴
     graphData = eventData.map(event => [event.date, 1000]);
@@ -363,7 +364,7 @@ function initData(){
   }else if(timeline_template == 1){
     //1号时间轴
     graphData = eventData.map(event => ({
-      value: eventData.indexOf(event) * 5 + 10,
+      value: (eventData.indexOf(event) % 2) * 20 + 10,
       name: `${event.date} \n ${event.title}`
     }));
   }else if(timeline_template == 2){
@@ -379,8 +380,8 @@ function initData(){
     dotData = [];
     lineData = [];
     for (let i = 0; i < eventData.length; i++) {
-      dotData.push(100);
-      lineData.push(90);
+      dotData.push(100+(i%2)*50);
+      lineData.push(90+(i%2)*50);
       imgData[`index_${i}`] = {
         height: 120,
         width: 180,
@@ -389,18 +390,22 @@ function initData(){
         }
       };
     }
-  }
+  };
 }
 
 
 function initChart(canvas, width, height, dpr) {
   console.log("init");
-  const chart = echarts.init(canvas, null, {
-    width: width,
-    height: 1200,
-    devicePixelRatio: dpr
+  heightGlobal = 1200;
+  widthGLobal = width;
+  canvasGlobal = canvas;
+  dprGlobal = dpr;
+  const chart = echarts.init(canvasGlobal, null, {
+    width: widthGLobal,
+    height: heightGlobal,
+    devicePixelRatio: dprGlobal
   });
-  canvas.setChart(chart);
+  canvasGlobal.setChart(chart);
  
 
   const timelineType = [
@@ -622,6 +627,8 @@ function initChart(canvas, width, height, dpr) {
 
   ]; 
 
+  timelineTypeGlobal = timelineType;
+
   function getVirtualData(year) {
     const date = +echarts.time.parse(year + '-01-01');
     const end = +echarts.time.parse(+year + 1 + '-01-01');
@@ -635,11 +642,10 @@ function initChart(canvas, width, height, dpr) {
     }
     return data;
   }
-  console.log(timelineType.length)
-  console.log(timeline_template)
+
   var option = timelineType[timeline_template];
   chart.setOption(option);
- 
+  chartNow = chart;
   return chart;
 }
 
@@ -649,13 +655,41 @@ Page({
    * 页面的初始数据
    */
   data: {
+    templates:[
+      {id: 0, selected: true},
+      {id: 1, selected: false},
+      {id: 2, selected: false},
+      {id: 3, selected: false}
+    ],
     ec: {
       onInit: initChart
     }
   },
+  changeTemplate: function(e){
+    const { index } = e.currentTarget.dataset;
+    if(index == timeline_template)
+      return;
+    this.setData({
+      ['templates[' + timeline_template + '].selected']: false
+    });
+    timeline_template = index;
+    this.setData({
+      ['templates[' + index + '].selected']: true
+    });
+    initData();
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = timelineTypeGlobal[timeline_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+  },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
-
     // 先保存图片到临时的本地文件，然后存入系统相册
     ecComponent.canvasToTempFilePath({
       success: res => {

@@ -6,3 +6,10 @@
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
 </view>
 
+
+<view class="container_template">
+  <view wx:for="{{templates}}" wx:key="index" data-index='{{index}}' class="template {{item.selected ?     'selected' : ''}}" bindtap="changeTemplate">
+    <image class="timeline-image" src="/image/generate/timeline/timeline_{{index}}.png"></image>
+  </view>
+</view>
+

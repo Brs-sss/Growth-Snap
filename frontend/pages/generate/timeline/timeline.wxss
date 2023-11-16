@@ -1,6 +1,5 @@
 /* pages/generate/timeline/timeline.wxss */
 
-
 .ec-container {
   display: flex;
   flex-direction: column;
@@ -9,7 +8,7 @@
   width: 100vw;
   height: 150vh;
   overflow: scroll; /* 允许内容滚动 */
-  z-index: 0;
+  z-index: -1;
 }
 
 ec-canvas {
@@ -28,3 +27,56 @@ ec-canvas {
   box-sizing: border-box;
   margin-bottom: 10rpx;
 }
+
+.container_template{
+  width: 90vw;
+  height: 40vh;
+  display: flex;
+  overflow: scroll;
+  flex-wrap: nowrap;
+  justify-self: center;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 15px; /* 标签之间的间距 */
+  margin-top: -10vh;
+}
+
+.container_template::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.container_template::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.container_template::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.template {
+  width: 50vh;
+  height: 15vh;
+  padding: 8rpx 16rpx;
+  border-radius: 4rpx;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: #4095E5;
+  cursor: pointer; 
+  margin-left: 2vw;
+}
+
+.timeline-image {
+  width: 20vh;
+  height: 15vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.template.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+
