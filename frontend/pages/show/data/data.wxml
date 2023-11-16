@@ -2,11 +2,12 @@
 <view id="overlay" bindtap="handleAddKey"></view>
 <view id='main'>
   <view id='upload_area'>
+    <image src='/image/show/add.png' id='addButton' bindtap='handleAddKey'></image>
     <view class='text'>添加数据</view>
     <view class='line'></view>
     <!-- 已有的数据填写框 -->
     <view wx:for="{{loadedKeys}}" wx:key="*this" class='dataItem'> 
-      <view class="dataKey textCenter">  {{item}}： </view> 
+      <view class="dataKey textCenter text">  {{item}}： </view> 
       <input class="dataBar" id="{{item}}" type="digit" placeholder="请输入" 	bindblur="handleAddData"/>
     </view>
     <!-- 数据添加按钮 -->

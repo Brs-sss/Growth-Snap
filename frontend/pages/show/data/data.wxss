@@ -20,27 +20,47 @@
   color: #333;
 }
 
+.line {
+  margin-top: 5px;
+  width: 100%;
+  height: 1px;
+  background-color: lightgray;
+}
+
+#addButton {
+  position: absolute;
+  top: -1px;
+  right: 10px;
+
+  width: 24px;
+  height: 24px;
+}
+
 .dataItem {
-  
+  width: 100%;
+  height: 60px;
+  background-color: rgb(236, 236, 238);
+
+  display: flex;
+  align-items: center;
 }
 
 .dataKey {
   position: relative;
-  left: 5%;
-  top: 50px;
+  top: 8px;
+  left: 2%;
   width: 24%;
   height: 40px;
 
-  color: gray;
   text-align: right;
 }
 .dataBar {
   position: relative;
-  left: 30%;
-  width: 60%;
-  height: 40px;
-  border: 2rpx solid rgba(220, 220, 220, 0.5);
-  border-radius: 4rpx;
+  left: 5%;
+  width: 64%; 
+  height: 70rpx;
+  border: 1px solid lightgray; 
+  border-radius: 10rpx;
 }
 
 .textCenter {
@@ -55,7 +75,7 @@
   justify-content: center; /**内容居中*/
 }
 
-#addBtn {
+/* #addBtn {
   position: relative;
   width: 30%;
 
@@ -63,7 +83,7 @@
   box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
   color: #fff;
   font-size: 14px;
-}
+} */
 
 @keyframes fadein {
   from {opacity: 0.2;}
