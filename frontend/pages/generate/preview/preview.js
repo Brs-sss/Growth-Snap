@@ -38,12 +38,12 @@ function loadPreview(that,options){
 
 function showPreview(that){
   const {pdf_name, openid, category,cover_index  }=that.data
-  console.log('showPreview:',that.data.cover_index,that.data.paper_index)
   let pdf_url=that.data.host_+'static/diary/'+openid+'/'+pdf_name+'.pdf'
   that.setData({
     pdf_url:pdf_url,
   })
   that.AskForPreviewImages(that,openid,pdf_name,category)
+  
 }
 
 
@@ -254,8 +254,9 @@ Page({
   },
 
   Refresh(){
-    var that=this
-    showPreview(that)
+    this.setData({
+      previewList:[]
+    })
   },
 
 
@@ -279,12 +280,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // var that=this
-
-    // console.log("onshow t")
-    // if(that.data.hasLoaded) {
-    //   showPreview(that)
-    //   console.log("onshow s")}
+    var that=this
+    if(that.data.hasLoaded) showPreview(that) 
   },
 
   /**
