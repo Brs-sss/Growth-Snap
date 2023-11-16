@@ -13,7 +13,6 @@
       <block wx:for="{{timelineList}}" wx:key="index">
         <view class="timeline-item"  data-category="timeline" data-index="{{index}}" bindtap="addEvent">
           <image class="timeline-image" src="/image/generate/timeline/timeline_{{index}}.png"></image>
-          <text class="timeline-name">{{item.name}}</text>
         </view>
       </block>
     </view>

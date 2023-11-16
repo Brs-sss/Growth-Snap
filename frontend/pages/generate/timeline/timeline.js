@@ -10,9 +10,327 @@ var eventData = [];
 var graphData = [];
 var titleData = [];
 var dotData = [];
+var lineData = [];
 var imgData = {};
 var links; 
 var yAxisData = [];
+
+//3号时间轴数据（还需要转化）
+const colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
+const bgColor = '#2E2733';
+const itemStyle = {
+  star5: {
+    color: colors[0]
+  },
+  star4: {
+    color: colors[1]
+  },
+  star3: {
+    color: colors[2]
+  },
+  star2: {
+    color: colors[3]
+  }
+};
+const data = [
+  {
+    name: '2023年\n小明读书记录',
+    itemStyle: {
+      color: colors[2]
+    },
+    children: [
+      {
+        name: '1月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '无界面交互'
+              }
+            ]
+          },
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '数字绘图的光照与渲染技术'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '2月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '《痛点》'
+              }
+            ]
+          },
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《进化》'
+              },
+              {
+                name: '《后物欲时代的来临》'
+              }
+            ]
+          },
+          {
+            name: '3☆',
+            children: [
+              {
+                name: '《疯癫与文明》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '3月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '《我们时代的神经症人格》'
+              }
+            ]
+          },
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《皮格马利翁效应》'
+              },
+              {
+                name: '《受伤的人》'
+              }
+            ]
+          },
+          {
+            name: '3☆'
+          },
+          {
+            name: '2☆',
+            children: [
+              {
+                name: '《迷恋》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '4月',
+        children: [
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《把房子住成家》'
+              },
+              {
+                name: '《只过必要生活》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '5月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '《设计诗》'
+              }
+            ]
+          },
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《假如生活糊弄了你》'
+              }
+            ]
+          },
+          {
+            name: '3☆',
+            children: [
+              {
+                name: '《方向》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '6月',
+        children: [
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《人生的智慧》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '7月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '《代码整洁之道》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '8月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '《慈悲》'
+              },
+              {
+                name: '《楼下的房客》'
+              }
+            ]
+          },
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《虚无的十字架》'
+              },
+              {
+                name: '《童年的终结》'
+              }
+            ]
+          },
+          {
+            name: '3☆',
+            children: [
+              {
+                name: '《疯癫老人日记》'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '9月',
+        children: [
+          {
+            name: '5☆',
+            children: [
+              {
+                name: '《纳博科夫短篇小说全集》'
+              }
+            ]
+          },
+          {
+            name: '4☆',
+            children: [
+              {
+                name: '《安魂曲》'
+              },
+              {
+                name: '《人生拼图版》'
+              }
+            ]
+          },
+          {
+            name: '3☆',
+            children: [
+              {
+                name: '《比起爱你，我更需要你》'
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+for (let j = 0; j < data.length; ++j) {
+  let level1 = data[j].children;
+  for (let i = 0; i < level1.length; ++i) {
+    let block = level1[i].children;
+    let bookScore = [];
+    let bookScoreId;
+    for (let star = 0; star < block.length; ++star) {
+      let style = (function (name) {
+        switch (name) {
+          case '5☆':
+            bookScoreId = 0;
+            return itemStyle.star5;
+          case '4☆':
+            bookScoreId = 1;
+            return itemStyle.star4;
+          case '3☆':
+            bookScoreId = 2;
+            return itemStyle.star3;
+          case '2☆':
+            bookScoreId = 3;
+            return itemStyle.star2;
+        }
+      })(block[star].name);
+      block[star].label = {
+        color: style.color,
+        downplay: {
+          opacity: 0.5
+        }
+      };
+      if (block[star].children) {
+        style = {
+          opacity: 1,
+          color: style.color
+        };
+        block[star].children.forEach(function (book) {
+          book.value = 1;
+          book.itemStyle = style;
+          book.label = {
+            color: style.color
+          };
+          let value = 1;
+          if (bookScoreId === 0 || bookScoreId === 3) {
+            value = 5;
+          }
+          if (bookScore[bookScoreId]) {
+            bookScore[bookScoreId].value += value;
+          } else {
+            bookScore[bookScoreId] = {
+              color: colors[bookScoreId],
+              value: value
+            };
+          }
+        });
+      }
+    }
+    level1[i].itemStyle = {
+      color: data[j].itemStyle.color
+    };
+  }
+}
+
+
+
 
 const IMG = [
   '/image/generate/events/event_0.png',
@@ -33,7 +351,6 @@ function initData(){
     {date:'2023-09-15', title:'小明通过了考级'}
   ];
   titleData = eventData.map(event => event.title);
-  dotData = [120, 100, 150, 80, 70, 110];
   if(timeline_template == 0){
     //0号时间轴
     graphData = eventData.map(event => [event.date, 1000]);
@@ -59,12 +376,16 @@ function initData(){
       yAxisData.push(dataItem);
     });
 
-    for (let i = 0; i < 7; i++) {
+    dotData = [];
+    lineData = [];
+    for (let i = 0; i < eventData.length; i++) {
+      dotData.push(100);
+      lineData.push(90);
       imgData[`index_${i}`] = {
-        height: 100,
-        width: 150,
+        height: 120,
+        width: 180,
         backgroundColor: {
-          image: IMG[i]
+          image: IMG[i],
         }
       };
     }
@@ -165,24 +486,30 @@ function initChart(canvas, width, height, dpr) {
     },
     //2号时间轴
     {
-      backgroundColor: '#0f375f',
+      backgroundColor: '#F3C5B3',
       grid: {
-        left: 200,
+        right: 250
       },
       yAxis: {
         axisTick: { show: false },
         axisLine: { show: false },
+        inverse: true,
+        position: 'right',
         type: 'category',
         data: yAxisData,
         axisLabel: {
           formatter: (params) => {
-           return eventData[params].date+ '\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
+           return '【' + eventData[params].date + '】'+'\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
           },
           rich: imgData,
+          fontSize: 16,
+          color: '#6894B9',
+          fontFamily: 'Arial',
         }
       },
       xAxis: {
         type: 'value',
+        inverse: true,
         splitLine: { show: false },
         axisTick: { show: false },
         axisLine: { show: false },
@@ -190,27 +517,106 @@ function initChart(canvas, width, height, dpr) {
       },
       series: [
         {
-          data: dotData,
-          name: 'bar',
+          name: 'line',
           type: 'bar',
-          barWidth: 10,
+          barGap: '-100%',
+          barWidth: 20,
           itemStyle: {
             borderRadius: 5,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#14c8d4' },
-              { offset: 1, color: '#43eec6' }
+            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+              { offset: 0, color: '#edbaa7' },
+              { offset: 1, color: '#6894B9' }
             ])
           },
+          z: -12,
+          data: dotData
         },
         {
-          data: dotData,
+          data: lineData,
           name: 'line',
           type: 'line',
           smooth: true,
           showAllSymbol: true,
           symbol: 'emptyCircle',
-          symbolSize: 15,
-        },
+          symbolSize: 1,
+          lineStyle: {
+            width: 20,
+            color: '#edbaa7'
+          }
+        }
+      ]
+    },
+    //3号时间轴
+    {
+      backgroundColor: bgColor,
+      color: colors,
+      series: [
+        {
+          type: 'sunburst',
+          center: ['50%', '30%'],
+          data: data,
+          sort: function (a, b) {
+            if (a.depth === 1) {
+              return b.getValue() - a.getValue();
+            } else {
+              return a.dataIndex - b.dataIndex;
+            }
+          },
+          label: {
+            rotate: 'radial',
+            color: bgColor
+          },
+          itemStyle: {
+            borderColor: bgColor,
+            borderWidth: 2
+          },
+          levels: [
+            {},
+            {
+              r0: 0,
+              r: 40,
+              label: {
+                rotate: 0
+              }
+            },
+            {
+              r0: 40,
+              r: 105
+            },
+            {
+              r0: 115,
+              r: 140,
+              itemStyle: {
+                shadowBlur: 2,
+                shadowColor: colors[2],
+                color: 'transparent'
+              },
+              label: {
+                rotate: 'tangential',
+                fontSize: 5,
+                color: colors[0]
+              }
+            },
+            {
+              r0: 140,
+              r: 145,
+              itemStyle: {
+                shadowBlur: 80,
+                shadowColor: colors[0]
+              },
+              label: {
+                position: 'outside',
+                textShadowBlur: 5,
+                textShadowColor: '#333'
+              },
+              downplay: {
+                label: {
+                  opacity: 0.5
+                }
+              }
+            }
+          ]
+        }
       ]
     }
 
