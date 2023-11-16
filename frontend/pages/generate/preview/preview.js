@@ -1,6 +1,7 @@
 // pages/generate/preview/preview.js
 
 //const pdfjsLib = require('pdfjs-dist/build/pdf');
+const app = getApp();
 
 Page({
 
@@ -9,7 +10,7 @@ Page({
    */
   data: {
     previewList:[],
-    host_: 'http://127.0.0.1:8090/',
+    host_: `${app.globalData.localUrl}`,
   },
 
   renderPDF: function(url) {

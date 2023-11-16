@@ -4,7 +4,7 @@ from django.http import JsonResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
-from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child
+from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Todo, Child
 from .utils import ListToString, StringToList, GenerateDiaryPDF
 import random
 import string
@@ -14,11 +14,10 @@ import datetime
 import shutil
 import fitz
 
-
 # Create your views here.
 
 
-event_image_base_path='static/ImageBase/'
+event_image_base_path = 'static/ImageBase/'
 
 
 def login(request):
@@ -256,10 +255,12 @@ def loadShowPage(request):
         used_by_addEvent_page=(request.GET.get('tags',"false")== "true")
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date", "-time") if 'e' in types else [] # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else [] 
-        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else [] 
-        now_user_blocks= sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),key=lambda x:(x.date,x.time),reverse=True)
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else []
+        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
+                                 key=lambda x: (x.date, x.time), reverse=True)
         print(now_user_blocks.__len__())
         blocks_list = []
         for db_block in now_user_blocks:
@@ -514,59 +515,57 @@ def getFamilyInfo(request):
             user_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
             family_list.append(user_item)
         return JsonResponse({'family_list': family_list})
-    
+
+
 def generateDiary(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        to_render_list=[]
-        event_text_list=data.get('list')
+        to_render_list = []
+        event_text_list = data.get('list')
         for item in event_text_list:
-            if item['type']=="event":
-                event_id=item['id']
-                now_event=Event.objects.get(event_id=event_id)
-                date_string=str(now_event.date)
-                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
-                image_path=event_image_base_path+event_id
+            if item['type'] == "event":
+                event_id = item['id']
+                now_event = Event.objects.get(event_id=event_id)
+                date_string = str(now_event.date)
+                date_string = date_string[0:4] + '年' + date_string[5:7] + '月' + date_string[8:10] + '日'
+                image_path = event_image_base_path + event_id
                 image_list = sorted(os.listdir(image_path))
                 to_render_list.append({
-                    'title':now_event.title,
-                    'content':now_event.content,
-                    'date':date_string,
-                    'event_id':event_id,
-                    'imgList':image_list,
+                    'title': now_event.title,
+                    'content': now_event.content,
+                    'date': date_string,
+                    'event_id': event_id,
+                    'imgList': image_list,
+                    'type': 'event',
                 })
-            else: #text
-                text_id=item['id']
-                now_event=Text.objects.get(text_id=text_id)
-                date_string=str(now_event.date)
-                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+            else:  # text
+                text_id = item['id']
+                now_event = Text.objects.get(text_id=text_id)
+                date_string = str(now_event.date)
+                date_string = date_string[0:4] + '年' + date_string[5:7] + '月' + date_string[8:10] + '日'
                 to_render_list.append({
-                    'title':now_event.title,
-                    'content':now_event.content,
-                    'date':date_string,
+                    'title': now_event.title,
+                    'content': now_event.content,
+                    'date': date_string,
+                    'type': 'text',
                 })
-        
-        output_base='static/diary/'+data.get('openid')+'/'
+
+        output_base = 'static/diary/' + data.get('openid') + '/'
         if not os.path.exists(output_base):
             os.mkdir(output_base)
-        output_path=output_base+data.get('name')+'.pdf'
-        GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
+        output_path = output_base + data.get('name') + '.pdf'
+        GenerateDiaryPDF(event_list=to_render_list, cover_idx=data.get('cover_index'),
+                         paper_idx=data.get('paper_index'), output_path=output_path)
         return JsonResponse({'msg': 'success'})
     return JsonResponse({'msg': 'POST only'})
 
 
-#进入日记本预览界面时，要生成最多5张的缩略图，便于用户查看效果。
+# 进入日记本预览界面时，要生成最多5张的缩略图，便于用户查看效果。
 def loadPDFThumbnail(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        pdf_name=request.GET.get('file_name')
-        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
-        
-
+        pdf_name = request.GET.get('file_name')
+        pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
 
         return JsonResponse({'imageList': "thumbnail_list"})
     return JsonResponse({'msg': 'GET only'})
-
-
-
-

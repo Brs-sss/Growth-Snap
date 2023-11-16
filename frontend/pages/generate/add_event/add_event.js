@@ -43,6 +43,7 @@ function loadPageInfo(that){
             that.setData({
               blog_cards_list: res.data.blocks_list,
               eventList: eventList,
+
               tags:Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}}),
               tag_to_event_index_dict:tag_to_eventIndex_dict,
             })
@@ -59,6 +60,7 @@ function loadPageInfo(that){
    })
 }
 
+const app = getApp();
 
 Page({
 
@@ -66,7 +68,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    host_: 'http://127.0.0.1:8090/',
+    host_: `${app.globalData.localUrl}`,
     generateCategory:'',
     templateIndex: '',
     tags: [], // 已保存的标签列表
@@ -84,22 +86,27 @@ Page({
 
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
+
     const { selectedTags, eventList} = this.data;
     let { selectedEvents,selectedNum }=this.data;
+
     const tag = this.data.tags[index].info;
     const tagIndex = selectedTags.indexOf(tag);
     const relatedEvents=this.data.tag_to_event_index_dict[tag]
     if (tagIndex !== -1) {
+
       relatedEvents.forEach(idx=>{
         eventList[idx].checked=false;  //改变前端 
         selectedEvents=selectedEvents.filter(ele=>ele!==idx) //留下那些不在relatedEvents中的事件idx，改变发送表单
       })
       selectedNum=selectedEvents.length;
       selectedTags.splice(tagIndex, 1); // 取消选中标签
+
       this.data.tags[index].checked = false ;
     } else {
       selectedTags.push(tag); // 选中
       this.data.tags[index].checked = true ;
+
       relatedEvents.forEach(idx=>{
         eventList[idx].checked=true;  //改变前端 
       })
@@ -107,8 +114,10 @@ Page({
       selectedNum=selectedEvents.length
 
     }
+    console.log(selectedEvents);
     this.setData({
       selectedTags: selectedTags,
+      selectedEvents: selectedEvents,
       eventList: eventList,
       selectedEvents:selectedEvents,
       selectedNum:selectedNum,
@@ -232,7 +241,6 @@ Page({
     console.log(this.data.diary_title,this.data.comeFrom)
     var that = this
     loadPageInfo(that)
-
   },
 
   

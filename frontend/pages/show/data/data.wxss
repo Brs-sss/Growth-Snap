@@ -8,6 +8,22 @@
   height: 100%;
 }
 
+#upload_area {
+  position: relative;
+  width: 88vw;
+  top: 3vh;
+  left: 6vw;
+}
+
+.text {
+  font-size: 14px;
+  color: #333;
+}
+
+.dataItem {
+  
+}
+
 .dataKey {
   position: relative;
   left: 5%;
