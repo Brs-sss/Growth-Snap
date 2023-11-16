@@ -60,6 +60,68 @@ function loadPageInfo(that){
    })
 }
 
+export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/generate/diary', //et表示只求取event和text
+        method:'POST',
+        header:
+        {
+          'content-type': 'application/json'
+        },
+        data:{
+          'openid':openid,
+          'list':id_list,
+          'cover_index':cover_index,
+          'paper_index':paper_index,
+          'name':diary_title,
+        },
+        success:function(res){
+          wx.showToast({
+            title: "提交成功",
+            icon: 'success',
+            duration: 1000,
+            success: function () {
+              setTimeout(function () {
+                if(new_page){
+                  wx.navigateTo({
+                    url: '/pages/generate/preview/preview'+'?title='+diary_title+'&category=diary'+"&cover="+cover_index+"&paper="+paper_index,
+                  })//成功提交,前往preview页面
+                }
+                else{
+                  var pages = getCurrentPages();
+                  var previousPage=pages[pages.length-2];
+                  previousPage.setData({
+                    cover_index:cover_index,
+                    paper_index:paper_index,
+                    pdf_name:diary_title,
+                  })
+                  previousPage.Refresh()
+                  wx.navigateBack({
+                    delta:1,
+                    success:function(){
+                    }
+                  })
+                }
+              }, 1000)
+            }
+          })
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      })
+    },
+    fail: function (res) {
+    console.log('获取数据失败');
+    }
+  });
+}
+
 const app = getApp();
 
 Page({
@@ -82,6 +144,11 @@ Page({
     cover_index:null,
     paper_index:null,
     diary_title:null,
+    timeline_template:null,
+    buttonDisabled:false,
+    audio_index:null,
+    video_title:null,
+    video_src: ''
   },
 
   toggleTag: function(e) {
@@ -172,55 +239,82 @@ Page({
   },
 
   handleSubmit(e){
-    const { eventList }=this.data;
-    var that=this;
+    const { eventList } = this.data;
+    let { buttonDisabled }=this.data
+    if(buttonDisabled) return  //防止用户多次点按钮
+    this.setData({
+      buttonDisabled: true
+    });
+    setTimeout(function () {
+      that.setData({
+        buttonDisabled: false
+      });
+    }, 1500); 
+    var that = this;
+    var category = that.data.comeFrom;
     let id_list=that.data.selectedEvents.map(ele=>{
       return {"id":eventList[ele].id,
               "type":eventList[ele].type}
     })
-    wx.getStorage({
-      key: 'openid',  // 要获取的数据的键名
-      success: function (res) { 
-        // 从本地存储中获取数据,在index.js文件中保存建立的
-        let openid=res.data
-        wx.request({
-          url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
-          method:'POST',
-          header:
-          {
-            'content-type': 'application/json'
-          },
-          data:{
-            'openid':openid,
-            'list':id_list,
-            'cover_index':that.data.cover_index,
-            'paper_index':that.data.paper_index,
-            'name':that.data.diary_title,
-          },
-          success:function(res){
-            wx.showToast({
-              title: "提交成功",
-              icon: 'success',
-              duration: 1000,
-              success: function () {
-                setTimeout(function () {
-                  wx.navigateTo({
-                    url: '/pages/generate/preview/preview'+'?title='+that.data.diary_title+'&category='+that.data.comeFrom,
-                  })//成功提交，返回上个页面
-                }, 1000)
-              }
-            })
-          },
-          fail:function(res){
-            console.log('load page failed: ',res)
-          }
-        })
-      },
-      fail: function (res) {
-       console.log('获取数据失败');
-     }
-   });
-
+    wx.setStorageSync('generate_id_list', id_list);
+    if(category=="timeline"){
+      wx.navigateTo({
+        url: '/pages/generate/timeline/timeline',
+      })
+    }
+    else if (category=='diary'){
+      const {cover_index,paper_index,diary_title}=that.data
+      console.log(cover_index,paper_index,diary_title )
+      generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title)
+    }else if (category=='video')
+    {
+      wx.getStorage({
+        key: 'openid',  // 要获取的数据的键名
+        success: function (res) { 
+          // 从本地存储中获取数据,在index.js文件中保存建立的
+          let openid=res.data
+          wx.request({
+            url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text
+            method:'POST',
+            header:
+            {
+              'content-type': 'application/json'
+            },
+            data:{
+              'openid':openid,
+              'list':id_list,
+              'audio_index':that.data.audio_index,
+              'name':that.data.video_title,
+            },
+            success:function(res){
+              wx.showToast({
+                title: "提交成功",
+                icon: 'success',
+                duration: 1000,
+                success: function () {
+                  setTimeout(function () {
+                    console.log(that.data.video_title)
+                    console.log('host is defined:', that.data.host_)
+                    that.setData({
+                      video_src: that.data.host_+'user/api/generate/video/preview'+'/'+openid+'/'+that.data.video_title
+                    })
+                    wx.navigateTo({
+                      url: '/pages/generate/preview/preview_video/preview_video'+'?video_title='+that.data.video_title+'&category='+that.data.comeFrom+'&openid='+openid,
+                    })//成功提交，返回上个页面
+                  }, 1000)
+                }
+              })
+            },
+            fail:function(res){
+              console.log('load page failed: ',res)
+            }
+          })
+        },
+        fail: function (res) {
+        console.log('获取数据失败');
+        }
+      });
+    }
   },
 
 
@@ -229,16 +323,31 @@ Page({
    */
   onLoad(options) {
     // 获取要生成的类型
-    // const category = decodeURIComponent(options.category);
+    const category = decodeURIComponent(options.category);
     // const index = decodeURIComponent(options.index);
-    this.setData({
-      comeFrom:options.category,
-      cover_index:options.cover,
-      paper_index:options.paper,
-      diary_title:options.title,
-    })
-
-    console.log(this.data.diary_title,this.data.comeFrom)
+    if(category=="timeline"){
+      this.setData({
+        comeFrom:options.category,
+        timeline_template:options.index,
+      })
+      console.log(this.data.comeFrom,this.data.timeline_template)
+    }else if (category=='diary'){
+      this.setData({
+        comeFrom:options.category,
+        cover_index:options.cover,
+        paper_index:options.paper,
+        diary_title:options.title,
+      })
+    }
+    else if (category=='video')
+    {
+      this.setData({
+        comeFrom:options.category,
+        audio_index:options.index,
+        video_title:options.title,
+        
+      })
+    }
     var that = this
     loadPageInfo(that)
   },

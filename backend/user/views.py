@@ -1,18 +1,18 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
-from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Todo, Child
-from .utils import ListToString, StringToList, GenerateDiaryPDF
+from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage
 import random
 import string
 import hashlib
 import os
 import datetime
 import shutil
-import fitz
+# import fitz
 
 # Create your views here.
 
@@ -564,8 +564,84 @@ def generateDiary(request):
 def loadPDFThumbnail(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        pdf_name = request.GET.get('file_name')
-        pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
-
-        return JsonResponse({'imageList': "thumbnail_list"})
+        pdf_name=request.GET.get('file_name')
+        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
+        output_path='static/diary/'+openid+'/thumbnails/'+pdf_name+'/'
+        try:
+            num,pages=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+        except:
+            return HttpResponse("Request failed", status=500)
+        thumbnail_list=['http://127.0.0.1:8090/' + output_path+ f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
+        return JsonResponse({'imageList': thumbnail_list,'pageNum':pages})
     return JsonResponse({'msg': 'GET only'})
+
+
+def generateDiaryLongImage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        pdf_name=request.GET.get('file_name')
+        pdf_path='static/diary/'+openid+'/'+pdf_name+'.pdf'
+        output_path='static/diary/'+openid+'/'+pdf_name+'.jpg'
+        GenerateLongImage(pdf_path,output_path,resolution=100)
+        return JsonResponse({'long_image_url': 'http://127.0.0.1:8090/'+output_path })
+    return JsonResponse({'msg': 'GET only'})
+
+
+def generateVideo(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        label = now_user.label
+        image_path_list=[]
+        event_text_list=data.get('list')
+        video_title = data.get('name')
+        audio_index = data.get('audio_index')
+        for item in event_text_list:
+            if item['type']=="event":
+                event_id=item['id']
+                now_event=Event.objects.get(event_id=event_id)
+                date_string=str(now_event.date)
+                date_string=date_string[0:4]+'年'+date_string[5:7]+'月'+date_string[8:10]+'日'
+                image_path=event_image_base_path+event_id
+                print(f"image_path {image_path}")
+                print(f'os.list: {os.listdir(image_path)}')
+                for path in os.listdir(image_path):
+                    # print(f'path {path}')
+                    image_path_list.append(image_path+'/'+path)
+                # image_list = sorted(os.listdir(image_path))
+                # to_render_list.append({
+                #     'title':now_event.title,
+                #     'content':now_event.content,
+                #     'date':date_string,
+                #     'event_id':event_id,
+                #     'imgList':image_list,
+                #     'type':'event',
+                # })
+                # image_path_list.append(image_list)
+        # print(image_path_list)
+        GenerateVideo(image_path_list, audio_index, video_title, label, openid)
+        
+        # output_base='static/diary/'+data.get('openid')+'/'
+        # if not os.path.exists(output_base):
+        #     os.mkdir(output_base)
+        # output_path=output_base+data.get('name')+'.pdf'
+        # GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
+        return JsonResponse({'msg': 'success', 'src': ''})
+    return JsonResponse({'msg': 'POST only'})
+
+def loadVideoThumbnail(request, openid, video_title):
+    # if request.method == 'METHOD':
+    try:
+        # openid = request.GET.get('openid')
+        # video_title=request.GET.get('video_title')
+        print(video_title, openid)
+
+        video_path='static/video/'+str(openid)+'/'+video_title+'.mp4'
+        output_path='static/video/'+str(openid)+'/thumbnails/'+video_title+'/'
+        # 获取服务器上视频的路径，然后把视频传到前端
+
+        return FileResponse(open(video_path, 'rb'))
+    except:
+        pass
+

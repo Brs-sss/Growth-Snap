@@ -10,7 +10,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeIndex: 1, // 当前显示的子页面
+    activeIndex: 0, // 初始显示的子页面
     timelineList: [], // 时间轴模板数据
     diaryActiveIndex: 0,
     coverList: [],  // 日记本封面模板数据 
@@ -18,6 +18,9 @@ Page({
     paperList: [],  // 日记本纸张模板数据
     paperSelected: 0,
     diaryTitle: '',// 日记本标题
+    audioList: [], // 选的配乐
+    videoTitle: '', // 小视频标题
+    audioSelected: 0,
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
@@ -36,22 +39,61 @@ Page({
       url: '/pages/generate/chart/chart',
     })
   },
+  addVideo(e){
+    var that=this
+    const category = e.currentTarget.dataset.category;
+    // const index = e.currentTarget.dataset.index;
+    console.log('generate_category:',category);
+    // console.log('generate_index:',index);
+    wx.navigateTo({
+      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category)
+    })
+  },
   addEvent(e) {
     var that=this
     const category = e.currentTarget.dataset.category;
     const index = e.currentTarget.dataset.index;
     console.log('generate_category:',category);
     console.log('generate_index:',index);
-    if(isEmpty(that.data.diaryTitle)){
-      wx.showToast({
-        title: "标题不能为空",
-        icon: 'error',
-        duration: 1000,
+    if (category=="timeline"){
+      wx.navigateTo({
+        url: '/pages/generate/add_event/add_event?category=timeline&index=' + encodeURIComponent(index),
       })
-      return;
+    }else if (category=="video")
+    { 
+      if(isEmpty(that.data.videoTitle)){
+        wx.showToast({
+          title: "标题不能为空",
+          icon: 'error',
+          duration: 1000,
+        })
+        return;
+      }
+      wx.navigateTo({
+        url: '/pages/generate/add_event/add_event?category=video' + "&index=" + encodeURIComponent(this.data.audioSelected)+"&title="+this.data.videoTitle,
+      })
+
+    }else if (category=="diary"){
+      if(isEmpty(that.data.diaryTitle)){
+        wx.showToast({
+          title: "标题不能为空",
+          icon: 'error',
+          duration: 1000,
+        })
+        return;
+      }
+      wx.navigateTo({
+        url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected+"&title="+that.data.diaryTitle,
+      })
     }
-    wx.navigateTo({
-      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected+"&title="+that.data.diaryTitle,
+  },
+  addAudio(e){
+    const index = e.currentTarget.dataset.index;
+    console.log(index)
+    console.log(this.data.audioList[index].name)
+    this.setData({
+      audioSelected: index,
+      
     })
   },
   selectCover(e){
@@ -69,6 +111,11 @@ Page({
   handleInputTitle(e) {  //输入标题的处理
     this.setData({
       diaryTitle: e.detail.value
+    });
+  },
+  handleInputVideoTitle(e) {  //输入标题的处理
+    this.setData({
+      videoTitle: e.detail.value
     });
   },
   /**
@@ -109,6 +156,16 @@ Page({
         { id: 9 , name:'艺术', selected:false},
         { id: 10 , name:'艺术', selected:false},
         { id: 11 , name:'艺术', selected:false},
+      ],
+      audioList: [
+        { id: 0 , name:'单车'},
+        { id: 1 , name:'富士山下'},
+        { id: 2 , name:'因为爱情'},
+        { id: 3 , name:'孤勇者'},
+        { id: 4 , name:'起风了'},
+        { id: 5 , name:'你的眼神'},
+        { id: 6 , name:'黑桃A'},
+        { id: 7 , name:'EverytimeWeTouch'},
       ]
     });
   },
