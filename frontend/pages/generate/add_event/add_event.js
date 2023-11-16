@@ -241,7 +241,7 @@ Page({
 
   handleSubmit(e){
     const { eventList } = this.data;
-    let { buttonDisabled }=this.data
+    let { buttonDisabled } = this.data;
     if(buttonDisabled) return  //防止用户多次点按钮
     this.setData({
       buttonDisabled: true
@@ -259,9 +259,11 @@ Page({
     })
     wx.setStorageSync('generate_id_list', id_list);
     if(category=="timeline"){
+      const { timeline_template } = this.data;
       wx.navigateTo({
-        url: '/pages/generate/timeline/timeline',
+        url: '/pages/generate/timeline/timeline' + '?index=' + timeline_template,
       })
+      console.log(timeline_template);
     }
     else if (category=='diary'){
       const {cover_index,paper_index,diary_title}=that.data
@@ -346,7 +348,6 @@ Page({
         comeFrom:options.category,
         audio_index:options.index,
         video_title:options.title,
-        
       })
     }
     var that = this
