@@ -7,6 +7,7 @@
     "pages/show/event/event",
     "pages/show/text/text",
     "pages/show/data/data",
+    "pages/show/data_templates/data_templates",
     "pages/plan/plan",
     "pages/plan/todo/todo",
     "pages/plan/create_plan/create_plan",
@@ -22,6 +23,7 @@
     "pages/user/child/addchild/addchild",
     "pages/show/event_detail/event_detail",
     "pages/show/text_detail/text_detail",
+    "pages/show/data_detail/data_detail",
     "pages/generate/preview/preview",
     "pages/generate/preview/preview_video/preview_video",
     "pages/generate/reselect/diarytemplate/diarytemplate"

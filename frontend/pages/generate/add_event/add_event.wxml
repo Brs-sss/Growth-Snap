@@ -10,9 +10,9 @@
       <view wx:if="{{isTagsEmpty}}" class="tag-empty-tip">还没有标签哦~</view>
       <view wx:else class="container_tag">
           <view wx:for="{{tags}}" wx:key="index" 
-          data-index='{{index}}' 
-          class="tag {{item.checked ?'selected' :''}}" bindtap="toggleTag">
-                <text class="tag-text">{{item.info}}</text>
+            data-index='{{index}}' 
+            class="tag" bindtap="toggleTag">
+            <text class="tag-text">{{item.info}}</text>
           </view>
       </view>
     </view>
