@@ -9,6 +9,8 @@ var timeline_template = 2;
 var eventData = [];
 var graphData = [];
 var titleData = [];
+var dotData = [];
+var imgData = {};
 var links; 
 var yAxisData = [];
 
@@ -16,22 +18,22 @@ const IMG = [
   '/image/generate/events/event_0.png',
   '/image/generate/events/event_1.png',
   '/image/generate/events/event_2.png',
-  'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F061H0102U6%2F20061G02U6-12-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644314407&t=aa49089b06c80ff5c9e3404d3ec85382',
-  'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp09%2F21042G339292K3-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644314407&t=e3a817c74754fdade94aa51858689928',
-  'https://scpic.chinaz.net/Files/pic/icons128/8308/d5.png',
-  'https://scpic.chinaz.net/Files/pic/icons128/8304/e7.png'
+  '/image/generate/events/event_3.png',
+  '/image/generate/events/event_4.png',
+  '/image/generate/events/event_5.png',
 ]
 
 function initData(){
   eventData=[
     {date:'2023-02-01', title:'小明今天开始学习钢琴'},
     {date:'2023-03-05', title:'小明学会了第一首曲子'},
-    {date:'2023-04-20', title:'在上钢琴课时，小明说好喜欢弹钢琴'},
+    {date:'2023-04-20', title:'小明说好喜欢弹钢琴'},
     {date:'2023-06-04', title:'小明开始准备第一次考级'},
-    {date:'2023-07-09', title:'和小明说好，考级过了就可以买一台自己的钢琴'},
+    {date:'2023-07-09', title:'给小明买了一台自己的钢琴'},
     {date:'2023-09-15', title:'小明通过了考级'}
   ];
   titleData = eventData.map(event => event.title);
+  dotData = [120, 100, 150, 80, 70, 110];
   if(timeline_template == 0){
     //0号时间轴
     graphData = eventData.map(event => [event.date, 1000]);
@@ -48,27 +50,24 @@ function initData(){
       name: `${event.date} \n ${event.title}`
     }));
   }else if(timeline_template == 2){
+    //2号时间轴
     eventData.forEach(function(event) {
       var dataItem = {
-          value: event.title, 
-          name:  event.title,   // Set name to the current day
-          label: {
-              rich: {}
-          }
+          value: eventData.indexOf(event), 
+          name:  event.title,   
       };
-      // Set common properties for rich content
-      dataItem.label.rich[event.title] = {
-          height: 50,
-          width: 50,
-          backgroundColor: {
-              image: IMG[0]
-          }
-          // Add other common properties if needed
-      };
-  
-      // Add the data item to yAxisRichData
       yAxisData.push(dataItem);
-  });
+    });
+
+    for (let i = 0; i < 7; i++) {
+      imgData[`index_${i}`] = {
+        height: 100,
+        width: 150,
+        backgroundColor: {
+          image: IMG[i]
+        }
+      };
+    }
   }
 }
 
@@ -168,14 +167,19 @@ function initChart(canvas, width, height, dpr) {
     {
       backgroundColor: '#0f375f',
       grid: {
-        left: '3%',
-        right: '10%',
-        containLabel: true
+        left: 200,
       },
       yAxis: {
         axisTick: { show: false },
+        axisLine: { show: false },
         type: 'category',
         data: yAxisData,
+        axisLabel: {
+          formatter: (params) => {
+           return eventData[params].date+ '\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
+          },
+          rich: imgData,
+        }
       },
       xAxis: {
         type: 'value',
@@ -186,35 +190,30 @@ function initChart(canvas, width, height, dpr) {
       },
       series: [
         {
-          data: [120, 200, 150, 80, 70, 110],
-          name: 'line',
+          data: dotData,
+          name: 'bar',
           type: 'bar',
-          barGap: '-100%',
           barWidth: 10,
           itemStyle: {
+            borderRadius: 5,
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(20,200,212,0.5)' },
-              { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
-              { offset: 1, color: 'rgba(20,200,212,0)' }
+              { offset: 0, color: '#14c8d4' },
+              { offset: 1, color: '#43eec6' }
             ])
           },
-          z: -12,
         },
         {
-          name: 'dotted',
-          type: 'pictorialBar',
-          symbol: 'rect',
-          itemStyle: {
-            color: '#0f375f'
-          },
-          symbolRepeat: true,
-          symbolSize: [12, 4],
-          symbolMargin: 1,
-          z: -10,
-          data: [120, 200, 150, 80, 70, 110]
-        }
+          data: dotData,
+          name: 'line',
+          type: 'line',
+          smooth: true,
+          showAllSymbol: true,
+          symbol: 'emptyCircle',
+          symbolSize: 15,
+        },
       ]
     }
+
   ]; 
 
   function getVirtualData(year) {
