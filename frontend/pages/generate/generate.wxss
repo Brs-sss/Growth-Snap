@@ -30,18 +30,28 @@
   align-items: center;
   margin-top: -20vh;
 }
+.audio-btn-container{
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: -10vh;
+}
+
+
 .audio-list {
   /* grid-area: 3/1/4/5; */
-  position: relative;
-  width: 90vw;
-  height: 35vh;
+
+  width: 80vw;
+  height: 30vh;
   display: flex;
   overflow: scroll;
   flex-wrap: nowrap;
   justify-self: center;
   align-items: center; /* 标签垂直居中对齐 */
   gap: 25px; /* 标签之间的间距 */
-  top: -5vh;
+
 }
 .weui-form__opr-area {
   position: fixed;
@@ -74,9 +84,11 @@
   position: relative;
   /* left: -20vh; */
 }
+
+
 .audio-image {
-  width: 25vh;
-  height: 25vh;
+  width: 20vh;
+  height: 20vh;
   border-radius: 2vh;
   margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
