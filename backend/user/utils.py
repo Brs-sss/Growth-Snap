@@ -33,6 +33,8 @@ def ListToString(tag_list):
 
 
 def StringToList(tag_string):
+    if tag_string == "":
+        return []
     return tag_string.split(",")
 ###########################    end block 1
 

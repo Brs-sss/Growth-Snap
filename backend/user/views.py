@@ -136,7 +136,7 @@ def submitEvent(request):
         date = data.get('date')
         time = (data.get('time'))[:8]
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
-        tags = ListToString([tag['info'] for tag in tags if tag['checked']])
+        tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip())!=0])
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
         type = data.get('type')
         if type == 'event':
