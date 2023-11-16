@@ -57,19 +57,19 @@
 /* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
 .image-player ::-webkit-scrollbar {
   width: 0;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .image-player ::-webkit-scrollbar-track {
   background-color: transparent;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .image-player ::-webkit-scrollbar-thumb {
   background-color: transparent;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
-
+/* 
 scroll-view{
   padding: 0;
   overflow: hidden;
@@ -78,7 +78,7 @@ scroll-view{
 scroll-view ::-webkit-scrollbar {
   width: 0;
   /* display: none; */
-}
+/* }  */
 
 .select_container{
   width: 100%;
