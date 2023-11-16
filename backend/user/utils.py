@@ -133,8 +133,7 @@ def resizeVideoImage(image_path_list, video_title, label):
     if not os.path.exists(resized_image_path):
         os.makedirs(resized_image_path)
     black = cv2.imread('static/video/black.png')
-    # 1024：768 = 640：480
-    black = cv2.resize(black, (1024, 768), interpolation=cv2.INTER_CUBIC)
+    black = cv2.resize(black, (1080, 608), interpolation=cv2.INTER_CUBIC)
     
     date = datetime.now().strftime('%Y-%m-%d')
 
@@ -148,20 +147,20 @@ def resizeVideoImage(image_path_list, video_title, label):
         img = cv2.imread(image_path)
         
         height, width = img.shape[:2]
-        target_width = 1024
+        target_width = 1080
         target_height = int((target_width / width) * height)
-        if target_height >= 768:
-            img = cv2.resize(img, (1024, target_height), interpolation=cv2.INTER_CUBIC)
+        if target_height >= 608:
+            img = cv2.resize(img, (1080, target_height), interpolation=cv2.INTER_CUBIC)
             middle = int(target_height/2)
-            img = img[middle-384:middle+384, :, :]
+            img = img[middle-304:middle+304, :, :]
         else:
-            target_height = 768
+            target_height = 608
             target_width = int((target_height / height) * width)
-            img = cv2.resize(img, (target_width, 768), interpolation=cv2.INTER_CUBIC)
+            img = cv2.resize(img, (target_width, 608), interpolation=cv2.INTER_CUBIC)
             middle = int(target_width/2)
-            img = img[:, middle-512:middle+512, :]
+            img = img[:, middle-540:middle+540, :]
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (1024, 768), interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img, (1080, 608), interpolation=cv2.INTER_CUBIC)
         print(img.shape)
         out_path = os.path.join(resized_image_path, str(i) + '.png')
         cv2.imwrite(out_path, img)
@@ -170,11 +169,15 @@ def resizeVideoImage(image_path_list, video_title, label):
     return resized_image_path_list
 
 
-def GenerateVideo(image_path_list, audio_index, video_title, label):
+def GenerateVideo(image_path_list, audio_index, video_title, label, openid):
     resized_image_path_list = resizeVideoImage(image_path_list, video_title, label)
     print(resized_image_path_list)
     # # 合成视频
-    video_dir = 'static/video/temp.mp4'      # 输出视频的保存路径
+    user_dir = f'static/video/{openid}'
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir)
+    video_dir = f'static/video/{openid}/temp.mp4'      # 输出视频的保存路径
+    print(f'video_dir: {video_dir}')
     fps = 0.5     # 帧率
     # img_size = (640, 480)      # 图片尺寸
     # fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
@@ -195,15 +198,15 @@ def GenerateVideo(image_path_list, audio_index, video_title, label):
             video.append_data(image)
 
     # 加入音频
-    # video = VideoFileClip(video_dir)
-    video = VideoFileClip('static/video/temp.mp4')
+    video = VideoFileClip(video_dir)
+    # video = VideoFileClip('static/video/temp.mp4')
     duration = video.duration  # 视频时长
     videos = video.set_audio(AudioFileClip(f'static/video/audio/audio_{audio_index}.mp3').subclip(0, duration))  # 音频文件
-    videos.write_videofile('static/video/result.mp4', audio_codec='aac')  # 保存合成视频，注意加上参数audio_codec='aac'，否则音频无声音/
+    videos.write_videofile(f'static/video/{openid}/{video_title}.mp4', audio_codec='aac')  # 保存合成视频，注意加上参数audio_codec='aac'，否则音频无声音/
     # 删除resized文件夹
     shutil.rmtree('static/video/resized')
     # 删除temp.mp4
-    os.remove('static/video/temp.mp4')
+    os.remove(video_dir)
     # video.reader.close()
     # video.audio.reader.close_proc()
 

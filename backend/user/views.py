@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
@@ -706,14 +706,28 @@ def generateVideo(request):
                 # })
                 # image_path_list.append(image_list)
         # print(image_path_list)
-        GenerateVideo(image_path_list, audio_index, video_title, label)
+        GenerateVideo(image_path_list, audio_index, video_title, label, openid)
         
         # output_base='static/diary/'+data.get('openid')+'/'
         # if not os.path.exists(output_base):
         #     os.mkdir(output_base)
         # output_path=output_base+data.get('name')+'.pdf'
         # GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
-        return JsonResponse({'msg': 'success'})
+        return JsonResponse({'msg': 'success', 'src': ''})
     return JsonResponse({'msg': 'POST only'})
 
+def loadVideoThumbnail(request, openid, video_title):
+    # if request.method == 'METHOD':
+    try:
+        # openid = request.GET.get('openid')
+        # video_title=request.GET.get('video_title')
+        print(video_title, openid)
+
+        video_path='static/video/'+str(openid)+'/'+video_title+'.mp4'
+        output_path='static/video/'+str(openid)+'/thumbnails/'+video_title+'/'
+        # 获取服务器上视频的路径，然后把视频传到前端
+
+        return FileResponse(open(video_path, 'rb'))
+    except:
+        pass
 
