@@ -82,7 +82,9 @@
 						</view>
 				</view>
 				</view>
+        <view class="weui-cells__title">左右滑动选择</view>
 			</view>
+      
     </view>
   <!-- <view class='pick-video-title'>
     <text>视频标题</text>
@@ -91,16 +93,17 @@
     
     <view class='pick-audio'>选择配乐</view>
     <view>{{audioList[audioSelected].name}}</view> -->
-    <view class="audio-list">
-    
-      <block wx:for="{{audioList}}" wx:key="index">
-        <view class="timeline-item"  data-category="audio" data-index="{{index}}" bindtap="addAudio">
-          <image class="audio-image" src="/image/generate/audio/audio_{{index}}.png"></image>
-          <text class="timeline-name">{{item.name}}</text>
+    <view class="audio-btn-container">
+        <view class="audio-list">
+          <block wx:for="{{audioList}}" wx:key="index">
+            <view class="timeline-item audio-item"  data-category="audio"    data-index="{{index}}" bindtap="addAudio">
+              <image class="audio-image" src="/image/generate/audio/audio_{{index}}.png"></image>
+              <text class="timeline-name">{{item.name}}</text>
+            </view>
+          </block>
         </view>
-      </block>
+        <button bind:tap="addEvent"     data-category="video">generate video</button>
     </view>
-    <button bind:tap="addEvent" data-category="video">generate video</button>
 
     <!-- <view class="weui-form__opr-area">
 			<view aria-role="button" class="weui-btn weui-btn_primary" bindtap="addEvent" data-category="video">开始生成</view>
