@@ -40,14 +40,15 @@ function loadPageInfo(that){
               (imgSrc==undefined)?imgSrc='/image/show/txt.png':null;
               return { imgSrc, title, id, type, tags, checked: false };
             });
+            let tag_array=Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}})
             that.setData({
               blog_cards_list: res.data.blocks_list,
               eventList: eventList,
 
-              tags:Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}}),
+              tags:tag_array,
+              isTagsEmpty:tag_array.length==0,
               tag_to_event_index_dict:tag_to_eventIndex_dict,
             })
-            console.log(that.data.tag_to_event_index_dict)
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -134,6 +135,7 @@ Page({
     generateCategory:'',
     templateIndex: '',
     tags: [], // 已保存的标签列表
+    isTagsEmpty:false,
     selectedTags: [], // 已选中的标签列表
     eventList: [], //事件列表
     selectedEvents: [], //已选中的事件列表(存的是index)
@@ -156,7 +158,6 @@ Page({
 
     const { selectedTags, eventList} = this.data;
     let { selectedEvents,selectedNum }=this.data;
-
     const tag = this.data.tags[index].info;
     const tagIndex = selectedTags.indexOf(tag);
     const relatedEvents=this.data.tag_to_event_index_dict[tag]

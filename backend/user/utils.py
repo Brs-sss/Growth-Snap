@@ -15,6 +15,7 @@ os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
 from moviepy.editor import VideoFileClip, AudioFileClip
 import imageio
 from PIL import Image
+import requests
 
 # 指定 wkhtmltopdf 可执行文件路径
 config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
@@ -33,6 +34,8 @@ def ListToString(tag_list):
 
 
 def StringToList(tag_string):
+    if tag_string == "":
+        return []
     return tag_string.split(",")
 ###########################    end block 1
 
@@ -99,6 +102,8 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
 ##########################    block 4: pdf转图片，用到pdf2image，依赖poppler
 
 def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
     images = convert_from_path(pdf_path,first_page=1,last_page=max_page, dpi=resolution) #如果总页数小于max_page，会自动处理
     with open(pdf_path, 'rb') as file:
         pdf_reader = PyPDF2.PdfReader(file)

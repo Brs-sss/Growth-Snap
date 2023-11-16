@@ -72,6 +72,11 @@ button{
   gap: 15px; /* 标签之间的间距 */
 }
 
+
+.tag-empty-tip{
+  color: #999;
+}
+
 /* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
 .container_tag::-webkit-scrollbar {
   width: 0.5em;
@@ -110,8 +115,14 @@ button{
   font-size: 14px;
 }
 
+.container_event{
+  width: 100%;
+  height: 100%;
+}
+
 
 .event-list{
+  width: 100%;
   position: absolute;
   margin-top: 22vh;
   display: flex;
