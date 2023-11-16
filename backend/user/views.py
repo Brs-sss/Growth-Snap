@@ -655,7 +655,7 @@ def loadPDFThumbnail(request):
         output_path='static/diary/'+openid+'/thumbnails/'+pdf_name+'/'
         try:
             num,pages=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
-        except:
+        except Exception as e:
             return HttpResponse("Request failed", status=500)
         thumbnail_list=['http://127.0.0.1:8090/' + output_path+ f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
         return JsonResponse({'imageList': thumbnail_list,'pageNum':pages})
