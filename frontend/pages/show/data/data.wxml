@@ -1,22 +1,26 @@
 <!--pages/show/data/data.wxml-->
+<view id="overlay" bindtap="handleAddKey"></view>
 <view id='main'>
-  <view id="overlay" bindtap="handleAddKey"></view>
-  <!-- 已有的数据填写框 -->
-  <view wx:for="{{loadedKeys}}" wx:key="*this"> 
-    <view class="dataKey textCenter">  {{item}}： </view> 
-    <input class="dataBar" id="{{item}}" type="digit" placeholder="请输入" 	bindblur="handleAddData"/>
-  </view>
-  <!-- 数据添加按钮 -->
-  <view class='spacing' hidden="{{startAdd}}">
-      <button id="addBtn" bindtap="handleAddKey">添加标签</button>
-  </view>
-  <!-- 添加选项框 -->
-  <view id="select" hidden="{{!startAdd}}">
-    <view wx:for="{{unloadedKeys}}" wx:key="*this"> 
-      <view id="{{item}}" class="selectItem" bindtap='handleAddKey'>  {{item}} </view>
-    </view> 
-    <input id="createBar" class="selectItem" type="text" placeholder="输入以创建新标签" 
-    value="{{waitClear}}" bindblur="handleAddKey"/>
+  <view id='upload_area'>
+    <view class='text'>添加数据</view>
+    <view class='line'></view>
+    <!-- 已有的数据填写框 -->
+    <view wx:for="{{loadedKeys}}" wx:key="*this" class='dataItem'> 
+      <view class="dataKey textCenter">  {{item}}： </view> 
+      <input class="dataBar" id="{{item}}" type="digit" placeholder="请输入" 	bindblur="handleAddData"/>
+    </view>
+    <!-- 数据添加按钮 -->
+    <view class='spacing' hidden="{{startAdd}}">
+        <button id="addBtn" bindtap="handleAddKey">添加标签</button>
+    </view>
+    <!-- 添加选项框 -->
+    <view id="select" hidden="{{!startAdd}}">
+      <view wx:for="{{unloadedKeys}}" wx:key="*this"> 
+        <view id="{{item}}" class="selectItem" bindtap='handleAddKey'>  {{item}} </view>
+      </view> 
+      <input id="createBar" class="selectItem" type="text" placeholder="输入以创建新标签" 
+      value="{{waitClear}}" bindblur="handleAddKey"/>
+    </view>
   </view>
   <view style="height: 270px;"></view>
   <!-- 提交按钮 -->

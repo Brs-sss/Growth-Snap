@@ -6,7 +6,7 @@ from urllib.parse import quote
 import os
 
 # 指定 wkhtmltopdf 可执行文件路径
-config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+config = pdfkit.configuration(wkhtmltopdf='wkhtmltopdf/bin/wkhtmltopdf.exe')
 
 render_path = 'static/template/rendered/'
 
