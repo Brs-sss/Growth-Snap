@@ -164,7 +164,7 @@ Page({
         { id: 1 , name:'富士山下'},
         { id: 2 , name:'因为爱情'},
         { id: 3 , name:'孤勇者'},
-        { id: 4 , name:'起风了'},
+        { id: 4 , name:'宝贝宝贝'},
         { id: 5 , name:'你的眼神'},
         { id: 6 , name:'黑桃A'},
         { id: 7 , name:'EverytimeWeTouch'},

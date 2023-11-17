@@ -731,4 +731,4 @@ def loadVideoThumbnail(request, openid, video_title):
 
         return FileResponse(open(video_path, 'rb'))
     except:
-        pass
+        return HttpResponse("Request failed", status=500)

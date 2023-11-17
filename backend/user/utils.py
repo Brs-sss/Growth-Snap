@@ -18,11 +18,14 @@ from PIL import Image
 import requests
 
 # 指定 wkhtmltopdf 可执行文件路径
-config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+# config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
 render_path = 'static/template/rendered/'
 
 event_image_base_path = '../../ImageBase/'
+
+fps_list = [0.55 , 0.44 , 0.72 , 0.55 , 0.55 , 0.545 ,  0.53] # 帧率 0.55 0.44 0.72 0.55 0.55 0.55 0.545  0.53
 
 
 ##########################    block 1: 用于转换tags和string
@@ -183,7 +186,7 @@ def GenerateVideo(image_path_list, audio_index, video_title, label, openid):
         os.makedirs(user_dir)
     video_dir = f'static/video/{openid}/temp.mp4'      # 输出视频的保存路径
     print(f'video_dir: {video_dir}')
-    fps = 0.5     # 帧率
+    fps = fps_list[int(audio_index)]    # 帧率 0.55 0.44 0.72 0.55 0.55 0.55 0.545  0.53
     # img_size = (640, 480)      # 图片尺寸
     # fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
     # videoWriter = cv2.VideoWriter(video_dir, fourcc, fps, img_size)
