@@ -6,7 +6,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    keys: [],
     loadedKeys: [],
     unloadedKeys: [],
     records: [],
@@ -44,8 +43,8 @@ Page({
           url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
           method:'GET',
           success:function(res){
+            console.log(res.data.keyList)
             pointer.setData({
-              keys: res.data.keyList,
               unloadedKeys: res.data.keyList
             })
           }
@@ -55,64 +54,52 @@ Page({
         console.error('获取本地储存失败', res);
       }
     })
-
     // 设置提交按钮高度
     this.updataSubmitHeight()
   },
 
   handleAddKey(e) { // 处理添加标签
-    var id = e.target.id
-    // 新建标签
-    if(id == "createBar"){
-      var newKey = e.detail.value
-      var lT = this.data.loadedKeys
-      // 已有直接退出
-      if(lT.includes(newKey)){
-        this.setData({
-          startAdd: !this.data.startAdd,
-          waitClear: ""
-        })
-      }
-      // 非空进行添加
-      else if(newKey != "") {
-        var lT = this.data.loadedKeys
-        lT.push(newKey)
-        this.setData({
-          loadedKeys: lT,
-          startAdd: !this.data.startAdd,
-          waitClear: ""
-        })
-        this.updataSubmitHeight()
-      }
-    }
-    // 添加已有key
-    else if(id != ""){
-      var uT = this.data.unloadedKeys
-      var lT = this.data.loadedKeys
-      for(var i = 0; i < uT.length; i++){
-        if(id == uT[i]){
-          lT.push(uT[i])
-          uT.splice(i, 1)
-        }
-      }
+    var id = e.currentTarget.id
+    console.log(e)
+    
+    if( id.substring(0, 3) == "key" ){
+      var index = parseInt(id.substring(4))
+      var un = this.data.unloadedKeys
+      var ld = this.data.loadedKeys
+      ld.push(un.splice(index, 1)[0]);
       this.setData({
-        unloadedKeys: uT,
-        loadedKeys: lT,
-        startAdd: !this.data.startAdd
+        unloadedKeys: un,
+        loadedKeys: ld
       })
       this.updataSubmitHeight()
     }
-    // 点击其他区域收回
-    else if(id == "overlay"){
+    if( id == "addBtn" ){
       this.setData({
-        startAdd: false,
-        waitClear: ""
+        startAdd: true
+      })
+      this.updataSubmitHeight()
+    }
+    if( id == "newTitleBar" ){
+      console.log("here")
+      var content = e.detail.value
+      console.log(this.data.loadedKeys)
+      if(content == "" || this.data.loadedKeys.includes(content)
+         || this.data.unloadedKeys.includes(content)){
+        this.setData({ startAdd: false })    
+        return           
+      }
+      var ld = this.data.loadedKeys
+      ld.push(content)
+      this.setData({
+        loadedKeys: ld,
+        startAdd: false
       })
     }
-    else {
+    if( id == "overlay" ){
       this.setData({
-        startAdd: !this.data.startAdd
+        startAdd: false
       })
+      this.updataSubmitHeight()
     }
   },
 
