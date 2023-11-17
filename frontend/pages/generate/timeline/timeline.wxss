@@ -29,15 +29,14 @@ ec-canvas {
 }
 
 .container_template{
-  width: 90vw;
-  height: 40vh;
+  width: 100vw;
+  height: 20vh;
   display: flex;
   overflow: scroll;
   flex-wrap: nowrap;
   justify-self: center;
   align-items: center; /* 标签垂直居中对齐 */
   gap: 15px; /* 标签之间的间距 */
-  margin-top: -10vh;
 }
 
 .container_template::-webkit-scrollbar {

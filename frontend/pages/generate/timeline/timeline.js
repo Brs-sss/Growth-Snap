@@ -3,17 +3,18 @@ import * as echarts from '../../../components/ec-canvas/echarts';
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
 var timeline_template = 0;
+var timelineType = [];
 
 //时间轴需要的数据
 var eventData = [];
-var graphData = [];
+var graphDataFor0 = [];
+var graphDataFor1 = [];
 var titleData = [];
-var dotData = [];
-var lineData = [];
-var imgData = {};
-var links; 
-var yAxisData = [];
-var timelineTypeGlobal = [];
+var dotDataFor2 = [];
+var lineDataFor2 = [];
+var imgDataFor2 = {};
+var linksFor0 = []; 
+var yAxisDataFor2 = [];
 
 //3号时间轴数据（还需要转化）
 const colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
@@ -352,44 +353,40 @@ function initData(){
   ];
   titleData = eventData.map(event => event.title);
   console.log(timeline_template);
-  if(timeline_template == 0){
-    //0号时间轴
-    graphData = eventData.map(event => [event.date, 1000]);
-    links = graphData.map(function (item, idx) {
-      return {
-        source: idx,
-        target: idx + 1
-      };
-    });
-  }else if(timeline_template == 1){
-    //1号时间轴
-    graphData = eventData.map(event => ({
-      value: (eventData.indexOf(event) % 2) * 20 + 10,
-      name: `${event.date} \n ${event.title}`
-    }));
-  }else if(timeline_template == 2){
-    //2号时间轴
-    eventData.forEach(function(event) {
-      var dataItem = {
-          value: eventData.indexOf(event), 
-          name:  event.title,   
-      };
-      yAxisData.push(dataItem);
-    });
-
-    dotData = [];
-    lineData = [];
-    for (let i = 0; i < eventData.length; i++) {
-      dotData.push(100+(i%2)*50);
-      lineData.push(90+(i%2)*50);
-      imgData[`index_${i}`] = {
-        height: 120,
-        width: 180,
-        backgroundColor: {
-          image: IMG[i],
-        }
-      };
-    }
+  //0号时间轴
+  graphDataFor0 = eventData.map(event => [event.date, 1000]);
+  linksFor0 = graphDataFor0.map(function (item, idx) {
+    return {
+      source: idx,
+      target: idx + 1
+    };
+  });
+  //1号时间轴
+  graphDataFor1 = eventData.map(event => ({
+    value: (eventData.indexOf(event) % 2) * 20 + 10,
+    name: `${event.date} \n ${event.title}`
+  }));
+  //2号时间轴
+  eventData.forEach(function(event) {
+    var dataItem = {
+        value: eventData.indexOf(event), 
+        name:  event.title,   
+    };
+    yAxisDataFor2.push(dataItem);
+  });
+  // 2号时间轴
+  dotDataFor2 = [];
+  lineDataFor2 = [];
+  for (let i = 0; i < eventData.length; i++) {
+    dotDataFor2.push(100+(i%2)*50);
+    lineDataFor2.push(90+(i%2)*50);
+    imgDataFor2[`index_${i}`] = {
+      height: 120,
+      width: 180,
+      backgroundColor: {
+        image: IMG[i],
+      }
+    };
   };
 }
 
@@ -408,7 +405,7 @@ function initChart(canvas, width, height, dpr) {
   canvasGlobal.setChart(chart);
  
 
-  const timelineType = [
+  timelineType = [
     //0号时间轴
     {
       tooltip: {
@@ -442,7 +439,7 @@ function initChart(canvas, width, height, dpr) {
           type: 'graph',
           edgeSymbol: ['none', 'arrow'],
           coordinateSystem: 'calendar',
-          links: links,
+          links: linksFor0,
           symbolSize: 15,
           calendarIndex: 0,
           itemStyle: {
@@ -458,7 +455,7 @@ function initChart(canvas, width, height, dpr) {
             width: 2,
             opacity: 1
           },
-          data: graphData,
+          data: graphDataFor0, // 用到的数据
           z: 20
         },
         {
@@ -484,7 +481,7 @@ function initChart(canvas, width, height, dpr) {
           left: '5%',
           sort: 'ascending',
           funnelAlign: 'left',
-          data: graphData,
+          data: graphDataFor1, //用到的数据
         },
         
       ]
@@ -501,12 +498,12 @@ function initChart(canvas, width, height, dpr) {
         inverse: true,
         position: 'right',
         type: 'category',
-        data: yAxisData,
+        data: yAxisDataFor2, // 数据
         axisLabel: {
           formatter: (params) => {
            return '【' + eventData[params].date + '】'+'\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
           },
-          rich: imgData,
+          rich: imgDataFor2, //数据
           fontSize: 16,
           color: '#6894B9',
           fontFamily: 'Arial',
@@ -534,10 +531,10 @@ function initChart(canvas, width, height, dpr) {
             ])
           },
           z: -12,
-          data: dotData
+          data: dotDataFor2 // 数据
         },
         {
-          data: lineData,
+          data: lineDataFor2, // 数据
           name: 'line',
           type: 'line',
           smooth: true,
@@ -559,7 +556,7 @@ function initChart(canvas, width, height, dpr) {
         {
           type: 'sunburst',
           center: ['50%', '30%'],
-          data: data,
+          data: data, //数据
           sort: function (a, b) {
             if (a.depth === 1) {
               return b.getValue() - a.getValue();
@@ -627,8 +624,6 @@ function initChart(canvas, width, height, dpr) {
 
   ]; 
 
-  timelineTypeGlobal = timelineType;
-
   function getVirtualData(year) {
     const date = +echarts.time.parse(year + '-01-01');
     const end = +echarts.time.parse(+year + 1 + '-01-01');
@@ -676,7 +671,6 @@ Page({
     this.setData({
       ['templates[' + index + '].selected']: true
     });
-    initData();
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,
@@ -684,9 +678,10 @@ Page({
       devicePixelRatio: dprGlobal
     });
     canvasGlobal.setChart(chart);
-    const option = timelineTypeGlobal[timeline_template];
+    const option = timelineType[timeline_template];
     chartNow.setOption(option);
     chartNow = chart;
+    console.log(yAxisDataFor2);
   },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
