@@ -21,6 +21,7 @@
     "pages/user/family/addmember/addmember",
     "pages/user/child/child",
     "pages/user/child/addchild/addchild",
+    "pages/user/child/child_detail/child_detail",
     "pages/show/event_detail/event_detail",
     "pages/show/text_detail/text_detail",
     "pages/show/data_detail/data_detail",

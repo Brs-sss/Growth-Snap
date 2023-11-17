@@ -1,0 +1,13 @@
+/* pages/user/child/child_detail/child_detail.wxss */
+
+.ec-container {
+  width: 120vw;
+  height: 40vh;
+  z-index: -1;
+  margin-left: 8vw;
+}
+
+ec-canvas {
+  width: 80%;
+  height: 80%;
+}
