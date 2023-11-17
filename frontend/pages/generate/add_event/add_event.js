@@ -160,7 +160,7 @@ Page({
     let { selectedEvents,selectedNum }=this.data;
     const tag = this.data.tags[index].info;
     const tagIndex = selectedTags.indexOf(tag);
-    const relatedEvents=this.data.tag_to_event_index_dict[tag]
+    const relatedEvents=this.data.tag_to_event_index_dict[tag];
     if (tagIndex !== -1) {
 
       relatedEvents.forEach(idx=>{
