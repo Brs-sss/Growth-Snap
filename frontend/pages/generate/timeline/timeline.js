@@ -7,7 +7,7 @@ var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
   {id: 0, backgroundColor: '#007bff67', colors:["#516b91","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#87ceeb', '#b0e0e6', '#a4d3ee', '#add8e6', '#b5e4e6']},
   {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b']},
-  {id: 2, backgroundColor: '#b27466', colors:['#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e']},
+  {id: 2, backgroundColor: '#00207466', colors:['#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e']},
 ];
 var timelineType = [];
 
@@ -703,7 +703,15 @@ Page({
       timelineType[0].visualMap.inRange.color=colorSet[colorSetIdex].colors;
     }else if(timeline_template == 1){
       timelineType[1].color=colorSet[colorSetIdex].colors;
-      timelineType[1].backgroundcolor=colorSet[colorSetIdex].backgroundColor;
+      // timelineType[1].backgroundColor=colorSet[colorSetIdex].backgroundColor;
+    }else if(timeline_template == 2){
+      timelineType[2].backgroundColor=colorSet[colorSetIdex].backgroundColor;
+      timelineType[2].yAxis.axisLabel.color=colorSet[colorSetIdex].colors[0];
+      timelineType[2].series[0].itemStyle.color=new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+        { offset: 0, color: colorSet[colorSetIdex].colors[1] },
+        { offset: 1, color: colorSet[colorSetIdex].colors[2] }
+      ]);
+      timelineType[2].series[1].lineStyle.color = colorSet[colorSetIdex].colors[1]
     }
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
