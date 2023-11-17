@@ -611,9 +611,65 @@ Page({
    * 页面的初始数据
    */
   data: {
+    keys:[
+      {info: '1111', selected: false},
+      {info: '2222', selected: false},
+      {info: '3333', selected: false},
+      {info: '4444', selected: false},
+      {info: '1', selected: false},
+      {info: '2', selected: false},
+      {info: '3', selected: false},
+      {info: '4', selected: false},
+    ],
+    selectedKeys : [],
     ec: {
       onInit: initChart
     }
+  },
+  toggleTag: function(e) {
+    const { index } = e.currentTarget.dataset;
+    const { selectedKeys } = this.data;
+    const key = this.data.keys[index].info;
+    const keyIndex = selectedKeys.indexOf(key);
+    if (keyIndex !== -1) {
+      selectedKeys.splice(keyIndex, 1); // 取消选中标签
+      this.data.keys[index].selected = false ;
+    } else {
+      selectedKeys.push(key); // 选中
+      this.data.keys[index].selected = true ;
+    }
+    console.log(this.data.keys[index].info);
+    this.setData({
+      selectedKeys: selectedKeys,
+      keys: this.data.keys,
+      ['keys[' + index + '].selected']: this.data.keys[index].selected
+    });
+  },
+  handleSave() {
+    const ecComponent = this.selectComponent('#echart');
+    // 先保存图片到临时的本地文件，然后存入系统相册
+    ecComponent.canvasToTempFilePath({
+      success: res => {
+        console.log("tempFilePath:", res.tempFilePath)
+
+        // 存入系统相册
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath || '',
+          success: res => {
+            console.log("success", res);
+            wx.showToast({
+              title: "已保存到本地",
+              icon: 'success',
+              duration: 1000,
+            })
+          },
+          fail: res => {
+            console.log("fail", res)
+          }
+        })
+      },
+      fail: res => console.log(res)
+    });
   },
 
   /**

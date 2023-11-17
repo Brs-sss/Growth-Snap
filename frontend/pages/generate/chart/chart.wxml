@@ -1,4 +1,13 @@
 <!--pages/generate/chart/chart.wxml-->
+
+<button class="submit" bindtap="handleSave">导出</button>
+
+<view class="container_tag">
+  <view wx:for="{{keys}}" wx:key="index" data-index='{{index}}' class="tag {{item.selected ? 'selected' : ''}}" bindtap="toggleTag">
+      <text class="tag-text">{{item.info}}</text>
+    </view>
+</view>
+
 <view class="ec-container">
-     <ec-canvas canvas-id="echart" ec="{{ec}}"></ec-canvas>
+     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
 </view>
