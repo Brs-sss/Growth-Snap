@@ -8,6 +8,12 @@
   </view>
 </view>
 
+<view class="container_template" id="container_color">
+  <view wx:for="{{colorSet}}" wx:key="index" data-index='{{index}}' class="color {{item.selected ?     'selected' : ''}}" bindtap="changeColor">
+    <image class="color-image" src="/image/generate/timeline/color/color_{{index}}.png"></image>
+  </view>
+</view>
+
 <view class="ec-container">
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
 </view>

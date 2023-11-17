@@ -2,7 +2,13 @@
 import * as echarts from '../../../components/ec-canvas/echarts';
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
-var timeline_template = 0;
+var timeline_template = 0; // 当前的模板id
+var colorSetIdex = 0; // 当前的色彩id
+var colorSet = [
+  {id: 0, backgroundColor: '#007bff67', colors:["#516b91","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#87ceeb', '#b0e0e6', '#a4d3ee', '#add8e6', '#b5e4e6']},
+  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b']},
+  {id: 2, backgroundColor: '#b27466', colors:['#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e']},
+];
 var timelineType = [];
 
 //时间轴需要的数据
@@ -12,7 +18,7 @@ var graphDataFor1 = [];
 var titleData = [];
 var dotDataFor2 = [];
 var lineDataFor2 = [];
-var imgDataFor2 = {};
+var imgData = {};
 var linksFor0 = []; 
 var yAxisDataFor2 = [];
 
@@ -363,8 +369,8 @@ function initData(){
   });
   //1号时间轴
   graphDataFor1 = eventData.map(event => ({
-    value: (eventData.indexOf(event) % 2) * 20 + 10,
-    name: `${event.date} \n ${event.title}`
+    value: (eventData.indexOf(event) + 1) * 20,
+    name: `${event.date} \n ${event.title} \n`+ '{' + 'index_' + eventData.indexOf(event) + '| }'
   }));
   //2号时间轴
   eventData.forEach(function(event) {
@@ -374,13 +380,12 @@ function initData(){
     };
     yAxisDataFor2.push(dataItem);
   });
-  // 2号时间轴
   dotDataFor2 = [];
   lineDataFor2 = [];
   for (let i = 0; i < eventData.length; i++) {
     dotDataFor2.push(100+(i%2)*50);
     lineDataFor2.push(90+(i%2)*50);
-    imgDataFor2[`index_${i}`] = {
+    imgData[`index_${i}`] = {
       height: 120,
       width: 180,
       backgroundColor: {
@@ -423,7 +428,8 @@ function initChart(canvas, width, height, dpr) {
         left: '30',
         top: '0',
         inRange: {
-          color: ["#516b91","#59c4e6","#a5e7f0"]
+          // color: ["#516b91","#59c4e6","#a5e7f0"]
+          color: colorSet[colorSetIdex].colors
         },
       },
       calendar: [
@@ -468,22 +474,21 @@ function initChart(canvas, width, height, dpr) {
     },
     //1号时间轴
     {
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c}%'
-      },
+      color: colorSet[colorSetIdex].colors,
       series: [
         {
           name: 'Pyramid',
           type: 'funnel',
-          width: '10%',
+          width: '20%',
           height: '80%',
           left: '5%',
           sort: 'ascending',
           funnelAlign: 'left',
           data: graphDataFor1, //用到的数据
-        },
-        
+          label:{
+            rich: imgData
+          }
+        }, 
       ]
     },
     //2号时间轴
@@ -503,7 +508,7 @@ function initChart(canvas, width, height, dpr) {
           formatter: (params) => {
            return '【' + eventData[params].date + '】'+'\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
           },
-          rich: imgDataFor2, //数据
+          rich: imgData, //数据
           fontSize: 16,
           color: '#6894B9',
           fontFamily: 'Arial',
@@ -651,10 +656,16 @@ Page({
    */
   data: {
     templates:[
-      {id: 0, selected: true},
+      {id: 0, selected: false},
       {id: 1, selected: false},
       {id: 2, selected: false},
       {id: 3, selected: false}
+    ],
+    colorSet:[
+      {id: 1},
+      {id: 2},
+      {id: 3},
+      {id: 4}
     ],
     ec: {
       onInit: initChart
@@ -682,6 +693,28 @@ Page({
     chartNow.setOption(option);
     chartNow = chart;
     console.log(yAxisDataFor2);
+  },
+  changeColor:function(e){
+    const { index } = e.currentTarget.dataset;
+    if(index == colorSetIdex)
+      return;
+    colorSetIdex = index;
+    if(timeline_template == 0){
+      timelineType[0].visualMap.inRange.color=colorSet[colorSetIdex].colors;
+    }else if(timeline_template == 1){
+      timelineType[1].color=colorSet[colorSetIdex].colors;
+      timelineType[1].backgroundcolor=colorSet[colorSetIdex].backgroundColor;
+    }
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = timelineType[timeline_template];
+    chartNow.setOption(option);
+    chartNow = chart;
   },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
@@ -715,6 +748,9 @@ Page({
   onLoad(options) {
     console.log("load");
     timeline_template = options.index;
+    this.setData({
+      ['templates[' + timeline_template + '].selected']: true
+    });
     initData();
   },
 

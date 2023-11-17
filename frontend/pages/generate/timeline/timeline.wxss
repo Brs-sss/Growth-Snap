@@ -60,7 +60,7 @@ ec-canvas {
   border: 1rpx solid #4095E5;
   border-radius: 10rpx;
   font-size: 28rpx;
-  color: #4095E5;
+  color: #4095e598;
   cursor: pointer; 
   margin-left: 2vw;
 }
@@ -74,8 +74,35 @@ ec-canvas {
 }
 
 .template.selected {
-  background-color: #007bff;
+  background-color: #007bff67;
   color: #fff;
 }
 
+#container_color{
+  height: 8vh;
+  margin-top: -2vh;
+  margin-bottom: -2vh;
+}
 
+.color {
+  width: 8vh;
+  height: 5vh;
+  padding: 8rpx 16rpx;
+  border-radius: 5vh;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  cursor: pointer; 
+}
+
+.color-image {
+  width: 8vh;
+  height: 5vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.template.selected {
+  background-color: #007bff67;
+  color: #fff;
+}
