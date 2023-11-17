@@ -61,6 +61,7 @@ ec-canvas {
   border-radius: 10rpx;
   font-size: 28rpx;
   color: #4095e598;
+  color: #143e64;
   cursor: pointer; 
   margin-left: 2vw;
 }

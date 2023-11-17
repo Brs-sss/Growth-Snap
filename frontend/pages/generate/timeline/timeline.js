@@ -5,9 +5,10 @@ var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
 var timeline_template = 0; // 当前的模板id
 var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
-  {id: 0, backgroundColor: '#007bff67', colors:["#516b91","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#87ceeb', '#b0e0e6', '#a4d3ee', '#add8e6', '#b5e4e6']},
-  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b']},
-  {id: 2, backgroundColor: '#00207466', colors:['#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e']},
+  {id: 0, backgroundColor: '#143e64', colors:["#87ceeb",'#164a7a98',"#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#bcd4e6']},
+  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#b9612791', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b']},
+  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#23007471', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e']},
+  {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#084963a8', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968']},
 ];
 var timelineType = [];
 
@@ -23,7 +24,7 @@ var linksFor0 = [];
 var yAxisDataFor2 = [];
 
 //3号时间轴数据（还需要转化）
-const colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
+const colors = ['#87ceeb', '#4095E5','#4095E5','#5c9cc2', '#87ceeb', '#add8e6', '#bcd4e6'];
 const bgColor = '#2E2733';
 const itemStyle = {
   star5: {
@@ -360,7 +361,7 @@ function initData(){
   titleData = eventData.map(event => event.title);
   console.log(timeline_template);
   //0号时间轴
-  graphDataFor0 = eventData.map(event => [event.date, 1000]);
+  graphDataFor0 = eventData.map(event => [event.date, 1000, event.title]);
   linksFor0 = graphDataFor0.map(function (item, idx) {
     return {
       source: idx,
@@ -413,6 +414,7 @@ function initChart(canvas, width, height, dpr) {
   timelineType = [
     //0号时间轴
     {
+      backgroundColor: colorSet[colorSetIdex].backgroundColor,
       tooltip: {
         position: 'top',
         formatter: function (p) {
@@ -462,7 +464,19 @@ function initChart(canvas, width, height, dpr) {
             opacity: 1
           },
           data: graphDataFor0, // 用到的数据
-          z: 20
+          z: 20,
+          label: {
+            show: true,
+            position: 'right', // 设置标注文字位置为右侧
+            color: colorSet[colorSetIdex].colors[0], // 设置标注文字颜色
+            fontSize: 16, // 设置标注文字字体大小
+            backgroundColor: colorSet[colorSetIdex].colors[1],
+            borderRadius: 5,
+            formatter: function (params) {
+              return params.data[2] + '{' + 'index_' + params.index + '| }'; // 显示节点的第二个数据（在这里是 y 值）作为标注文字
+            },
+            rich: imgData,
+          }
         },
         {
           type: 'heatmap',
@@ -474,6 +488,7 @@ function initChart(canvas, width, height, dpr) {
     },
     //1号时间轴
     {
+      backgroundColor: colorSet[colorSetIdex].backgroundColor,
       color: colorSet[colorSetIdex].colors,
       series: [
         {
@@ -486,7 +501,12 @@ function initChart(canvas, width, height, dpr) {
           funnelAlign: 'left',
           data: graphDataFor1, //用到的数据
           label:{
-            rich: imgData
+            rich: imgData,
+            fontSize: 16
+          },
+          itemStyle: {
+            borderColor: 'transparent', // 将边框颜色设置为透明
+            borderWidth: 0 // 设置边框宽度为0
           }
         }, 
       ]
@@ -555,8 +575,8 @@ function initChart(canvas, width, height, dpr) {
     },
     //3号时间轴
     {
-      backgroundColor: bgColor,
-      color: colors,
+      backgroundColor: colorSet[colorSetIdex].backgroundColor,
+      color: colorSet[colorSetIdex].colors,
       series: [
         {
           type: 'sunburst',
@@ -595,13 +615,13 @@ function initChart(canvas, width, height, dpr) {
               r: 140,
               itemStyle: {
                 shadowBlur: 2,
-                shadowColor: colors[2],
+                shadowColor: colorSet[colorSetIdex].colors[2],
                 color: 'transparent'
               },
               label: {
                 rotate: 'tangential',
                 fontSize: 5,
-                color: colors[0]
+                color: colorSet[colorSetIdex].colors[0]
               }
             },
             {
@@ -609,7 +629,7 @@ function initChart(canvas, width, height, dpr) {
               r: 145,
               itemStyle: {
                 shadowBlur: 80,
-                shadowColor: colors[0]
+                shadowColor: colorSet[colorSetIdex].colors[0]
               },
               label: {
                 position: 'outside',
@@ -699,19 +719,26 @@ Page({
     if(index == colorSetIdex)
       return;
     colorSetIdex = index;
+    timelineType[timeline_template].backgroundColor=colorSet[colorSetIdex].backgroundColor;
     if(timeline_template == 0){
-      timelineType[0].visualMap.inRange.color=colorSet[colorSetIdex].colors;
+      timelineType[0].visualMap.inRange.color = colorSet[colorSetIdex].colors;
+      timelineType[0].series[0].label.color = colorSet[colorSetIdex].colors[0];
+      timelineType[0].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[1];
     }else if(timeline_template == 1){
       timelineType[1].color=colorSet[colorSetIdex].colors;
-      // timelineType[1].backgroundColor=colorSet[colorSetIdex].backgroundColor;
     }else if(timeline_template == 2){
-      timelineType[2].backgroundColor=colorSet[colorSetIdex].backgroundColor;
       timelineType[2].yAxis.axisLabel.color=colorSet[colorSetIdex].colors[0];
       timelineType[2].series[0].itemStyle.color=new echarts.graphic.LinearGradient(0, 0, 1, 0, [
         { offset: 0, color: colorSet[colorSetIdex].colors[1] },
         { offset: 1, color: colorSet[colorSetIdex].colors[2] }
       ]);
       timelineType[2].series[1].lineStyle.color = colorSet[colorSetIdex].colors[1]
+    }else if(timeline_template == 3){
+      timelineType[3].color = colorSet[colorSetIdex].colors;
+      timelineType[3].series[0].itemStyle.borderColor = colorSet[colorSetIdex].backgroundColor;
+      timelineType[3].series[0].levels[3].itemStyle.shadowColor =  colorSet[colorSetIdex].colors[2];
+      timelineType[3].series[0].levels[3].label.color =  colorSet[colorSetIdex].colors[0];
+      timelineType[3].series[0].levels[4].itemStyle.shadowColor =  colorSet[colorSetIdex].colors[2];
     }
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
