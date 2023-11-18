@@ -61,7 +61,24 @@ Page({
       url: '/pages/user/child/child',
     })
   },
-  
+  goToPage_setting() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/setting/setting',
+    })
+  },
+  goToPage_about_us() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/about_us/about_us',
+    })
+  },
+  goToPage_comments() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/comments/comments',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
