@@ -1,4 +1,5 @@
 // pages/generate/chart/chart.js
+const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
@@ -6,12 +7,63 @@ var chart_template = 0;
 var chartType = [];
 
 // 1号chart的数据
-const data = [["2000-06-05", 116], ["2000-06-06", 129], ["2000-06-07", 135], ["2000-06-08", 86], ["2000-06-09", 73], ["2000-06-10", 85], ["2000-06-11", 73], ["2000-06-12", 68], ["2000-06-13", 92], ["2000-06-14", 130], ["2000-06-15", 245], ["2000-06-16", 139], ["2000-06-17", 115], ["2000-06-18", 111], ["2000-06-19", 309], ["2000-06-20", 206], ["2000-06-21", 137], ["2000-06-22", 128], ["2000-06-23", 85], ["2000-06-24", 94], ["2000-06-25", 71], ["2000-06-26", 106], ["2000-06-27", 84], ["2000-06-28", 93], ["2000-06-29", 85], ["2000-06-30", 73], ["2000-07-01", 83], ["2000-07-02", 125], ["2000-07-03", 107], ["2000-07-04", 82], ["2000-07-05", 44], ["2000-07-06", 72], ["2000-07-07", 106], ["2000-07-08", 107], ["2000-07-09", 66], ["2000-07-10", 91], ["2000-07-11", 92], ["2000-07-12", 113], ["2000-07-13", 107], ["2000-07-14", 131], ["2000-07-15", 111], ["2000-07-16", 64], ["2000-07-17", 69], ["2000-07-18", 88], ["2000-07-19", 77], ["2000-07-20", 83], ["2000-07-21", 111], ["2000-07-22", 57], ["2000-07-23", 55], ["2000-07-24", 60]];
+const data = [
+  {"date": "2000-06-05", "value": 116},
+  {"date": "2000-06-06", "value": 129},
+  {"date": "2000-06-07", "value": 135},
+  {"date": "2000-06-08", "value": 86},
+  {"date": "2000-06-09", "value": 73},
+  {"date": "2000-06-10", "value": 85},
+  {"date": "2000-06-11", "value": 73},
+  {"date": "2000-06-12", "value": 68},
+  {"date": "2000-06-13", "value": 92},
+  {"date": "2000-06-14", "value": 130},
+  {"date": "2000-06-15", "value": 245},
+  {"date": "2000-06-16", "value": 139},
+  {"date": "2000-06-17", "value": 115},
+  {"date": "2000-06-18", "value": 111},
+  {"date": "2000-06-19", "value": 309},
+  {"date": "2000-06-20", "value": 206},
+  {"date": "2000-06-21", "value": 137},
+  {"date": "2000-06-22", "value": 128},
+  {"date": "2000-06-23", "value": 85},
+  {"date": "2000-06-24", "value": 94},
+  {"date": "2000-06-25", "value": 71},
+  {"date": "2000-06-26", "value": 106},
+  {"date": "2000-06-27", "value": 84},
+  {"date": "2000-06-28", "value": 93},
+  {"date": "2000-06-29", "value": 85},
+  {"date": "2000-06-30", "value": 73},
+  {"date": "2000-07-01", "value": 83},
+  {"date": "2000-07-02", "value": 125},
+  {"date": "2000-07-03", "value": 107},
+  {"date": "2000-07-04", "value": 82},
+  {"date": "2000-07-05", "value": 44},
+  {"date": "2000-07-06", "value": 72},
+  {"date": "2000-07-07", "value": 106},
+  {"date": "2000-07-08", "value": 107},
+  {"date": "2000-07-09", "value": 66},
+  {"date": "2000-07-10", "value": 91},
+  {"date": "2000-07-11", "value": 92},
+  {"date": "2000-07-12", "value": 113},
+  {"date": "2000-07-13", "value": 107},
+  {"date": "2000-07-14", "value": 131},
+  {"date": "2000-07-15", "value": 111},
+  {"date": "2000-07-16", "value": 64},
+  {"date": "2000-07-17", "value": 69},
+  {"date": "2000-07-18", "value": 88},
+  {"date": "2000-07-19", "value": 77},
+  {"date": "2000-07-20", "value": 83},
+  {"date": "2000-07-21", "value": 111},
+  {"date": "2000-07-22", "value": 57},
+  {"date": "2000-07-23", "value": 55},
+  {"date": "2000-07-24", "value": 60}
+];
 const dateList = data.map(function (item) {
-  return item[0];
+  return item.date;
 });
 const valueList = data.map(function (item) {
-  return item[1];
+  return item.value;
 });
 
 //2号chart的数据
@@ -625,16 +677,7 @@ Page({
       {id: 2, selected: false},
       {id: 3, selected: false}
     ],
-    keys:[
-      {info: '1111', selected: false},
-      {info: '2222', selected: false},
-      {info: '3333', selected: false},
-      {info: '4444', selected: false},
-      {info: '1', selected: false},
-      {info: '2', selected: false},
-      {info: '3', selected: false},
-      {info: '4', selected: false},
-    ],
+    keys:[],
     selectedKeys : [],
     colorSet:[
       {id: 1},
@@ -646,7 +689,8 @@ Page({
     ],
     ec: {
       onInit: initChart
-    }
+    },
+    host_: `${app.globalData.localUrl}`,
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -721,6 +765,29 @@ Page({
    */
   onLoad(options) {
     chart_template = options.index;
+    var pointer = this
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        var openid = res.data
+        wx.request({
+          url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
+          method:'GET',
+          success:function(res){
+            console.log(res.data.keyList);
+            const keys = res.data.keyList.map((key) => {
+              return { info: key, selected: false };
+            });
+            pointer.setData({
+              keys: keys
+            })
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
+    }),
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
