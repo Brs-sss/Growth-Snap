@@ -1,22 +1,11 @@
 /* pages/register/register.wxss */
 .whole-page-grid{
-  display: grid;
-  grid-template-rows: 10vh 2fr 15vh 10vh 3fr;
-  grid-template-columns: 1fr;
-  grid-template-areas:
-  "A"
-  "B"
-  "C"
-  "D"
-  "E";
-  height:100vh;
-  justify-content: stretch;
-  align-items: stretch; 
+
 }
 
 .overall-outfit{
-  padding: 20rpx;
   width: 100%;
+  padding: 20rpx;
 }
 
 .container_1 {
@@ -24,7 +13,6 @@
   font-size: 14px;
   display: flex;
   align-items: center;
-
 }
 
 #title-box1{
@@ -57,7 +45,7 @@
   font-size: 14px;
   color: blue;
   text-decoration: underline;
-  float: left;
+  margin-left: 10%;
 }
 .cancel {
   font-size: 14px;
@@ -90,14 +78,14 @@
 }
 
 
-/* #image-grid-container{
+#image-grid-container{
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr 1fr;
   width: 100%;
   height:30vw;
-  border: 1px solid #000;
-}  */
+  margin-left: 10%;
+} 
 
 .image-grid-item{
   /* border: 1px solid #000; */
