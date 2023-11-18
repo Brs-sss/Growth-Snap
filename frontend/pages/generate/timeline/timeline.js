@@ -5,10 +5,10 @@ var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
 var timeline_template = 0; // 当前的模板id
 var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
-  {id: 0, backgroundColor: '#143e64', colors:["#87ceeb",'#164a7a98',"#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#bcd4e6']},
-  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#b9612791', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b']},
-  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#23007471', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e']},
-  {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#084963a8', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968']},
+  {id: 0, backgroundColor: '#143e64', colors:["#87ceeb","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#164a7a98']},
+  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b', '#b9612791']},
+  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471']},
+  {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#084963a8', ]},
 ];
 var timelineType = [];
 
@@ -399,7 +399,7 @@ function initData(){
 
 function initChart(canvas, width, height, dpr) {
   console.log("init");
-  heightGlobal = 1200;
+  heightGlobal = height;
   widthGLobal = width;
   canvasGlobal = canvas;
   dprGlobal = dpr;
@@ -470,7 +470,7 @@ function initChart(canvas, width, height, dpr) {
             position: 'right', // 设置标注文字位置为右侧
             color: colorSet[colorSetIdex].colors[0], // 设置标注文字颜色
             fontSize: 16, // 设置标注文字字体大小
-            backgroundColor: colorSet[colorSetIdex].colors[1],
+            backgroundColor: colorSet[colorSetIdex].colors[9],
             borderRadius: 5,
             formatter: function (params) {
               return params.data[2] + '{' + 'index_' + params.index + '| }'; // 显示节点的第二个数据（在这里是 y 值）作为标注文字
@@ -723,14 +723,14 @@ Page({
     if(timeline_template == 0){
       timelineType[0].visualMap.inRange.color = colorSet[colorSetIdex].colors;
       timelineType[0].series[0].label.color = colorSet[colorSetIdex].colors[0];
-      timelineType[0].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[1];
+      timelineType[0].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[9];
     }else if(timeline_template == 1){
       timelineType[1].color=colorSet[colorSetIdex].colors;
     }else if(timeline_template == 2){
       timelineType[2].yAxis.axisLabel.color=colorSet[colorSetIdex].colors[0];
       timelineType[2].series[0].itemStyle.color=new echarts.graphic.LinearGradient(0, 0, 1, 0, [
         { offset: 0, color: colorSet[colorSetIdex].colors[1] },
-        { offset: 1, color: colorSet[colorSetIdex].colors[2] }
+        { offset: 1, color: colorSet[colorSetIdex].colors[9] }
       ]);
       timelineType[2].series[1].lineStyle.color = colorSet[colorSetIdex].colors[1]
     }else if(timeline_template == 3){
