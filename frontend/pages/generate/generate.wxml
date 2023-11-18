@@ -116,7 +116,7 @@
     <view class="timeline-list">
       <block wx:for="{{chartList}}" wx:key="index">
         <view class="timeline-item"  data-category="timeline" data-index="{{index}}" bindtap="navigateTochart">
-          <image class="timeline-image" src="/image/generate/timeline/timeline_{{index}}.png"></image>
+          <image class="timeline-image" src="/image/generate/chart/chart_{{index}}.png"></image>
         </view>
       </block>
     </view>

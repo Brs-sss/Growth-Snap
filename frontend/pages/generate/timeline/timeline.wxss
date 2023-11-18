@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 150vh;
+  height: 200vh;
   overflow: scroll; /* 允许内容滚动 */
   z-index: -1;
 }
@@ -61,6 +61,7 @@ ec-canvas {
   border-radius: 10rpx;
   font-size: 28rpx;
   color: #4095e598;
+  color: #143e64;
   cursor: pointer; 
   margin-left: 2vw;
 }
