@@ -27,7 +27,7 @@ function LoadShowPage(that){
       let openid=res.data
       wx.request({
         // 修改为搜索的API，需要后端返回针对关键字搜索的结果：事件/文字列表
-        url: that.data.host_+'user/api/show/all'+'?openid='+openid,
+        url: that.data.host_+'user/api/show/search'+'?openid='+openid+'&searchKey='+encodeURIComponent(that.data.searchKey),
         method:'GET',
         success:function(res){
             that.setData({
@@ -57,118 +57,7 @@ Page({
     popupVisible: false, // 控制浮窗气泡显示隐藏的状态
     blog_cards_list:[],  //所有卡片BlogCard的list
     host_: `${app.globalData.localUrl}`,
-    inputShowed: false, // 搜索提示状态
-    inputVal: '', // 搜索内容
-    searchHint: []
-  },
-  showInput() {
-    this.setData({
-      inputShowed: true,
-    });
-  },
-  hideInput() {
-    this.setData({
-      inputVal: '',
-      inputShowed: false,
-    });
-  },
-  clearInput() {
-    this.setData({
-      inputVal: '',
-    });
-  },
-  inputTyping(e) {
-    this.setData({
-      inputVal: e.detail.value,
-    });
-    console.log(this.data.blog_cards_list);
-    const eventList = this.data.blog_cards_list;
-    const inputVal = e.detail.value;
-    console.log(inputVal)
-    const searchResults = [];
-    var buffer = '';
-    eventList.forEach(item => {
-      // Check if inputVal is a substring of title or content
-      buffer = fuzzySearch(item.title, inputVal); 
-      if (buffer!='') {
-        if(item.type=='event'){
-          searchResults.push({title: buffer, type: item.type, id: item.event_id});
-        }else if(item.type=='text'){
-          searchResults.push({title: buffer, type: item.type, id: item.text_id});
-        }
-      }else{
-        buffer = fuzzySearch(item.content, inputVal); 
-        if (buffer!=''){
-          if(item.type=='event'){
-            searchResults.push({title: buffer, type: item.type, id: item.event_id});
-          }else if(item.type=='text'){
-            searchResults.push({title: buffer, type: item.type, id: item.text_id});
-          }
-        }
-      }
-    });
-    console.log(searchResults);
-    this.setData({
-      searchHint: searchResults
-    })
-  },
-  handlesearch(e){
-    // console.log(this.data.blog_cards_list);
-    // const eventList = this.data.blog_cards_list;
-    // const inputVal = e.detail.value;
-    // console.log(inputVal)
-    
-    // const searchResults = eventList.filter(item => {
-    //   const titleMatch = fuzzySearch(item.title, inputVal);
-    //   const contentMatch = fuzzySearch(item.content, inputVal);
-    //   return titleMatch || contentMatch;
-    // });
-    // console.log(searchResults);
-    // this.setData({
-    //   searchHint: searchResults
-    // })
-  },
-  goToPage_search_detail(e) {
-    const { index } = e.currentTarget.dataset;
-    const id = this.data.searchHint[index].id;
-    const type = this.data.searchHint[index].type;
-    if(type == 'event'){
-      wx.navigateTo({
-        url: `/pages/show/event_detail/event_detail?event_id=${id}`,
-      })
-    }else if(type == 'text'){
-      wx.navigateTo({
-        url: `/pages/show/text_detail/text_detail?text_id=${id}`,
-      })
-    }
-  },
-  showPopup() {
-    this.setData({
-      popupVisible: true
-    });
-  },
-  hidePopup() {
-    this.setData({
-      popupVisible: false
-    });
-  },
-  goToPage_event() {
-    // TODO: 跳转到对应页面的处理逻辑
-    wx.navigateTo({
-      url: '/pages/show/event/event',
-    })
-  },
-  goToPage_text() {
-    // TODO: 跳转到对应页面的处理逻辑
-    wx.navigateTo({
-      url: '/pages/show/text/text',
-    })
-  },
-  goToPage_data() {
-    // TODO: 跳转到对应页面的处理逻辑
-    wx.navigateTo({
-      url: '/pages/show/data/data',
-    })
+    searchKey: '', // 搜索关键词
   },
   showDetail(e){  //进入详细展示页面
     const { index,type } = e.currentTarget.dataset;
@@ -198,6 +87,9 @@ Page({
   onLoad(options) {
     const searchKey = options.searchKey;
     console.log(searchKey);
+    this.setData({
+      searchKey: searchKey
+    })
     var that = this;
     LoadShowPage(that);
   },
