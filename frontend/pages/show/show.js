@@ -119,10 +119,8 @@ Page({
     this.setData({
       inputVal: e.detail.value,
     });
-    console.log(this.data.blog_cards_list);
     const eventList = this.data.blog_cards_list;
     const inputVal = e.detail.value;
-    console.log(inputVal)
     const searchResults = [];
     var buffer = '';
     eventList.forEach(item => {
@@ -151,20 +149,9 @@ Page({
     })
   },
   handlesearch(e){
-    // console.log(this.data.blog_cards_list);
-    // const eventList = this.data.blog_cards_list;
-    // const inputVal = e.detail.value;
-    // console.log(inputVal)
-    
-    // const searchResults = eventList.filter(item => {
-    //   const titleMatch = fuzzySearch(item.title, inputVal);
-    //   const contentMatch = fuzzySearch(item.content, inputVal);
-    //   return titleMatch || contentMatch;
-    // });
-    // console.log(searchResults);
-    // this.setData({
-    //   searchHint: searchResults
-    // })
+    wx.navigateTo({
+      url: '/pages/show/seach_result/search_result'+'?searchKey='+encodeURIComponent(this.data.inputVal),
+    })
   },
   goToPage_search_detail(e) {
     const { index } = e.currentTarget.dataset;

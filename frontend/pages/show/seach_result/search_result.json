@@ -1,3 +1,7 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "event-card":"/components/event-card/event-card",
+    "text-card":"/components/text-card/text-card",
+    "data-card":"/components/data-card/data-card"
+  }
 }
