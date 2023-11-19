@@ -16,6 +16,27 @@ class BlogCard{
 
 }
 
+//简易模糊搜索
+function fuzzySearch(text, query) {
+  // 将搜索字符串转换为小写，并去除空格
+  const sanitizedText = text.toLowerCase().replace(/\s/g, '');
+  const sanitizedQuery = query.toLowerCase().replace(/\s/g, '');
+
+  //逐个比较搜索字符串的字符是否按顺序在文本中出现，如果出现了，就认为找到了匹配项
+  let queryIndex = 0;
+  for (let i = 0; i < sanitizedText.length; i++) {
+      if (sanitizedText[i] === sanitizedQuery[queryIndex]) {
+          queryIndex++;
+          if (queryIndex === sanitizedQuery.length) {
+              return true;
+          }
+      }
+  }
+
+  return false;
+}
+
+
 /* 与后端联系，获取主页的内容*/
 function LoadShowPage(that){
   // 获取存储的openid
@@ -55,6 +76,58 @@ Page({
     popupVisible: false, // 控制浮窗气泡显示隐藏的状态
     blog_cards_list:[],  //所有卡片BlogCard的list
     host_: `${app.globalData.localUrl}`,
+    inputShowed: false, // 搜索提示状态
+    inputVal: '', // 搜索内容
+    searchHint: []
+  },
+  showInput() {
+    this.setData({
+      inputShowed: true,
+    });
+  },
+  hideInput() {
+    this.setData({
+      inputVal: '',
+      inputShowed: false,
+    });
+  },
+  clearInput() {
+    this.setData({
+      inputVal: '',
+    });
+  },
+  inputTyping(e) {
+    this.setData({
+      inputVal: e.detail.value,
+    });
+    console.log(this.data.blog_cards_list);
+    const eventList = this.data.blog_cards_list;
+    const inputVal = e.detail.value;
+    console.log(inputVal)
+    const searchResults = eventList.filter(item => {
+      const titleMatch = fuzzySearch(item.title, inputVal);
+      const contentMatch = fuzzySearch(item.content, inputVal);
+      return titleMatch || contentMatch;
+    });
+    console.log(searchResults);
+    this.setData({
+      searchHint: searchResults
+    })
+  },
+  handlesearch(e){
+    console.log(this.data.blog_cards_list);
+    const eventList = this.data.blog_cards_list;
+    const inputVal = e.detail.value;
+    console.log(inputVal)
+    const searchResults = eventList.filter(item => {
+      const titleMatch = fuzzySearch(item.title, inputVal);
+      const contentMatch = fuzzySearch(item.content, inputVal);
+      return titleMatch || contentMatch;
+    });
+    console.log(searchResults);
+    this.setData({
+      searchHint: searchResults
+    })
   },
   showPopup() {
     this.setData({
