@@ -28,6 +28,7 @@
     "pages/show/event_detail/event_detail",
     "pages/show/text_detail/text_detail",
     "pages/show/data_detail/data_detail",
+    "pages/show/seach_result/search_result",
     "pages/generate/preview/preview",
     "pages/generate/preview/preview_video/preview_video",
     "pages/generate/reselect/diarytemplate/diarytemplate"

@@ -13,7 +13,6 @@
         <view class="weui-search-bar__box">
           <i class="weui-icon-search"></i>
           <input aria-controls="searchResult" type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" 
-          bindblur="hideInput"
           bindconfirm="handlesearch"
           />
           <view aria-role="button" aria-label="清除" class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput"></view>
@@ -26,7 +25,7 @@
       <view aria-role="button" class="weui-search-bar__cancel-btn" bindtap="hideInput">取消</view>
 		</view>
 		<view aria-role="listbox" id="searchResult" class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
-      <view wx:for="{{searchHint}}" wx:key="index" data-index='{{index}}'>
+      <view wx:for="{{searchHint}}" wx:key="index" data-index='{{index}}' bindtap='goToPage_search_detail'>
         <view role="option" class="weui-cell weui-cell_active weui-cell_access">
           <view class="weui-cell__bd weui-cell_primary">
             <view>{{item.title}}</view>

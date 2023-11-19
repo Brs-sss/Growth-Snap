@@ -136,7 +136,6 @@
 
 .container_tag{
   margin-top: 5%;
-  margin-right: 60%;
   display: flex;
   flex-wrap: wrap;
   align-items: center; /* 标签垂直居中对齐 */
@@ -216,8 +215,6 @@
   align-items: center; /* 水平居中 */
 }
 
-#button-box{
-}
 
 .submit{
   width: 100%;

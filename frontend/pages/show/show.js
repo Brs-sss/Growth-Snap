@@ -24,16 +24,35 @@ function fuzzySearch(text, query) {
 
   //逐个比较搜索字符串的字符是否按顺序在文本中出现，如果出现了，就认为找到了匹配项
   let queryIndex = 0;
+
+  //记录出现的位置
+  let queryPos = [-1];
+  let res = '';
+
   for (let i = 0; i < sanitizedText.length; i++) {
       if (sanitizedText[i] === sanitizedQuery[queryIndex]) {
           queryIndex++;
+          queryPos.push(i);
           if (queryIndex === sanitizedQuery.length) {
-              return true;
+            queryPos.push(sanitizedText.length)
+              for(let j = 1; j < queryPos.length; j++){
+                if((queryPos[j] - queryPos[j - 1]) > 10){
+                  if(j == 1){
+                    res = res + '...' + sanitizedText.substring(queryPos[j] - 5, queryPos[j]); 
+                  }else if(j == queryPos.length - 1){
+                    res = res + sanitizedText.substring(queryPos[j - 1], queryPos[j - 1] + 5) + '...'; 
+                  }else{
+                    res = res + sanitizedText.substring(queryPos[j - 1], queryPos[j - 1] + 5) + '...' + sanitizedText.substring(queryPos[j] - 5, queryPos[j]); 
+                  }
+                }else{
+                  res = res + sanitizedText.substring(queryPos[j - 1], queryPos[j]);
+                }
+              }
+              return res;
           }
       }
   }
-
-  return false;
+  return '';
 }
 
 
@@ -104,10 +123,27 @@ Page({
     const eventList = this.data.blog_cards_list;
     const inputVal = e.detail.value;
     console.log(inputVal)
-    const searchResults = eventList.filter(item => {
-      const titleMatch = fuzzySearch(item.title, inputVal);
-      const contentMatch = fuzzySearch(item.content, inputVal);
-      return titleMatch || contentMatch;
+    const searchResults = [];
+    var buffer = '';
+    eventList.forEach(item => {
+      // Check if inputVal is a substring of title or content
+      buffer = fuzzySearch(item.title, inputVal); 
+      if (buffer!='') {
+        if(item.type=='event'){
+          searchResults.push({title: buffer, type: item.type, id: item.event_id});
+        }else if(item.type=='text'){
+          searchResults.push({title: buffer, type: item.type, id: item.text_id});
+        }
+      }else{
+        buffer = fuzzySearch(item.content, inputVal); 
+        if (buffer!=''){
+          if(item.type=='event'){
+            searchResults.push({title: buffer, type: item.type, id: item.event_id});
+          }else if(item.type=='text'){
+            searchResults.push({title: buffer, type: item.type, id: item.text_id});
+          }
+        }
+      }
     });
     console.log(searchResults);
     this.setData({
@@ -115,19 +151,34 @@ Page({
     })
   },
   handlesearch(e){
-    console.log(this.data.blog_cards_list);
-    const eventList = this.data.blog_cards_list;
-    const inputVal = e.detail.value;
-    console.log(inputVal)
-    const searchResults = eventList.filter(item => {
-      const titleMatch = fuzzySearch(item.title, inputVal);
-      const contentMatch = fuzzySearch(item.content, inputVal);
-      return titleMatch || contentMatch;
-    });
-    console.log(searchResults);
-    this.setData({
-      searchHint: searchResults
-    })
+    // console.log(this.data.blog_cards_list);
+    // const eventList = this.data.blog_cards_list;
+    // const inputVal = e.detail.value;
+    // console.log(inputVal)
+    
+    // const searchResults = eventList.filter(item => {
+    //   const titleMatch = fuzzySearch(item.title, inputVal);
+    //   const contentMatch = fuzzySearch(item.content, inputVal);
+    //   return titleMatch || contentMatch;
+    // });
+    // console.log(searchResults);
+    // this.setData({
+    //   searchHint: searchResults
+    // })
+  },
+  goToPage_search_detail(e) {
+    const { index } = e.currentTarget.dataset;
+    const id = this.data.searchHint[index].id;
+    const type = this.data.searchHint[index].type;
+    if(type == 'event'){
+      wx.navigateTo({
+        url: `/pages/show/event_detail/event_detail?event_id=${id}`,
+      })
+    }else if(type == 'text'){
+      wx.navigateTo({
+        url: `/pages/show/text_detail/text_detail?text_id=${id}`,
+      })
+    }
   },
   showPopup() {
     this.setData({

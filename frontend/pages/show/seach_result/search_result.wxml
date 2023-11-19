@@ -1,0 +1,2 @@
+<!--pages/show/seach_result/search_result.wxml-->
+<text>展示{{eventId}}</text>
