@@ -215,6 +215,7 @@
 }
 
 .weui-form__control-area {
+  width: 100vw;
   position: relative;
   margin: 1vh;
   top: -15vh

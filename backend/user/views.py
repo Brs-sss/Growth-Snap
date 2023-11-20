@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, FileResponse
+from django.db.models import Q
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
@@ -12,6 +13,7 @@ import hashlib
 import os
 import datetime
 import shutil
+from urllib.parse import unquote
 
 # import fitz
 
@@ -295,6 +297,59 @@ def loadShowPage(request):
             blocks_list.append(block_item)
 
         # print(blocks_list)
+        return JsonResponse({'blocks_list': blocks_list})
+
+# 加载搜索结果页面
+def loadSearchPage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        search_key = unquote(request.GET.get('searchKey'))
+        types = request.GET.get('types', "etd")  # Default value is "event&text&data"
+        used_by_add_event_page = (request.GET.get('tags', "false") == "true")
+        now_user = User.objects.get(openid=openid)
+
+         # Fuzzy search in title and content for Event and Text
+        event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
+        text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
+
+
+        now_user_blocks_events = Event.objects.filter(user=now_user).filter(event_filter).order_by("-date", "-time")
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user=now_user).filter(text_filter).order_by("-date", "-time")
+        # 暂时不支持data的搜索
+        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_text),
+                                 key=lambda x: (x.date, x.time), reverse=True)
+
+        blocks_list = []
+        for db_block in now_user_blocks:
+            block_item = {}
+            block_item['type'] = db_block.record_type
+            block_item['title'] = db_block.title
+
+            if used_by_add_event_page:
+                block_item['tags'] = StringToList(db_block.tags)
+            else:
+                block_item['content'] = db_block.content
+                block_item['author'] = db_block.user.label
+                date_string = str(db_block.date)
+                block_item['month'] = str(int(date_string[5:7])) + "月"
+                block_item['year'] = date_string[0:4]
+                block_item['day'] = date_string[8:10]
+
+            if db_block.record_type == 'event':
+                block_item['event_id'] = db_block.event_id
+                image_path = 'static/ImageBase/' + db_block.event_id
+                image_list = sorted(os.listdir(image_path))
+                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+
+            if db_block.record_type == 'data':
+                block_item['data_id'] = db_block.data_id
+
+            elif db_block.record_type == 'text':
+                block_item['text_id'] = db_block.text_id
+
+            blocks_list.append(block_item)
+
         return JsonResponse({'blocks_list': blocks_list})
 
 

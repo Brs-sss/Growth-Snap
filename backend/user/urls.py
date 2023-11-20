@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/getSHA256', views.getSHA256, name='getsha256'),
     path('api/show/event/upload_image', views.addEventImage, name='upload_image'),
     path('api/show/all', views.loadShowPage, name='load_showpage'),
+    path('api/show/search', views.loadSearchPage, name='load_searchpage'),
     path('api/plan/main', views.loadPlanPage, name='load_plan_page'),
     path('api/plan/all', views.loadAllPlanPage, name='load_all_plan_page'),
     path('api/plan/certain_plan', views.loadCertainPlan, name='load_certain_plan'),
