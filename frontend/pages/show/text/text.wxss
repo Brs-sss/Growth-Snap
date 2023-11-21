@@ -15,3 +15,14 @@
   justify-content: stretch;
   align-items: stretch; 
 }
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(99, 100, 100);
+}
+.weui-input {
+  font-size: 2vh;
+}
