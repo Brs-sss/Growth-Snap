@@ -71,6 +71,7 @@ Page({
         })
         return;
       }
+      wx.setStorageSync('audioSelected', this.data.audioSelected)
       wx.navigateTo({
         url: '/pages/generate/add_event/add_event?category=video' + "&index=" + encodeURIComponent(this.data.audioSelected)+"&title="+this.data.videoTitle,
       })

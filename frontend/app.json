@@ -27,7 +27,8 @@
     "pages/show/data_detail/data_detail",
     "pages/generate/preview/preview",
     "pages/generate/preview/preview_video/preview_video",
-    "pages/generate/reselect/diarytemplate/diarytemplate"
+    "pages/generate/reselect/diarytemplate/diarytemplate",
+    "pages/generate/reselect/videoInfo/videoInfo"
   ],
   "tabBar": {
     "color": "#666666",

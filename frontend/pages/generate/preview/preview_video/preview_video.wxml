@@ -12,13 +12,13 @@
 <view class='custom-tabbar'>
   <view class='icons'>
     <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
-    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectVideoInfo"></image>
     <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
     <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
   </view>
   <view class='icons-text'>
     <text bind:tap="reselectEvent">更换事件</text>
-    <text bind:tap="reselectTemplate">更换模板</text>
+    <text bind:tap="reselectVideoInfo">更换信息</text>
     <text bind:tap="handleDownload">保存到本地</text>
     <text bind:tap="handleShare">分享</text>
   </view>
