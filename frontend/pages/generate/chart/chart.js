@@ -11,7 +11,6 @@ var chart_template = 0;
 var chartType = [];
 
 // 0号chart的数据处理
-const dataX = ['1月', '2月', '3月', '4月', '5月', '6月', '7月'];
 const colors = ['#80ffa5', '#01bfec', '#00ddff', '#4d77ff', '#37a2ff', '#7415db', '#ff0087', '#87009d', '#ffbf00', '#e03e4c']
 var seriesDataFor0= []
 
@@ -21,20 +20,21 @@ var dateList = [];
 var valueList = [];
 
 //2号chart的数据
-let category = [];
-let dottedBase = +new Date();
-let lineData = [];
-let barData = [];
-for (let i = 0; i < 20; i++) {
-  let date = new Date((dottedBase += 3600 * 24 * 1000));
-  category.push(
-    [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
-  );
-  let b = Math.random() * 200;
-  let d = Math.random() * 200;
-  barData.push(b);
-  lineData.push(d + b);
-}
+var lineList = [];
+// let category = [];
+// let dottedBase = +new Date();
+// let lineData = [];
+// let barData = [];
+// for (let i = 0; i < 20; i++) {
+//   let date = new Date((dottedBase += 3600 * 24 * 1000));
+//   category.push(
+//     [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
+//   );
+//   let b = Math.random() * 200;
+//   let d = Math.random() * 200;
+//   barData.push(b);
+//   lineData.push(d + b);
+// }
 
 // 3号chart的数据
 const dataBJ = [
@@ -154,9 +154,17 @@ const itemStyle = {
 };
 
 function initData(){
+  var dataListNow = [];
   //0号chart
   seriesDataFor0= [];
   for (let i = 0; i < selectedKeys.length; i++) {
+    dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[i])].list;
+    dateList = dataListNow.map(function (item) {
+      return item.date;
+    });
+    valueList = dataListNow.map(function (item) {
+      return item.value;
+    });
     const currentLine = {
       name: selectedKeys[i],
       type: 'line',
@@ -182,7 +190,7 @@ function initData(){
       emphasis: {
         focus: 'series'
       },
-      data: [140+10*i, 232+10*i, 101+10*i, 264+10*i, 90+10*i, 340+10*i, 250+10*i] // You can populate this array with your actual data for each line
+      data: valueList // You can populate this array with your actual data for each line
     };
 
     // Assuming you have data for each line in separate arrays like dataX
@@ -194,12 +202,16 @@ function initData(){
     seriesDataFor0.push(currentLine);
   }
   //1号chart
-  const dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
+  dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
   dateList = dataListNow.map(function (item) {
     return item.date;
   });
   valueList = dataListNow.map(function (item) {
     return item.value;
+  });
+  //2号chart
+  lineList = dataListNow.map(function (item) {
+    return item.value*2;
   });
 }
 
@@ -237,7 +249,7 @@ function initChart(canvas, width, height, dpr) {
         {
           type: 'category',
           boundaryGap: false,
-          data: dataX
+          data: dateList
         }
       ],
       yAxis: [
@@ -311,7 +323,7 @@ function initChart(canvas, width, height, dpr) {
         }
       },
       xAxis: {
-        data: category,
+        data: dateList,
         axisLine: {
           lineStyle: {
             color: '#ccc'
@@ -334,7 +346,7 @@ function initChart(canvas, width, height, dpr) {
           showAllSymbol: true,
           symbol: 'emptyCircle',
           symbolSize: 15,
-          data: lineData
+          data: lineList
         },
         {
           name: 'bar',
@@ -344,10 +356,10 @@ function initChart(canvas, width, height, dpr) {
             borderRadius: 5,
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: '#14c8d4' },
-              { offset: 1, color: '#43eec6' }
+              { offset: 1, color: '#43eec6' },
             ])
           },
-          data: barData
+          data: valueList
         },
         {
           name: 'line',
@@ -356,13 +368,13 @@ function initChart(canvas, width, height, dpr) {
           barWidth: 10,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(20,200,212,0.5)' },
-              { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
+              { offset: 0, color: 'rgba(20,200,212,0.8)' },
+              { offset: 0.5, color: 'rgba(20,200,212,0.2)' },
               { offset: 1, color: 'rgba(20,200,212,0)' }
             ])
           },
           z: -12,
-          data: lineData
+          data: lineList
         },
         {
           name: 'dotted',
@@ -375,7 +387,7 @@ function initChart(canvas, width, height, dpr) {
           symbolSize: [12, 4],
           symbolMargin: 1,
           z: -10,
-          data: lineData
+          data: lineList
         }
       ]
     },
@@ -521,6 +533,11 @@ function updateChart() {
   chartType[0].series = seriesDataFor0;
   chartType[1].xAxis[0].data = dateList;
   chartType[1].series[0].data = valueList;
+  chartType[2].xAxis.data = dateList;
+  chartType[2].series[0].data = lineList;
+  chartType[2].series[1].data = valueList;
+  chartType[2].series[2].data = lineList;
+  chartType[2].series[3].data = lineList;
 }
 
 Page({
@@ -713,11 +730,11 @@ Page({
           {"date": "2023-05-12", "value": 113},
           {"date": "2023-06-13", "value": 207},
           {"date": "2023-07-14", "value": 131},
-          {"date": "2023-08-15", "value": 181},
+          {"date": "2023-08-15", "value": 281},
       ]},
       {key:'data 2', list:[
-        {"date": "2023-02-09", "value": 576},
-        {"date": "2023-03-10", "value": 101},
+        {"date": "2023-02-09", "value": 106},
+        {"date": "2023-03-10", "value": 51},
         {"date": "2023-04-11", "value": 102},
         {"date": "2023-05-12", "value": 123},
         {"date": "2023-06-13", "value": 217},
@@ -726,38 +743,48 @@ Page({
       ]},
       {key:'data 3', list:[
         {"date": "2023-02-09", "value": 96},
-        {"date": "2023-03-10", "value": 111},
-        {"date": "2023-04-11", "value": 100},
+        {"date": "2023-03-10", "value": 51},
+        {"date": "2023-04-11", "value": 60},
         {"date": "2023-05-12", "value": 133},
-        {"date": "2023-06-13", "value": 27},
+        {"date": "2023-06-13", "value": 127},
         {"date": "2023-07-14", "value": 151},
         {"date": "2023-08-15", "value": 101},
       ]},
       {key:'data 4', list:[
-        {"date": "2023-02-09", "value": 6},
+        {"date": "2023-02-09", "value": 66},
         {"date": "2023-03-10", "value": 91},
-        {"date": "2023-04-11", "value": 292},
-        {"date": "2023-05-12", "value": 213},
+        {"date": "2023-04-11", "value": 192},
+        {"date": "2023-05-12", "value": 113},
         {"date": "2023-06-13", "value": 207},
         {"date": "2023-07-14", "value": 31},
         {"date": "2023-08-15", "value": 81},
       ]},
       {key:'data 5', list:[
-        {"date": "2023-02-09", "value": 66},
-        {"date": "2023-03-10", "value": 1},
-        {"date": "2023-04-11", "value": 2},
+        {"date": "2023-02-09", "value": 36},
+        {"date": "2023-03-10", "value": 71},
+        {"date": "2023-04-11", "value": 50},
         {"date": "2023-05-12", "value": 13},
-        {"date": "2023-06-13", "value": 7},
+        {"date": "2023-06-13", "value": 37},
         {"date": "2023-07-14", "value": 31},
         {"date": "2023-08-15", "value": 81},
       ]},
-    ]
-    const keys = dataList.map(function (item) {
-      return {info:item.key,selected: true};
-    });
-    selectedKeys = dataList.map(function (item) {
-      return item.key;
-    }); 
+    ];
+    var keys = [];
+    if(selectFlag == 0){
+      selectedKeys = dataList.map(function (item) {
+        return item.key;
+      }); 
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: true};
+      });
+    }else{
+      console.log("here")
+      selectedKeys.push(dataList[0].key)
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: false};
+      });
+      keys[0].selected = true;
+    }
 
     this.setData({
       keys: keys
