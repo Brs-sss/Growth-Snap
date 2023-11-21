@@ -58,12 +58,10 @@ Page({
     blog_cards_list:[],  //所有卡片BlogCard的list
     host_: `${app.globalData.localUrl}`,
   },
-  goToPage_addchild(e){
-    const index = e.currentTarget.dataset.index;
-    console.log(index)
-    // wx.navigateTo({
-    //   url: '/pages/user/child/addchild/addchild',
-    // })
+  goToPage_addchild(){
+    wx.navigateTo({
+      url: '/pages/user/child/addchild/addchild',
+    })
   },
   goToPage_detail: function(e){
     const index = e.currentTarget.dataset.index;
