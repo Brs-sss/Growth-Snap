@@ -19,15 +19,16 @@
 }
 
 .user_profile {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  border-radius: 1vh;
   margin-right: 10px;
 }
 
 .user_name {
   margin-top: -20px;
   font-size: 20px;
+  float: left;
 }
 
 .user_tag {
@@ -41,12 +42,13 @@
   color: #4095E5;
   line-height: 62rpx;
   margin-left: 5px;
+  float: left;
 }
 
 .user_signature {
   font-size: 15px;
   color: #666666;
-  margin-left: -100px;
+  margin-left: -10vh;
   margin-top: 60px;
 }
 
