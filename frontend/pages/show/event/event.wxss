@@ -6,6 +6,19 @@
   width: 100%;
 }
 
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(99, 100, 100);
+
+}
+.weui-input {
+  font-size: 2vh;
+}
+
+
 .container_1 {
   grid-area: A;
   font-size: 14px;
@@ -135,7 +148,7 @@
 }
 
 .container_tag{
-  margin-top: 5%;
+  margin-top: 2vh;
   display: flex;
   flex-wrap: wrap;
   align-items: center; /* 标签垂直居中对齐 */
@@ -197,6 +210,8 @@
   margin-left: -70px;
   font-size: 12px;
   width: 70px;
+  padding: 2px;
+  height: 22px;
   border-radius: 4px;
   border: 1px solid #007bff65;
   color: #007bff65;
