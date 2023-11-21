@@ -1,4 +1,5 @@
 // pages/generate/chart/chart.js
+const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
@@ -625,28 +626,18 @@ Page({
       {id: 2, selected: false},
       {id: 3, selected: false}
     ],
-    keys:[
-      {info: '1111', selected: false},
-      {info: '2222', selected: false},
-      {info: '3333', selected: false},
-      {info: '4444', selected: false},
-      {info: '1', selected: false},
-      {info: '2', selected: false},
-      {info: '3', selected: false},
-      {info: '4', selected: false},
-    ],
+    keys:[],
     selectedKeys : [],
     colorSet:[
       {id: 1},
       {id: 2},
       {id: 3},
       {id: 4},
-      {id: 5},
-      {id: 6},
     ],
     ec: {
       onInit: initChart
-    }
+    },
+    host_: `${app.globalData.localUrl}`,
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -724,6 +715,29 @@ Page({
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
+    var pointer = this
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        var openid = res.data
+        wx.request({
+          url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
+          method:'GET',
+          success:function(res){
+            console.log(res.data.keyList)
+            const keys = res.data.keyList.map(function (item) {
+              return {info:item, selected: false}; 
+            });
+            pointer.setData({
+              keys: keys
+            })
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
+    })
   },
 
   /**

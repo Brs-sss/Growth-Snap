@@ -40,19 +40,19 @@
       <image class="image-arrow" src="/image/user/arrow.png"></image>
     </view>
     <view class="line"></view>
-    <view class="list-item">
+    <view class="list-item" bindtap="goToPage_setting">
       <image class="item-image" src="/image/user/settings.png"></image>
       <text class="item-text">更多设置</text>
       <image class="image-arrow" src="/image/user/arrow.png"></image>
     </view>
     <view class="line"></view>
-    <view class="list-item">
+    <view class="list-item" bindtap="goToPage_about_us">
       <image class="item-image" src="/image/user/about_us.png"></image>
       <text class="item-text">关于我们</text>
       <image class="image-arrow" src="/image/user/arrow.png"></image>
     </view>
     <view class="line"></view>
-    <view class="list-item">
+    <view class="list-item" bindtap="goToPage_comments">
       <image class="item-image" src="/image/user/leave_us_comment.png"></image>
       <text class="item-text">意见反馈</text>
       <image class="image-arrow" src="/image/user/arrow.png"></image>
