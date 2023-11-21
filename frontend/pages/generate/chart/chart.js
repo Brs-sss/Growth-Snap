@@ -2,7 +2,8 @@
 const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
-var selectedKeys = ['data 1','data 2','data 3','data 4','data 5'];
+var dataList = [];
+var selectedKeys = [];
 var selectFlag = 0; // 0表示可以多选 1表示必须单选
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
@@ -12,17 +13,12 @@ var chartType = [];
 // 0号chart的数据处理
 const dataX = ['1月', '2月', '3月', '4月', '5月', '6月', '7月'];
 const colors = ['#80ffa5', '#01bfec', '#00ddff', '#4d77ff', '#37a2ff', '#7415db', '#ff0087', '#87009d', '#ffbf00', '#e03e4c']
-var seriesData= []
+var seriesDataFor0= []
 
 
 // 1号chart的数据
-const data = [["2023-07-09", 66], ["2023-07-10", 91], ["2023-07-11", 92], ["2023-07-12", 113], ["2023-07-13", 207], ["2023-07-14", 131], ["2023-07-15", 181], ["2023-07-16", 64], ["2023-07-17", 69], ["2023-07-18", 288], ["2023-07-19", 77], ["2023-07-20", 83], ["2023-07-21", 111], ["2023-07-22", 57], ["2023-07-23", 55], ["2023-07-24", 60]];
-const dateList = data.map(function (item) {
-  return item[0];
-});
-const valueList = data.map(function (item) {
-  return item[1];
-});
+var dateList = [];
+var valueList = [];
 
 //2号chart的数据
 let category = [];
@@ -159,7 +155,7 @@ const itemStyle = {
 
 function initData(){
   //0号chart
-  seriesData= [];
+  seriesDataFor0= [];
   for (let i = 0; i < selectedKeys.length; i++) {
     const currentLine = {
       name: selectedKeys[i],
@@ -195,10 +191,16 @@ function initData(){
       // You should replace this with your actual data structure or source
       // currentLine.data.push(/* Your data for Line i on day j */);
     // }
-    seriesData.push(currentLine);
+    seriesDataFor0.push(currentLine);
   }
-  console.log(seriesData.length);
   //1号chart
+  const dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
+  dateList = dataListNow.map(function (item) {
+    return item.date;
+  });
+  valueList = dataListNow.map(function (item) {
+    return item.value;
+  });
 }
 
 function initChart(canvas, width, height, dpr) {
@@ -243,11 +245,10 @@ function initChart(canvas, width, height, dpr) {
           type: 'value'
         }
       ],
-      series: seriesData
+      series: seriesDataFor0
     },
     // 1号chart
     {
-      // Make gradient line here
       visualMap: [
         {
           show: false,
@@ -516,6 +517,11 @@ function initChart(canvas, width, height, dpr) {
   return chart;
 }
 
+function updateChart() {
+  chartType[0].series = seriesDataFor0;
+  chartType[1].xAxis[0].data = dateList;
+  chartType[1].series[0].data = valueList;
+}
 
 Page({
 
@@ -550,6 +556,12 @@ Page({
       selectedKeys.splice(keyIndex, 1); // 取消选中标签
       this.data.keys[index].selected = false ;
     } else {
+      if(selectFlag == 1){
+        // 存在单选限制
+        const deleteIndex = this.data.keys.findIndex(item => item.info === selectedKeys[0]);
+        this.data.keys[deleteIndex].selected=false;
+        selectedKeys = [];
+      }
       selectedKeys.push(key); // 选中
       this.data.keys[index].selected = true ;
     }
@@ -559,10 +571,10 @@ Page({
       keys: this.data.keys,
       ['keys[' + index + '].selected']: this.data.keys[index].selected
     });
+    
     initData();
-    if(chart_template == 0){
-      chartType[0].series=seriesData;
-    }
+    updateChart();
+
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,
@@ -622,7 +634,9 @@ Page({
     this.setData({
       selectedKeys: selectedKeys,
       keys: this.data.keys
-    })
+    });
+    initData();
+    updateChart();
   },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
@@ -689,13 +703,62 @@ Page({
     //     console.error('获取本地储存失败', res);
     //   }
     // });
-    const keys = [
-      {info:'data 1',selected: true},
-      {info:'data 2',selected: true},
-      {info:'data 3',selected: true},
-      {info:'data 4',selected: true},
-      {info:'data 5',selected: true},
-    ];
+
+    //TODO： 从后端获取数据
+    dataList = [
+      {key:'data 1', list:[
+          {"date": "2023-02-09", "value": 66},
+          {"date": "2023-03-10", "value": 91},
+          {"date": "2023-04-11", "value": 92},
+          {"date": "2023-05-12", "value": 113},
+          {"date": "2023-06-13", "value": 207},
+          {"date": "2023-07-14", "value": 131},
+          {"date": "2023-08-15", "value": 181},
+      ]},
+      {key:'data 2', list:[
+        {"date": "2023-02-09", "value": 576},
+        {"date": "2023-03-10", "value": 101},
+        {"date": "2023-04-11", "value": 102},
+        {"date": "2023-05-12", "value": 123},
+        {"date": "2023-06-13", "value": 217},
+        {"date": "2023-07-14", "value": 141},
+        {"date": "2023-08-15", "value": 191},
+      ]},
+      {key:'data 3', list:[
+        {"date": "2023-02-09", "value": 96},
+        {"date": "2023-03-10", "value": 111},
+        {"date": "2023-04-11", "value": 100},
+        {"date": "2023-05-12", "value": 133},
+        {"date": "2023-06-13", "value": 27},
+        {"date": "2023-07-14", "value": 151},
+        {"date": "2023-08-15", "value": 101},
+      ]},
+      {key:'data 4', list:[
+        {"date": "2023-02-09", "value": 6},
+        {"date": "2023-03-10", "value": 91},
+        {"date": "2023-04-11", "value": 292},
+        {"date": "2023-05-12", "value": 213},
+        {"date": "2023-06-13", "value": 207},
+        {"date": "2023-07-14", "value": 31},
+        {"date": "2023-08-15", "value": 81},
+      ]},
+      {key:'data 5', list:[
+        {"date": "2023-02-09", "value": 66},
+        {"date": "2023-03-10", "value": 1},
+        {"date": "2023-04-11", "value": 2},
+        {"date": "2023-05-12", "value": 13},
+        {"date": "2023-06-13", "value": 7},
+        {"date": "2023-07-14", "value": 31},
+        {"date": "2023-08-15", "value": 81},
+      ]},
+    ]
+    const keys = dataList.map(function (item) {
+      return {info:item.key,selected: true};
+    });
+    selectedKeys = dataList.map(function (item) {
+      return item.key;
+    }); 
+
     this.setData({
       keys: keys
     })
