@@ -1,2 +1,7 @@
 <!--pages/show/data_detail/data_detail.wxml-->
-<text>pages/show/data_detail/data_detail.wxml</text>
+<view>
+  <view></view>
+  <view class="line"></view>
+</view>
+
+<view wx:for="{{records}}" wx:key="*this"> {{item.key}}: {{item.value}}</view>
