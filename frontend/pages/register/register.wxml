@@ -16,13 +16,7 @@
             />
         </view>
       </view>
-    </view>
-  </view>
-</view>
 
-<view class="weui-form__control-area">
-  <view class="weui-cells__group weui-cells__group_form">
-    <view class="weui-cells weui-cells_form">
       <view class="weui-cell weui-cell_active">
         <view class="weui-cell__hd"><label class="weui-label">上传头像</label></view>
       </view>
@@ -32,15 +26,8 @@
               </view>
               <view wx:if="{{firsttime_selected_img}}" class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
       </view>
-    </view>
-  </view>
-</view>
-
-<view class="weui-form__control-area">
-  <view class="weui-cells__group weui-cells__group_form">
-    <view class="weui-cells weui-cells_form">
-      <view class="family">
-        <view class="weui-cell weui-cell_active">
+    
+      <view class="weui-cell weui-cell_active">
           <view class="weui-cell__hd"><label class="weui-label">家庭口令</label></view>
             <view class="weui-cell__bd weui-flex">
               <input
@@ -55,15 +42,13 @@
             </view>
           </view>
         </view>
-      </view>
+        <p class='create-familyId' bind:tap='create_familyId' style='display: {{visibility_create}}'>创建新家庭口令</p>
+        <p class='cancel' style='display: {{visibility_cancel}};' bind:tap='cancel'>取消</p>
     </view>
-  <p class='create-familyId' bind:tap='create_familyId' style='display: {{visibility_create}}'>创建新家庭口令</p>
-  <p class='cancel' style='display: {{visibility_cancel}};' bind:tap='cancel'>取消</p>
+  </view>
 </view>
 
-
-
-<view class="weui-form__control-area">
+<view class="weui-form__control-area" style="margin-top: 12vh;">
   <view class="weui-cells__group weui-cells__group_form">
     <view class="weui-cells weui-cells_form">
       <view class="weui-cell weui-cell_active">
@@ -86,4 +71,4 @@
   <button class="submit" bindtap="handleSubmit">提交</button>
 
 
-</view>
+<!-- </view> -->
