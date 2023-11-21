@@ -592,7 +592,7 @@ Page({
     }else{
       // 必须单选
       if(selectFlag == 0){
-        //this.clearKey();
+        this.clearKey();
       }
       selectFlag = 1;
     }
@@ -607,24 +607,23 @@ Page({
     chartNow.setOption(option);
     chartNow = chart;
   },
-  // clearKey(){
-  //   // 多选变单选时只保留第一组数据
-  //   var index = 0;
-  //   for (let i = 0; i < selectedKeys.length; i++) {
-  //     index = this.data.keys.indexOf(selectedKeys[i]);
-  //     this.data.keys[index].selected=false;
-  //   }
-  //   const key = selectedKeys[0];
-  //   selectedKeys = [];
-  //   selectedKeys.push(key);
-  //   index = keys.indexOf(key);
-  //   this.data.keys[index].selected=true;
+  clearKey(){
+    // 多选变单选时只保留第一组被选中的数据
+    var index = 0;
+    for (let i = 0; i < this.data.keys.length; i++) {
+      this.data.keys[i].selected=false;
+    }
+    const key = selectedKeys[0];
+    selectedKeys = [];
+    selectedKeys.push(key);
+    index = this.data.keys.findIndex(item => item.info === key);
+    this.data.keys[index].selected=true;
 
-  //   this.setData({
-  //     selectedKeys: selectedKeys,
-  //     keys: this.data.keys
-  //   })
-  // },
+    this.setData({
+      selectedKeys: selectedKeys,
+      keys: this.data.keys
+    })
+  },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
     // 先保存图片到临时的本地文件，然后存入系统相册
