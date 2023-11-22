@@ -15,6 +15,7 @@
       <view class="title-container">
         {{title}}
       </view>
+      <view class="event_date">{{event_date}}</view>
       <view class="text-container">{{text}}
       </view>
       <view class="tags-container">

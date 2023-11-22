@@ -514,6 +514,8 @@ def loadEventDetail(request):
         block_item['type'] = db_block.record_type
         block_item['title'] = db_block.title
         block_item['content'] = db_block.content
+        event_date = str(db_block.event_date)
+        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + event_date.split('-')[2] + '日'
         block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
         date_string = str(db_block.date)
         block_item['month'] = str(int(date_string[5:7])) + "月"
