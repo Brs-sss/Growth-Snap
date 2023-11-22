@@ -140,7 +140,7 @@ def submitEvent(request):
         date = data.get('date')
         time = (data.get('time'))[:8]
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
-        tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip())!=0])
+        tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip()) != 0])
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
         type = data.get('type')
         if type == 'event':
@@ -189,19 +189,24 @@ def submitData(request):
         time = (data.get('time'))[:8]
         children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
+        print(records)
+        records_json = json.loads(records)
+        index = 0
         keyList = []
         valueList = []
-        for record in records:
-            keyList.append(record['key'])
-            valueList.append(record['value'])
-            print(type(record['key']), type(record['value']))
-            new_rc = Record.objects.create(user=user, date=date, time=time, key=record['key'], value=record['value'])
+        for record in records_json:
+            if index < 3:
+                keyList.append(record['key'])
+                valueList.append(record['value'])
+                index += 1
+            new_rc = Record.objects.create(user=user, date=date, time=time,
+                                           key=record['key'], value=record['value'], data_id=data_id)
 
-        if records.__len__() == 1:
+        if keyList.__len__() == 1:
             title = keyList[0] + '记录'
             content = keyList[0] + '：' + valueList[0]
 
-        elif records.__len__() == 2:
+        elif keyList.__len__() == 2:
             title = keyList[0] + '&' + keyList[1] + '记录'
             content = keyList[0] + '：' + valueList[0] + '；'
             content += (keyList[1] + '：' + valueList[1])
@@ -211,7 +216,8 @@ def submitData(request):
             content = keyList[0] + '：' + valueList[0] + '；'
             content += (keyList[1] + '：' + valueList[1] + '；……')
 
-        new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content, data_id=data_id)
+        new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
+                                       records=records, data_id=data_id)
 
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
@@ -547,6 +553,21 @@ def loadTextDetail(request):
         return JsonResponse({'block_item': block_item})
 
 
+def loadDataDetail(request):
+    if request.method == 'GET':
+        data_id = request.GET.get('data_id')
+        # 返回渲染的list
+        db_block = Data.objects.get(data_id=data_id)
+        date = db_block.date
+        date_string = str(date)
+        date_string = date_string[0:4] + "年" + str(int(date_string[5:7])) + "月" + date_string[8:10] + "日"
+        data_item = {
+            'records': json.loads(db_block.records),
+            'date': date_string
+        }
+        return JsonResponse({'data_item': data_item})
+
+
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
@@ -567,6 +588,19 @@ def deleteText(request):
             Text.objects.get(text_id=text_id).delete()
         except:
             return JsonResponse({'msg': 'error'})
+        return JsonResponse({'msg': 'ok'})
+
+
+def deleteData(request):
+    if request.method == 'GET':
+        data_id = request.GET.get('data_id')
+        try:
+            # 删除上传内容
+            Data.objects.get(data_id=data_id).delete()
+            # 删除数据信息
+            Record.objects.filter(data_id=data_id).delete()
+        except:
+            return JsonResponse({'msg': 'fail'})
         return JsonResponse({'msg': 'ok'})
 
 
@@ -721,7 +755,7 @@ def loadPDFThumbnail(request):
         pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
         output_path = 'static/diary/' + openid + '/thumbnails/' + pdf_name + '/'
         try:
-            num,pages=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+            num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
         except Exception as e:
             return HttpResponse("Request failed", status=500)
         thumbnail_list = ['http://127.0.0.1:8090/' + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
