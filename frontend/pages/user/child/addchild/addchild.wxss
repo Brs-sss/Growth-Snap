@@ -1,6 +1,6 @@
 /* pages/user/child/addchild/addchild.wxss */
 .whole-page-grid{
-  display: grid;
+  /* display: grid;
   grid-template-rows: 10vh 2fr 15vh 10vh 3fr;
   grid-template-columns: 1fr;
   grid-template-areas:
@@ -8,7 +8,7 @@
   "B"
   "C"
   "D"
-  "E";
+  "E"; */
   height:100vh;
   justify-content: stretch;
   align-items: stretch; 
@@ -105,6 +105,9 @@
   position: relative;
   width: 25vw;
   height:25vw; /*设置高度宽度相等*/
+  margin-left: 13%;
+  margin-bottom: 3vh;
+
 }
 
 .image-grid-item image{
@@ -267,4 +270,17 @@
   border-radius: 100px;
   box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
   font-size: 14px;
+}
+
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(68, 68, 68);
+
+}
+.weui-input, .weui-select {
+  font-size: 2vh;
 }

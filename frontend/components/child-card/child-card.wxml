@@ -1,5 +1,9 @@
 <view class="view_image_text">
-      <image class="user_profile" src="{{imgSrc}}" />
-      <text class="user_name">{{name}}</text>
-      <text class="user_info">年龄：{{age}}岁，身高：{{height}}cm，体重：{{weight}}kg</text>
+      <view class="profile_view">
+        <image class="user_profile" src="{{imgSrc}}" />
+      </view>
+      <view class="text_view">
+        <view class="user_name">{{name}}</view>
+        <view class="user_info">是个{{age}}岁的{{gender}}孩子啦~</view>
+      </view>
 </view>

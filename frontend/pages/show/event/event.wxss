@@ -11,10 +11,10 @@
 }
 .weui-label{
   font-size: 2vh;
-  color: rgb(99, 100, 100);
+  color: rgb(68, 68, 68);
 
 }
-.weui-input {
+.weui-input, .weui-select {
   font-size: 2vh;
 }
 
@@ -230,6 +230,10 @@
   align-items: center; /* 水平居中 */
 }
 
+#button-box{
+  position: relative;
+  margin-bottom: 4vh;
+}
 
 .submit{
   width: 100%;
@@ -240,4 +244,5 @@
   box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
   font-size: 14px;
   margin-bottom: auto;
+  position: relative;
 }
