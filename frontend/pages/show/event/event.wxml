@@ -17,8 +17,8 @@
                           />
           </view>
         </view>
-        <view class="weui-cell weui-cell_active" style="margin-bottom: 1vh;flex-direction:row">
-        <view >
+        <view class="weui-cell weui-cell_active" style="flex-direction:row">
+        <view style="width: 100%;">
           <view class="weui-cell__hd" ><label class="weui-label">添加图片</label></view>
           <!-- <view class="weui-cell__bd weui-flex">
             <input
@@ -45,7 +45,19 @@
           
         </view>
 
-        <view class="weui-cell weui-cell_active" style="flex-direction:row;margin-top: 1vh;margin-bottom: 1vh;">
+        <view class="weui-cell weui-cell_active weui-cell_select weui-cell_select-after">
+              <view class="weui-cell__hd">
+                <label class="weui-label" style="width: 3em;">时间</label>
+              </view>
+              <view class="weui-cell__bd">
+                              <picker mode="date" bindchange="bindDateChange">
+                                  <view class="weui-select">{{event_date}}</view>
+                              </picker>
+                              <!-- <picker mode="date" aria-role="combobox"  header-text="选择时间"  data-index="{{index}}" value="{{item.ddl}}" bindchange="bindDateChange"></picker> -->
+              </view>
+            </view>
+
+        <view class="weui-cell weui-cell_active" style="flex-direction:row;margin-bottom: 1vh;">
         <view style='width: 100%;'>
           <view class="weui-cell__hd"><label class="weui-label">内容</label></view>
           <!-- <textarea class="input_text" bindinput="handleInputText" placeholder="请输入" maxlength="1024"/> -->
@@ -58,7 +70,7 @@
           
         </view>
 
-        <view class="weui-cell weui-cell_active" style="flex-direction:row; margin-bottom: 1vh;">
+        <view class="weui-cell weui-cell_active" style="flex-direction:row; ">
         <view>
           <view class="weui-cell__hd" style="margin-right: 70%;"><label class="weui-label">选择tag</label></view>
           <view class="container_tag">
@@ -75,12 +87,16 @@
         </view>
           
         </view>
+
+        
       </view>
     </view>
   </view>
 
 
 <view id="button-box">
-  <button class="submit" bindtap="handleSubmit" style="position: relative; left: 1rpx; top: -40rpx">提交</button>
+  <button class="submit" bindtap="handleSubmit" >提交</button>
+</view>
+<view class="place-holder" style="height: 4vh;">
 </view>
 

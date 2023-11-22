@@ -28,6 +28,7 @@ Page({
     isEditing: false, // 是否处于编辑模式
     imgGridStyle:getImageGridStyle(1),
     host_: `${app.globalData.localUrl}`,
+    event_date:''
   },
 
   handleInputTitle(e) {  //输入标题的处理
@@ -35,7 +36,12 @@ Page({
       inputTitle: e.detail.value
     });
   },
-
+  bindDateChange(e){
+    console.log(e.detail.value)
+    this.setData({
+      event_date: e.detail.value
+    })
+  },
   handleInputText(e) {  //输入文字的处理
     this.setData({
       inputText: e.detail.value
@@ -43,6 +49,26 @@ Page({
   },
 
   handleSubmit() {
+    // 检查提交内容是否有空的
+    if (this.data.event_date == '')
+    {
+      wx.showToast({
+        title: '事件时间不可为空',
+        icon: 'error',
+        duration: 1000
+      })
+      return;
+    }
+    if (this.data.inputTitle == '')
+    {
+      wx.showToast({
+        title: '事件标题不可为空',
+        icon: 'error',
+        duration: 1000
+      })
+      return;
+    }
+    
     //console.log('提交的文本：', this.data.inputTitle);
     // 进行其他处理或操作
     var that = this
@@ -90,7 +116,8 @@ Page({
                 'date':formattedDate,
                 'time':currentTimeString,
                 'author':"大壮", //todo,
-                'type':'event'
+                'type':'event',
+                'event_date': that.data.event_date
               },
               success:function(res){
                 console.log('success return')
