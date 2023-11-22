@@ -277,7 +277,8 @@ Page({
     },
     ec_tag2: {
       onInit: initTag2Chart
-    }
+    },
+    name: ''
   },
 
   /**
@@ -285,6 +286,9 @@ Page({
    */
   onLoad(options) {
     child_id = options.index;
+    this.setData({
+      name: options.name
+    })
   },
 
   /**

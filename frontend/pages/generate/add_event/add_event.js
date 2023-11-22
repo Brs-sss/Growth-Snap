@@ -60,7 +60,74 @@ function loadPageInfo(that){
     }
    })
 }
-
+export function generateVideoPreview(that, id_list, video_title, audioSelected, new_page=true)
+{
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/generate/video', //et表示只求取event和text
+        method:'POST',
+        header:
+        {
+          'content-type': 'application/json'
+        },
+        data:{
+          'openid':openid,
+          'list':id_list,
+          'audio_index':audioSelected,
+          'name':video_title,
+        },
+        success:function(res){
+          wx.showToast({
+            title: "提交成功",
+            icon: 'success',
+            duration: 1000,
+            success: function () {
+              setTimeout(function () {
+                // console.log(that.data.video_title)
+                // console.log('host is defined:', that.data.host_)
+                if(new_page){
+                  wx.navigateTo({
+                    url: '/pages/generate/preview/preview_video/preview_video'+'?video_title='+video_title+'&category=video'+'&openid='+openid,
+                  })//成功提交，返回上个页面
+                }
+                else
+                {
+                  var pages = getCurrentPages();
+                  var previousPage=pages[pages.length-2];
+                  // console.log("previousPage", previousPage)
+                  previousPage.setData({
+                    video_src: that.data.host_+'user/api/generate/video/preview'+'/'+openid+'/'+video_title,
+                    video_title:video_title
+                  })
+                  previousPage.Refresh()
+                  wx.navigateBack({
+                    delta:1,
+                    success:function(){
+                    }
+                  })
+                }
+                that.setData({
+                  video_src: that.data.host_+'user/api/generate/video/preview'+'/'+openid+'/'+video_title
+                })
+                
+              }, 1000)
+            }
+          })
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      })
+    },
+    fail: function (res) {
+    console.log('获取数据失败');
+    }
+  });
+}
 export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名

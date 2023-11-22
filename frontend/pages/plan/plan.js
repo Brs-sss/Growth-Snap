@@ -1,4 +1,6 @@
 // pages/plan/plan.js
+const app = getApp();
+
 Page({
 
   /**
@@ -7,7 +9,8 @@ Page({
   data: {
     todoList: [],
     planList: [],
-    host_: 'http://127.0.0.1:8090/'
+    centerNum: 0,
+    host_: `${app.globalData.localUrl}`
   },  
 
   loadPage() {
@@ -39,6 +42,20 @@ Page({
         console.error('获取本地储存失败', res);
       }
     })
+
+    // 设置计划固定位置上侧的最大元素个数
+    const query = wx.createSelectorQuery()
+    // 选择页面根节点
+    query.selectViewport().boundingClientRect(function (rect) {
+      var item_height = 0.04 * rect.height + 24
+      var left = 0.40 * rect.height - 36
+      console.log(item_height, left)
+      var centerNum = Math.floor(left / item_height)
+      console.log('个数:', centerNum)
+      pointer.setData({
+        centerNum: centerNum
+      })
+    }).exec()
   },
 
   goToTodoList(e) {

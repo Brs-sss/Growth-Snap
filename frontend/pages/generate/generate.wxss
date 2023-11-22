@@ -37,6 +37,7 @@
   flex-direction: column;
   align-items: center;
   top: -10vh;
+  padding-top: 2vh;
 }
 
 
@@ -44,7 +45,7 @@
   /* grid-area: 3/1/4/5; */
 
   width: 80vw;
-  height: 30vh;
+  height: 35vh;
   display: flex;
   overflow: scroll;
   flex-wrap: nowrap;
@@ -92,6 +93,17 @@
   border-radius: 2vh;
   margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+
+  display: inline;
+  object-fit: cover;
+  max-width: 100%;
+  border: 1vh solid #ffffff; /* 设置边框宽度和颜色 */
+  border-radius: 2vh; /* 可选：设置边框圆角 */
+  /* height: auto; */
+}
+.audio-image.selected{
+  border: 1vh solid #4095E5; /* 设置边框宽度和颜色 */
+  border-radius: 2vh; /* 可选：设置边框圆角 */
 }
 
 .timeline-image {
@@ -215,6 +227,7 @@
 }
 
 .weui-form__control-area {
+  width: 100vw;
   position: relative;
   margin: 1vh;
   top: -15vh

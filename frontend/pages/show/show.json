@@ -2,6 +2,8 @@
   "usingComponents": {
     "event-card":"/components/event-card/event-card",
     "text-card":"/components/text-card/text-card",
-    "data-card":"/components/data-card/data-card"
+    "data-card":"/components/data-card/data-card",
+    "mp-form-page": "/miniprogram_npm/weui-miniprogram/form-page/form-page",
+    "mp-form": "/miniprogram_npm/weui-miniprogram/form/form"
   }
 }

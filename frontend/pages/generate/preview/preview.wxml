@@ -9,7 +9,22 @@
       <!-- PDF.js的 现在似乎用不了<canvas canvas-id="pdf-canvas" style="width: 100%; height: 100vh;"></canvas> -->
     </view>
 
-    <view id="button-box">
+  <view class='custom-tabbar'>
+  <view class='icons'>
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+  </view>
+  <view class='icons-text'>
+    <text bind:tap="reselectEvent">更换事件</text>
+    <text bind:tap="reselectTemplate">更换模板</text>
+    <text bind:tap="handleDownload">保存到本地</text>
+    <text bind:tap="handleShare">分享</text>
+  </view>
+</view>
+
+    <!-- <view id="button-box">
           <button class="submit" bindtap="reselectEvent">更换事件</button>
     </view>
     <view id="button-box">
@@ -20,6 +35,6 @@
     </view>
     <view id="button-box">
           <button class="submit" bindtap="handleShare">分享</button>
-    </view>
+    </view> -->
   </view>
 </view>

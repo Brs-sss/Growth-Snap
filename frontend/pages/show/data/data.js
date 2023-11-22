@@ -156,7 +156,7 @@ Page({
                 'openid':openid,
                 'data_id':data_id,
                 'children':'',
-                'records':pointer.data.records,
+                'records':JSON.stringify(pointer.data.records),
                 'date':formattedDate,
                 'time':currentTimeString,
               },

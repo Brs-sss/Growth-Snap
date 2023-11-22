@@ -422,9 +422,15 @@ Page({
     var parts = oneWeekLater_formatted.split('/');
     // 构建转换后的日期字符串
     var formattedDate = parts[0] + '-' + parts[1] + '-' + parts[2];
+    if (parts[2].length == 4){
+      formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+    }
     var parts = today_formatted.split('/');
     // 构建转换后的日期字符串
     var formattedToday = parts[0] + '-' + parts[1] + '-' + parts[2];
+    if (parts[2].length == 4){
+      formattedToday = parts[2] + '-' + parts[0] + '-' + parts[1];
+    }
     console.log(formattedToday)
     this.setData({
       planTitle: Value.title,

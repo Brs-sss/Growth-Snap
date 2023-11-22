@@ -2,85 +2,40 @@
 const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
+var dataList = [];
+var selectedKeys = [];
+var selectFlag = 0; // 0表示可以多选 1表示必须单选
+
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
 var chart_template = 0;
 var chartType = [];
 
+// 0号chart的数据处理
+const colors = ['#80ffa5', '#01bfec', '#00ddff', '#4d77ff', '#37a2ff', '#7415db', '#ff0087', '#87009d', '#ffbf00', '#e03e4c']
+var seriesDataFor0= []
+
+
 // 1号chart的数据
-const data = [
-  {"date": "2000-06-05", "value": 116},
-  {"date": "2000-06-06", "value": 129},
-  {"date": "2000-06-07", "value": 135},
-  {"date": "2000-06-08", "value": 86},
-  {"date": "2000-06-09", "value": 73},
-  {"date": "2000-06-10", "value": 85},
-  {"date": "2000-06-11", "value": 73},
-  {"date": "2000-06-12", "value": 68},
-  {"date": "2000-06-13", "value": 92},
-  {"date": "2000-06-14", "value": 130},
-  {"date": "2000-06-15", "value": 245},
-  {"date": "2000-06-16", "value": 139},
-  {"date": "2000-06-17", "value": 115},
-  {"date": "2000-06-18", "value": 111},
-  {"date": "2000-06-19", "value": 309},
-  {"date": "2000-06-20", "value": 206},
-  {"date": "2000-06-21", "value": 137},
-  {"date": "2000-06-22", "value": 128},
-  {"date": "2000-06-23", "value": 85},
-  {"date": "2000-06-24", "value": 94},
-  {"date": "2000-06-25", "value": 71},
-  {"date": "2000-06-26", "value": 106},
-  {"date": "2000-06-27", "value": 84},
-  {"date": "2000-06-28", "value": 93},
-  {"date": "2000-06-29", "value": 85},
-  {"date": "2000-06-30", "value": 73},
-  {"date": "2000-07-01", "value": 83},
-  {"date": "2000-07-02", "value": 125},
-  {"date": "2000-07-03", "value": 107},
-  {"date": "2000-07-04", "value": 82},
-  {"date": "2000-07-05", "value": 44},
-  {"date": "2000-07-06", "value": 72},
-  {"date": "2000-07-07", "value": 106},
-  {"date": "2000-07-08", "value": 107},
-  {"date": "2000-07-09", "value": 66},
-  {"date": "2000-07-10", "value": 91},
-  {"date": "2000-07-11", "value": 92},
-  {"date": "2000-07-12", "value": 113},
-  {"date": "2000-07-13", "value": 107},
-  {"date": "2000-07-14", "value": 131},
-  {"date": "2000-07-15", "value": 111},
-  {"date": "2000-07-16", "value": 64},
-  {"date": "2000-07-17", "value": 69},
-  {"date": "2000-07-18", "value": 88},
-  {"date": "2000-07-19", "value": 77},
-  {"date": "2000-07-20", "value": 83},
-  {"date": "2000-07-21", "value": 111},
-  {"date": "2000-07-22", "value": 57},
-  {"date": "2000-07-23", "value": 55},
-  {"date": "2000-07-24", "value": 60}
-];
-const dateList = data.map(function (item) {
-  return item.date;
-});
-const valueList = data.map(function (item) {
-  return item.value;
-});
+
+var dateList = [];
+var valueList = [];
 
 //2号chart的数据
-let category = [];
-let dottedBase = +new Date();
-let lineData = [];
-let barData = [];
-for (let i = 0; i < 20; i++) {
-  let date = new Date((dottedBase += 3600 * 24 * 1000));
-  category.push(
-    [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
-  );
-  let b = Math.random() * 200;
-  let d = Math.random() * 200;
-  barData.push(b);
-  lineData.push(d + b);
-}
+var lineList = [];
+// let category = [];
+// let dottedBase = +new Date();
+// let lineData = [];
+// let barData = [];
+// for (let i = 0; i < 20; i++) {
+//   let date = new Date((dottedBase += 3600 * 24 * 1000));
+//   category.push(
+//     [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
+//   );
+//   let b = Math.random() * 200;
+//   let d = Math.random() * 200;
+//   barData.push(b);
+//   lineData.push(d + b);
+// }
 
 // 3号chart的数据
 const dataBJ = [
@@ -199,6 +154,67 @@ const itemStyle = {
   shadowColor: 'rgba(0,0,0,0.3)'
 };
 
+function initData(){
+  var dataListNow = [];
+  //0号chart
+  seriesDataFor0= [];
+  for (let i = 0; i < selectedKeys.length; i++) {
+    dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[i])].list;
+    dateList = dataListNow.map(function (item) {
+      return item.date;
+    });
+    valueList = dataListNow.map(function (item) {
+      return item.value;
+    });
+    const currentLine = {
+      name: selectedKeys[i],
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 0
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: colors[i * 2]
+          },
+          {
+            offset: 1,
+            color: colors[i * 2 + 1]
+          }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: valueList // You can populate this array with your actual data for each line
+    };
+
+    // Assuming you have data for each line in separate arrays like dataX
+    // for (let j = 0; j < dataX.length; j++) {
+      // Populate the data array for each line
+      // You should replace this with your actual data structure or source
+      // currentLine.data.push(/* Your data for Line i on day j */);
+    // }
+    seriesDataFor0.push(currentLine);
+  }
+  //1号chart
+  dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
+  dateList = dataListNow.map(function (item) {
+    return item.date;
+  });
+  valueList = dataListNow.map(function (item) {
+    return item.value;
+  });
+  //2号chart
+  lineList = dataListNow.map(function (item) {
+    return item.value*2;
+  });
+}
 
 function initChart(canvas, width, height, dpr) {
   heightGlobal = height;
@@ -215,23 +231,14 @@ function initChart(canvas, width, height, dpr) {
   chartType = [
     // 0号chart
     {
-      color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
       tooltip: {
         trigger: 'axis',
         axisPointer: {
           type: 'cross',
-          label: {
-            backgroundColor: '#6a7985'
-          }
         }
       },
       legend: {
-        data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
-      },
-      toolbox: {
-        feature: {
-          saveAsImage: {}
-        }
+        data: selectedKeys
       },
       grid: {
         left: '3%',
@@ -243,7 +250,7 @@ function initChart(canvas, width, height, dpr) {
         {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: dateList
         }
       ],
       yAxis: [
@@ -251,151 +258,10 @@ function initChart(canvas, width, height, dpr) {
           type: 'value'
         }
       ],
-      series: [
-        {
-          name: 'Line 1',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 0
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(128, 255, 165)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(1, 191, 236)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: [140, 232, 101, 264, 90, 340, 250]
-        },
-        {
-          name: 'Line 2',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 0
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(0, 221, 255)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(77, 119, 255)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: [120, 282, 111, 234, 220, 340, 310]
-        },
-        {
-          name: 'Line 3',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 0
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(55, 162, 255)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(116, 21, 219)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: [320, 132, 201, 334, 190, 130, 220]
-        },
-        {
-          name: 'Line 4',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 0
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(255, 0, 135)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(135, 0, 157)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: [220, 402, 231, 134, 190, 230, 120]
-        },
-        {
-          name: 'Line 5',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 0
-          },
-          showSymbol: false,
-          label: {
-            show: true,
-            position: 'top'
-          },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(255, 191, 0)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(224, 62, 76)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: [220, 302, 181, 234, 210, 290, 150]
-        }
-      ]
+      series: seriesDataFor0
     },
     // 1号chart
     {
-      // Make gradient line here
       visualMap: [
         {
           show: false,
@@ -458,7 +324,7 @@ function initChart(canvas, width, height, dpr) {
         }
       },
       xAxis: {
-        data: category,
+        data: dateList,
         axisLine: {
           lineStyle: {
             color: '#ccc'
@@ -481,7 +347,7 @@ function initChart(canvas, width, height, dpr) {
           showAllSymbol: true,
           symbol: 'emptyCircle',
           symbolSize: 15,
-          data: lineData
+          data: lineList
         },
         {
           name: 'bar',
@@ -491,10 +357,10 @@ function initChart(canvas, width, height, dpr) {
             borderRadius: 5,
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: '#14c8d4' },
-              { offset: 1, color: '#43eec6' }
+              { offset: 1, color: '#43eec6' },
             ])
           },
-          data: barData
+          data: valueList
         },
         {
           name: 'line',
@@ -503,13 +369,13 @@ function initChart(canvas, width, height, dpr) {
           barWidth: 10,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(20,200,212,0.5)' },
-              { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
+              { offset: 0, color: 'rgba(20,200,212,0.8)' },
+              { offset: 0.5, color: 'rgba(20,200,212,0.2)' },
               { offset: 1, color: 'rgba(20,200,212,0)' }
             ])
           },
           z: -12,
-          data: lineData
+          data: lineList
         },
         {
           name: 'dotted',
@@ -522,7 +388,7 @@ function initChart(canvas, width, height, dpr) {
           symbolSize: [12, 4],
           symbolMargin: 1,
           z: -10,
-          data: lineData
+          data: lineList
         }
       ]
     },
@@ -664,6 +530,16 @@ function initChart(canvas, width, height, dpr) {
   return chart;
 }
 
+function updateChart() {
+  chartType[0].series = seriesDataFor0;
+  chartType[1].xAxis[0].data = dateList;
+  chartType[1].series[0].data = valueList;
+  chartType[2].xAxis.data = dateList;
+  chartType[2].series[0].data = lineList;
+  chartType[2].series[1].data = valueList;
+  chartType[2].series[2].data = lineList;
+  chartType[2].series[3].data = lineList;
+}
 
 Page({
 
@@ -684,8 +560,6 @@ Page({
       {id: 2},
       {id: 3},
       {id: 4},
-      {id: 5},
-      {id: 6},
     ],
     ec: {
       onInit: initChart
@@ -694,13 +568,18 @@ Page({
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
-    const { selectedKeys } = this.data;
     const key = this.data.keys[index].info;
     const keyIndex = selectedKeys.indexOf(key);
     if (keyIndex !== -1) {
       selectedKeys.splice(keyIndex, 1); // 取消选中标签
       this.data.keys[index].selected = false ;
     } else {
+      if(selectFlag == 1){
+        // 存在单选限制
+        const deleteIndex = this.data.keys.findIndex(item => item.info === selectedKeys[0]);
+        this.data.keys[deleteIndex].selected=false;
+        selectedKeys = [];
+      }
       selectedKeys.push(key); // 选中
       this.data.keys[index].selected = true ;
     }
@@ -710,6 +589,21 @@ Page({
       keys: this.data.keys,
       ['keys[' + index + '].selected']: this.data.keys[index].selected
     });
+    
+    initData();
+    updateChart();
+
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+    console.log(selectedKeys)
   },
   changeTemplate: function(e){
     const { index } = e.currentTarget.dataset;
@@ -722,6 +616,16 @@ Page({
     this.setData({
       ['templates[' + index + '].selected']: true
     });
+    if(chart_template == 0){
+      // 可以多选
+      selectFlag = 0;
+    }else{
+      // 必须单选
+      if(selectFlag == 0){
+        this.clearKey();
+      }
+      selectFlag = 1;
+    }
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,
@@ -732,6 +636,25 @@ Page({
     const option = chartType[chart_template];
     chartNow.setOption(option);
     chartNow = chart;
+  },
+  clearKey(){
+    // 多选变单选时只保留第一组被选中的数据
+    var index = 0;
+    for (let i = 0; i < this.data.keys.length; i++) {
+      this.data.keys[i].selected=false;
+    }
+    const key = selectedKeys[0];
+    selectedKeys = [];
+    selectedKeys.push(key);
+    index = this.data.keys.findIndex(item => item.info === key);
+    this.data.keys[index].selected=true;
+
+    this.setData({
+      selectedKeys: selectedKeys,
+      keys: this.data.keys
+    });
+    initData();
+    updateChart();
   },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
@@ -765,6 +688,7 @@ Page({
    */
   onLoad(options) {
     chart_template = options.index;
+
     var pointer = this
     wx.getStorage({
       key: 'openid',  // 要获取的数据的键名
@@ -788,9 +712,110 @@ Page({
         console.error('获取本地储存失败', res);
       }
     }),
+    if(chart_template == 0){
+      // 可以多选
+      selectFlag = 0;
+    }else{
+      // 必须单选
+      selectFlag = 1;
+    }
+
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
+    // var pointer = this
+    // wx.getStorage({
+    //   key: 'openid',  // 要获取的数据的键名
+    //   success: function (res) { 
+    //     var openid = res.data
+    //     wx.request({
+    //       url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
+    //       method:'GET',
+    //       success:function(res){
+    //         console.log(res.data.keyList)
+    //         const keys = res.data.keyList.map(function (item) {
+    //           return {info:item, selected: false}; 
+    //         });
+    //         pointer.setData({
+    //           keys: keys
+    //         })
+    //       }
+    //     });
+    //   },
+    //   fail: function(res) {
+    //     console.error('获取本地储存失败', res);
+    //   }
+    // });
+
+    //TODO： 从后端获取数据
+    dataList = [
+      {key:'data 1', list:[
+          {"date": "2023-02-09", "value": 66},
+          {"date": "2023-03-10", "value": 91},
+          {"date": "2023-04-11", "value": 92},
+          {"date": "2023-05-12", "value": 113},
+          {"date": "2023-06-13", "value": 207},
+          {"date": "2023-07-14", "value": 131},
+          {"date": "2023-08-15", "value": 281},
+      ]},
+      {key:'data 2', list:[
+        {"date": "2023-02-09", "value": 106},
+        {"date": "2023-03-10", "value": 51},
+        {"date": "2023-04-11", "value": 102},
+        {"date": "2023-05-12", "value": 123},
+        {"date": "2023-06-13", "value": 217},
+        {"date": "2023-07-14", "value": 141},
+        {"date": "2023-08-15", "value": 191},
+      ]},
+      {key:'data 3', list:[
+        {"date": "2023-02-09", "value": 96},
+        {"date": "2023-03-10", "value": 51},
+        {"date": "2023-04-11", "value": 60},
+        {"date": "2023-05-12", "value": 133},
+        {"date": "2023-06-13", "value": 127},
+        {"date": "2023-07-14", "value": 151},
+        {"date": "2023-08-15", "value": 101},
+      ]},
+      {key:'data 4', list:[
+        {"date": "2023-02-09", "value": 66},
+        {"date": "2023-03-10", "value": 91},
+        {"date": "2023-04-11", "value": 192},
+        {"date": "2023-05-12", "value": 113},
+        {"date": "2023-06-13", "value": 207},
+        {"date": "2023-07-14", "value": 31},
+        {"date": "2023-08-15", "value": 81},
+      ]},
+      {key:'data 5', list:[
+        {"date": "2023-02-09", "value": 36},
+        {"date": "2023-03-10", "value": 71},
+        {"date": "2023-04-11", "value": 50},
+        {"date": "2023-05-12", "value": 13},
+        {"date": "2023-06-13", "value": 37},
+        {"date": "2023-07-14", "value": 31},
+        {"date": "2023-08-15", "value": 81},
+      ]},
+    ];
+    var keys = [];
+    if(selectFlag == 0){
+      selectedKeys = dataList.map(function (item) {
+        return item.key;
+      }); 
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: true};
+      });
+    }else{
+      console.log("here")
+      selectedKeys.push(dataList[0].key)
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: false};
+      });
+      keys[0].selected = true;
+    }
+
+    this.setData({
+      keys: keys
+    })
+    initData();
   },
 
   /**

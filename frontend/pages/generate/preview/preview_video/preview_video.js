@@ -41,6 +41,14 @@ handleDownload(){
     }
   })
 },
+reselectVideoInfo(){
+  var that=this
+  console.log('reselect:',that.data.video_title,that.data.openid)
+  let index = wx.getStorageSync('audioSelected')
+  wx.navigateTo({
+    url: '/pages/generate/reselect/videoInfo/videoInfo?title='+that.data.video_title+"&openid="+that.data.openid+"&audioSelected="+index,
+  })
+},
   /**
    * Lifecycle function--Called when page load
    */
@@ -53,7 +61,9 @@ handleDownload(){
     console.log("video_src: ", this.data.video_src)
 
   },
-
+  reselectEvent(){
+    wx.navigateBack(1)
+  },
   /**
    * Lifecycle function--Called when page is initially rendered
    */
@@ -67,7 +77,12 @@ handleDownload(){
   onShow() {
 
   },
-
+  Refresh(){
+    // this.setData({
+    //   video_title:''
+    // })
+    console.log("refresh")
+  },
   /**
    * Lifecycle function--Called when page hide
    */
