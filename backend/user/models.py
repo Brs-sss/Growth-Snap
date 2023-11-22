@@ -86,8 +86,7 @@ class Data(BaseRecord):
 
     title = models.CharField(max_length=128)
     content = models.CharField(max_length=128)
-    full_keys = models.CharField(max_length=128)
-    full_values = models.CharField(max_length=128)
+    records = models.CharField(max_length=512, default="")
     data_id = models.CharField(max_length=65, default="")
 
     def __str__(self):
@@ -100,6 +99,8 @@ class Record(models.Model):
     time = models.TimeField(null=True)
     key = models.CharField(max_length=24)
     value = models.FloatField(max_length=24)
+    # corresponding data record
+    data_id = models.CharField(max_length=65, default=""    )
 
 
 class Plan(models.Model):
