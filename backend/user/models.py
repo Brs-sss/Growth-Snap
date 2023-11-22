@@ -61,6 +61,7 @@ class Event(BaseRecord):
     content = models.CharField(max_length=1024)
     tags = models.CharField(max_length=200)
     event_id = models.CharField(max_length=65, default="")
+    event_date = models.DateField(null=True)
 
     def __str__(self):
         return str(

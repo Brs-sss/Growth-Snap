@@ -133,7 +133,8 @@ def submitEvent(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         event_id = data.get('event_id')
-
+        event_date = data.get('event_date')
+        # print(f'event_date {event_date}')
         title = data.get('title')
         content = data.get('content')
         date = data.get('date')
@@ -145,7 +146,7 @@ def submitEvent(request):
         if type == 'event':
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
-                                             event_id=event_id)
+                                             event_id=event_id, event_date=event_date)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
