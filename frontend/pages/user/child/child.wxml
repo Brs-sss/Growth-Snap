@@ -7,10 +7,10 @@
       <text class="user_name">{{item.name}}</text>
       <text class="user_info">年龄：{{item.age}}岁，身高：{{item.height}}cm，体重：{{item.weight}}kg</text>
     </view> -->
-    <child-card name="{{item.name}}" age="{{item.age}}" height="{{item.height}}" weight="{{item.weight}}" imgSrc="{{item.imgSrc}}" data-index="{{index}}" bindtap="goToPage_detail"></child-card>
+    <child-card name="{{item.name}}" age="{{item.age}}" gender="{{item.gender}}"  imgSrc="{{item.imgSrc}}" data-index="{{index}}" bindtap="goToPage_detail"></child-card>
   </block>
 </view>
 
 <button class="add" bindtap="goToPage_addchild">添加孩子</button>
-
+<view style="height: 5vh;"></view>
 

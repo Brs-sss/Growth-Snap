@@ -28,6 +28,32 @@
               <view wx:if="{{firsttime_selected_img}}" class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
       </view>
 
+
+
+      <view class="weui-cell weui-cell_active weui-cell_select weui-cell_select-after">
+              <view class="weui-cell__hd">
+                <label class="weui-label">出生日期</label>
+              </view>
+              <view class="weui-cell__bd">
+                              <picker mode="date" bindchange="bindDateChange">
+                                  <view class="weui-select">{{birthdate}}</view>
+                              </picker>
+                              <!-- <picker mode="date" aria-role="combobox"  header-text="选择时间"  data-index="{{index}}" value="{{item.ddl}}" bindchange="bindDateChange"></picker> -->
+              </view>
+            </view>
+
+            <view class="weui-cell weui-cell_active weui-cell_select weui-cell_select-after">
+              <view class="weui-cell__hd">
+                <label class="weui-label">性别</label>
+              </view>
+              <view class="weui-cell__bd">
+                  <picker aria-role="combobox" bindchange="bindGenderChange" range="{{genderList}}">
+                      <view class="weui-select">{{gender}}</view>
+                  </picker>
+              </view>
+            </view>
+
+
     </view>
   </view>
   </view>

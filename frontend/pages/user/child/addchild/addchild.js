@@ -28,7 +28,10 @@ Page({
     visibility_input: 'block',
     visibility_create: 'block',
     visibility_text: 'none',
-    firsttime_selected_img:true
+    firsttime_selected_img:true,
+    birthdate: '',
+    genderList: ['男', '女'],
+    gender: '男'
   },
 
   handleInputName(e) {  //输入用户名的处理
@@ -36,9 +39,40 @@ Page({
       inputName: e.detail.value
     });
   },
-
+bindDateChange(e){
+  console.log(e.detail.value)
+  this.setData({
+    birthdate: e.detail.value
+  })
+},
+bindGenderChange(e){
+  // console.log(e.detail.value)
+  let index = e.detail.value
+  // console.log(this.data.genderList[index])
+  this.setData({
+    gender: this.data.genderList[index]
+  })
+},
   
   handleSubmit() {
+    if(this.data.birthdate == '')
+    {
+      wx.showToast({
+        title: '出生日期不可为空',
+        icon: 'error',
+        duration: 1000
+      })
+      return
+    }
+    if(this.data.inputName == '')
+    {
+      wx.showToast({
+        title: '姓名不可为空',
+        icon: 'error',
+        duration: 1000
+      })
+      return
+    }
     var that = this
     wx.getStorage({
       key: 'openid',  // 要获取的数据的键名
@@ -46,6 +80,7 @@ Page({
         // 从本地存储中获取数据,在index.js文件中保存建立的
         let openid=res.data
         console.log('opeidd: ',openid) 
+        console.log('birthdate:', that.data.birthdate)
         wx.request({
           url: that.data.host_+'user/api/user/add_child', //url get传参数
           method:'POST',
@@ -55,7 +90,9 @@ Page({
               },
               data:{
                 'openid': openid,
-                'name': that.data.inputName
+                'name': that.data.inputName,
+                'birthdate': that.data.birthdate,
+                'gender': that.data.gender,
               },
           success:function(res){
             console.log('add ok');

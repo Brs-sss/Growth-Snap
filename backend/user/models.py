@@ -19,7 +19,8 @@ class Child(models.Model):
     name = models.CharField(max_length=20)
     child_id = models.CharField(max_length=65, default='')
     # birthday
-    # birthday = models.DateField(null=True)
+    birthdate = models.DateField(null=True)
+    gender = models.CharField(max_length=10, null=True)
     # family
     family = models.ForeignKey(Family, on_delete=models.CASCADE)
 

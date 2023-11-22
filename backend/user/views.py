@@ -576,15 +576,22 @@ def getChildrenInfo(request):
         children_list = []
         children = Child.objects.filter(family=family)
         for child in children:
-            print("test")
-            print(child.name, child.child_id)
+            # print("test")
+            # print(child.name, child.child_id)
             child_item = {}
             child_item['name'] = child.name
             # child_item['birthday'] = child.birthday
             # todo: 添加孩子的真实信息
-            child_item['age'] = '5'
-            child_item['height'] = '144'
-            child_item['weight'] = '30'
+            child_item['age'] = 6
+
+            # 计算孩子的年龄，根据出生日期
+            birthdate = child.birthdate
+            if birthdate:
+                today = datetime.date.today()
+                # print(f'birthdate {birthdate}')
+                age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+                child_item['age'] = str(age)
+            child_item['gender'] = child.gender
             image_path = 'static/ImageBase/' + openid + '+' + child.child_id
             image_list = os.listdir(image_path)
             child_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
@@ -598,13 +605,14 @@ def addChild(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         name = data.get('name')
-        # birthday = data.get('birthday')
-        # print(openid,name,birthday)
+        birthdate = data.get('birthdate')
+        gender = data.get('gender')
+        # print(openid,name,birthdate)
         sha256 = hashlib.sha256()
         sha256.update(name.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
         print(f'sha256_hash {sha256_hash}')
-        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash))
+        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash), birthdate=birthdate, gender=gender)
         # print(str(sha256_hash))
         return JsonResponse({
             'message': 'Data submitted successfully',
