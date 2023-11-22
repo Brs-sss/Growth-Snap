@@ -108,7 +108,7 @@ page {
   margin-top: 88px;
   width: 50%;
   color: rgb(173, 169, 169);
-  font-size: 35rpx;
+  font-size: 2.5vh;
 }
 
 .info_data{
@@ -160,7 +160,7 @@ page {
 
 .item-text {
   color: gray;
-  font-size: 35rpx;
+  font-size: 2.3vh;
   margin-left: 0rpx;
 }
 
