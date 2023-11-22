@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/generate/diary/longimage',views.generateDiaryLongImage,name="diary_longimage"),
     path('api/generate/video',views.generateVideo,name="generate_video"),
     path('api/generate/video/preview/<str:openid>/<str:video_title>',views.loadVideoThumbnail,name="video_preview"),
+    path('api/generate/timeline', views.loadTimelinePage, name='load_timelinepage'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
