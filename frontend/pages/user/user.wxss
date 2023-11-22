@@ -47,10 +47,11 @@ page {
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-top: -10px;
-  margin-left: -150px;
+  /* margin-top: -10px; */
+  /* margin-left: -150px; */
+  /* padding: 2vh; */
 }
-
+/* 
 .user_profile {
   height: 60px;
   width: 60px;
@@ -60,12 +61,38 @@ page {
 
 .user_name{
   margin-left: 8px;
+} */
+.profile_view {
+  margin-left: 2vh;
+  margin-top: 2vh;
+  width: 80px;
 }
 
+.user_profile {
+  width: 70px;
+  height: 70px;
+  border-radius: 1vh;
+  margin-right: 1vh;
+}
+
+.text_view{
+  margin-left: 1vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+  height: 70px;
+}
+
+.user_name {
+  /* margin-top: -20px; */
+  font-size: 2.5vh;
+}
 .user_tag{
-  position: absolute;
-  margin-top: 50px;
-  margin-left: 60px;
+  /* position: absolute; */
+  /* margin-top: 50px; */
+  /* margin-left: 60px; */
   width: 30px;
   height: 23px;
   background: #f0f8ff;
@@ -78,10 +105,10 @@ page {
 }
 
 .user_info{
-  margin-top: 80px;
+  margin-top: 88px;
   width: 50%;
   color: rgb(173, 169, 169);
-  font-size: 35rpx;
+  font-size: 2.5vh;
 }
 
 .info_data{
@@ -133,7 +160,7 @@ page {
 
 .item-text {
   color: gray;
-  font-size: 35rpx;
+  font-size: 2.3vh;
   margin-left: 0rpx;
 }
 
