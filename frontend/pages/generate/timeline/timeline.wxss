@@ -57,7 +57,6 @@ ec-canvas {
   padding: 8rpx 16rpx;
   border-radius: 4rpx;
   background: #f0f8ff;
-  border: 1rpx solid #4095E5;
   border-radius: 10rpx;
   font-size: 28rpx;
   color: #4095e598;
