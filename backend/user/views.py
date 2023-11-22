@@ -133,19 +133,20 @@ def submitEvent(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         event_id = data.get('event_id')
-
+        event_date = data.get('event_date')
+        # print(f'event_date {event_date}')
         title = data.get('title')
         content = data.get('content')
         date = data.get('date')
         time = (data.get('time'))[:8]
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
-        tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip())!=0])
+        tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip()) != 0])
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
         type = data.get('type')
         if type == 'event':
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
-                                             event_id=event_id)
+                                             event_id=event_id, event_date=event_date)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
@@ -188,19 +189,24 @@ def submitData(request):
         time = (data.get('time'))[:8]
         children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
+        print(records)
+        records_json = json.loads(records)
+        index = 0
         keyList = []
         valueList = []
-        for record in records:
-            keyList.append(record['key'])
-            valueList.append(record['value'])
-            print(type(record['key']), type(record['value']))
-            new_rc = Record.objects.create(user=user, date=date, time=time, key=record['key'], value=record['value'])
+        for record in records_json:
+            if index < 3:
+                keyList.append(record['key'])
+                valueList.append(record['value'])
+                index += 1
+            new_rc = Record.objects.create(user=user, date=date, time=time,
+                                           key=record['key'], value=record['value'], data_id=data_id)
 
-        if records.__len__() == 1:
+        if keyList.__len__() == 1:
             title = keyList[0] + '记录'
             content = keyList[0] + '：' + valueList[0]
 
-        elif records.__len__() == 2:
+        elif keyList.__len__() == 2:
             title = keyList[0] + '&' + keyList[1] + '记录'
             content = keyList[0] + '：' + valueList[0] + '；'
             content += (keyList[1] + '：' + valueList[1])
@@ -210,7 +216,8 @@ def submitData(request):
             content = keyList[0] + '：' + valueList[0] + '；'
             content += (keyList[1] + '：' + valueList[1] + '；……')
 
-        new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content, data_id=data_id)
+        new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
+                                       records=records, data_id=data_id)
 
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
@@ -513,6 +520,8 @@ def loadEventDetail(request):
         block_item['type'] = db_block.record_type
         block_item['title'] = db_block.title
         block_item['content'] = db_block.content
+        event_date = str(db_block.event_date)
+        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + event_date.split('-')[2] + '日'
         block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
         date_string = str(db_block.date)
         block_item['month'] = str(int(date_string[5:7])) + "月"
@@ -544,6 +553,21 @@ def loadTextDetail(request):
         return JsonResponse({'block_item': block_item})
 
 
+def loadDataDetail(request):
+    if request.method == 'GET':
+        data_id = request.GET.get('data_id')
+        # 返回渲染的list
+        db_block = Data.objects.get(data_id=data_id)
+        date = db_block.date
+        date_string = str(date)
+        date_string = date_string[0:4] + "年" + str(int(date_string[5:7])) + "月" + date_string[8:10] + "日"
+        data_item = {
+            'records': json.loads(db_block.records),
+            'date': date_string
+        }
+        return JsonResponse({'data_item': data_item})
+
+
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
@@ -567,6 +591,19 @@ def deleteText(request):
         return JsonResponse({'msg': 'ok'})
 
 
+def deleteData(request):
+    if request.method == 'GET':
+        data_id = request.GET.get('data_id')
+        try:
+            # 删除上传内容
+            Data.objects.get(data_id=data_id).delete()
+            # 删除数据信息
+            Record.objects.filter(data_id=data_id).delete()
+        except:
+            return JsonResponse({'msg': 'fail'})
+        return JsonResponse({'msg': 'ok'})
+
+
 def getChildrenInfo(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
@@ -575,15 +612,22 @@ def getChildrenInfo(request):
         children_list = []
         children = Child.objects.filter(family=family)
         for child in children:
-            print("test")
-            print(child.name, child.child_id)
+            # print("test")
+            # print(child.name, child.child_id)
             child_item = {}
             child_item['name'] = child.name
             # child_item['birthday'] = child.birthday
             # todo: 添加孩子的真实信息
-            child_item['age'] = '5'
-            child_item['height'] = '144'
-            child_item['weight'] = '30'
+            child_item['age'] = 6
+
+            # 计算孩子的年龄，根据出生日期
+            birthdate = child.birthdate
+            if birthdate:
+                today = datetime.date.today()
+                # print(f'birthdate {birthdate}')
+                age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+                child_item['age'] = str(age)
+            child_item['gender'] = child.gender
             image_path = 'static/ImageBase/' + openid + '+' + child.child_id
             image_list = os.listdir(image_path)
             child_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
@@ -597,13 +641,14 @@ def addChild(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         name = data.get('name')
-        # birthday = data.get('birthday')
-        # print(openid,name,birthday)
+        birthdate = data.get('birthdate')
+        gender = data.get('gender')
+        # print(openid,name,birthdate)
         sha256 = hashlib.sha256()
         sha256.update(name.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
         print(f'sha256_hash {sha256_hash}')
-        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash))
+        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash), birthdate=birthdate, gender=gender)
         # print(str(sha256_hash))
         return JsonResponse({
             'message': 'Data submitted successfully',
@@ -710,7 +755,7 @@ def loadPDFThumbnail(request):
         pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
         output_path = 'static/diary/' + openid + '/thumbnails/' + pdf_name + '/'
         try:
-            num,pages=GenerateThumbnail(pdf_path,output_path,max_page=5,resolution=50)
+            num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
         except Exception as e:
             return HttpResponse("Request failed", status=500)
         thumbnail_list = ['http://127.0.0.1:8090/' + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]

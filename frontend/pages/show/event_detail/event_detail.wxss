@@ -70,7 +70,6 @@
   /* border: 1px solid #000; */
   font-size: 1.3em;
   justify-self: center;
-  margin-bottom: 2vh;
 }
 
 
@@ -89,6 +88,7 @@
   /* border: 1px solid #000; */
   color: rgb(27,52,113);
   font-size: 1.1em;
+  margin-top: 2vh;
 }
 
 .date-delete-container{
@@ -103,6 +103,11 @@
 
 .date-container{
   color: #888;
+}
+.event_date {
+  font-size: 1.8vh;
+  color: #888;
+  margin-bottom: 2vh;
 }
 
 .delete-container{

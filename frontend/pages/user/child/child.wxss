@@ -35,7 +35,7 @@
 }
 
 .add{
-  font-size: 20px;
+  font-size: 2vh;
   margin-top: 30px;
   height: 40px;
   background-color: #4095E5;

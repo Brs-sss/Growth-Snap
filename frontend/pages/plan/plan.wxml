@@ -28,13 +28,13 @@
       </block>
       <view class="todo-item" wx:if="{{todoList.length == 0}}" style="height: 60px;">
         <text style="color: darkgray;">当前暂无待办Todo
-
         可在计划页面中进行编辑</text>
       </view>
     </view>
   </view>
 </view>
-<view class="container_plan">
+<view class="container_plan" 
+      style="{{todoList.length <= centerNum ? 'position:absolute; top:40%;' : ''}}">
   <view class="plan-header" bind:tap="goToAllPlan">
     <view> 所有计划 </view>
     <!-- <image class="image-arrow" src="/image/user/arrow.png" bind:tap="goToAllPlan"></image> -->

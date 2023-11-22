@@ -225,3 +225,16 @@
   position: relative;
 }
 
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(68, 68, 68);
+
+}
+.weui-input, .weui-select {
+  font-size: 2vh;
+}
+
