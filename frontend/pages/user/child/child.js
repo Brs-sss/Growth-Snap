@@ -65,8 +65,11 @@ Page({
   },
   goToPage_detail: function(e){
     const index = e.currentTarget.dataset.index;
+    console.log('index:', index)
+    console.log(this.data.blog_cards_list[index].name)
+    let name = this.data.blog_cards_list[index].name
     wx.navigateTo({
-      url: '/pages/user/child/child_detail/child_detail' + '?index=' + encodeURIComponent(index),
+      url: '/pages/user/child/child_detail/child_detail' + '?index=' + encodeURIComponent(index) + '&name=' + name,
     })
   },
   /**

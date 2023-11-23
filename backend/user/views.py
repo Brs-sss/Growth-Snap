@@ -445,9 +445,11 @@ def getUserInfo(request):
         profile_image = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
         event_number = len(Event.objects.filter(user=now_user))
         plan_number = len(Plan.objects.filter(user=now_user))
+        text_number = len(Text.objects.filter(user=now_user))
+        credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
-                             'event_number': event_number, 'plan_number': plan_number})
+                             'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number, 'credit': credit})
 
 
 def addPlan(request):
@@ -635,12 +637,30 @@ def getChildrenInfo(request):
         return JsonResponse({'children_list': children_list})
 
 
+def loadChildDetail(request):
+    if request.method == 'GET':
+        name = request.GET.get('name')
+        child = Child.objects.get(name=name)
+        child_item = {}
+        child_item['name'] = child.name
+        # 计算child相关的过去一年的每月的计划数量
+        now = datetime.datetime.now()
+        all_plans = Plan.objects.filter(children=child)
+        child_item['plans'] = all_plans.__len__()
+
+        return JsonResponse({'child_item': child_item})
+
+
 def addChild(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         name = data.get('name')
+        # 检查是否有这个孩子
+        if Child.objects.filter(name=name).exists():
+            print('Duplicate child name')
+            return JsonResponse({'message': 'Duplicate child name'})
         birthdate = data.get('birthdate')
         gender = data.get('gender')
         # print(openid,name,birthdate)
@@ -693,9 +713,10 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user=user))
-            plan_number = len(Plan.objects.filter(user=user))
-            credit = event_number * 15 + plan_number * 10
+            event_number = len(Event.objects.filter(user=now_user))
+            plan_number = len(Plan.objects.filter(user=now_user))
+            text_number = len(Text.objects.filter(user=now_user))
+            credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
             image_list = os.listdir(image_path)

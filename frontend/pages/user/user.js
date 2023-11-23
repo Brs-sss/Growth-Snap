@@ -19,7 +19,9 @@ function LoadUserPage(that){
               user_label: res.data.label,
               username: res.data.username,
               event_number: res.data.event_number,
-              plan_number:res.data.plan_number
+              plan_number:res.data.plan_number,
+              text_number: res.data.text_number,
+              credit: res.data.credit
             })
         },
         fail:function(res){
@@ -47,7 +49,9 @@ Page({
     username: '',
     user_label: '',
     event_number: 0,
-    plan_number: 0
+    plan_number: 0,
+    text_number: 0,
+    credit: 0
   },
   goToPage_family() {
     // TODO: 跳转到对应页面的处理逻辑
