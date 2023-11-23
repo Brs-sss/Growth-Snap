@@ -711,7 +711,7 @@ Page({
       fail: function(res) {
         console.error('获取本地储存失败', res);
       }
-    }),
+    })
     if(chart_template == 0){
       // 可以多选
       selectFlag = 0;
