@@ -343,15 +343,6 @@ for (let j = 0; j < data.length; ++j) {
 
 
 
-const IMG = [
-  '/image/generate/events/event_0.png',
-  '/image/generate/events/event_1.png',
-  '/image/generate/events/event_2.png',
-  '/image/generate/events/event_3.png',
-  '/image/generate/events/event_4.png',
-  '/image/generate/events/event_5.png',
-]
-
 /* 与后端联系，获取主页的内容*/
 function loadPageInfo(that){
   // 获取存储的openid
