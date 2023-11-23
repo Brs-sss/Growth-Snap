@@ -182,6 +182,11 @@
   margin-left: 4px;
 }
 
+.weui-textarea{
+  font-size: 14px;
+  overflow: auto;
+}
+
 .add-tag {
   display: flex;
   height: 15px;

@@ -62,7 +62,7 @@
           <view class="weui-cell__hd"><label class="weui-label">内容</label></view>
           <!-- <textarea class="input_text" bindinput="handleInputText" placeholder="请输入" maxlength="1024"/> -->
           <view class="weui-cell__bd" style="margin-top: 2vh; font-size: 2vh;">
-                      <textarea class="weui-textarea" placeholder="请描述事件内容" placeholder-class="weui-input__placeholder" rows="3" bindinput="handleInputText"></textarea>
+                      <textarea class="weui-textarea" placeholder="请描述事件内容" placeholder-class="weui-input__placeholder" rows="3" bindinput="handleInputText" maxlength="2048"></textarea>
                       <!-- <view aria-role="option" class="weui-textarea-counter"><span>0</span>/200</view> -->
           </view>
 
