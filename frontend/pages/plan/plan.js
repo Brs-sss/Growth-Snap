@@ -114,6 +114,7 @@ Page({
     this.setData({
       todoList: todoList
     })
+    console.log(todoList)
 
     // 与后端通信，更新数据
     var pointer = this
