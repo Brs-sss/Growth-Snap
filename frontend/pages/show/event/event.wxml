@@ -44,6 +44,15 @@
 </view>
 
 <view class="container_5 overall-outfit">
+  <view class="upload_title">选择孩子</view>
+  <view class="container_tag">
+    <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleKid">
+      <text class="tag-text">{{item.info}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="container_6 overall-outfit">
 
 <view id="button-box">
   <button class="submit" bindtap="handleSubmit">提交</button>

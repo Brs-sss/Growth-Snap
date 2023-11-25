@@ -22,6 +22,7 @@ Page({
     imageList: [],
     tags: [], // 已保存的标签列表
     selectedTags: [], // 已选中的标签列表
+    kidList: [{info: "小明", checked: false}, {info: "小红", checked: false}], // 可选孩子列表
     showInput: false, // 是否显示输入框
     inputText: '', // 输入框的值
     inputTag:'',
