@@ -224,6 +224,12 @@ def submitData(request):
         new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
                                        records=records, data_id=data_id)
 
+        now_family = user.family
+        children = data.get('children')
+        for name in children:
+            child = Child.objects.get(family=now_family, name=name)
+            new_data.children.add(child)
+
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Please use POST'})
