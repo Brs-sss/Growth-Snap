@@ -73,7 +73,7 @@
   /* font-weight: bold; */
 
   /* text-shadow: 2px 2px 4px rgba(128, 128, 128, 0.75); */
-  -webkit-text-stroke: 0.5rpx #000;
+  /* -webkit-text-stroke: 0.5rpx #000; */
 }
 
 .edit {

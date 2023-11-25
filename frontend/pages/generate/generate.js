@@ -21,6 +21,7 @@ Page({
     audioList: [], // 选的配乐
     videoTitle: '', // 小视频标题
     audioSelected: 0,
+    chartList: [], // 图表模板数据
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
@@ -35,8 +36,9 @@ Page({
     });
   },
   navigateTochart(e){
+    const index = e.currentTarget.dataset.index;
     wx.navigateTo({
-      url: '/pages/generate/chart/chart',
+      url: '/pages/generate/chart/chart?index=' + encodeURIComponent(index),
     })
   },
   addVideo(e){
@@ -69,6 +71,7 @@ Page({
         })
         return;
       }
+      wx.setStorageSync('audioSelected', this.data.audioSelected)
       wx.navigateTo({
         url: '/pages/generate/add_event/add_event?category=video' + "&index=" + encodeURIComponent(this.data.audioSelected)+"&title="+this.data.videoTitle,
       })
@@ -124,55 +127,56 @@ Page({
   onLoad(options) {
     this.setData({
       timelineList: [
-        { id: 0 , name:'美丽的模板'},
-        { id: 1 , name:'艺术的模板'},
-        { id: 2 , name:'无敌的模板'},
-        { id: 3 , name:'超级的模板'}
+        { id: 0 },
+        { id: 1 },
+        { id: 2 },
+        { id: 3 }
       ],
       coverList: [
-        { id: 0 , name:'美丽', selected:false},
-        { id: 1 , name:'艺术', selected:false},
-        { id: 2 , name:'无敌', selected:false},
-        { id: 3 , name:'超级', selected:false},
-        { id: 4 , name:'美丽', selected:false},
-        { id: 5 , name:'艺术', selected:false},
-        { id: 6 , name:'艺术', selected:false},
-        { id: 7 , name:'艺术', selected:false},
-        { id: 8 , name:'艺术', selected:false},
-        { id: 9 , name:'艺术', selected:false},
-        { id: 10 , name:'艺术', selected:false},
-        { id: 11 , name:'艺术', selected:false}
+        { id: 0 , selected:false},
+        { id: 1 , selected:false},
+        { id: 2 , selected:false},
+        { id: 3 , selected:false},
+        { id: 4 , selected:false},
+        { id: 5 , selected:false},
+        { id: 6 , selected:false},
+        { id: 7 , selected:false},
+        { id: 8 , selected:false},
+        { id: 9 , selected:false},
+        { id: 10 , selected:false},
+        { id: 11 , selected:false}
       ],
       paperList: [
-        { id: 0 , name:'美丽', selected:false},
-        { id: 1 , name:'艺术', selected:false},
-        { id: 2 , name:'无敌', selected:false},
-        { id: 3 , name:'超级', selected:false},
-        { id: 4 , name:'艺术', selected:false},
-        { id: 5 , name:'无敌', selected:false},
-        { id: 6 , name:'超级', selected:false},
-        { id: 7 , name:'艺术', selected:false},
-        { id: 8 , name:'艺术', selected:false},
-        { id: 9 , name:'艺术', selected:false},
-        { id: 10 , name:'艺术', selected:false},
-        { id: 11 , name:'艺术', selected:false},
+        { id: 0 , selected:false},
+        { id: 1 , selected:false},
+        { id: 2 , selected:false},
+        { id: 3 , selected:false},
+        { id: 4 , selected:false},
+        { id: 5 , selected:false},
+        { id: 6 , selected:false},
+        { id: 7 , selected:false},
+        { id: 8 , selected:false},
+        { id: 9 , selected:false},
+        { id: 10 , selected:false},
+        { id: 11 , selected:false},
       ],
       audioList: [
         { id: 0 , name:'单车'},
         { id: 1 , name:'富士山下'},
         { id: 2 , name:'因为爱情'},
         { id: 3 , name:'孤勇者'},
-        { id: 4 , name:'起风了'},
+        { id: 4 , name:'宝贝宝贝'},
         { id: 5 , name:'你的眼神'},
         { id: 6 , name:'黑桃A'},
         { id: 7 , name:'EverytimeWeTouch'},
+      ],
+      chartList: [
+        { id: 0 },
+        { id: 1 },
+        { id: 2 },
+        { id: 3 }
       ]
     });
-  },
-  generateChart(e){
-    wx.navigateTo({
-      url: '/pages/generate/chart/chart'
-    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

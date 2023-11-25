@@ -8,7 +8,7 @@ import numpy as np
 import shutil
 # from mutagen.mp3 import MP3
 from pdf2image import convert_from_path
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import PyPDF2
 import os
 os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
@@ -19,10 +19,13 @@ import requests
 
 # 指定 wkhtmltopdf 可执行文件路径
 config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+# config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
 render_path = 'static/template/rendered/'
 
 event_image_base_path = '../../ImageBase/'
+
+fps_list = [0.55 , 0.42 , 0.72 , 0.55 , 0.57 , 0.55, 0.545 ,  0.53] # 帧率 0.55 0.44 0.72 0.55 0.55 0.55 0.545  0.53
 
 
 ##########################    block 1: 用于转换tags和string
@@ -137,16 +140,32 @@ def resizeVideoImage(image_path_list, video_title, label):
     resized_image_path = 'static/video/resized/'
     if not os.path.exists(resized_image_path):
         os.makedirs(resized_image_path)
+    # 生成title
     black = cv2.imread('static/video/black.png')
     black = cv2.resize(black, (1080, 608), interpolation=cv2.INTER_CUBIC)
-    
+    cv2.imwrite('static/video/black.png', black)
+    black = Image.open('static/video/black.png')
+    # resize
+    black = black.resize((1080, 608))
+    font_title = ImageFont.truetype('Ye.ttf', 50, encoding='utf-8')
+    font_label = ImageFont.truetype('Ye.ttf', 30, encoding='utf-8')
+    draw = ImageDraw.Draw(black)
+    draw.text((100, 100), video_title, fill=(255, 255, 255), font=font_title)
+    draw.text((100, 175), label, fill=(255, 255, 255), font=font_label)
     date = datetime.now().strftime('%Y-%m-%d')
-
-    cv2.putText(black, video_title, (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (255, 255, 255), 1)
-    black = cv2.putText(black, label, (100, 150), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
-    black = cv2.putText(black, date, (100, 200), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
-    cv2.imwrite('static/video/resized/title.png', black)
+    draw.text((100, 200), date, fill=(255, 255, 255), font=font_label)
+    black.save('static/video/resized/title.png')
     resized_image_path_list.append('static/video/resized/title.png')
+    
+    
+    
+    # date = datetime.now().strftime('%Y-%m-%d')
+
+    # cv2.putText(black, video_title, (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (255, 255, 255), 1)
+    # black = cv2.putText(black, label, (100, 150), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
+    # black = cv2.putText(black, date, (100, 200), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 1)
+    # cv2.imwrite('static/video/resized/title.png', black)
+    # resized_image_path_list.append('static/video/resized/title.png')
     i = 0
     for image_path in image_path_list:
         img = cv2.imread(image_path)
@@ -183,7 +202,9 @@ def GenerateVideo(image_path_list, audio_index, video_title, label, openid):
         os.makedirs(user_dir)
     video_dir = f'static/video/{openid}/temp.mp4'      # 输出视频的保存路径
     print(f'video_dir: {video_dir}')
-    fps = 0.5     # 帧率
+    print(f'audio_index: {audio_index}')
+    print(f'fps: {fps_list[int(audio_index)]}')
+    fps = fps_list[int(audio_index)]    # 帧率 0.55 0.44 0.72 0.55 0.55 0.55 0.545  0.53
     # img_size = (640, 480)      # 图片尺寸
     # fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
     # videoWriter = cv2.VideoWriter(video_dir, fourcc, fps, img_size)

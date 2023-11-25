@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, FileResponse
+from django.db.models import Q
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
@@ -12,6 +13,7 @@ import hashlib
 import os
 import datetime
 import shutil
+from urllib.parse import unquote
 
 # import fitz
 
@@ -131,7 +133,8 @@ def submitEvent(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         event_id = data.get('event_id')
-
+        event_date = data.get('event_date')
+        # print(f'event_date {event_date}')
         title = data.get('title')
         content = data.get('content')
         date = data.get('date')
@@ -143,14 +146,19 @@ def submitEvent(request):
         if type == 'event':
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
-                                             event_id=event_id)
+                                             event_id=event_id, event_date=event_date)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
-            # filtered_records = Text.objects.all()
-            # for rec in filtered_records:
-            #     print('yes',rec)
+
+        now_family = now_user.family
+        children = data.get('children')
+        for name in children:
+            child = Child.objects.get(family=now_family, name=name)
+            new_event.children.add(child)
+
+        print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
@@ -304,6 +312,59 @@ def loadShowPage(request):
         return JsonResponse({'blocks_list': blocks_list})
 
 
+# 加载搜索结果页面
+def loadSearchPage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        search_key = unquote(request.GET.get('searchKey'))
+        types = request.GET.get('types', "etd")  # Default value is "event&text&data"
+        used_by_add_event_page = (request.GET.get('tags', "false") == "true")
+        now_user = User.objects.get(openid=openid)
+
+        # Fuzzy search in title and content for Event and Text
+        event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
+        text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
+
+        now_user_blocks_events = Event.objects.filter(user=now_user).filter(event_filter).order_by("-date", "-time")
+        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user=now_user).filter(text_filter).order_by("-date", "-time")
+        # 暂时不支持data的搜索
+        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_text),
+                                 key=lambda x: (x.date, x.time), reverse=True)
+
+        blocks_list = []
+        for db_block in now_user_blocks:
+            block_item = {}
+            block_item['type'] = db_block.record_type
+            block_item['title'] = db_block.title
+
+            if used_by_add_event_page:
+                block_item['tags'] = StringToList(db_block.tags)
+            else:
+                block_item['content'] = db_block.content
+                block_item['author'] = db_block.user.label
+                date_string = str(db_block.date)
+                block_item['month'] = str(int(date_string[5:7])) + "月"
+                block_item['year'] = date_string[0:4]
+                block_item['day'] = date_string[8:10]
+
+            if db_block.record_type == 'event':
+                block_item['event_id'] = db_block.event_id
+                image_path = 'static/ImageBase/' + db_block.event_id
+                image_list = sorted(os.listdir(image_path))
+                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+
+            if db_block.record_type == 'data':
+                block_item['data_id'] = db_block.data_id
+
+            elif db_block.record_type == 'text':
+                block_item['text_id'] = db_block.text_id
+
+            blocks_list.append(block_item)
+
+        return JsonResponse({'blocks_list': blocks_list})
+
+
 def loadPlanPage(request):
     print('Enter load plan page')
     if request.method == 'GET':
@@ -389,9 +450,12 @@ def getUserInfo(request):
         profile_image = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
         event_number = len(Event.objects.filter(user=now_user))
         plan_number = len(Plan.objects.filter(user=now_user))
+        text_number = len(Text.objects.filter(user=now_user))
+        credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
-                             'event_number': event_number, 'plan_number': plan_number})
+                             'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number,
+                             'credit': credit})
 
 
 def addPlan(request):
@@ -464,6 +528,9 @@ def loadEventDetail(request):
         block_item['type'] = db_block.record_type
         block_item['title'] = db_block.title
         block_item['content'] = db_block.content
+        event_date = str(db_block.event_date)
+        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + \
+                                   event_date.split('-')[2] + '日'
         block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
         date_string = str(db_block.date)
         block_item['month'] = str(int(date_string[5:7])) + "月"
@@ -554,20 +621,41 @@ def getChildrenInfo(request):
         children_list = []
         children = Child.objects.filter(family=family)
         for child in children:
-            print("test")
-            print(child.name, child.child_id)
+            # print("test")
+            # print(child.name, child.child_id)
             child_item = {}
             child_item['name'] = child.name
             # child_item['birthday'] = child.birthday
             # todo: 添加孩子的真实信息
-            child_item['age'] = '5'
-            child_item['height'] = '144'
-            child_item['weight'] = '30'
+            child_item['age'] = 6
+
+            # 计算孩子的年龄，根据出生日期
+            birthdate = child.birthdate
+            if birthdate:
+                today = datetime.date.today()
+                # print(f'birthdate {birthdate}')
+                age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+                child_item['age'] = str(age)
+            child_item['gender'] = child.gender
             image_path = 'static/ImageBase/' + openid + '+' + child.child_id
             image_list = os.listdir(image_path)
             child_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
             children_list.append(child_item)
         return JsonResponse({'children_list': children_list})
+
+
+def loadChildDetail(request):
+    if request.method == 'GET':
+        name = request.GET.get('name')
+        child = Child.objects.get(name=name)
+        child_item = {}
+        child_item['name'] = child.name
+        # 计算child相关的过去一年的每月的计划数量
+        now = datetime.datetime.now()
+        all_plans = Plan.objects.filter(children=child)
+        child_item['plans'] = all_plans.__len__()
+
+        return JsonResponse({'child_item': child_item})
 
 
 def addChild(request):
@@ -576,13 +664,19 @@ def addChild(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         name = data.get('name')
-        # birthday = data.get('birthday')
-        # print(openid,name,birthday)
+        # 检查是否有这个孩子
+        if Child.objects.filter(name=name).exists():
+            print('Duplicate child name')
+            return JsonResponse({'message': 'Duplicate child name'})
+        birthdate = data.get('birthdate')
+        gender = data.get('gender')
+        # print(openid,name,birthdate)
         sha256 = hashlib.sha256()
         sha256.update(name.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
         print(f'sha256_hash {sha256_hash}')
-        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash))
+        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash),
+                                         birthdate=birthdate, gender=gender)
         # print(str(sha256_hash))
         return JsonResponse({
             'message': 'Data submitted successfully',
@@ -627,9 +721,10 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user=user))
-            plan_number = len(Plan.objects.filter(user=user))
-            credit = event_number * 15 + plan_number * 10
+            event_number = len(Event.objects.filter(user=now_user))
+            plan_number = len(Plan.objects.filter(user=now_user))
+            text_number = len(Text.objects.filter(user=now_user))
+            credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
             image_list = os.listdir(image_path)
@@ -765,4 +860,51 @@ def loadVideoThumbnail(request, openid, video_title):
 
         return FileResponse(open(video_path, 'rb'))
     except:
-        pass
+        return HttpResponse("Request failed", status=500)
+
+
+def loadTimelinePage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        types = request.GET.get('types', "etd")  # 缺省值为event&text&data
+        used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
+        now_user = User.objects.get(openid=openid)
+        # 这里的Event将来应当替换成基类BaseRecord
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+        now_user_blocks = sorted(list(now_user_blocks_events),
+                                 key=lambda x: (x.date, x.time), reverse=True)
+        print(now_user_blocks.__len__())
+        blocks_list = []
+        for db_block in now_user_blocks:
+            block_item = {}
+            block_item['type'] = db_block.record_type
+            block_item['title'] = db_block.title
+
+            if used_by_addEvent_page:
+                block_item['tags'] = StringToList(db_block.tags)
+            else:
+                block_item['content'] = db_block.content
+                block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+                date_string = str(db_block.date)
+                block_item['month'] = str(int(date_string[5:7])) + "月"
+                block_item['year'] = date_string[0:4]
+                block_item['day'] = date_string[8:10]
+                block_item['event_date'] = str(db_block.event_date)
+
+            if db_block.record_type == 'event':  # 检查是否与子类A相关if
+                block_item['event_id'] = db_block.event_id
+                image_path = 'static/ImageBase/' + db_block.event_id
+                image_list = sorted(os.listdir(image_path))
+                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+
+            if db_block.record_type == 'data':
+                block_item['data_id'] = db_block.data_id
+
+            elif db_block.record_type == 'text':
+                block_item['text_id'] = db_block.text_id
+
+            blocks_list.append(block_item)
+
+        # print(blocks_list)
+        return JsonResponse({'blocks_list': blocks_list})

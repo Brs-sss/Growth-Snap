@@ -19,7 +19,8 @@ class Child(models.Model):
     name = models.CharField(max_length=20)
     child_id = models.CharField(max_length=65, default='')
     # birthday
-    # birthday = models.DateField(null=True)
+    birthdate = models.DateField(null=True)
+    gender = models.CharField(max_length=10, null=True)
     # family
     family = models.ForeignKey(Family, on_delete=models.CASCADE)
 
@@ -44,6 +45,8 @@ class User(models.Model):
 class BaseRecord(models.Model):
     # 每一个用户都有自己的事件、想法、记录和计划，所以这里用外键可以实现一对多的关系(一个用户对应多个事件、想法、记录和计划)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    #
+    children = models.ManyToManyField(Child)
     # event, text, data
     record_type = models.CharField(max_length=10, default='event')
     # date
@@ -61,6 +64,7 @@ class Event(BaseRecord):
     content = models.CharField(max_length=1024)
     tags = models.CharField(max_length=200)
     event_id = models.CharField(max_length=65, default="")
+    event_date = models.DateField(null=True)
 
     def __str__(self):
         return str(

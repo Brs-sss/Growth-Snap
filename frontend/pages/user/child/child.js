@@ -58,13 +58,20 @@ Page({
     blog_cards_list:[],  //所有卡片BlogCard的list
     host_: `${app.globalData.localUrl}`,
   },
-
   goToPage_addchild(){
     wx.navigateTo({
       url: '/pages/user/child/addchild/addchild',
     })
   },
-
+  goToPage_detail: function(e){
+    const index = e.currentTarget.dataset.index;
+    console.log('index:', index)
+    console.log(this.data.blog_cards_list[index].name)
+    let name = this.data.blog_cards_list[index].name
+    wx.navigateTo({
+      url: '/pages/user/child/child_detail/child_detail' + '?index=' + encodeURIComponent(index) + '&name=' + name,
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */

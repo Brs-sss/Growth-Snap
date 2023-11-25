@@ -2,11 +2,20 @@
   <!-- 第一部分 -->
   <view class="view_1">
     <view class="white-box">
-      <view class="view_image_text">
+      <!-- <view class="view_image_text">
         <image class="user_profile" src="{{user_profile}}" />
         <text class="user_name">{{username}}</text>
         <text class="user_tag">{{user_label}}</text>
+      </view> -->
+      <view class="view_image_text">
+      <view class="profile_view">
+        <image class="user_profile" src="{{user_profile}}" />
       </view>
+      <view class="text_view">
+        <view class="user_name">{{username}}</view>
+        <view class="user_tag">{{user_label}}</view>
+      </view>
+</view>
       <view class="user_info">
         <text class="info_data" id="data_1">{{event_number}}</text>
         <text class="info_type">事件</text>
@@ -16,11 +25,11 @@
         <text class="info_type">计划</text>
       </view>
       <view class="user_info">
-        <text class="info_data" id="data_text">30</text>
+        <text class="info_data" id="data_text">{{text_number}}</text>
         <text class="info_type">文字</text>
       </view>
       <view class="user_info">
-        <text class="info_data" id="data_point">40</text>
+        <text class="info_data" id="data_point">{{credit}}</text>
         <text class="info_type">积分</text>
       </view>
     </view>
@@ -40,19 +49,19 @@
       <image class="image-arrow" src="/image/user/arrow.png"></image>
     </view>
     <view class="line"></view>
-    <view class="list-item">
+    <view class="list-item" bindtap="goToPage_setting">
       <image class="item-image" src="/image/user/settings.png"></image>
       <text class="item-text">更多设置</text>
       <image class="image-arrow" src="/image/user/arrow.png"></image>
     </view>
     <view class="line"></view>
-    <view class="list-item">
+    <view class="list-item" bindtap="goToPage_about_us">
       <image class="item-image" src="/image/user/about_us.png"></image>
       <text class="item-text">关于我们</text>
       <image class="image-arrow" src="/image/user/arrow.png"></image>
     </view>
     <view class="line"></view>
-    <view class="list-item">
+    <view class="list-item" bindtap="goToPage_comments">
       <image class="item-image" src="/image/user/leave_us_comment.png"></image>
       <text class="item-text">意见反馈</text>
       <image class="image-arrow" src="/image/user/arrow.png"></image>

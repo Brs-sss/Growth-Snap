@@ -1,7 +1,7 @@
 /* pages/show/event/event.wxss */
 .whole-page-grid{
   display: grid;
-  grid-template-rows: 10vh 20vh 1fr 10vh 10vh;
+  grid-template-rows: 25vh 10vh 1fr 10vh 10vh;
   grid-template-columns: 1fr;
   grid-template-areas:
   "A"
@@ -86,10 +86,13 @@
 }
 
 .container_tag{
+  /* margin-top: 3vh; */
   display: flex;
   flex-wrap: wrap;
   align-items: center; /* 标签垂直居中对齐 */
   gap: 8px; /* 标签之间的间距 */
+  margin-left: var(--weui-cellMarginLR);
+  margin-right: var(--weui-cellMarginLR);
 }
 
 .tag {
@@ -103,6 +106,8 @@
   text-align: center;
   color: #4095E5;
   cursor: pointer;
+  margin-left: 1vh;
+  margin-right: 1vh;
 }
 
 .tag.selected {
@@ -189,15 +194,20 @@
   margin-top: 4vh;
   display: flex;
   flex-wrap: wrap;
+  margin-left: 1vh;
+  margin-right: 1vh;
+  width: 100%;
 }
 
 .icon-item {
-  margin-right: 2vh;
+  margin-left: 1vh;
+  margin-right: 1vh;
   margin-bottom: 1vh;
 }
 
 .icon-item-hover {
-  margin-right: 2vh;
+  margin-left: 1vh;
+  margin-right: 1vh;
   margin-bottom: 1vh;
   background-color: rgba(187, 190, 190, 0.397);
   /* box-shadow: 2px 2px 6px rgb(141, 137, 137); */
@@ -209,5 +219,22 @@
   height: 7vh;
   width: 7vh;
 }
+.weui-form__control-area {
+  margin: 0;
+  margin-top: 3vh;
+  position: relative;
+}
 
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(68, 68, 68);
+
+}
+.weui-input, .weui-select {
+  font-size: 2vh;
+}
 

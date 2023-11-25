@@ -28,12 +28,13 @@ Page({
             console.log(res)
             var todoList = res.data.not_finished_todo_list
             todoList = todoList.concat(res.data.finished_todo_list)
+            console.log(todoList)
             pointer.setData({
               todoList: todoList,
               planList: res.data.plan_list
             })
           },
-          fail:function (res) {
+          fail: function (res) {
             console.log(res)
           }
         });
@@ -44,18 +45,18 @@ Page({
     })
 
     // 设置计划固定位置上侧的最大元素个数
-    const query = wx.createSelectorQuery()
-    // 选择页面根节点
-    query.selectViewport().boundingClientRect(function (rect) {
-      var item_height = 0.04 * rect.height + 24
-      var left = 0.40 * rect.height - 36
-      console.log(item_height, left)
-      var centerNum = Math.floor(left / item_height)
-      console.log('个数:', centerNum)
-      pointer.setData({
-        centerNum: centerNum
-      })
-    }).exec()
+    // const query = wx.createSelectorQuery()
+    // // 选择页面根节点
+    // query.selectViewport().boundingClientRect(function (rect) {
+    //   var item_height = 0.04 * rect.height + 24
+    //   var left = 0.40 * rect.height - 36
+    //   console.log(item_height, left)
+    //   var centerNum = Math.floor(left / item_height)
+    //   console.log('个数:', centerNum)
+    //   pointer.setData({
+    //     centerNum: centerNum
+    //   })
+    // }).exec()
   },
 
   goToTodoList(e) {
@@ -113,6 +114,7 @@ Page({
     this.setData({
       todoList: todoList
     })
+    console.log(todoList)
 
     // 与后端通信，更新数据
     var pointer = this

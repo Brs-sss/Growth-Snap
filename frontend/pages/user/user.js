@@ -19,7 +19,9 @@ function LoadUserPage(that){
               user_label: res.data.label,
               username: res.data.username,
               event_number: res.data.event_number,
-              plan_number:res.data.plan_number
+              plan_number:res.data.plan_number,
+              text_number: res.data.text_number,
+              credit: res.data.credit
             })
         },
         fail:function(res){
@@ -47,7 +49,9 @@ Page({
     username: '',
     user_label: '',
     event_number: 0,
-    plan_number: 0
+    plan_number: 0,
+    text_number: 0,
+    credit: 0
   },
   goToPage_family() {
     // TODO: 跳转到对应页面的处理逻辑
@@ -61,7 +65,24 @@ Page({
       url: '/pages/user/child/child',
     })
   },
-  
+  goToPage_setting() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/setting/setting',
+    })
+  },
+  goToPage_about_us() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/about_us/about_us',
+    })
+  },
+  goToPage_comments() {
+    // TODO: 跳转到对应页面的处理逻辑
+    wx.navigateTo({
+      url: '/pages/user/comments/comments',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
