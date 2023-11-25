@@ -1,18 +1,21 @@
 // pages/generate/timeline/timeline.js
 import * as echarts from '../../../components/ec-canvas/echarts';
 
+const app = getApp();
+
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
 var timeline_template = 0; // 当前的模板id
 var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
-  {id: 0, backgroundColor: '#143e64', colors:["#87ceeb","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#164a7a98']},
-  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b', '#b9612791']},
-  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471']},
-  {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#084963a8', ]},
+  {id: 0, backgroundColor: '#143e64', colors:["#87ceeb","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#164a7a98','#59c5e642']},
+  {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b', '#b9612791', '#ffd90042']},
+  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471','#f48fb142']},
+  {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#084963a8','#a4ebb142' ]},
 ];
 var timelineType = [];
 
 //时间轴需要的数据
+var eventIndex = []; //选择事件的index
 var eventData = [];
 var graphDataFor0 = [];
 var graphDataFor1 = [];
@@ -340,32 +343,72 @@ for (let j = 0; j < data.length; ++j) {
 
 
 
-const IMG = [
-  '/image/generate/events/event_0.png',
-  '/image/generate/events/event_1.png',
-  '/image/generate/events/event_2.png',
-  '/image/generate/events/event_3.png',
-  '/image/generate/events/event_4.png',
-  '/image/generate/events/event_5.png',
-]
+/* 与后端联系，获取主页的内容*/
+function loadPageInfo(that){
+  // 获取存储的openid
+  wx.getStorage({
+    key: 'openid',  // 要获取的数据的键名
+    success: function (res) { 
+      // 从本地存储中获取数据,在index.js文件中保存建立的
+      let openid=res.data
+      wx.request({
+        url: that.data.host_+'user/api/generate/timeline'+'?openid='+openid+'&types=e&tags=false', //e表示只求取event
+        method:'GET',
+        success:function(res){
+          console.log(res.data.blocks_list)
+          let uniqueTags = new Set();
+          let tag_to_eventIndex_dict = {}
+          const eventList = res.data.blocks_list.map((blogCard) => {
+              let {imgSrc}=blogCard;
+              let { title, event_date} = blogCard;
+              (imgSrc==undefined)?imgSrc='/image/show/txt.png':null;
+              let date = event_date;
+              return { imgSrc, date, title};
+            });
+            let tag_array=Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}})
+            that.setData({
+              blog_cards_list: res.data.blocks_list,
+              eventList: eventList,
+
+              tags:tag_array,
+              isTagsEmpty:tag_array.length==0,
+              tag_to_event_index_dict:tag_to_eventIndex_dict,
+            })
+            eventData = eventIndex.map(function(index) {
+              return eventList[index];
+            });
+            initData();
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+      })
+    },
+    fail:function(res){
+      console.log('get openid failed: ',res)
+    }
+  })
+}
 
 function initData(){
-  eventData=[
-    {date:'2023-02-01', title:'小明今天开始学习钢琴'},
-    {date:'2023-03-05', title:'小明学会了第一首曲子'},
-    {date:'2023-04-20', title:'小明说好喜欢弹钢琴'},
-    {date:'2023-06-04', title:'小明开始准备第一次考级'},
-    {date:'2023-07-09', title:'给小明买了一台自己的钢琴'},
-    {date:'2023-09-15', title:'小明通过了考级'}
-  ];
+  console.log("here")
+  console.log(eventData);
+  // eventData=[
+  //   {date:'2023-02-01', title:'小明今天开始学习钢琴'},
+  //   {date:'2023-03-05', title:'小明学会了第一首曲子'},
+  //   {date:'2023-04-20', title:'小明说好喜欢弹钢琴'},
+  //   {date:'2023-06-04', title:'小明开始准备第一次考级'},
+  //   {date:'2023-07-09', title:'给小明买了一台自己的钢琴'},
+  //   {date:'2023-09-15', title:'小明通过了考级'}
+  // ];
+  console.log(eventData);
   titleData = eventData.map(event => event.title);
-  console.log(timeline_template);
   //0号时间轴
   graphDataFor0 = eventData.map(event => [event.date, 1000, event.title]);
   linksFor0 = graphDataFor0.map(function (item, idx) {
     return {
-      source: idx,
-      target: idx + 1
+      source: idx + 1,
+      target: idx
     };
   });
   //1号时间轴
@@ -390,7 +433,7 @@ function initData(){
       height: 120,
       width: 180,
       backgroundColor: {
-        image: IMG[i],
+        image: eventData[i].imgSrc,
       }
     };
   };
@@ -502,7 +545,12 @@ function initChart(canvas, width, height, dpr) {
           data: graphDataFor1, //用到的数据
           label:{
             rich: imgData,
-            fontSize: 16
+            fontSize: 16,
+            borderColor: colorSet[colorSetIdex].colors[1], // Set the border color for the label
+            borderWidth: 2, // Set the border width for the label
+            borderRadius: 10, // Set the border radius for rounded corners (optional)
+            padding: [5, 10], // Set padding for the label content (optional)
+            backgroundColor: colorSet[colorSetIdex].colors[10]
           },
           itemStyle: {
             borderColor: 'transparent', // 将边框颜色设置为透明
@@ -532,6 +580,11 @@ function initChart(canvas, width, height, dpr) {
           fontSize: 16,
           color: '#6894B9',
           fontFamily: 'Arial',
+          borderColor: '#6894B9', // Set the border color for the label
+          borderWidth: 2, // Set the border width for the label
+          borderRadius: 10, // Set the border radius for rounded corners (optional)
+          padding: [5, 10], // Set padding for the label content (optional)
+          backgroundColor: colorSet[colorSetIdex].colors[10]
         }
       },
       xAxis: {
@@ -675,6 +728,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    host_: `${app.globalData.localUrl}`,
     templates:[
       {id: 0, selected: false},
       {id: 1, selected: false},
@@ -726,7 +780,11 @@ Page({
       timelineType[0].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[9];
     }else if(timeline_template == 1){
       timelineType[1].color=colorSet[colorSetIdex].colors;
+      timelineType[1].series[0].label.borderColor = colorSet[colorSetIdex].colors[1]
+      timelineType[1].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[10]
     }else if(timeline_template == 2){
+      timelineType[2].yAxis.axisLabel.borderColor = colorSet[colorSetIdex].colors[2]
+      timelineType[2].yAxis.axisLabel.backgroundColor = colorSet[colorSetIdex].colors[10]
       timelineType[2].yAxis.axisLabel.color=colorSet[colorSetIdex].colors[0];
       timelineType[2].series[0].itemStyle.color=new echarts.graphic.LinearGradient(0, 0, 1, 0, [
         { offset: 0, color: colorSet[colorSetIdex].colors[1] },
@@ -783,10 +841,14 @@ Page({
   onLoad(options) {
     console.log("load");
     timeline_template = options.index;
+    const eventsSTR = options.events;
+    console.log(eventsSTR)
+    eventIndex = eventsSTR.split('-').map(Number);
     this.setData({
       ['templates[' + timeline_template + '].selected']: true
     });
-    initData();
+    var that = this;
+    loadPageInfo(that);
   },
 
   /**

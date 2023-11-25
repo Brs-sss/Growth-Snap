@@ -95,6 +95,14 @@ bindGenderChange(e){
                 'gender': that.data.gender,
               },
           success:function(res){
+            if (res.data.message == 'Duplicate child name')
+            {
+              wx.showToast({
+                title: '孩子已存在',
+                icon: 'error'
+              })
+              return
+            }
             console.log('add ok');
             console.log(res.data.child_id)
             let child_id = res.data.child_id

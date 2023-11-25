@@ -445,9 +445,11 @@ def getUserInfo(request):
         profile_image = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
         event_number = len(Event.objects.filter(user=now_user))
         plan_number = len(Plan.objects.filter(user=now_user))
+        text_number = len(Text.objects.filter(user=now_user))
+        credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
-                             'event_number': event_number, 'plan_number': plan_number})
+                             'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number, 'credit': credit})
 
 
 def addPlan(request):
@@ -635,12 +637,30 @@ def getChildrenInfo(request):
         return JsonResponse({'children_list': children_list})
 
 
+def loadChildDetail(request):
+    if request.method == 'GET':
+        name = request.GET.get('name')
+        child = Child.objects.get(name=name)
+        child_item = {}
+        child_item['name'] = child.name
+        # 计算child相关的过去一年的每月的计划数量
+        now = datetime.datetime.now()
+        all_plans = Plan.objects.filter(children=child)
+        child_item['plans'] = all_plans.__len__()
+
+        return JsonResponse({'child_item': child_item})
+
+
 def addChild(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         name = data.get('name')
+        # 检查是否有这个孩子
+        if Child.objects.filter(name=name).exists():
+            print('Duplicate child name')
+            return JsonResponse({'message': 'Duplicate child name'})
         birthdate = data.get('birthdate')
         gender = data.get('gender')
         # print(openid,name,birthdate)
@@ -693,9 +713,10 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user=user))
-            plan_number = len(Plan.objects.filter(user=user))
-            credit = event_number * 15 + plan_number * 10
+            event_number = len(Event.objects.filter(user=now_user))
+            plan_number = len(Plan.objects.filter(user=now_user))
+            text_number = len(Text.objects.filter(user=now_user))
+            credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
             image_list = os.listdir(image_path)
@@ -832,3 +853,50 @@ def loadVideoThumbnail(request, openid, video_title):
         return FileResponse(open(video_path, 'rb'))
     except:
         return HttpResponse("Request failed", status=500)
+
+def loadTimelinePage(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        types = request.GET.get('types', "etd")  # 缺省值为event&text&data
+        used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
+        now_user = User.objects.get(openid=openid)
+        # 这里的Event将来应当替换成基类BaseRecord
+        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+        now_user_blocks = sorted(list(now_user_blocks_events),
+                                 key=lambda x: (x.date, x.time), reverse=True)
+        print(now_user_blocks.__len__())
+        blocks_list = []
+        for db_block in now_user_blocks:
+            block_item = {}
+            block_item['type'] = db_block.record_type
+            block_item['title'] = db_block.title
+
+            if used_by_addEvent_page:
+                block_item['tags'] = StringToList(db_block.tags)
+            else:
+                block_item['content'] = db_block.content
+                block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
+                date_string = str(db_block.date)
+                block_item['month'] = str(int(date_string[5:7])) + "月"
+                block_item['year'] = date_string[0:4]
+                block_item['day'] = date_string[8:10]
+                block_item['event_date'] = str(db_block.event_date)
+
+            if db_block.record_type == 'event':  # 检查是否与子类A相关if
+                block_item['event_id'] = db_block.event_id
+                image_path = 'static/ImageBase/' + db_block.event_id
+                image_list = sorted(os.listdir(image_path))
+                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+
+            if db_block.record_type == 'data':
+                block_item['data_id'] = db_block.data_id
+
+            elif db_block.record_type == 'text':
+                block_item['text_id'] = db_block.text_id
+
+            blocks_list.append(block_item)
+
+        # print(blocks_list)
+        return JsonResponse({'blocks_list': blocks_list})
+

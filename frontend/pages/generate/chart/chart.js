@@ -16,6 +16,7 @@ var seriesDataFor0= []
 
 
 // 1号chart的数据
+
 var dateList = [];
 var valueList = [];
 
@@ -687,6 +688,31 @@ Page({
    */
   onLoad(options) {
     chart_template = options.index;
+
+    // var pointer = this
+    // wx.getStorage({
+    //   key: 'openid',  // 要获取的数据的键名
+    //   success: function (res) { 
+    //     var openid = res.data
+    //     wx.request({
+    //       url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
+    //       method:'GET',
+    //       success:function(res){
+    //         console.log(res.data.keyList);
+    //         const keys = res.data.keyList.map((key) => {
+    //           return { info: key, selected: false };
+    //         });
+    //         pointer.setData({
+    //           keys: keys
+    //         })
+    //       }
+    //     });
+    //   },
+    //   fail: function(res) {
+    //     console.error('获取本地储存失败', res);
+    //   }
+    // });
+
     if(chart_template == 0){
       // 可以多选
       selectFlag = 0;
@@ -694,6 +720,7 @@ Page({
       // 必须单选
       selectFlag = 1;
     }
+
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
@@ -785,7 +812,8 @@ Page({
       });
       keys[0].selected = true;
     }
-
+    console.log("here")
+    console.log(keys)
     this.setData({
       keys: keys
     })

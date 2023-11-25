@@ -9,7 +9,7 @@ function loadPageInfo(that){
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       wx.request({
-        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&types=et&tags=true', //et表示只求取event和text
+        url: that.data.host_+'user/api/generate/timeline'+'?openid='+openid+'&types=e&tags=true', //e表示只求取event
         method:'GET',
         success:function(res){
           let uniqueTags = new Set();
@@ -326,9 +326,11 @@ Page({
     })
     wx.setStorageSync('generate_id_list', id_list);
     if(category=="timeline"){
-      const { timeline_template } = this.data;
+      const { timeline_template,selectedEvents } = this.data;
+      const selectedevent = selectedEvents.join('-');
+      console.log(selectedevent);
       wx.navigateTo({
-        url: '/pages/generate/timeline/timeline' + '?index=' + timeline_template,
+        url: '/pages/generate/timeline/timeline' + '?index=' + timeline_template + '&events=' + selectedevent,
       })
       console.log(timeline_template);
     }

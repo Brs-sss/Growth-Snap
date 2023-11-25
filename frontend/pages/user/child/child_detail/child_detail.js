@@ -1,5 +1,6 @@
 // pages/user/child/child_detail/child_detail.js
 import * as echarts from '../../../../components/ec-canvas/echarts';
+const app = getApp();
 
 var child_id = 0;
 
@@ -278,7 +279,9 @@ Page({
     ec_tag2: {
       onInit: initTag2Chart
     },
-    name: ''
+    name: '',
+    host_: `${app.globalData.localUrl}`,
+    plans: 0
   },
 
   /**
@@ -286,8 +289,22 @@ Page({
    */
   onLoad(options) {
     child_id = options.index;
+    console.log(options.name)
+    var that = this
     this.setData({
       name: options.name
+    })
+    wx.request({
+      url: this.data.host_+'user/api/user/child_detail'+'?name='+this.data.name,
+      method: 'GET',
+      success: function(res) {
+        console.log(res)
+        that.setData({
+          plans: res.data.child_item.plans
+        })
+        console.log('plans:', that.data.plans)
+
+      }
     })
   },
 

@@ -1,1 +1,265 @@
 /* pages/user/comments/comments.wxss */
+/* pages/show/event/event.wxss */
+
+
+.overall-outfit{
+  padding: 20rpx;
+  width: 100%;
+}
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(68, 68, 68);
+
+}
+.weui-input, .weui-select {
+  font-size: 2vh;
+}
+
+
+.container_1 {
+  grid-area: A;
+  font-size: 14px;
+
+}
+
+#title-box1{
+  height: 100%;
+  width: 15%;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  position: absolute;
+  width: 250px;
+  height: 20px;
+  margin-top: -38px;
+  margin-left: 40px;
+  padding: 10rpx;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+}
+
+.result {
+  margin-top: 20rpx;
+}
+
+.container_2 {
+  grid-area: B;
+  font-size: 14px;
+}
+
+.upload_title {
+  width: 100%;
+  height: 5vh;
+  border-radius: 100px;
+  color: #333;
+}
+
+.upload_icon{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+
+.image-list {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+
+/* #image-grid-container{
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  height:30vw;
+  border: 1px solid #000;
+}  */
+
+.image-grid-item{
+  /* border: 1px solid #000; */
+  border: 1px solid rgba(0, 0, 0, 0);
+  position: relative;
+  width: 25vw;
+  height:25vw; /*设置高度宽度相等*/
+}
+
+.image-grid-item image{
+  display: inline;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
+
+.add-image-butn{
+  background-color: #eee;
+  font-size: 3em;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+
+
+.image_delete{
+  position: absolute;
+  top: 0; /* 调整顶部位置 */
+  left: 0; /* 调整左侧位置 */
+  width: 5vw;
+  height: 5vw;
+}
+
+.image_delete image{
+  width: 100%;
+  height: 100%;
+}
+
+.image_delete_icon{
+  width: 10px;
+  height: 5px;
+}
+
+.container_3 {
+  grid-area: C;
+  font-size: 14px;
+}
+
+.input_text {
+  margin-right: 10%;
+  margin-top: 5%;
+  width: 70vw;
+  height: 20vh;
+  border: 1rpx solid rgba(220, 220, 220, 0.5);
+  border-radius: 4rpx;
+  font-size: 14px;
+  overflow: auto;
+}
+
+
+.container_4 {
+  grid-area: D;
+  font-size: 14px;
+}
+
+.container_tag{
+  margin-top: 2vh;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 8px; /* 标签之间的间距 */
+}
+
+.tag {
+  height: 15px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #4095E5;
+  cursor: pointer;
+}
+
+.tag.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tag .tag-text {
+  /* margin-bottom: 3px; */
+  font-size: 14px;
+}
+
+.checkbox-container {
+  margin-left: 4px;
+}
+
+.add-tag {
+  display: flex;
+  height: 15px;
+  align-items: center;
+  padding: 4px 8px;
+  margin-right: 8px;
+  border-radius: 4px;
+  border: 1rpx solid #007bff65;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #007bff65;
+  cursor: pointer;
+}
+
+.add-tag .add-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.add-tag .add-text {
+  font-size: 14px;
+}
+
+.tag-input {
+  margin-left: -70px;
+  font-size: 12px;
+  width: 70px;
+  padding: 2px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid #007bff65;
+  color: #007bff65;
+  background-color: #fff;
+  padding-left: 6px;
+}
+
+.container_5 {
+  grid-area: E;
+  width: 100%;
+  justify-self: center;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 垂直底部对齐 */
+  align-items: center; /* 水平居中 */
+}
+
+#button-box{
+  position: relative;
+  margin-bottom: 4vh;
+}
+
+.submit{
+  width: 100%;
+  height: 80rpx;
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+  margin-bottom: auto;
+  position: relative;
+}
+
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(68, 68, 68);
+
+}
+.weui-input, .weui-select, .weui-textarea{
+  font-size: 2vh;
+}
+.weui-input__placeholder{
+  font-size: 2vh;
+}
