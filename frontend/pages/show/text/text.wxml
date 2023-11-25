@@ -104,6 +104,18 @@
         </view>
           
         </view>
+
+        <view class="weui-cell weui-cell_active" style="flex-direction:row; ">
+        <view>
+          <view class="weui-cell__hd" style="margin-right: 70%;"><label class="weui-label">选择孩子</label></view>
+          <view class="container_tag">
+          <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleChild">
+            <text class="tag-text">{{item.info}}</text>
+          </view>
+          </view>
+        </view>
+        </view>
+
       </view>
     </view>
   </view>
