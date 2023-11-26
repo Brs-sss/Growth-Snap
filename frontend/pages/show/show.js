@@ -214,8 +214,11 @@ Page({
         })
 
     }else if(type=="data"){
-        //TODO
-
+      let data_id=this.data.blog_cards_list[index].data_id;
+      console.log(data_id)
+      wx.navigateTo({
+        url: `/pages/show/data_detail/data_detail?data_id=${data_id}`,
+      })
     }
   },
   /**

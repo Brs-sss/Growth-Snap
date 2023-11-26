@@ -11,5 +11,8 @@
   "dependencies": {
     "@vant/weapp": "^1.11.1",
     "weui-miniprogram": "^1.2.10"
+  },
+  "devDependencies": {
+    "miniprogram-simulate": "^0.0.1"
   }
 }

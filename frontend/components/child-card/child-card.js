@@ -9,18 +9,14 @@ Component({
       type: String,
       value: '5月',
     },
-    height: {
+    gender: {
       type: String,
-      value: '小明妈',
+      value: '男',
     },
     imgSrc: {
       type: String,
       value: '/image/temp/colorring.png',
-    },
-    weight: {
-      type: String,
-      value: '今天带小明感受大自然',
-    },
+    }
     
   },
   methods: {

@@ -8,32 +8,58 @@
 
 .view_image_text {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 280rpx;
+  /* align-items: center;
+  justify-content: center; */
+  flex-direction: row;
+  /* height: 15vh; */
+  padding:2vh;
   background-color: #fff;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
   border-radius: 30rpx;
-  margin-left: -40%;
-  margin-top: 10px;
+  margin-top: 2vh;
+  margin-left: 2vh;
+
+}
+.profile_view {
+  /* margin-left: 2vh; */
+  /* margin-top: 2vh; */
+  width: 80px;
 }
 
 .user_profile {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-right: 10px;
+  width: 70px;
+  height: 70px;
+  border-radius: 1vh;
+  margin-right: 1vh;
+}
+
+.text_view{
+  margin-left: 1vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
 }
 
 .user_name {
-  margin-top: -20px;
-  font-size: 20px;
+  /* margin-top: -20px; */
+  font-size: 2.5vh;
+}
+
+.user_info{
+  /* margin-top: 40px;
+  margin-left: -40px; */
+  font-size: 2vh;
+  margin-top: 1vh;
 }
 
 .user_tag {
-  margin-top: -20px;
+  /* margin-top: -20px; */
   font-size: 16px;
-  height: 30px;
+  /* height: 30px; */
+  padding-left: 0.5vh;
+  padding-right: 0.5vh;
   background: #f0f8ff;
   border: 1rpx solid #4095E5;
   border-radius: 10rpx;
@@ -41,17 +67,18 @@
   color: #4095E5;
   line-height: 62rpx;
   margin-left: 5px;
+  /* float: left; */
 }
 
 .user_signature {
   font-size: 15px;
   color: #666666;
-  margin-left: -100px;
+  margin-left: -10vh;
   margin-top: 60px;
 }
 
 .add{
-  font-size: 20px;
+  font-size: 2vh;
   margin-top: 30px;
   height: 40px;
   background-color: #4095E5;
