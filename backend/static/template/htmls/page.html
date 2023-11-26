@@ -59,13 +59,17 @@
             height: auto;
         }
 
+        .text{
+            color: "{{ text_color }}";
+        }
+
     </style>
 </head>
 <body>
     <div class="page">
         <div class="date">{{ date }}</div>
         <h1>{{ title }}</h1>
-        <p>{{ text }}</p>
+        <p class="text">{{ text }}</p>
         <div class="image-box">
             <img src="{{ image }}"/>
             <!-- <img src="漫天闪电.png"/> -->

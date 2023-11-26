@@ -18,6 +18,7 @@ class BlogCard{
 
 //简易模糊搜索
 function fuzzySearch(text, query) {
+  console.log(text,query)
   // 将搜索字符串转换为小写，并去除空格
   const sanitizedText = text.toLowerCase().replace(/\s/g, '');
   const sanitizedQuery = query.toLowerCase().replace(/\s/g, '');
@@ -143,7 +144,7 @@ Page({
         }
       }
     });
-    console.log(searchResults);
+    //console.log(searchResults);
     this.setData({
       searchHint: searchResults
     })

@@ -181,6 +181,12 @@
   margin-left: 4px;
 }
 
+.weui-textarea{
+  font-size: 14px;
+  min-height: 3em;
+  line-height: 1em;
+}
+
 .add-tag {
   display: flex;
   height: 15px;
