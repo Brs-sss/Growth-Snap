@@ -32,6 +32,17 @@
       <input class="dataBar" type="digit" placeholder=""/>
     </view>
   </view>
+
+  <view class="weui-cell weui-cell_active" style="flex-direction:row; position: relative; top: 40px;">
+    <view>
+      <view class="weui-cell__hd" style="margin-left: 6%;"><label class="weui-label">选择孩子</label></view>
+      <view class="container_tag" style="margin-left: 6%;">
+      <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleChild">
+        <text class="tag-text">{{item.info}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
   <view style="height: 270px;"></view>
   <!-- 提交按钮 -->
   <view style="position: absolute; top: {{submitHeight}}px;" class='spacing textCenter'>

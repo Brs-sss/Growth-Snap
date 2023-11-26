@@ -9,6 +9,8 @@ Page({
     loadedKeys: [],
     unloadedKeys: [],
     records: [],
+    kidList: [],
+    selectedKids: [],
 
     startAdd: false,
     waitClear: '',
@@ -56,6 +58,45 @@ Page({
     })
     // 设置提交按钮高度
     this.updataSubmitHeight()
+    
+    // 获取孩子信息
+    var that = this
+    let openid
+    // 获取存储的openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        openid=res.data
+        console.log("openid:",openid)
+        that.setData({
+          openid: openid
+        })
+        
+    wx.request({
+      url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+      method: 'GET',
+      success:function(res){
+        console.log(res.data)
+        let children_list = res.data.children_list
+        console.log(children_list.length)
+        let temp_kidList = []
+        for(let i = 0; i < children_list.length; i++){
+          let name = children_list[i].name
+          console.log(name)
+          temp_kidList.push({'info': name, 'checked': false})
+          
+        }
+        that.setData({
+          kidList: temp_kidList
+        })
+    },
+    fail:function(res){
+      console.log('load page failed: ',res)
+    }
+    })
+      }
+    })
   },
 
   handleAddKey(e) { // 处理添加标签
@@ -155,7 +196,7 @@ Page({
               data:{
                 'openid':openid,
                 'data_id':data_id,
-                'children':'',
+                'children':pointer.data.selectedKids,
                 'records':JSON.stringify(pointer.data.records),
                 'date':formattedDate,
                 'time':currentTimeString,
@@ -174,5 +215,24 @@ Page({
         console.error('获取本地储存失败', res);
       }
     })
-  }
+  },
+
+  toggleChild(e) {
+    var index = e.currentTarget.dataset.index
+    console.log('index: ', index)
+    var kidList = this.data.kidList
+    var selected = this.data.selectedKids
+    if(kidList[index].checked){
+      selected = selected.filter(item => item != kidList[index].info)
+    }
+    else{
+      selected.push(kidList[index].info)
+    }
+    kidList[index].checked = ! kidList[index].checked
+    console.log(kidList, selected)
+    this.setData({
+      kidList: kidList,
+      selectedKids: selected
+    })
+  },
 })

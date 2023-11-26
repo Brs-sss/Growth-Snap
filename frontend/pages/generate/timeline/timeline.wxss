@@ -76,6 +76,7 @@ ec-canvas {
 .template.selected {
   background-color: #007bff67;
   color: #fff;
+  color: #ffd900d8;
 }
 
 #container_color{
