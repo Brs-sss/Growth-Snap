@@ -151,9 +151,14 @@ def submitEvent(request):
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
-            # filtered_records = Text.objects.all()
-            # for rec in filtered_records:
-            #     print('yes',rec)
+
+        now_family = now_user.family
+        children = data.get('children')
+        for name in children:
+            child = Child.objects.get(family=now_family, name=name)
+            new_event.children.add(child)
+
+        print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
@@ -218,6 +223,12 @@ def submitData(request):
 
         new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
                                        records=records, data_id=data_id)
+
+        now_family = user.family
+        children = data.get('children')
+        for name in children:
+            child = Child.objects.get(family=now_family, name=name)
+            new_data.children.add(child)
 
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
@@ -306,6 +317,7 @@ def loadShowPage(request):
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
 
+
 # 加载搜索结果页面
 def loadSearchPage(request):
     if request.method == 'GET':
@@ -315,10 +327,9 @@ def loadSearchPage(request):
         used_by_add_event_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
 
-         # Fuzzy search in title and content for Event and Text
+        # Fuzzy search in title and content for Event and Text
         event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
         text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
-
 
         now_user_blocks_events = Event.objects.filter(user=now_user).filter(event_filter).order_by("-date", "-time")
         now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
@@ -449,7 +460,8 @@ def getUserInfo(request):
         credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
-                             'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number, 'credit': credit})
+                             'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number,
+                             'credit': credit})
 
 
 def addPlan(request):
@@ -523,7 +535,8 @@ def loadEventDetail(request):
         block_item['title'] = db_block.title
         block_item['content'] = db_block.content
         event_date = str(db_block.event_date)
-        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + event_date.split('-')[2] + '日'
+        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + \
+                                   event_date.split('-')[2] + '日'
         block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
         date_string = str(db_block.date)
         block_item['month'] = str(int(date_string[5:7])) + "月"
@@ -668,7 +681,8 @@ def addChild(request):
         sha256.update(name.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
         print(f'sha256_hash {sha256_hash}')
-        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash), birthdate=birthdate, gender=gender)
+        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash),
+                                         birthdate=birthdate, gender=gender)
         # print(str(sha256_hash))
         return JsonResponse({
             'message': 'Data submitted successfully',
@@ -854,6 +868,7 @@ def loadVideoThumbnail(request, openid, video_title):
     except:
         return HttpResponse("Request failed", status=500)
 
+
 def loadTimelinePage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
@@ -899,4 +914,3 @@ def loadTimelinePage(request):
 
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
-

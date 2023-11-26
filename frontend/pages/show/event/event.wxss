@@ -1,6 +1,5 @@
 /* pages/show/event/event.wxss */
 
-
 .overall-outfit{
   padding: 20rpx;
   width: 100%;
@@ -182,6 +181,12 @@
   margin-left: 4px;
 }
 
+.weui-textarea{
+  font-size: 14px;
+  min-height: 3em;
+  line-height: 1em;
+}
+
 .add-tag {
   display: flex;
   height: 15px;
@@ -221,6 +226,42 @@
 
 .container_5 {
   grid-area: E;
+  font-size: 14px;
+}
+
+.container_tag{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 8px; /* 标签之间的间距 */
+}
+
+.tag {
+  height: 15px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #4095E5;
+  cursor: pointer;
+}
+
+.tag .selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tag .tag-text {
+  /* margin-bottom: 3px; */
+  font-size: 14px;
+}
+
+
+.container_6 {
+  grid-area: F;
   width: 100%;
   justify-self: center;
   font-size: 14px;

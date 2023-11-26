@@ -99,7 +99,7 @@ Page({
         success:function(res){
             const block=res.data.block_item
             that.setData({
-              date:"编辑于："+block.year+"年"+block.month+block.day+"日",
+              date:"发布于："+block.year+"年"+block.month+block.day+"日",
               event_date:block.event_date,
               title:block.title,
               text:block.content,

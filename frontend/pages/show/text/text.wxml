@@ -79,7 +79,7 @@
           <view class="weui-cell__hd"><label class="weui-label">内容</label></view>
           <!-- <textarea class="input_text" bindinput="handleInputText" placeholder="请输入" maxlength="1024"/> -->
           <view class="weui-cell__bd" style="margin-top: 2vh; font-size: 2vh;">
-                      <textarea class="weui-textarea" placeholder="请输入" placeholder-class="weui-input__placeholder" rows="3" bindinput="handleInputText"></textarea>
+            <textarea class="weui-textarea" placeholder="请输入" placeholder-class="weui-input__placeholder" bindinput="handleInputText" maxlength="2048" auto-height="true"></textarea>
                       <!-- <view aria-role="option" class="weui-textarea-counter"><span>0</span>/200</view> -->
           </view>
 
@@ -104,6 +104,18 @@
         </view>
           
         </view>
+
+        <view class="weui-cell weui-cell_active" style="flex-direction:row; ">
+        <view>
+          <view class="weui-cell__hd" style="margin-right: 70%;"><label class="weui-label">选择孩子</label></view>
+          <view class="container_tag">
+          <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleChild">
+            <text class="tag-text">{{item.info}}</text>
+          </view>
+          </view>
+        </view>
+        </view>
+
       </view>
     </view>
   </view>
