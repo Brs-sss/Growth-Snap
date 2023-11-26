@@ -183,7 +183,8 @@
 
 .weui-textarea{
   font-size: 14px;
-  overflow: auto;
+  min-height: 3em;
+  line-height: 1em;
 }
 
 .add-tag {

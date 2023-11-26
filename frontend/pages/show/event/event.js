@@ -10,6 +10,19 @@ function getImageGridStyle(num_rows){
   height:calc(30vw*${num_rows});`
 }
 
+function getTodayYYYYMMDD(){
+  const currentDateAndTime = new Date();
+  // 创建一个 Date 对象来表示当前日期
+  // 获取年、月、日
+  var year = currentDateAndTime.getFullYear();
+  var month = (currentDateAndTime.getMonth() + 1).toString().padStart(2, '0'); 
+  var day = currentDateAndTime.getDate().toString().padStart(2, '0');
+
+  // 格式化日期为 "YYYY-MM-DD"
+  var formattedDate = year + '-' + month + '-' + day;
+  return formattedDate
+}
+
 const app = getApp();
 
 Page({
@@ -74,15 +87,8 @@ Page({
     //console.log('提交的文本：', this.data.inputTitle);
     // 进行其他处理或操作
     var that = this
-    const currentDateAndTime = new Date();
-    // 创建一个 Date 对象来表示当前日期
-    // 获取年、月、日
-    var year = currentDateAndTime.getFullYear();
-    var month = (currentDateAndTime.getMonth() + 1).toString().padStart(2, '0'); 
-    var day = currentDateAndTime.getDate().toString().padStart(2, '0');
-
     // 格式化日期为 "YYYY-MM-DD"
-    var formattedDate = year + '-' + month + '-' + day;
+    var formattedDate = getTodayYYYYMMDD();
     //时间为
     const currentDateString =currentDateAndTime.toDateString();
     const currentTimeString = currentDateAndTime.toTimeString();
@@ -321,8 +327,11 @@ Page({
         openid=res.data
         console.log("openid:",openid)
         that.setData({
-          openid: openid
+          openid: openid,
+          event_date:getTodayYYYYMMDD()+'(今天)'
         })
+
+
         
     wx.request({
       url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
