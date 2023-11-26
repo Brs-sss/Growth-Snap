@@ -327,11 +327,16 @@ Page({
         openid=res.data
         console.log("openid:",openid)
         that.setData({
+<<<<<<< HEAD
           openid: openid,
           event_date:getTodayYYYYMMDD()+'(今天)'
         })
 
 
+=======
+          openid: openid
+        })
+>>>>>>> dev
         
     wx.request({
       url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,

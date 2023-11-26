@@ -88,7 +88,11 @@
           
         </view>
 
+<<<<<<< HEAD
         <view class="weui-cell" style="flex-direction:row; ">
+=======
+        <view class="weui-cell weui-cell_active" style="flex-direction:row; ">
+>>>>>>> dev
         <view>
           <view class="weui-cell__hd" style="margin-right: 70%;"><label class="weui-label">选择孩子</label></view>
           <view class="container_tag">
