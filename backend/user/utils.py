@@ -18,13 +18,8 @@ from PIL import Image
 import requests
 
 # 指定 wkhtmltopdf 可执行文件路径
-<<<<<<< HEAD
 #config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
 config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-=======
-config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
-# config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
->>>>>>> dev
 
 render_path = 'static/template/rendered/'
 
