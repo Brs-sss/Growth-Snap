@@ -18,7 +18,7 @@ from PIL import Image
 import requests
 
 # 指定 wkhtmltopdf 可执行文件路径
-# config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+#config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
 config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
 render_path = 'static/template/rendered/'
@@ -84,11 +84,15 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
     cover=render_template('static/template/htmls/cover.html',{'background_img':covers_path+f'cover_{cover_idx}.png','title':'Welcome to My Diary','date':'2023年11月12日'})
     rendered_files.append(cover)
     
+    text_color="#000"
+    if paper_idx in range(4,8):
+        text_color="#fff"
+    
     for event in event_list:
         if event['type']=='event':
-            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'image':event_image_base_path+event['event_id']+'/'+event['imgList'][0]})
+            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'image':event_image_base_path+event['event_id']+'/'+event['imgList'][0],'text_color':text_color})
         else:
-            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date']})
+            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'text_color':text_color})
         rendered_files.append(page)
 
     #  将多个 HTML 文件合并为一个 PDF

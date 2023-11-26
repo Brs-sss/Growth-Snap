@@ -25,11 +25,11 @@
         <text class="info_type">计划</text>
       </view>
       <view class="user_info">
-        <text class="info_data" id="data_text">30</text>
+        <text class="info_data" id="data_text">{{text_number}}</text>
         <text class="info_type">文字</text>
       </view>
       <view class="user_info">
-        <text class="info_data" id="data_point">40</text>
+        <text class="info_data" id="data_point">{{credit}}</text>
         <text class="info_type">积分</text>
       </view>
     </view>

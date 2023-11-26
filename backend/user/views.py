@@ -151,9 +151,14 @@ def submitEvent(request):
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
-            # filtered_records = Text.objects.all()
-            # for rec in filtered_records:
-            #     print('yes',rec)
+
+        now_family = now_user.family
+        children = data.get('children')
+        for name in children:
+            child = Child.objects.get(family=now_family, name=name)
+            new_event.children.add(child)
+
+        print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'Data submitted successfully'})
@@ -218,6 +223,12 @@ def submitData(request):
 
         new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
                                        records=records, data_id=data_id)
+
+        now_family = user.family
+        children = data.get('children')
+        for name in children:
+            child = Child.objects.get(family=now_family, name=name)
+            new_data.children.add(child)
 
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
@@ -306,6 +317,7 @@ def loadShowPage(request):
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
 
+
 # 加载搜索结果页面
 def loadSearchPage(request):
     if request.method == 'GET':
@@ -315,10 +327,9 @@ def loadSearchPage(request):
         used_by_add_event_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
 
-         # Fuzzy search in title and content for Event and Text
+        # Fuzzy search in title and content for Event and Text
         event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
         text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
-
 
         now_user_blocks_events = Event.objects.filter(user=now_user).filter(event_filter).order_by("-date", "-time")
         now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
@@ -445,9 +456,12 @@ def getUserInfo(request):
         profile_image = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
         event_number = len(Event.objects.filter(user=now_user))
         plan_number = len(Plan.objects.filter(user=now_user))
+        text_number = len(Text.objects.filter(user=now_user))
+        credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
-                             'event_number': event_number, 'plan_number': plan_number})
+                             'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number,
+                             'credit': credit})
 
 
 def addPlan(request):
@@ -521,8 +535,8 @@ def loadEventDetail(request):
         block_item['title'] = db_block.title
         block_item['content'] = db_block.content
         event_date = str(db_block.event_date)
-        print(event_date)
-        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + event_date.split('-')[2] + '日'
+        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + \
+                                   event_date.split('-')[2] + '日'
         block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
         date_string = str(db_block.date)
         block_item['month'] = str(int(date_string[5:7])) + "月"
@@ -636,12 +650,30 @@ def getChildrenInfo(request):
         return JsonResponse({'children_list': children_list})
 
 
+def loadChildDetail(request):
+    if request.method == 'GET':
+        name = request.GET.get('name')
+        child = Child.objects.get(name=name)
+        child_item = {}
+        child_item['name'] = child.name
+        # 计算child相关的过去一年的每月的计划数量
+        now = datetime.datetime.now()
+        all_plans = Plan.objects.filter(children=child)
+        child_item['plans'] = all_plans.__len__()
+
+        return JsonResponse({'child_item': child_item})
+
+
 def addChild(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         name = data.get('name')
+        # 检查是否有这个孩子
+        if Child.objects.filter(name=name).exists():
+            print('Duplicate child name')
+            return JsonResponse({'message': 'Duplicate child name'})
         birthdate = data.get('birthdate')
         gender = data.get('gender')
         # print(openid,name,birthdate)
@@ -649,7 +681,8 @@ def addChild(request):
         sha256.update(name.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
         print(f'sha256_hash {sha256_hash}')
-        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash), birthdate=birthdate, gender=gender)
+        new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash),
+                                         birthdate=birthdate, gender=gender)
         # print(str(sha256_hash))
         return JsonResponse({
             'message': 'Data submitted successfully',
@@ -694,9 +727,10 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user=user))
-            plan_number = len(Plan.objects.filter(user=user))
-            credit = event_number * 15 + plan_number * 10
+            event_number = len(Event.objects.filter(user=now_user))
+            plan_number = len(Plan.objects.filter(user=now_user))
+            text_number = len(Text.objects.filter(user=now_user))
+            credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
             image_list = os.listdir(image_path)
@@ -834,6 +868,7 @@ def loadVideoThumbnail(request, openid, video_title):
     except:
         return HttpResponse("Request failed", status=500)
 
+
 def loadTimelinePage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
@@ -879,4 +914,3 @@ def loadTimelinePage(request):
 
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
-

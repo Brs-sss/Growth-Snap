@@ -45,6 +45,10 @@ class User(models.Model):
 class BaseRecord(models.Model):
     # 每一个用户都有自己的事件、想法、记录和计划，所以这里用外键可以实现一对多的关系(一个用户对应多个事件、想法、记录和计划)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    #
+    children = models.ManyToManyField(Child,blank=True)
+
+    
     # event, text, data
     record_type = models.CharField(max_length=10, default='event')
     # date

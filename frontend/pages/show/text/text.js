@@ -12,6 +12,8 @@ Page({
     inputTitle: '', //标题的名称
     tags: [], // 已保存的标签列表
     selectedTags: [], // 已选中的标签列表
+    kidList: [], // 孩子列表
+    selectedKids: [], // 已选中的孩子列表
     showInput: false, // 是否显示输入框
     inputText: '', // 输入框的值
     inputTag:'',
@@ -75,6 +77,7 @@ Page({
                 'title':that.data.inputTitle,
                 'content':that.data.inputText,
                 'tags':that.data.tags,
+                'children':that.data.selectedKids,
                 'date':formattedDate,
                 'time':currentTimeString,
                 'author':"大壮", //todo
@@ -130,6 +133,24 @@ Page({
     console.log("index",index)
     console.log(this.data.tags[index].checked)
   },
+
+  toggleChild: function(e) {
+    var index = e.currentTarget.dataset.index
+    var kidList = this.data.kidList
+    var selected = this.data.selectedKids
+    if(kidList[index].checked){
+      selected = selected.filter(item => item != kidList[index].info)
+    }
+    else{
+      selected.push(kidList[index].info)
+    }
+    kidList[index].checked = ! kidList[index].checked
+    this.setData({
+      kidList: kidList,
+      selectedKids: selected
+    })
+  },
+
   showInput: function() {
     this.setData({
       showInput: true
@@ -172,7 +193,43 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    var that = this
+    let openid
+    // 获取存储的openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        openid=res.data
+        console.log("openid:",openid)
+        that.setData({
+          openid: openid
+        })
+        
+    wx.request({
+      url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+      method: 'GET',
+      success:function(res){
+        console.log(res.data)
+        let children_list = res.data.children_list
+        console.log(children_list.length)
+        let temp_kidList = []
+        for(let i = 0; i < children_list.length; i++){
+          let name = children_list[i].name
+          console.log(name)
+          temp_kidList.push({'info': name, 'checked': false})
+          
+        }
+        that.setData({
+          kidList: temp_kidList
+        })
+    },
+    fail:function(res){
+      console.log('load page failed: ',res)
+    }
+    })
+      }
+    })
   },
 
   /**
