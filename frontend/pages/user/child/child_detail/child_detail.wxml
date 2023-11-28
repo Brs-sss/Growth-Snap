@@ -13,5 +13,9 @@
 </view>
 
 <view class="ec-container_2">
+     <ec-canvas canvas-id="echart" ec="{{ec_event}}"></ec-canvas>
+</view>
+
+<view class="ec-container_2">
      <ec-canvas canvas-id="echart" ec="{{ec_tag2}}"></ec-canvas>
 </view>
