@@ -281,7 +281,13 @@ Page({
     },
     name: '',
     host_: `${app.globalData.localUrl}`,
-    plans: 0
+    plans: 0,
+    icon_list: [],
+    events: 0,
+    event_list: [],
+    event_tag_list: [],
+    texts: 0,
+    text_tag_list: []
   },
 
   /**
@@ -300,9 +306,21 @@ Page({
       success: function(res) {
         console.log(res)
         that.setData({
-          plans: res.data.child_item.plans
+          plans: res.data.child_item.plans,
+          icon_list: res.data.child_item.icon_list,
+          events: res.data.child_item.events,
+          event_list: res.data.child_item.event_list,
+          event_tag_list: res.data.child_item.event_tag_list,
+          texts: res.data.child_item.texts,
+          text_tag_list: res.data.child_item.text_tag_list 
         })
         console.log('plans:', that.data.plans)
+        console.log('icon_list:', that.data.icon_list)
+        console.log('events:', that.data.events)
+        console.log('event_list:', that.data.event_list)
+        console.log('event_tag_list:', that.data.event_tag_list)
+        console.log('texts:', that.data.texts)
+        console.log('text_tag_list:', that.data.text_tag_list)
 
       }
     })

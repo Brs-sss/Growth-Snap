@@ -89,6 +89,8 @@ Page({
     var that = this
     // 格式化日期为 "YYYY-MM-DD"
     var formattedDate = getTodayYYYYMMDD();
+    const currentDateAndTime = new Date();
+
     //时间为
     const currentDateString =currentDateAndTime.toDateString();
     const currentTimeString = currentDateAndTime.toTimeString();
@@ -328,7 +330,7 @@ Page({
         console.log("openid:",openid)
         that.setData({
           openid: openid,
-          event_date:getTodayYYYYMMDD()+'(今天)'
+          event_date:getTodayYYYYMMDD()
         })
 
 
