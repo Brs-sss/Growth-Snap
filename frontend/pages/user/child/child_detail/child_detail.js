@@ -19,18 +19,23 @@ var colorSet = [
   {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#a4ebb1', ]},
 ];
 
+// 事件标签饼图数据
 var dataFortag1 = [];
 var mindataFortag1 = 100;
 var maxdataFortag1 = 0;
+// 事件数量柱状/折线图数据
+var tagForEvent = [];
+var seriesForEvent = [];
 
 function initData() {
+  // 事件标签饼图数据
   dataFortag1 = event_tag_list.map(item => {
     return {
       value: item.number,
       name: item.tag
     };
   });
-
+      // 获取图表对应颜色参数
   for (let i = 0; i < dataFortag1.length; i++) {
     if (dataFortag1[i].value > maxdataFortag1) {
       maxdataFortag1 = dataFortag1[i].value;
@@ -40,10 +45,19 @@ function initData() {
       mindataFortag1 = dataFortag1[i].value;
     }
   }
+  console.log('min:',mindataFortag1)
+  console.log('max:',maxdataFortag1)
   maxdataFortag1 = maxdataFortag1 * 1.5 + 2;
   mindataFortag1 = mindataFortag1 * 0.8 - 2; 
   console.log('min:',mindataFortag1)
   console.log('max:',maxdataFortag1)
+
+  // 事件数量柱状/折线图数据
+  tagForEvent = event_tag_list.map(item => {
+    return item.tag;
+  });
+  console.log(tagForEvent)
+  tagForEvent.push('事件总数')
 }
 
 function initRadarChart(canvas, width, height, dpr) {
@@ -206,7 +220,7 @@ function initEventChart(canvas, width, height, dpr) {
       }
     },
     legend: {
-      data: ['事件总数', '学习', '阅读', '运动', '艺术']
+      data: tagForEvent
     },
     grid: {
       left: '3%',
