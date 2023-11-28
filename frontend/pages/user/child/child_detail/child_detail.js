@@ -58,6 +58,28 @@ function initData() {
   });
   console.log(tagForEvent)
   tagForEvent.push('事件总数')
+  seriesForEvent.push({
+    name: '事件总数',
+    type: 'bar',
+    stack: 'Total',
+    areaStyle: {},
+    emphasis: {
+      focus: 'series'
+    },
+    data: event_list
+  })
+  for (let i = 0; i < event_tag_list.length; i++) {
+    seriesForEvent.push({
+      name: event_tag_list[i].tag,
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: event_tag_list[i].month_count,
+    })
+  }
 }
 
 function initRadarChart(canvas, width, height, dpr) {
@@ -244,17 +266,18 @@ function initEventChart(canvas, width, height, dpr) {
         type: 'value'
       }
     ],
-    series: [
-      {
-        name: '事件总数',
-        type: 'bar',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
-        },
-        data: event_list
-      },
+    series: seriesForEvent,
+    // [
+    //   {
+    //     name: '事件总数',
+    //     type: 'bar',
+    //     stack: 'Total',
+    //     areaStyle: {},
+    //     emphasis: {
+    //       focus: 'series'
+    //     },
+    //     data: event_list
+    //   },
       // {
       //   name: '学习',
       //   type: 'line',
@@ -299,7 +322,7 @@ function initEventChart(canvas, width, height, dpr) {
       //   },
       //   data: [8, 9, 9, 9, 12, 13, 13]
       // }
-    ]
+    // ]
   }
   chart.setOption(option);
   return chart;
