@@ -7,11 +7,17 @@ from django.contrib.postgres.fields import ArrayField
 
 # Family class
 class Family(models.Model):
+    # family token
+    token = models.CharField(max_length=20, unique=True, default='000000')
+    token_expiration = models.DateTimeField(null=True, default=None)
     # family id
-    familyId = models.CharField(max_length=20, unique=True, default='000000')
+    family_id = models.CharField(max_length=10000, default='', unique=True)
+
+
+
 
     def __str__(self):
-        return self.familyId
+        return self.token
 
 
 # Child class

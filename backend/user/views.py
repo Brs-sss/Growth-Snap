@@ -60,18 +60,38 @@ def login(request):
             })
 
 
-def registerFamily(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        openid = data.get('openid')
+def registerFamily(openid):
+    text_to_hash = openid + str(datetime.datetime.now())
+    print('hash: ', text_to_hash)
+    sha256 = hashlib.sha256()
+    sha256.update(text_to_hash.encode('utf-8'))
+    sha256_hash = sha256.hexdigest()
+    sha256_hash = str(sha256_hash)
+    print('hashed: ', sha256_hash)
+    # # 随机生成6位数字+字母的familyId
+    # familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+    # # 判断有没有重复的familyId
+    # while Family.objects.filter(familyId=familyId).exists():
+    #     familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
+    # # 创建新的family
+    # Family.objects.create(familyId=familyId)
+    # print(familyId)
+    # return JsonResponse({
+    #     'familyId': familyId
+    # })
+    #  判断有没有重复的family_id
+    # while Family.objects.filter(family_id=sha256_hash).exists():
+    #     text_to_hash = openid + str(datetime.datetime.now())
+    #     print('hash: ', text_to_hash)
+    #     sha256 = hashlib.sha256()
+    #     sha256.update(text_to_hash.encode('utf-8'))
+    #     sha256_hash = sha256.hexdigest()
+    #     sha256_hash = str(sha256_hash)
+    #     print('hashed: ', sha256_hash)
+    return sha256_hash
+            
+        
 
-        # 随机生成6位数字+字母的familyId
-        familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
-        Family.objects.create(familyId=familyId)
-        print(familyId)
-        return JsonResponse({
-            'familyId': familyId
-        })
 
 
 # todo: 家庭口令的设置和验证
@@ -81,18 +101,37 @@ def register(request):
         username = data.get('username')
         openid = data.get('openid')
         label = data.get('label')
-        familyId = data.get('familyId')
+        token = data.get('token')
         print(username)
         print(openid)
         print(label)
-        print(familyId)
-        # 检查这个fammily是否已经存在
-        if not Family.objects.filter(familyId=familyId).exists():
-            return JsonResponse({
-                'msg': 'familyId does not exist'
-            }, status=400)
-        family = Family.objects.get(familyId=familyId)
+        print(token)
+        # 看是新家庭还是加入家庭
+        if token == 'new_family':
+            family_id = registerFamily(openid)
+            # 创建新家庭
+            family = Family.objects.create(family_id=family_id)
+        else:
+            # 验证家庭是否存在
+            # token不能为默认值：000000
+            if token == '000000':
+                return JsonResponse({
+                    'msg': 'family does not exist'
+                })
+            if Family.objects.filter(token=token).exists():
+                family = Family.objects.get(token=token)
+                # token是否过期
+                if family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
+                    # 过期
+                    return JsonResponse({
+                        'msg': 'family does not exist'
+                    })
+            else:
+                return JsonResponse({
+                    'msg': 'family does not exist'
+                })
 
+        # family存在
         # 检查这个用户是否已经存在
         if User.objects.filter(username=username).exists():
             # 如果存在，报错：username already exists
@@ -112,6 +151,53 @@ def register(request):
                 'msg': 'register success'
             })
 
+def generateFamilyToken(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+        family = User.objects.get(openid=openid).family
+        now = datetime.datetime.now()
+        print(family.token_expiration.replace(tzinfo=None), now, family.token)
+        if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < now:
+            # 过期
+            token = ''.join(random.sample(string.ascii_letters + string.digits, 10))
+            family.token = token
+            family.token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=10)
+            family.save()
+            countdown = 10*60*1000
+        else:
+            token = family.token
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+        return JsonResponse({
+            'token': token,
+            'time': countdown
+        })
+    else:
+        return JsonResponse({
+            'msg': 'please use POST'
+        })
+
+def getFamilyToken(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        family = User.objects.get(openid=openid).family
+        if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
+            # 过期
+            return JsonResponse({
+                'code': 'invalid'
+            })
+        else:
+            token = family.token
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+        return JsonResponse({
+            'token': token,
+            'time': countdown,
+            'code': 'valid'
+        })
+    else:
+        return JsonResponse({
+            'msg': 'please use GET'
+        })
 
 def getSHA256(request):
     if request.method == 'GET':
