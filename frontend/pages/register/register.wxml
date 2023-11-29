@@ -28,7 +28,7 @@
       </view>
     
       <view class="weui-cell weui-cell_active">
-          <view class="weui-cell__hd"><label class="weui-label">家庭口令</label></view>
+          <view class="weui-cell__hd"><label class="weui-label">家庭验证码</label></view>
             <view class="weui-cell__bd weui-flex">
               <input
                     class="weui-input"
@@ -42,7 +42,7 @@
             </view>
           </view>
         </view>
-        <p class='create-familyId' bind:tap='create_familyId' style='display: {{visibility_create}}'>创建新家庭口令</p>
+        <p class='create-familyId' bind:tap='create_familyId' style='display: {{visibility_create}}'>创建新家庭</p>
         <p class='cancel' style='display: {{visibility_cancel}};' bind:tap='cancel'>取消</p>
     </view>
   </view>

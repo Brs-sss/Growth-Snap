@@ -71,6 +71,10 @@
   margin-left: 5px;
   /* float: left; */
 }
+.token {
+  margin-top: 0.5vh;
+  color: #666666;
+}
 
 .user_signature {
   font-size: 15px;
@@ -87,4 +91,24 @@
   color: #fff;
   border-radius: 100px;
   box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.token-container {
+  display: flex;
+  /* align-items: center;
+  justify-content: center; */
+  flex-direction: column;
+  /* height: 15vh; */
+  padding:2vh;
+  background-color: #fff;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+  border-radius: 30rpx;
+  margin-top: 2vh;
+  margin-left: 2vh;
+}
+
+.countdown {
+  position: absolute;
+  right: 5vh;
+  color: #666666;
 }
