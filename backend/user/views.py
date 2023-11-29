@@ -676,20 +676,11 @@ def loadChildDetail(request):
         # 事件
         all_events = Event.objects.filter(children=child)
         child_item['events'] = all_events.__len__()
-        event_jan = all_events.filter(event_date__year=now.year, event_date__month=1).__len__()
-        event_feb = all_events.filter(event_date__year=now.year, event_date__month=2).__len__()
-        event_mar = all_events.filter(event_date__year=now.year, event_date__month=3).__len__()
-        event_apr = all_events.filter(event_date__year=now.year, event_date__month=4).__len__()
-        event_may = all_events.filter(event_date__year=now.year, event_date__month=5).__len__()
-        event_jun = all_events.filter(event_date__year=now.year, event_date__month=6).__len__()
-        event_jul = all_events.filter(event_date__year=now.year, event_date__month=7).__len__()
-        event_aug = all_events.filter(event_date__year=now.year, event_date__month=8).__len__()
-        event_sep = all_events.filter(event_date__year=now.year, event_date__month=9).__len__()
-        event_oct = all_events.filter(event_date__year=now.year, event_date__month=10).__len__()
-        event_nov = all_events.filter(event_date__year=now.year, event_date__month=11).__len__()
-        event_dec = all_events.filter(event_date__year=now.year, event_date__month=12).__len__()
-        child_item['event_list'] = [event_jan, event_feb, event_mar, event_apr, event_may, event_jun, event_jul,
-                                    event_aug, event_sep, event_oct, event_nov, event_dec]
+        child_item['event_list'] = []
+        for i in range(1, 13):
+            count = all_events.filter(event_date__year=now.year, event_date__month=i).__len__()
+            child_item['event_list'].append(count)
+
         # 获得不同tag的事件数量
         all_tags = []
         for event in all_events:
@@ -700,6 +691,11 @@ def loadChildDetail(request):
             tag_item = {}
             tag_item['tag'] = tag
             tag_item['number'] = all_events.filter(tags__icontains=tag).__len__()
+            event_month = []
+            for i in range(1, 13):
+                count = all_events.filter(event_date__year=now.year, tags__icontains=tag, event_date__month=i).__len__()
+                event_month.append(count)
+            tag_item['month_count'] = event_month
             tag_list.append(tag_item)
         child_item['event_tag_list'] = tag_list
 
