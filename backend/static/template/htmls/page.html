@@ -1,4 +1,4 @@
-
+<!-- 注意：这个文件报错也没关系，很可能是由于IDE不支持jinja'语法 -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,12 +14,12 @@
             align-items: center;
             justify-content: center;
             font-family: Arial, sans-serif;
-            background: url("{{ background_img }}") no-repeat center center fixed;
+            background: url("{{ background_img }}") repeat center center fixed;
             background-size: 100% 100%;
             position: relative;
         }
         .date{
-            color: #666;
+            color: {{ color_set.date_color }};
             font-family: 'SimHei', sans-serif;
             font-size: 19px;
             margin-top: 0;
@@ -27,11 +27,11 @@
         }
         h1 {
             margin: 0;
-            color: #000d6d;
+            color: {{ color_set.title_color }};
         }
         p {
             line-height: 1.5;
-            color: #666;
+            color: {{ color_set.text_color }};
             white-space: pre-wrap;
         }
 
@@ -41,6 +41,7 @@
             position: absolute;
             left: 19mm;
             top: 25.4mm;
+            page-break-before: always;
         }
 
         .image-box{
@@ -59,9 +60,7 @@
             height: auto;
         }
 
-        .text{
-            color: "{{ text_color }}";
-        }
+
 
     </style>
 </head>
@@ -69,7 +68,7 @@
     <div class="page">
         <div class="date">{{ date }}</div>
         <h1>{{ title }}</h1>
-        <p class="text">{{ text }}</p>
+        <p>{{ text }}</p>
         <div class="image-box">
             <img src="{{ image }}"/>
             <!-- <img src="漫天闪电.png"/> -->

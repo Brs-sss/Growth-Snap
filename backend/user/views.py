@@ -14,6 +14,8 @@ import os
 import datetime
 import shutil
 from urllib.parse import unquote
+host_url = 'http://43.138.42.129:8000/'
+
 
 # import fitz
 
@@ -390,7 +392,7 @@ def loadShowPage(request):
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -444,7 +446,7 @@ def loadSearchPage(request):
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -539,7 +541,7 @@ def getUserInfo(request):
         now_user = User.objects.get(openid=openid)
         image_path = 'static/ImageBase/' + openid
         image_list = os.listdir(image_path)
-        profile_image = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+        profile_image = host_url + f'{image_path}/' + image_list[0]
         event_number = len(Event.objects.filter(user=now_user))
         plan_number = len(Plan.objects.filter(user=now_user))
         text_number = len(Text.objects.filter(user=now_user))
@@ -631,7 +633,7 @@ def loadEventDetail(request):
         # block_item['event_id']=db_block.event_id
         image_path = 'static/ImageBase/' + db_block.event_id
         image_list = sorted(os.listdir(image_path))
-        block_item['imgSrcList'] = ['http://127.0.0.1:8090/' + f'{image_path}/' + image for image in image_list]
+        block_item['imgSrcList'] = [host_url + f'{image_path}/' + image for image in image_list]
         block_item['tags'] = StringToList(db_block.tags)
         return JsonResponse({'block_item': block_item})
 
@@ -731,7 +733,7 @@ def getChildrenInfo(request):
             child_item['gender'] = child.gender
             image_path = 'static/ImageBase/' + openid + '+' + child.child_id
             image_list = os.listdir(image_path)
-            child_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+            child_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
             children_list.append(child_item)
         return JsonResponse({'children_list': children_list})
 
@@ -876,7 +878,7 @@ def getFamilyInfo(request):
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
             image_list = os.listdir(image_path)
-            user_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+            user_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
             family_list.append(user_item)
         return JsonResponse({'family_list': family_list})
 
@@ -935,7 +937,7 @@ def loadPDFThumbnail(request):
             num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
         except Exception as e:
             return HttpResponse("Request failed", status=500)
-        thumbnail_list = ['http://127.0.0.1:8090/' + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
+        thumbnail_list = [host_url + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
         return JsonResponse({'imageList': thumbnail_list, 'pageNum': pages})
     return JsonResponse({'msg': 'GET only'})
 
@@ -947,7 +949,7 @@ def generateDiaryLongImage(request):
         pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
         output_path = 'static/diary/' + openid + '/' + pdf_name + '.jpg'
         GenerateLongImage(pdf_path, output_path, resolution=100)
-        return JsonResponse({'long_image_url': 'http://127.0.0.1:8090/' + output_path})
+        return JsonResponse({'long_image_url': host_url + output_path})
     return JsonResponse({'msg': 'GET only'})
 
 
@@ -1044,7 +1046,7 @@ def loadTimelinePage(request):
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = 'http://127.0.0.1:8090/' + f'{image_path}/' + image_list[0]
+                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
