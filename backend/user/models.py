@@ -8,10 +8,10 @@ from django.contrib.postgres.fields import ArrayField
 # Family class
 class Family(models.Model):
     # family token
-    token = models.CharField(max_length=20, unique=True, default='000000')
+    token = models.CharField(max_length=20, default='000000')
     token_expiration = models.DateTimeField(null=True, default=None)
     # family id
-    family_id = models.CharField(max_length=10000, default='', unique=True)
+    family_id = models.CharField(max_length=65, default='')
 
 
 
