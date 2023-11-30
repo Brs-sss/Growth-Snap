@@ -18,9 +18,9 @@ from PIL import Image
 import requests
 
 # 指定 wkhtmltopdf 可执行文件路径
-config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
-# config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-
+#config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')  #windows
+#config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # linux
+config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')  #mac
 render_path = 'static/template/rendered/'
 
 event_image_base_path = '../../ImageBase/'
@@ -84,15 +84,23 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
     cover=render_template('static/template/htmls/cover.html',{'background_img':covers_path+f'cover_{cover_idx}.png','title':'Welcome to My Diary','date':'2023年11月12日'})
     rendered_files.append(cover)
     
-    text_color="#000"
-    if paper_idx in range(4,8):
-        text_color="#fff"
+    color_set={}
+    paper_idx_num=int(paper_idx)  
+    color_set['text_color'] ="#000"
+    color_set['title_color'] ="#000d6d"
+    color_set['date_color'] ="#666"
+
+    if paper_idx_num>=4 and paper_idx_num<8:  #dark style 
+        color_set['text_color'] ="#fff"
+        color_set['title_color'] ="#ff9d00"
+        color_set['date_color'] ="#ddd"
+    
     
     for event in event_list:
         if event['type']=='event':
-            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'image':event_image_base_path+event['event_id']+'/'+event['imgList'][0],'text_color':text_color})
+            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'image':event_image_base_path+event['event_id']+'/'+event['imgList'][0],'color_set':color_set})
         else:
-            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'text_color':text_color})
+            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'color_set':color_set})
         rendered_files.append(page)
 
     #  将多个 HTML 文件合并为一个 PDF

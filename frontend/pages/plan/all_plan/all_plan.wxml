@@ -1,6 +1,6 @@
 <!--pages/plan/all_plan/all_plan.wxml-->
 
-<image src="/image/plan/planBg/bg9.jpg" class="bgImg"></image>
+<image src="/image/plan/planBg/bg10.jpg" class="bgImg"></image>
 <!-- <view id="mainBg"></view> -->
 
 <view wx:for="{{planList}}" wx:for-index="index" wx:key="*this" 
