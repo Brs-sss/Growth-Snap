@@ -14,8 +14,8 @@ import os
 import datetime
 import shutil
 from urllib.parse import unquote
-host_url = 'http://43.138.42.129:8000/'
 
+host_url = 'http://43.138.42.129:8000/'
 
 # import fitz
 
@@ -91,9 +91,6 @@ def registerFamily(openid):
     #     sha256_hash = str(sha256_hash)
     #     print('hashed: ', sha256_hash)
     return sha256_hash
-            
-        
-
 
 
 # todo: 家庭口令的设置和验证
@@ -153,6 +150,7 @@ def register(request):
                 'msg': 'register success'
             })
 
+
 def generateFamilyToken(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -166,10 +164,10 @@ def generateFamilyToken(request):
             family.token = token
             family.token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=10)
             family.save()
-            countdown = 10*60*1000
+            countdown = 10 * 60 * 1000
         else:
             token = family.token
-            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds * 1000
         return JsonResponse({
             'token': token,
             'time': countdown
@@ -178,6 +176,7 @@ def generateFamilyToken(request):
         return JsonResponse({
             'msg': 'please use POST'
         })
+
 
 def getFamilyToken(request):
     if request.method == 'GET':
@@ -190,7 +189,7 @@ def getFamilyToken(request):
             })
         else:
             token = family.token
-            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds * 1000
         return JsonResponse({
             'token': token,
             'time': countdown,
@@ -200,6 +199,7 @@ def getFamilyToken(request):
         return JsonResponse({
             'msg': 'please use GET'
         })
+
 
 def getSHA256(request):
     if request.method == 'GET':
