@@ -161,7 +161,7 @@ def generateFamilyToken(request):
         openid = data.get('openid')
         family = User.objects.get(openid=openid).family
         now = datetime.datetime.now()
-        print(family.token_expiration.replace(tzinfo=None), now, family.token)
+        # print(family.token_expiration.replace(tzinfo=None), now, family.token)
         if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < now:
             # 过期
             token = ''.join(random.sample(string.ascii_letters + string.digits, 10))
