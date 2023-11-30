@@ -21,7 +21,6 @@ import requests
 #config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')  #windows
 #config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # linux
 config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')  #mac
- 
 render_path = 'static/template/rendered/'
 
 event_image_base_path = '../../ImageBase/'
