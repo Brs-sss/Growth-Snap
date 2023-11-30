@@ -1,4 +1,6 @@
 // pages/plan/create_plan/create_plan.js
+const app = getApp();
+
 Page({
 
   /**
@@ -16,7 +18,9 @@ Page({
     inputText: '', // 输入框的值
     inputTag:'',
     isEditing: false, // 是否处于编辑模式
-    host_: 'http://127.0.0.1:8090/',
+    // host_: 'http://127.0.0.1:8090/',
+    host_: `${app.globalData.localUrl}`,
+
     openid: '',
     iconList: ['/image/plan/icons/basketball.png', '/image/plan/icons/biking.png', '/image/plan/icons/book.png', '/image/plan/icons/clock.png', '/image/plan/icons/computer.png', '/image/plan/icons/pencil.png', '/image/plan/icons/piano.png', '/image/plan/icons/shirt.png', '/image/plan/icons/swimmer.png', '/image/plan/icons/cat.png', '/image/plan/icons/carrot.png', '/image/plan/icons/brush.png', '/image/plan/icons/travel.png', '/image/plan/icons/fish.png'],
     selected_icon_index: 0

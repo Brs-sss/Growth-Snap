@@ -1,4 +1,6 @@
 // pages/plan/todo/todo.js
+const app = getApp();
+
 Page({
 
   /**
@@ -11,7 +13,9 @@ Page({
     newTodo: '',
     today:'',
     a_week_later:'',
-    host_: 'http://127.0.0.1:8090/'
+    // host_: 'http://127.0.0.1:8090/'
+    host_: `${app.globalData.localUrl}`,
+
   },
 
   loadTodos() {
