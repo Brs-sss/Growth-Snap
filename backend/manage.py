@@ -2,6 +2,9 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+# 定义全局host_url
+host_url = 'http://43.138.42.129:8000/'
+
 
 
 def main():
