@@ -8,7 +8,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-      imageList:['/image/temp/colorring.png','/image/temp/cloud.png','/image/temp/star.jpeg','/image/temp/goldhair.jpeg'],
+      imageList:[],
       image_num:4,
       current:1,
       location_bar_style:"top:10px",

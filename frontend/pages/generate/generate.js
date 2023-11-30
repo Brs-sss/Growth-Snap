@@ -3,6 +3,7 @@ function isEmpty(x){
   return  x.trim()==''
 }
 
+const app = getApp();
 
 Page({
 
@@ -22,6 +23,7 @@ Page({
     videoTitle: '', // 小视频标题
     audioSelected: 0,
     chartList: [], // 图表模板数据
+    host_: `${app.globalData.localUrl}`,
   },
   navigateToPage(event) {
     const index = event.currentTarget.dataset.index;
