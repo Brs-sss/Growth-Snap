@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-&al7&%wbwpt7#bgaxgun_$e0j6t*bn7e-@y7(p%3smyqtoezbj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['app']
 CSRF_COOKIE_SECURE = False
 
 # Application definition
@@ -82,13 +82,25 @@ APP_SECRET  = '819fcef7fb1b60ef56dcb4062d1e465f'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# sqlite
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# mysql
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "thss",
+        "USER": "root",
+        "PASSWORD": "2021011815",
+        "HOST": "db",
+        "PORT": "3306",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
