@@ -24,5 +24,19 @@
   </block>
 </view>
 
-<button class="add" bindtap="goToPage_addmember">添加家庭成员</button>
+<view class="token-container" wx:if="{{generate_token}}">
+<view style="display: flex; flex-direction: row;">
+  <text style="font-size: 2.2vh;">家庭验证码</text>
+  <view class="countdown">{{countdown}}</view>
+</view>
+<view style="display: flex; flex-direction: row;">
+  <text class="token">{{token}}</text>
+  <image src="../../../image/user/duplicate.png" style="height: 4vh; width: 4vh;  position: absolute; right: 5vh;" bind:tap="copy"/>
+</view>
+
+
+</view>
+
+<button class="add" bindtap="addmember">添加家庭成员</button>
+
 
