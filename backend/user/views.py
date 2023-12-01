@@ -235,6 +235,9 @@ def submitEvent(request):
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
                                              event_id=event_id, event_date=event_date)
+            image_path = './static/ImageBase/' + f'{event_id}/'
+            if not os.path.exists(image_path):
+                os.mkdir(image_path)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
@@ -245,6 +248,7 @@ def submitEvent(request):
         for name in children:
             child = Child.objects.get(family=now_family, name=name)
             new_event.children.add(child)
+            
 
         print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
@@ -842,12 +846,12 @@ def addChildImage(request):
         uploaded_image = request.FILES.get('image')
         openid = request.POST.get('openid')
         child_id = request.POST.get('child_id')
-        print(child_id)
+        print(f'child_id: {child_id}')
         now_user = User.objects.get(openid=openid)
         family_id = now_user.family.family_id
         image_path = './static/ImageBase/' + f'{family_id}+{child_id}' + '/'
-        print(image_path)
         if not os.path.exists(image_path):
+            print(f'add child image folder: {image_path}')
             os.mkdir(image_path)
         # 删除原有的图片
         image_list = os.listdir(image_path)
@@ -857,6 +861,7 @@ def addChildImage(request):
             with open(image_path + f'{uploaded_image.name}', 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
+                print('success')
         return JsonResponse({'message': 'child profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
