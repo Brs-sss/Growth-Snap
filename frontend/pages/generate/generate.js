@@ -13,6 +13,8 @@ Page({
   data: {
     activeIndex: 0, // 初始显示的子页面
     timelineList: [], // 时间轴模板数据
+    timelineTitle: "",
+    templateSelected: 0, // 当前选中的时间轴模板
     diaryActiveIndex: 0,
     coverList: [],  // 日记本封面模板数据 
     coverSelected: 0,
@@ -43,6 +45,14 @@ Page({
       url: '/pages/generate/chart/chart?index=' + encodeURIComponent(index),
     })
   },
+  selectTemplate(e){
+    const index = e.currentTarget.dataset.index;
+    console.log(index)
+    console.log(this.data.timelineList[index].name)
+    this.setData({
+      templateSelected: index,
+    })
+  },
   addVideo(e){
     var that=this
     const category = e.currentTarget.dataset.category;
@@ -60,8 +70,20 @@ Page({
     console.log('generate_category:',category);
     console.log('generate_index:',index);
     if (category=="timeline"){
+      if(isEmpty(that.data.timelineTitle)){
+        wx.showToast({
+          title: "标题不能为空",
+          icon: 'error',
+          duration: 1000,
+        })
+        return;
+      }
+      that.setData({
+        timelineTitle: ""
+      })
       wx.navigateTo({
-        url: '/pages/generate/add_event/add_event?category=timeline&index=' + encodeURIComponent(index),
+        url: '/pages/generate/add_event/add_event?category=timeline&index='
+             + encodeURIComponent(that.data.templateSelected) + '&title=' + that.data.timelineTitle,
       })
     }else if (category=="video")
     { 
@@ -118,6 +140,11 @@ Page({
       diaryTitle: e.detail.value
     });
   },
+  handleInputTimelineTitle(e) {  //输入标题的处理
+    this.setData({
+      timelineTitle: e.detail.value
+    });
+  },
   handleInputVideoTitle(e) {  //输入标题的处理
     this.setData({
       videoTitle: e.detail.value
@@ -129,10 +156,10 @@ Page({
   onLoad(options) {
     this.setData({
       timelineList: [
-        { id: 0 },
-        { id: 1 },
-        { id: 2 },
-        { id: 3 }
+        { id: 0, name: "日历标注模板"},
+        { id: 1, name: "彩色时间轴模板" },
+        { id: 2, name: "曲线时间轴模板" },
+        { id: 3, name: "圆环标注模板"}
       ],
       coverList: [
         { id: 0 , selected:false},

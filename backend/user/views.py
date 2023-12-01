@@ -15,9 +15,8 @@ import datetime
 import shutil
 from urllib.parse import unquote
 
-from manage import host_url
 
-
+host_url = 'http://43.138.42.129:8000/'
 
 # import fitz
 
@@ -93,9 +92,6 @@ def registerFamily(openid):
     #     sha256_hash = str(sha256_hash)
     #     print('hashed: ', sha256_hash)
     return sha256_hash
-            
-        
-
 
 
 # todo: 家庭口令的设置和验证
@@ -155,6 +151,7 @@ def register(request):
                 'msg': 'register success'
             })
 
+
 def generateFamilyToken(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -167,10 +164,10 @@ def generateFamilyToken(request):
             family.token = token
             family.token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=10)
             family.save()
-            countdown = 10*60*1000
+            countdown = 10 * 60 * 1000
         else:
             token = family.token
-            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds * 1000
         return JsonResponse({
             'token': token,
             'time': countdown
@@ -179,6 +176,7 @@ def generateFamilyToken(request):
         return JsonResponse({
             'msg': 'please use POST'
         })
+
 
 def getFamilyToken(request):
     if request.method == 'GET':
@@ -191,7 +189,7 @@ def getFamilyToken(request):
             })
         else:
             token = family.token
-            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds * 1000
         return JsonResponse({
             'token': token,
             'time': countdown,
@@ -201,6 +199,7 @@ def getFamilyToken(request):
         return JsonResponse({
             'msg': 'please use GET'
         })
+
 
 def getSHA256(request):
     if request.method == 'GET':
@@ -328,7 +327,7 @@ def getKeys(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
-        keyList = list(Record.objects.filter(user=now_user).values_list('key', flat=True).distinct())
+        keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
         print(keyList)
         return JsonResponse({
             'message': 'Successfully get the keys',
@@ -544,9 +543,9 @@ def getUserInfo(request):
         image_path = 'static/ImageBase/' + openid
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
-        event_number = len(Event.objects.filter(user=now_user))
-        plan_number = len(Plan.objects.filter(user=now_user))
-        text_number = len(Text.objects.filter(user=now_user))
+        event_number = len(Event.objects.filter(user__family=now_user.family))
+        plan_number = len(Plan.objects.filter(user__family=now_user.family))
+        text_number = len(Text.objects.filter(user__family=now_user.family))
         credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
@@ -598,7 +597,7 @@ def updateTodo(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         todo_id = data.get('id')
-        todo = Todo.objects.get(todo_id=todo_id)
+        todo = Todo.objects.get(user__family=now_user.family, todo_id=todo_id)
         content = data.get('content')
         print(content)
         if content == 'ddl':
@@ -876,9 +875,9 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user=user))
-            plan_number = len(Plan.objects.filter(user=user))
-            text_number = len(Text.objects.filter(user=user))
+            event_number = len(Event.objects.filter(user__family=now_user.family))
+            plan_number = len(Plan.objects.filter(user__family=now_user.family))
+            text_number = len(Text.objects.filter(user__family=now_user.family))
             credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
@@ -1022,7 +1021,7 @@ def loadTimelinePage(request):
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
                                                                               "-time") if 'e' in types else []  # 筛选的结果按照降序排列
         now_user_blocks = sorted(list(now_user_blocks_events),
                                  key=lambda x: (x.date, x.time), reverse=True)
