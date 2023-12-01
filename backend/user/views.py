@@ -91,9 +91,6 @@ def registerFamily(openid):
     #     sha256_hash = str(sha256_hash)
     #     print('hashed: ', sha256_hash)
     return sha256_hash
-            
-        
-
 
 
 # todo: 家庭口令的设置和验证
@@ -153,23 +150,24 @@ def register(request):
                 'msg': 'register success'
             })
 
+
 def generateFamilyToken(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
         family = User.objects.get(openid=openid).family
         now = datetime.datetime.now()
-        print(family.token_expiration.replace(tzinfo=None), now, family.token)
+        # print(family.token_expiration.replace(tzinfo=None), now, family.token)
         if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < now:
             # 过期
             token = ''.join(random.sample(string.ascii_letters + string.digits, 10))
             family.token = token
             family.token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=10)
             family.save()
-            countdown = 10*60*1000
+            countdown = 10 * 60 * 1000
         else:
             token = family.token
-            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds * 1000
         return JsonResponse({
             'token': token,
             'time': countdown
@@ -178,6 +176,7 @@ def generateFamilyToken(request):
         return JsonResponse({
             'msg': 'please use POST'
         })
+
 
 def getFamilyToken(request):
     if request.method == 'GET':
@@ -190,7 +189,7 @@ def getFamilyToken(request):
             })
         else:
             token = family.token
-            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds*1000
+            countdown = (family.token_expiration.replace(tzinfo=None) - datetime.datetime.now()).seconds * 1000
         return JsonResponse({
             'token': token,
             'time': countdown,
@@ -200,6 +199,7 @@ def getFamilyToken(request):
         return JsonResponse({
             'msg': 'please use GET'
         })
+
 
 def getSHA256(request):
     if request.method == 'GET':
@@ -327,7 +327,7 @@ def getKeys(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
-        keyList = list(Record.objects.filter(user=now_user).values_list('key', flat=True).distinct())
+        keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
         print(keyList)
         return JsonResponse({
             'message': 'Successfully get the keys',
@@ -365,10 +365,10 @@ def loadShowPage(request):
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
                                                                               "-time") if 'e' in types else []  # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
-        now_user_blocks_text = Text.objects.filter(user=now_user).order_by("-date", "-time") if 't' in types else []
+        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 't' in types else []
         now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
                                  key=lambda x: (x.date, x.time), reverse=True)
         print(now_user_blocks.__len__())
@@ -419,9 +419,9 @@ def loadSearchPage(request):
         event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
         text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
 
-        now_user_blocks_events = Event.objects.filter(user=now_user).filter(event_filter).order_by("-date", "-time")
-        now_user_blocks_data = Data.objects.filter(user=now_user).order_by("-date", "-time") if 'd' in types else []
-        now_user_blocks_text = Text.objects.filter(user=now_user).filter(text_filter).order_by("-date", "-time")
+        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).filter(event_filter).order_by("-date", "-time")
+        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).filter(text_filter).order_by("-date", "-time")
         # 暂时不支持data的搜索
         now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_text),
                                  key=lambda x: (x.date, x.time), reverse=True)
@@ -469,7 +469,7 @@ def loadPlanPage(request):
         not_finished_todo_list = []
         today = datetime.date.today()
         seven_days_later = today + datetime.timedelta(days=7)
-        todos = Todo.objects.filter(user=now_user).order_by('deadline')
+        todos = Todo.objects.filter(user__family=now_user.family).order_by('deadline')
         for todo in todos:
             print(todo.deadline)
             print(today <= todo.deadline <= seven_days_later)
@@ -482,7 +482,7 @@ def loadPlanPage(request):
                 else:
                     not_finished_todo_list.append(todo_item)
         # 获取部分计划
-        now_user_plans = Plan.objects.filter(user=now_user)
+        now_user_plans = Plan.objects.filter(user__family=now_user.family)
         print(list(now_user_plans))
         plan_list = []
         for db_block in now_user_plans:
@@ -504,7 +504,7 @@ def loadAllPlanPage(request):
         print(openid)
         now_user = User.objects.get(openid=openid)
         # 获得所有计划
-        plans = Plan.objects.filter(user=now_user)
+        plans = Plan.objects.filter(user__family=now_user.family)
         plan_list = []
         for plan in plans:
             plan_list.append({'title': plan.title, 'icon': plan.icon})
@@ -519,7 +519,7 @@ def loadCertainPlan(request):
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
         planTitle = request.GET.get('plan')
-        plan = Plan.objects.filter(user=now_user, title=planTitle).first()
+        plan = Plan.objects.filter(user__family=now_user.family, title=planTitle).first()
         icon = plan.icon
         todos = plan.todo_set.all().order_by("deadline")
         todo_list = []
@@ -542,9 +542,9 @@ def getUserInfo(request):
         image_path = 'static/ImageBase/' + openid
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
-        event_number = len(Event.objects.filter(user=now_user))
-        plan_number = len(Plan.objects.filter(user=now_user))
-        text_number = len(Text.objects.filter(user=now_user))
+        event_number = len(Event.objects.filter(user__family=now_user.family))
+        plan_number = len(Plan.objects.filter(user__family=now_user.family))
+        text_number = len(Text.objects.filter(user__family=now_user.family))
         credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
@@ -560,7 +560,7 @@ def addPlan(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         title = data.get('title')
-        if Plan.objects.filter(user=now_user, title=title).exists():
+        if Plan.objects.filter(user__family=now_user.family, title=title).exists():
             return JsonResponse({'message': 'Duplicate plan name'})
         icon = data.get('icon')
         child = data.get('child')  # 现在的child是这样的：['bbbbb', 'bb']
@@ -581,7 +581,7 @@ def addTodo(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         planTitle = data.get('planTitle')
-        plan = Plan.objects.get(user=now_user, title=planTitle)
+        plan = Plan.objects.get(user__family=now_user.family, title=planTitle)
         title = data.get('title')
         deadline = data.get('deadline')
         todo_id = data.get('id')
@@ -596,7 +596,7 @@ def updateTodo(request):
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         todo_id = data.get('id')
-        todo = Todo.objects.get(user=now_user, todo_id=todo_id)
+        todo = Todo.objects.get(user__family=now_user.family, todo_id=todo_id)
         content = data.get('content')
         print(content)
         if content == 'ddl':
@@ -871,9 +871,9 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user=now_user))
-            plan_number = len(Plan.objects.filter(user=now_user))
-            text_number = len(Text.objects.filter(user=now_user))
+            event_number = len(Event.objects.filter(user__family=now_user.family))
+            plan_number = len(Plan.objects.filter(user__family=now_user.family))
+            text_number = len(Text.objects.filter(user__family=now_user.family))
             credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
@@ -1020,7 +1020,7 @@ def loadTimelinePage(request):
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user=now_user).order_by("-date",
+        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
                                                                               "-time") if 'e' in types else []  # 筛选的结果按照降序排列
         now_user_blocks = sorted(list(now_user_blocks_events),
                                  key=lambda x: (x.date, x.time), reverse=True)

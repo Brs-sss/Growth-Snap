@@ -10,12 +10,56 @@
   <!-- <text class="tag-text">{{activeIndex}}</text> -->
   <block wx:if="{{activeIndex==0}}">
     <!-- 时间轴 -->
-    <view class="timeline-list">
+    <!-- <view class="timeline-list">
       <block wx:for="{{timelineList}}" wx:key="index">
         <view class="timeline-item"  data-category="timeline" data-index="{{index}}" bindtap="addEvent">
           <image class="timeline-image" src="{{host_}}/static/frontend/timeline/timeline_{{index}}.jpg"></image>
         </view>
       </block>
+    </view> -->
+    <view class="weui-form__control-area">
+      <view class="weui-cells__group weui-cells__group_form">
+				<view class="weui-cells__title">时间轴信息</view>
+				<view class="weui-cells weui-cells_form">
+					
+					<view class="weui-cell weui-cell_active">
+						<view class="weui-cell__hd"><label class="weui-label">时间轴标题</label></view>
+						<view class="weui-cell__bd weui-flex">
+							<input
+                                class="weui-input"
+                                type="text"
+                                placeholder="请输入标题（最长16位）"
+                                placeholder-class="weui-input__placeholder"
+                                bindinput="handleInputTimelineTitle"
+                            />
+						</view>
+					</view>
+      
+					<view class="weui-cell weui-cell_active weui-cell_disabled">
+						<view class="weui-cell__hd">
+                            <label class="weui-label">时间轴模板</label>
+                        </view>
+						<view class="weui-cell__bd">
+							<input class="weui-input" placeholder="请输入微信号" value="{{timelineList[templateSelected].name}}" disabled />
+						</view>
+				</view>
+				</view>
+        <view class="weui-cells__title">左右滑动选择</view>
+			</view>
+      
+    </view>
+    <view class="audio-btn-container">
+        <view class="audio-list">
+          <block wx:for="{{timelineList}}" wx:key="index">
+            <view class="timeline-item audio-item"  data-category="timeline" data-index="{{index}}" bindtap="selectTemplate">
+              <image class="audio-image {{item.id==templateSelected? 'selected' : ''}}" 
+              src="/image/generate/timeline/timeline_{{item.id}}.png" style="width: 36vh;"></image>
+              <image class="select-icon  {{item.id==templateSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
+              <text class="timeline-name">{{item.name}}</text>
+            </view>
+          </block>
+        </view>
+        <button bind:tap="addEvent" data-category="timeline">生成</button>
     </view>
   </block>
   <block wx:if="{{activeIndex==1}}">
