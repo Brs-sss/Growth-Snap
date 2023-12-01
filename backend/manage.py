@@ -4,6 +4,7 @@ import os
 import sys
 # 定义全局host_url
 host_url = 'http://43.138.42.129:8000/'
+#host_url = 'http://127.0.0.1:8090/'
 
 
 

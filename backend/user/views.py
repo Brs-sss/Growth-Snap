@@ -14,7 +14,9 @@ import os
 import datetime
 import shutil
 from urllib.parse import unquote
-host_url = 'http://43.138.42.129:8000/'
+
+from manage import host_url
+
 
 
 # import fitz
@@ -888,6 +890,7 @@ def getFamilyInfo(request):
 
 def generateDiary(request):
     if request.method == 'POST':
+        print("in gene")
         data = json.loads(request.body)
         to_render_list = []
         event_text_list = data.get('list')
@@ -923,6 +926,7 @@ def generateDiary(request):
         if not os.path.exists(output_base):
             os.mkdir(output_base)
         output_path = output_base + data.get('name') + '.pdf'
+        
         GenerateDiaryPDF(event_list=to_render_list, cover_idx=data.get('cover_index'),
                          paper_idx=data.get('paper_index'), output_path=output_path)
         return JsonResponse({'msg': 'success'})
@@ -991,12 +995,7 @@ def generateVideo(request):
         # print(image_path_list)
         GenerateVideo(image_path_list, audio_index, video_title, label, openid)
 
-        # output_base='static/diary/'+data.get('openid')+'/'
-        # if not os.path.exists(output_base):
-        #     os.mkdir(output_base)
-        # output_path=output_base+data.get('name')+'.pdf'
-        # GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
-        return JsonResponse({'msg': 'success', 'src': ''})
+
     return JsonResponse({'msg': 'POST only'})
 
 

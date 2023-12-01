@@ -10,6 +10,7 @@ function getImageGridStyle(num_rows){
   width: 100%;
   height:calc(30vw*${num_rows});`
 }
+const app = getApp();
 
 Page({
 
@@ -21,7 +22,8 @@ Page({
     imageList: [],
     profilePath:'',
     imgGridStyle:getImageGridStyle(1),
-    host_: 'http://127.0.0.1:8090/',
+    // host_: 'http://127.0.0.1:8090/',
+    host_: `${app.globalData.localUrl}`,
     openid: '',
     is_disabled: false,
     visibility_cancel: 'none',

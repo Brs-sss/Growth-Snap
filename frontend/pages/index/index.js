@@ -128,6 +128,9 @@ Page({
                 //   url: '/pages/show/show'
                 // })
               }
+            },
+            fail: function(res){
+              console.log(res)
             }
           })
         }
