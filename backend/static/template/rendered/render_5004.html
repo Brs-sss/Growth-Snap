@@ -1,0 +1,79 @@
+<!-- 注意：这个文件报错也没关系，很可能是由于IDE不支持jinja'语法 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0; /* 可以考虑去除默认的 margin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: url("../papers/paper_0.png") repeat center center fixed;
+            background-size: 100% 100%;
+            position: relative;
+        }
+        .date{
+            color: #666;
+            font-family: 'SimHei', sans-serif;
+            font-size: 19px;
+            margin-top: 0;
+
+        }
+        h1 {
+            margin: 0;
+            color: #000d6d;
+        }
+        p {
+            line-height: 1.5;
+            color: #000;
+            white-space: pre-wrap;
+        }
+
+        .page{
+            width: 178.3mm;
+            height: 246.2mm;
+            position: absolute;
+            left: 19mm;
+            top: 25.4mm;
+            page-break-before: always;
+        }
+
+        .image-box{
+            width: 100%;
+            height: auto;
+            /*display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; */   /*wkhtmltopdf不支持glex grid*/
+
+            text-align: center;
+        }
+        .image-box img{
+            display: inline-block;
+            width: 100mm;
+            height: auto;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="date">2023年11月30日</div>
+        <h1>hh</h1>
+        <p>hh</p>
+        <div class="image-box">
+            <img src="../../ImageBase/9ca9dc7b3e7d121501e8ff2bac1344d70939e83572afb3ef8acd7f2e317037f8/0_YB3y75FUQDg61ef7f480832f1a4d65aa021745b8c9e4.jpeg"/>
+            <!-- <img src="漫天闪电.png"/> -->
+        </div>
+        
+    </div>
+</body>
+</html>
