@@ -84,25 +84,25 @@ APP_SECRET  = "8b2f15860acffc34690fc374907fc2d0"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# # sqlite
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# mysql
+# sqlite
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "thss",
-        "USER": "root",
-        "PASSWORD": "2021011815",
-        "HOST": "db",
-        "PORT": "3306",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# # mysql
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "thss",
+#         "USER": "root",
+#         "PASSWORD": "2021011815",
+#         "HOST": "db",
+#         "PORT": "3306",
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
