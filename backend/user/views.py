@@ -17,8 +17,6 @@ from urllib.parse import unquote
 
 from manage import host_url
 
-
-
 # import fitz
 
 # Create your views here.
