@@ -16,7 +16,8 @@ import shutil
 from urllib.parse import unquote
 
 
-host_url = 'http://43.138.42.129:8000/'
+# host_url = 'http://43.138.42.129:8000/'
+from manage import host_url
 
 # import fitz
 
@@ -880,9 +881,9 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user__family=now_user.family))
-            plan_number = len(Plan.objects.filter(user__family=now_user.family))
-            text_number = len(Text.objects.filter(user__family=now_user.family))
+            event_number = len(Event.objects.filter(user=user))
+            plan_number = len(Plan.objects.filter(user=user))
+            text_number = len(Text.objects.filter(user=user))
             credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
@@ -944,10 +945,11 @@ def loadPDFThumbnail(request):
         pdf_name = request.GET.get('file_name')
         pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
         output_path = 'static/diary/' + openid + '/thumbnails/' + pdf_name + '/'
-        try:
-            num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
-        except Exception as e:
-            return HttpResponse("Request failed", status=500)
+        # try:
+        #     num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
+        # except Exception as e:
+        #     return HttpResponse("Request failed", status=500)
+        num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
         thumbnail_list = [host_url + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
         return JsonResponse({'imageList': thumbnail_list, 'pageNum': pages})
     return JsonResponse({'msg': 'GET only'})
