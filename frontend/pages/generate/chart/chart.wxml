@@ -3,6 +3,12 @@
 <button class="submit" bindtap="handleSave">导出</button>
 
 <view class="container_tag">
+  <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.selected ? 'selected' : ''}}" bindtap="toggleChildTag">
+      <text class="tag-text">{{item.info}}</text>
+    </view>
+</view>
+
+<view class="container_tag">
   <view wx:for="{{keys}}" wx:key="index" data-index='{{index}}' class="tag {{item.selected ? 'selected' : ''}}" bindtap="toggleTag">
       <text class="tag-text">{{item.info}}</text>
     </view>
