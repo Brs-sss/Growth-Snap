@@ -107,6 +107,7 @@ class Data(BaseRecord):
 
 class Record(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    children = models.ManyToManyField(Child)
     date = models.DateField(null=True)
     time = models.TimeField(null=True)
     key = models.CharField(max_length=24)

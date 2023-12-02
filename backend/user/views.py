@@ -284,6 +284,8 @@ def submitData(request):
         time = (data.get('time'))[:8]
         children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
+        now_family = user.family
+        children = data.get('children')
         print(records)
         records_json = json.loads(records)
         index = 0
@@ -296,6 +298,9 @@ def submitData(request):
                 index += 1
             new_rc = Record.objects.create(user=user, date=date, time=time,
                                            key=record['key'], value=record['value'], data_id=data_id)
+            for name in children:
+                child = Child.objects.get(family=now_family, name=name)
+                new_rc.children.add(child)
 
         if keyList.__len__() == 1:
             title = keyList[0] + '记录'
@@ -314,8 +319,6 @@ def submitData(request):
         new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
                                        records=records, data_id=data_id)
 
-        now_family = user.family
-        children = data.get('children')
         for name in children:
             child = Child.objects.get(family=now_family, name=name)
             new_data.children.add(child)
