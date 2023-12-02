@@ -11,7 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeIndex: 0, // 初始显示的子页面
+    activeIndex: 2, // 初始显示的子页面
     timelineList: [], // 时间轴模板数据
     timelineTitle: "",
     templateSelected: 0, // 当前选中的时间轴模板
