@@ -16,7 +16,8 @@
         <view class="user_tag">{{user_label}}</view>
       </view>
 </view>
-      <view class="user_info">
+<view class="user_info_container">
+  <view class="user_info">
         <text class="info_data" id="data_1">{{event_number}}</text>
         <text class="info_type">事件</text>
       </view>
@@ -32,6 +33,8 @@
         <text class="info_data" id="data_point">{{credit}}</text>
         <text class="info_type">积分</text>
       </view>
+</view>
+      
     </view>
   </view>
   

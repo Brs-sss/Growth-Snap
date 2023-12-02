@@ -119,7 +119,7 @@ def register(request):
             if Family.objects.filter(token=token).exists():
                 family = Family.objects.get(token=token)
                 # token是否过期
-                if family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
+                if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
                     # 过期
                     return JsonResponse({
                         'msg': 'family does not exist'
@@ -545,6 +545,7 @@ def getUserInfo(request):
         image_path = 'static/ImageBase/' + openid
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
+        print(f'profile_image {profile_image}')
         event_number = len(Event.objects.filter(user__family=now_user.family))
         plan_number = len(Plan.objects.filter(user__family=now_user.family))
         text_number = len(Text.objects.filter(user__family=now_user.family))
