@@ -18,7 +18,8 @@ from math import floor
 
 import PyPDF2
 import os
-os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
+# os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
+os.environ['IMAGEIO_FFMPEG_EXE'] = '/usr/bin/ffmpeg'
 from moviepy.editor import VideoFileClip, AudioFileClip
 import imageio
 from PIL import Image
@@ -307,11 +308,13 @@ def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     images = convert_from_path(pdf_path,first_page=1,last_page=max_page, dpi=resolution) #如果总页数小于max_page，会自动处理
+    print(images.__len__())
     with open(pdf_path, 'rb') as file:
         pdf_reader = PyPDF2.PdfReader(file)
         page_count = len(pdf_reader.pages)
     
     for i, image in enumerate(images):
+        print(f"Generating thumbnail for page {i+1}...")
         thumbnail_path = f"{output_folder}/thumbnail_page_{i + 1}.jpg"
         image.save(thumbnail_path, 'JPEG')
     
