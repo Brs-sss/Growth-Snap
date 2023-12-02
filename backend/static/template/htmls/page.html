@@ -33,6 +33,8 @@
             line-height: 1.5;
             color: {{ color_set.text_color }};
             white-space: pre-wrap;
+            page-break-after: always;
+            page-break-inside: auto;
         }
 
         .page{
@@ -41,7 +43,10 @@
             position: absolute;
             left: 19mm;
             top: 25.4mm;
+            right: 12.7mm;
+            bottom: 25.4mm;
             page-break-before: always;
+            page-break-inside: auto;
         }
 
         .image-box{
@@ -66,13 +71,19 @@
 </head>
 <body>
     <div class="page">
+        {% if show_title %}
         <div class="date">{{ date }}</div>
         <h1>{{ title }}</h1>
+        {% endif %}
+
         <p>{{ text }}</p>
+        
+        {% if show_image %}
         <div class="image-box">
             <img src="{{ image }}"/>
             <!-- <img src="漫天闪电.png"/> -->
         </div>
+        {% endif %}
         
     </div>
 </body>

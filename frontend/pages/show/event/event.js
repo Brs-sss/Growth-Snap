@@ -65,19 +65,32 @@ Page({
 
   handleSubmit() {
     // 检查提交内容是否有空的
-    if (this.data.event_date == '')
+
+    if (this.data.inputTitle == '')
     {
+      console.log('title',this.data.inputTitle)
       wx.showToast({
-        title: '事件时间不可为空',
+        title: '标题不可为空',
         icon: 'error',
         duration: 1000
       })
       return;
     }
-    if (this.data.inputTitle == '')
+
+    if (this.data.imageList.length == 0)
     {
       wx.showToast({
-        title: '事件标题不可为空',
+        title: '至少一张图片',
+        icon: 'error',
+        duration: 1000
+      })
+      return;
+    }
+
+    if (this.data.event_date == '')
+    {
+      wx.showToast({
+        title: '时间不可为空',
         icon: 'error',
         duration: 1000
       })

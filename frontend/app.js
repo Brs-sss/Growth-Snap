@@ -17,8 +17,8 @@ App({
   globalData: {
     // 如果 localDebug is set true, 会访问 localUrl
     localDebug:true,
-    //localUrl:'http://127.0.0.1:8090/',
-    localUrl:'http://43.138.42.129:8000/',
+     localUrl:'http://127.0.0.1:8090/',
+    // localUrl:'http://43.138.42.129:8000/',
     // TODO: 填写服务器的url
     userInfo: null
   }

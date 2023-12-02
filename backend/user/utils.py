@@ -9,18 +9,28 @@ import shutil
 # from mutagen.mp3 import MP3
 from pdf2image import convert_from_path
 from PIL import Image, ImageDraw, ImageFont
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+import string
+from langdetect import detect
+from math import floor
+
 import PyPDF2
 import os
-os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
+# os.environ['IMAGEIO_FFMPEG_EXE'] = '/Users/alex/Downloads/ffmpeg'
+os.environ['IMAGEIO_FFMPEG_EXE'] = '/usr/bin/ffmpeg'
 from moviepy.editor import VideoFileClip, AudioFileClip
 import imageio
 from PIL import Image
 import requests
 
+
 # 指定 wkhtmltopdf 可执行文件路径
 #config = pdfkit.configuration(wkhtmltopdf='D:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')  #windows
-#config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # linux
+# config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # linux
 config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')  #mac
+ 
 render_path = 'static/template/rendered/'
 
 event_image_base_path = '../../ImageBase/'
@@ -55,7 +65,159 @@ def render_template(template_html,context_dict):
         file.write(rendered_html)
     return output_path
     
-###########################    end block 2    
+###########################    end block 2   
+
+
+def is_punctuation(char):
+    # 判断是否是英文标点
+    if char in string.punctuation:
+        return True
+    
+    # 判断是否是中文标点
+    # 中文标点的范围可以通过查阅Unicode标准来获取
+    chinese_punctuation_ranges = [
+        (0x3000, 0x303F),  # CJK标点符号
+        (0xFF00, 0xFFEF),  # 全角ASCII、全角标点
+    ]
+    for start, end in chinese_punctuation_ranges:
+        if start <= ord(char) <= end:
+            return True
+    
+    return False
+
+def split_chinese_text(c, text, font, font_size, max_width):
+    lines = []
+    current_line = ""
+    current_width = 0
+
+    for char in text:
+        char_width = c.stringWidth(char, font, font_size)
+        if char == '\n':
+            current_line += char
+            lines.append(current_line)
+            current_line = ''
+            current_width = 0
+            
+        elif is_punctuation(char):
+            current_line += char
+            current_width += char_width
+            
+        elif current_width + char_width > max_width:
+            lines.append(current_line)
+            current_line = char
+            current_width = char_width
+        else:
+            current_line += char
+            current_width += char_width
+
+    if current_line:
+        lines.append(current_line)
+
+    return lines
+
+def split_english_text(c, text, font, font_size, max_width):
+    lines = []
+    current_line = ""
+    current_width = 0
+
+    paragraphs=text.split('\n')
+    for para in paragraphs:
+        current_line = ""
+        current_width = 0
+        for word in para.split(' '):
+            word_width = c.stringWidth(word, font, font_size)
+            if current_width + word_width > max_width:
+                lines.append(current_line)
+                current_line = word
+                current_width = word_width
+            else:
+                if current_line:
+                    current_line += " "
+                    current_width += c.stringWidth(" ", font, font_size)
+                current_line += word
+                current_width += word_width
+
+        current_line += '\n'
+        lines.append(current_line)
+
+    return lines
+
+#可以根据图片高度情况，将一段分成段，并保证排版出来ok
+def wrap_text(text,image_height_list):
+    
+    # 判断语言
+    language=detect(text)
+    lang_type= 'A' if language == 'zh-cn' or language == 'ja' else 'B'
+
+    font_size = 15.5 if lang_type == 'A' else 12
+    width = 175 * mm
+    height_without_title = 220 * mm
+    height = 240 * mm
+    line_height = 1.5
+    line_height_points = 16 * line_height
+
+    c = canvas.Canvas("output.pdf", pagesize=A4)
+    c.setFont("Helvetica", font_size)
+    
+    if lang_type == 'A':
+        text_lines = split_chinese_text(c, text, "Helvetica", font_size, width)
+    else:
+        text_lines = split_english_text(c, text, "Helvetica", font_size, width)
+    
+    total_lines=len(text_lines)
+    
+    #第一页 
+    text_block_list=[]
+    jointer='' if lang_type == 'A' else ' '
+    image_height = 0 if len(image_height_list)==0 else image_height_list[0]
+    page_lines_max=floor((height_without_title - image_height)/line_height_points)
+    page_num=0
+    while total_lines>0:
+        if total_lines <= page_lines_max:
+            text_block_list.append(jointer.join(text_lines))
+            break
+        else:
+            text_block_list.append(jointer.join(text_lines[:page_lines_max]))
+            total_lines-=page_lines_max
+            text_lines=text_lines[page_lines_max:]
+            
+            #更新page_lines_max
+            page_num+=1
+            image_height= 0 if page_num>=len(image_height_list) else image_height_list[page_num]
+            page_lines_max=floor((height - image_height)/line_height_points)
+            
+    
+    return text_block_list   
+
+def get_image_aspect_ratio(image_path):
+    try:
+        with Image.open(image_path) as img:
+            print("okkkkkkkkkkkkk")
+            width, height = img.size
+            aspect_ratio = height / width
+            return aspect_ratio
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    
+def arrange_page(text,image_height_list,image_path_list):
+    text_blocks=wrap_text(text,image_height_list)
+    pages=[]
+    image_num=len(image_path_list)
+
+    for i in range(0,len(text_blocks)):
+        page={}
+        page['text']=text_blocks[i]
+        page['image']=None if i>=image_num else image_path_list[i]
+        page['template']='page.html'
+        page['is_first']=(i==0)
+        pages.append(page)
+    
+    return pages
+
+            
+
+
         
 
 
@@ -81,7 +243,12 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
     
     #absolute_path_cover = quote(os.path.join(current_directory, covers_path+f'cover_{cover_idx}.png'), safe="")
 
-    cover=render_template('static/template/htmls/cover.html',{'background_img':covers_path+f'cover_{cover_idx}.png','title':'Welcome to My Diary','date':'2023年11月12日'})
+    cover=render_template('static/template/htmls/cover.html',
+                          {
+                              'background_img':covers_path+f'cover_{cover_idx}.png',
+                              'title':'Welcome to My Diary',
+                              'date':'2023年11月12日'
+                            })
     rendered_files.append(cover)
     
     color_set={}
@@ -97,11 +264,32 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
     
     
     for event in event_list:
+        text = event['content']
+        imgHeightList=[]
+        imgPathList=[]
         if event['type']=='event':
-            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'image':event_image_base_path+event['event_id']+'/'+event['imgList'][0],'color_set':color_set})
-        else:
-            page=render_template('static/template/htmls/page.html',{'background_img':papers_path+f'paper_{paper_idx}.png','title':event['title'],'text':event['content'],'date':event['date'],'color_set':color_set})
-        rendered_files.append(page)
+            for img in event['imgList']:
+                img_path = event_image_base_path+event['event_id']+'/'+img
+                imgPathList.append(img_path)
+                img_height=get_image_aspect_ratio(image_path= './static/ImageBase/' +event['event_id']+'/'+img)*100 #100mm是宽度
+                imgHeightList.append(img_height)
+
+        
+        pages=arrange_page(text,imgHeightList,imgPathList)
+        template_path='static/template/htmls/'
+        for abs_page in pages:
+            page=render_template(template_html=(template_path+abs_page['template']),
+                                 context_dict={
+                                     'background_img':papers_path+f'paper_{paper_idx}.png',
+                                     'title':event['title'],
+                                     'text':abs_page['text'],
+                                     'date':event['date'],
+                                     'image':abs_page['image'],
+                                     'color_set':color_set,
+                                     'show_title':abs_page['is_first'],
+                                     'show_image':(abs_page['image']!=None)
+                                     })
+            rendered_files.append(page)
 
     #  将多个 HTML 文件合并为一个 PDF
     pdfkit.from_file(rendered_files, output_path=output_path, options=diary_options)
@@ -120,11 +308,13 @@ def GenerateThumbnail(pdf_path, output_folder,max_page=5, resolution=100):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     images = convert_from_path(pdf_path,first_page=1,last_page=max_page, dpi=resolution) #如果总页数小于max_page，会自动处理
+    print(images.__len__())
     with open(pdf_path, 'rb') as file:
         pdf_reader = PyPDF2.PdfReader(file)
         page_count = len(pdf_reader.pages)
     
     for i, image in enumerate(images):
+        print(f"Generating thumbnail for page {i+1}...")
         thumbnail_path = f"{output_folder}/thumbnail_page_{i + 1}.jpg"
         image.save(thumbnail_path, 'JPEG')
     
