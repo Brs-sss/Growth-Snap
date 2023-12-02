@@ -4,6 +4,7 @@ import * as echarts from '../../../components/ec-canvas/echarts';
 
 var dataList = [];
 var selectedKeys = [];
+var selectedKidList = [];
 var selectFlag = 0; // 0表示可以多选 1表示必须单选
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
@@ -553,9 +554,11 @@ Page({
       {id: 2, selected: false},
       {id: 3, selected: false}
     ],
-    keys:[],
+    keys : [],
     selectedKeys : [],
-    colorSet:[
+    kidList : [],
+    selectedKidList : [],
+    colorSet : [
       {id: 1},
       {id: 2},
       {id: 3},
@@ -565,6 +568,44 @@ Page({
       onInit: initChart
     },
     host_: `${app.globalData.localUrl}`,
+  },
+  toggleChildTag: function(e) {
+    const { index } = e.currentTarget.dataset;
+    const key = this.data.kidList[index].info;
+    const keyIndex = selectedKidList.indexOf(key);
+    if (keyIndex !== -1) {
+      selectedKidList.splice(keyIndex, 1); // 取消选中标签
+      this.data.kidList[index].selected = false ;
+    } else {
+      // 存在单选限制
+      const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
+      console.log(deleteIndex)
+      this.data.kidList[deleteIndex].selected=false;
+      selectedKidList = [];
+      selectedKidList.push(key); // 选中
+      this.data.kidList[index].selected = true ;
+    }
+    console.log(this.data.kidList[index].info);
+    this.setData({
+      selectedKidList: selectedKidList,
+      kidList: this.data.kidList,
+      ['kidList[' + index + '].selected']: this.data.kidList[index].selected
+    });
+    
+    initData();
+    updateChart();
+
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+    console.log(selectedKeys)
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -688,8 +729,46 @@ Page({
    */
   onLoad(options) {
     chart_template = options.index;
-
-    // var pointer = this
+    var that = this;
+    let openid
+    // 获取存储的openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        openid=res.data
+        console.log("openid:",openid)
+        that.setData({
+          openid: openid
+        })
+        wx.request({
+          url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+          method: 'GET',
+          success:function(res){
+            console.log(res.data)
+            let children_list = res.data.children_list
+            console.log(children_list.length)
+            let temp_kidList = []
+            for(let i = 0; i < children_list.length; i++){
+              let name = children_list[i].name
+              console.log(name)
+              if(i == 0){
+                temp_kidList.push({'info': name, 'selected': true})
+                selectedKidList.push(name)
+              }else{
+                temp_kidList.push({'info': name, 'selected': false})
+              }
+            }
+            that.setData({
+              kidList: temp_kidList
+            })
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+        });
+      }
+    })
     // wx.getStorage({
     //   key: 'openid',  // 要获取的数据的键名
     //   success: function (res) { 

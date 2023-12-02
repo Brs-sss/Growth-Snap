@@ -1,9 +1,5 @@
 <!--pages/user/child/child_detail/child_detail.wxml-->
 
-<view>
-  <view>{{name}}</view>
-  <view>{{plans}}</view>
-</view>
 <view class="ec-container">
      <ec-canvas canvas-id="echart" ec="{{ec_radar}}"></ec-canvas>
 </view>

@@ -1067,3 +1067,78 @@ def loadTimelinePage(request):
 
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
+
+# def loadData(request):
+#     if request.method == 'GET':
+#         children = Child.objects.filter(family=family)
+#         keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
+#         for child in children:
+#             for key in keyList:
+#                 all_data = Data.objects.filter(children=child,)
+
+#         name = request.GET.get('name')
+#         child = Child.objects.get(name=name)
+#         child_item = {}
+#         child_item['name'] = child.name
+#         # 计算child相关的过去一年的每月的计划数量
+#         now = datetime.datetime.now()
+#         all_plans = Plan.objects.filter(children=child)
+#         child_item['plans'] = all_plans.__len__()
+#         # 获得不同icon的plan的数量
+#         all_icons = []
+#         for plan in all_plans:
+#             all_icons.append(plan.icon)
+#         all_icons = list(set(all_icons))
+#         icon_list = []
+#         for icon in all_icons:
+#             icon_item = {}
+#             icon_item['icon'] = icon
+#             icon_item['number'] = all_plans.filter(icon=icon).__len__()
+#             icon_list.append(icon_item)
+#         child_item['icon_list'] = icon_list
+
+#         # 事件
+#         all_events = Event.objects.filter(children=child)
+#         child_item['events'] = all_events.__len__()
+#         child_item['event_list'] = []
+#         for i in range(1, 13):
+#             count = all_events.filter(event_date__year=now.year, event_date__month=i).__len__()
+#             child_item['event_list'].append(count)
+
+#         # 获得不同tag的事件数量
+#         all_tags = []
+#         for event in all_events:
+#             all_tags += StringToList(event.tags)
+#         all_tags = list(set(all_tags))
+#         tag_list = []
+#         for tag in all_tags:
+#             tag_item = {}
+#             tag_item['tag'] = tag
+#             tag_item['number'] = all_events.filter(tags__icontains=tag).__len__()
+#             event_month = []
+#             for i in range(1, 13):
+#                 count = all_events.filter(event_date__year=now.year, tags__icontains=tag, event_date__month=i).__len__()
+#                 event_month.append(count)
+#             tag_item['month_count'] = event_month
+#             tag_list.append(tag_item)
+#         child_item['event_tag_list'] = tag_list
+
+#         # 文字
+#         all_texts = Text.objects.filter(children=child)
+#         child_item['texts'] = all_texts.__len__()
+#         # 获得不同tag的文字数量
+#         all_tags = []
+#         for text in all_texts:
+#             all_tags += StringToList(text.tags)
+#         all_tags = list(set(all_tags))
+#         tag_list = []
+#         for tag in all_tags:
+#             tag_item = {}
+#             tag_item['tag'] = tag
+#             tag_item['number'] = all_texts.filter(tags__icontains=tag).__len__()
+#             tag_list.append(tag_item)
+#         child_item['text_tag_list'] = tag_list
+
+#         print(f'child_item {child_item}')
+
+#         return JsonResponse({'child_item': child_item})
