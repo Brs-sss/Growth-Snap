@@ -59,6 +59,9 @@ function fuzzySearch(text, query) {
 
 /* 与后端联系，获取主页的内容*/
 function LoadShowPage(that){
+  that.setData({
+    popupVisible:false,
+  })
   // 获取存储的openid
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名

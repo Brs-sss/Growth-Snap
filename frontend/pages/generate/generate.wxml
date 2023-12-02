@@ -68,8 +68,8 @@
       <text class="sub-nav-item {{diaryActiveIndex==0?'active':''}}" bindtap="navigateToSubPage" data-index="0">封面</text>
       <text class="sub-nav-item {{diaryActiveIndex==1?'active':''}}" bindtap="navigateToSubPage" data-index="1">纸张</text>
     </view>
-    <image class="selected-image" bindtap="navigateToSubPage" data-index="0" src="{{host_}}/static/frontend/cover/cover_{{coverSelected}}.jpg"></image>
-    <image class="selected-image" bindtap="navigateToSubPage" data-index="1" src="{{host_}}/static/frontend/paper/paper_{{paperSelected}}.jpg" style="margin-left: -5vw;"></image>
+    <image class="selected-image" bindtap="navigateToSubPage" data-index="0" src="{{host_}}static/frontend/cover/cover_{{coverSelected}}.jpg"></image>
+    <image class="selected-image" bindtap="navigateToSubPage" data-index="1" src="{{host_}}static/frontend/paper/paper_{{paperSelected}}.jpg" style="margin-left: -5vw;"></image>
     <input class="diary-input" bindinput="handleInputTitle" placeholder="请输入标题" />
     <button class="submit" data-category="diary" data-index="{{100*coverSelected+paperSelected}}" bindtap="addEvent" style="width: 180rpx; height: 68rpx; display: block; box-sizing: border-box; left: 230rpx; top: -674rpx">生成</button>
     <block wx:if="{{diaryActiveIndex==0}}">
@@ -78,7 +78,7 @@
         <view class="cover-list" style="left: 1rpx;">
           <block wx:for="{{coverList}}" wx:key="index">
             <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectCover">
-              <image class="cover-image {{index==coverSelected ? 'selected' : ''}}" src="{{host_}}/static/frontend/cover/cover_{{index}}.jpg"></image>
+              <image class="cover-image {{index==coverSelected ? 'selected' : ''}}" src="{{host_}}static/frontend/cover/cover_{{index}}.jpg"></image>
               <image class="select-icon  {{index==coverSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
             </view>
           </block>
@@ -91,7 +91,7 @@
         <view class="cover-list" style="left: 1rpx;">
           <block wx:for="{{paperList}}" wx:key="index">
             <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectPaper">
-              <image class="cover-image {{index==paperSelected ? 'selected' : ''}}" src="{{host_}}/static/frontend/paper/paper_{{index}}.jpg"></image>
+              <image class="cover-image {{index==paperSelected ? 'selected' : ''}}" src="{{host_}}static/frontend/paper/paper_{{index}}.jpg"></image>
               <image class="select-icon  {{index==paperSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
             </view>
           </block>
