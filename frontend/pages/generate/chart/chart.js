@@ -2,7 +2,8 @@
 const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
-var dataList = [];
+var data_item = []; // 所有数据
+var dataList = []; // 当前孩子的所有数据
 var selectedKeys = [];
 var selectedKidList = [];
 var selectFlag = 0; // 0表示可以多选 1表示必须单选
@@ -574,8 +575,7 @@ Page({
     const key = this.data.kidList[index].info;
     const keyIndex = selectedKidList.indexOf(key);
     if (keyIndex !== -1) {
-      selectedKidList.splice(keyIndex, 1); // 取消选中标签
-      this.data.kidList[index].selected = false ;
+      return
     } else {
       // 存在单选限制
       const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
@@ -767,30 +767,17 @@ Page({
           console.log('load page failed: ',res)
         }
         });
+        wx.request({
+          url: that.data.host_+'user/api/generate/data'+'?openid='+openid,
+          method: 'GET',
+          success:function(res){
+            console.log(res.data)
+            data_item = res.data.data_item
+          
+        }
+        });
       }
     })
-    // wx.getStorage({
-    //   key: 'openid',  // 要获取的数据的键名
-    //   success: function (res) { 
-    //     var openid = res.data
-    //     wx.request({
-    //       url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
-    //       method:'GET',
-    //       success:function(res){
-    //         console.log(res.data.keyList);
-    //         const keys = res.data.keyList.map((key) => {
-    //           return { info: key, selected: false };
-    //         });
-    //         pointer.setData({
-    //           keys: keys
-    //         })
-    //       }
-    //     });
-    //   },
-    //   fail: function(res) {
-    //     console.error('获取本地储存失败', res);
-    //   }
-    // });
 
     if(chart_template == 0){
       // 可以多选
@@ -803,79 +790,59 @@ Page({
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
-    // var pointer = this
-    // wx.getStorage({
-    //   key: 'openid',  // 要获取的数据的键名
-    //   success: function (res) { 
-    //     var openid = res.data
-    //     wx.request({
-    //       url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
-    //       method:'GET',
-    //       success:function(res){
-    //         console.log(res.data.keyList)
-    //         const keys = res.data.keyList.map(function (item) {
-    //           return {info:item, selected: false}; 
-    //         });
-    //         pointer.setData({
-    //           keys: keys
-    //         })
-    //       }
-    //     });
-    //   },
-    //   fail: function(res) {
-    //     console.error('获取本地储存失败', res);
-    //   }
-    // });
 
-    //TODO： 从后端获取数据
-    dataList = [
-      {key:'data 1', list:[
-          {"date": "2023-02-09", "value": 66},
-          {"date": "2023-03-10", "value": 91},
-          {"date": "2023-04-11", "value": 92},
-          {"date": "2023-05-12", "value": 113},
-          {"date": "2023-06-13", "value": 207},
-          {"date": "2023-07-14", "value": 131},
-          {"date": "2023-08-15", "value": 281},
-      ]},
-      {key:'data 2', list:[
-        {"date": "2023-02-09", "value": 106},
-        {"date": "2023-03-10", "value": 51},
-        {"date": "2023-04-11", "value": 102},
-        {"date": "2023-05-12", "value": 123},
-        {"date": "2023-06-13", "value": 217},
-        {"date": "2023-07-14", "value": 141},
-        {"date": "2023-08-15", "value": 191},
-      ]},
-      {key:'data 3', list:[
-        {"date": "2023-02-09", "value": 96},
-        {"date": "2023-03-10", "value": 51},
-        {"date": "2023-04-11", "value": 60},
-        {"date": "2023-05-12", "value": 133},
-        {"date": "2023-06-13", "value": 127},
-        {"date": "2023-07-14", "value": 151},
-        {"date": "2023-08-15", "value": 101},
-      ]},
-      {key:'data 4', list:[
-        {"date": "2023-02-09", "value": 66},
-        {"date": "2023-03-10", "value": 91},
-        {"date": "2023-04-11", "value": 192},
-        {"date": "2023-05-12", "value": 113},
-        {"date": "2023-06-13", "value": 207},
-        {"date": "2023-07-14", "value": 31},
-        {"date": "2023-08-15", "value": 81},
-      ]},
-      {key:'data 5', list:[
-        {"date": "2023-02-09", "value": 36},
-        {"date": "2023-03-10", "value": 71},
-        {"date": "2023-04-11", "value": 50},
-        {"date": "2023-05-12", "value": 13},
-        {"date": "2023-06-13", "value": 37},
-        {"date": "2023-07-14", "value": 31},
-        {"date": "2023-08-15", "value": 81},
-      ]},
-    ];
+    // 初始化缺省孩子的数据
+    dataList = data_item[selectedKidList[0]]
+    // dataList = [
+    //   {key:'data 1', list:[
+    //       {"date": "2023-02-09", "value": 66},
+    //       {"date": "2023-03-10", "value": 91},
+    //       {"date": "2023-04-11", "value": 92},
+    //       {"date": "2023-05-12", "value": 113},
+    //       {"date": "2023-06-13", "value": 207},
+    //       {"date": "2023-07-14", "value": 131},
+    //       {"date": "2023-08-15", "value": 281},
+    //   ]},
+    //   {key:'data 2', list:[
+    //     {"date": "2023-02-09", "value": 106},
+    //     {"date": "2023-03-10", "value": 51},
+    //     {"date": "2023-04-11", "value": 102},
+    //     {"date": "2023-05-12", "value": 123},
+    //     {"date": "2023-06-13", "value": 217},
+    //     {"date": "2023-07-14", "value": 141},
+    //     {"date": "2023-08-15", "value": 191},
+    //   ]},
+    //   {key:'data 3', list:[
+    //     {"date": "2023-02-09", "value": 96},
+    //     {"date": "2023-03-10", "value": 51},
+    //     {"date": "2023-04-11", "value": 60},
+    //     {"date": "2023-05-12", "value": 133},
+    //     {"date": "2023-06-13", "value": 127},
+    //     {"date": "2023-07-14", "value": 151},
+    //     {"date": "2023-08-15", "value": 101},
+    //   ]},
+    //   {key:'data 4', list:[
+    //     {"date": "2023-02-09", "value": 66},
+    //     {"date": "2023-03-10", "value": 91},
+    //     {"date": "2023-04-11", "value": 192},
+    //     {"date": "2023-05-12", "value": 113},
+    //     {"date": "2023-06-13", "value": 207},
+    //     {"date": "2023-07-14", "value": 31},
+    //     {"date": "2023-08-15", "value": 81},
+    //   ]},
+    //   {key:'data 5', list:[
+    //     {"date": "2023-02-09", "value": 36},
+    //     {"date": "2023-03-10", "value": 71},
+    //     {"date": "2023-04-11", "value": 50},
+    //     {"date": "2023-05-12", "value": 13},
+    //     {"date": "2023-06-13", "value": 37},
+    //     {"date": "2023-07-14", "value": 31},
+    //     {"date": "2023-08-15", "value": 81},
+    //   ]},
+    // ];
+    
     var keys = [];
+    console.log(dataList)
     if(selectFlag == 0){
       selectedKeys = dataList.map(function (item) {
         return item.key;
