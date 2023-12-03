@@ -1,8 +1,8 @@
 <!--pages/generate/timeline/timeline.wxml-->
 <view class="ec-container">
   <ec-canvas canvas-id="echart" id="echart" style="height: 800px"
-   ec="{{ec}}" hidden="{{hasImg}}"></ec-canvas>
-  <image src="{{imgPath}}" hidden="{{! hasImg}}"></image>
+   ec="{{ec}}"></ec-canvas>
+  <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
 </view>
 
 <view class="container_components">

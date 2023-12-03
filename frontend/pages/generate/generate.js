@@ -78,9 +78,6 @@ Page({
         })
         return;
       }
-      that.setData({
-        timelineTitle: ""
-      })
       wx.navigateTo({
         url: '/pages/generate/add_event/add_event?category=timeline&index='
              + encodeURIComponent(that.data.templateSelected) + '&title=' + that.data.timelineTitle,
@@ -218,7 +215,16 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    var that = this
+    var query = wx.createSelectorQuery();
+    query.selectAll('#timelineTitleBar').fields({
+      properties: ["value"]
+    })
+    query.exec(function (res) {
+      that.setData({
+        timelineTitle: res[0][0].value
+      })
+    })
   },
 
   /**

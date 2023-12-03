@@ -26,12 +26,13 @@
 						<view class="weui-cell__hd"><label class="weui-label">标题</label></view>
 						<view class="weui-cell__bd weui-flex">
 							<input
-                                class="weui-input"
-                                type="text"
-                                placeholder="请输入标题（最长16位）"
-                                placeholder-class="weui-input__placeholder"
-                                bindinput="handleInputTimelineTitle"
-                            />
+                  class="weui-input"
+                  type="text"
+                  placeholder="请输入标题（最长16位）"
+                  placeholder-class="weui-input__placeholder"
+                  bindinput="handleInputTimelineTitle"
+                  id="timelineTitleBar"
+              />
 						</view>
 					</view>
       
