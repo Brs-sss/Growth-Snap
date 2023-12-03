@@ -56,7 +56,7 @@ reselectVideoInfo(){
     this.setData({
       openid: options.openid,
       video_title: options.video_title,
-      video_src: this.data.host_+'user/api/generate/video/preview'+'/'+options.openid+'/'+options.video_title
+      video_src: this.data.host_+'user/api/generate/video/preview'+'/'+options.openid+'/'+encodeURIComponent(options.video_title)
     })
     console.log("video_src: ", this.data.video_src)
 
