@@ -14,7 +14,6 @@ import os
 import datetime
 import shutil
 from urllib.parse import unquote
-
 from manage import host_url
 
 # import fitz
@@ -120,7 +119,7 @@ def register(request):
             if Family.objects.filter(token=token).exists():
                 family = Family.objects.get(token=token)
                 # token是否过期
-                if family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
+                if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
                     # 过期
                     return JsonResponse({
                         'msg': 'family does not exist'
@@ -285,6 +284,8 @@ def submitData(request):
         time = (data.get('time'))[:8]
         children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
+        now_family = user.family
+        children = data.get('children')
         print(records)
         records_json = json.loads(records)
         index = 0
@@ -297,6 +298,9 @@ def submitData(request):
                 index += 1
             new_rc = Record.objects.create(user=user, date=date, time=time,
                                            key=record['key'], value=record['value'], data_id=data_id)
+            for name in children:
+                child = Child.objects.get(family=now_family, name=name)
+                new_rc.children.add(child)
 
         if keyList.__len__() == 1:
             title = keyList[0] + '记录'
@@ -315,8 +319,6 @@ def submitData(request):
         new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
                                        records=records, data_id=data_id)
 
-        now_family = user.family
-        children = data.get('children')
         for name in children:
             child = Child.objects.get(family=now_family, name=name)
             new_data.children.add(child)
@@ -546,6 +548,7 @@ def getUserInfo(request):
         image_path = 'static/ImageBase/' + openid
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
+        print(f'profile_image {profile_image}')
         event_number = len(Event.objects.filter(user__family=now_user.family))
         plan_number = len(Plan.objects.filter(user__family=now_user.family))
         text_number = len(Text.objects.filter(user__family=now_user.family))
@@ -879,9 +882,9 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user__family=now_user.family))
-            plan_number = len(Plan.objects.filter(user__family=now_user.family))
-            text_number = len(Text.objects.filter(user__family=now_user.family))
+            event_number = len(Event.objects.filter(user=user))
+            plan_number = len(Plan.objects.filter(user=user))
+            text_number = len(Text.objects.filter(user=user))
             credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
@@ -943,10 +946,11 @@ def loadPDFThumbnail(request):
         pdf_name = request.GET.get('file_name')
         pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
         output_path = 'static/diary/' + openid + '/thumbnails/' + pdf_name + '/'
-        try:
-            num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
-        except Exception as e:
-            return HttpResponse("Request failed", status=500)
+        # try:
+        #     num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
+        # except Exception as e:
+        #     return HttpResponse("Request failed", status=500)
+        num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
         thumbnail_list = [host_url + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
         return JsonResponse({'imageList': thumbnail_list, 'pageNum': pages})
     return JsonResponse({'msg': 'GET only'})
@@ -1063,3 +1067,36 @@ def loadTimelinePage(request):
 
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
+
+def loadData(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        now_user = User.objects.get(openid=openid)
+        family = now_user.family
+        children = Child.objects.filter(family=family)
+        keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
+        data_item = {} # 返回的数据{{child:小明，data:child_data},{child:小红，data:child_data}}
+        print(keyList)
+        print(children)
+        for child in children:
+            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}],child_key_data]
+            for key in keyList:
+                child_key_data = {} # 保存一个孩子一个key的所有数据 {key:身高, list:[{value:,date:},{value:,date:}]
+                child_key_data['key'] = key
+                value_date_list = []
+                record_list = list(Record.objects.filter(key=key,children=child))
+                print(child,key,record_list)
+                for record in record_list:
+                    value_date_item = {}
+                    value_date_item['value'] = record.value
+                    value_date_item['date'] = record.date
+                    value_date_list.append(value_date_item)
+                child_key_data['list'] = value_date_list
+                if(record_list.__len__()):
+                    child_data.append(child_key_data)
+
+            data_item[child.name] = child_data
+     
+        print(f'data_item {data_item}')
+
+        return JsonResponse({'data_item': data_item})

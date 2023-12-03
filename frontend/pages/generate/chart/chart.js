@@ -2,8 +2,10 @@
 const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
-var dataList = [];
+var data_item = []; // 所有数据
+var dataList = []; // 当前孩子的所有数据
 var selectedKeys = [];
+var selectedKidList = [];
 var selectFlag = 0; // 0表示可以多选 1表示必须单选
 
 var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
@@ -553,9 +555,11 @@ Page({
       {id: 2, selected: false},
       {id: 3, selected: false}
     ],
-    keys:[],
+    keys : [],
     selectedKeys : [],
-    colorSet:[
+    kidList : [],
+    selectedKidList : [],
+    colorSet : [
       {id: 1},
       {id: 2},
       {id: 3},
@@ -565,6 +569,75 @@ Page({
       onInit: initChart
     },
     host_: `${app.globalData.localUrl}`,
+  },
+  toggleChildTag: function(e) {
+    const { index } = e.currentTarget.dataset;
+    const key = this.data.kidList[index].info;
+    const keyIndex = selectedKidList.indexOf(key);
+    if (keyIndex !== -1) {
+      return
+    } else {
+      // 判断选中孩子是否有数据
+      console.log(data_item[key])
+      if(data_item[key].length == 0){
+        wx.showToast({
+          title: "未上传"+ key +"数据",
+          icon: 'error',
+          duration: 1000,
+        })
+        return
+      }
+      // 存在单选限制
+      const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
+      console.log(deleteIndex)
+      this.data.kidList[deleteIndex].selected=false;
+      selectedKidList = [];
+      selectedKidList.push(key); // 选中
+      this.data.kidList[index].selected = true ;
+    }
+    
+    // TODO:写个复用的函数
+    dataList = data_item[selectedKidList[0]]
+    var keys = [];
+    console.log(dataList)
+    if(selectFlag == 0){
+      selectedKeys = dataList.map(function (item) {
+        return item.key;
+      }); 
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: true};
+      });
+    }else{
+      selectedKeys.push(dataList[0].key)
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: false};
+      });
+      keys[0].selected = true;
+    }
+    this.setData({
+      keys: keys
+    })
+
+    this.setData({
+      selectedKidList: selectedKidList,
+      kidList: this.data.kidList,
+      ['kidList[' + index + '].selected']: this.data.kidList[index].selected
+    });
+    
+    initData();
+    updateChart();
+
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+    console.log(selectedKeys)
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -688,30 +761,54 @@ Page({
    */
   onLoad(options) {
     chart_template = options.index;
-
-    // var pointer = this
-    // wx.getStorage({
-    //   key: 'openid',  // 要获取的数据的键名
-    //   success: function (res) { 
-    //     var openid = res.data
-    //     wx.request({
-    //       url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
-    //       method:'GET',
-    //       success:function(res){
-    //         console.log(res.data.keyList);
-    //         const keys = res.data.keyList.map((key) => {
-    //           return { info: key, selected: false };
-    //         });
-    //         pointer.setData({
-    //           keys: keys
-    //         })
-    //       }
-    //     });
-    //   },
-    //   fail: function(res) {
-    //     console.error('获取本地储存失败', res);
-    //   }
-    // });
+    var that = this;
+    let openid
+    // 获取存储的openid
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        // 从本地存储中获取数据,在index.js文件中保存建立的
+        openid=res.data
+        console.log("openid:",openid)
+        that.setData({
+          openid: openid
+        })
+        wx.request({
+          url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+          method: 'GET',
+          success:function(res){
+            console.log(res.data)
+            let children_list = res.data.children_list
+            console.log(children_list.length)
+            let temp_kidList = []
+            for(let i = 0; i < children_list.length; i++){
+              let name = children_list[i].name
+              console.log(name)
+              if(i == 0){
+                temp_kidList.push({'info': name, 'selected': true})
+                selectedKidList.push(name)
+              }else{
+                temp_kidList.push({'info': name, 'selected': false})
+              }
+            }
+            that.setData({
+              kidList: temp_kidList
+            })
+        },
+        fail:function(res){
+          console.log('load page failed: ',res)
+        }
+        });
+        wx.request({
+          url: that.data.host_+'user/api/generate/data'+'?openid='+openid,
+          method: 'GET',
+          success:function(res){
+            console.log(res.data)
+            data_item = res.data.data_item
+        }
+        });
+      }
+    })
 
     if(chart_template == 0){
       // 可以多选
@@ -724,79 +821,59 @@ Page({
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
-    // var pointer = this
-    // wx.getStorage({
-    //   key: 'openid',  // 要获取的数据的键名
-    //   success: function (res) { 
-    //     var openid = res.data
-    //     wx.request({
-    //       url: pointer.data.host_ + 'user/api/show/data/getkeys' + '?openid=' + openid,
-    //       method:'GET',
-    //       success:function(res){
-    //         console.log(res.data.keyList)
-    //         const keys = res.data.keyList.map(function (item) {
-    //           return {info:item, selected: false}; 
-    //         });
-    //         pointer.setData({
-    //           keys: keys
-    //         })
-    //       }
-    //     });
-    //   },
-    //   fail: function(res) {
-    //     console.error('获取本地储存失败', res);
-    //   }
-    // });
 
-    //TODO： 从后端获取数据
-    dataList = [
-      {key:'data 1', list:[
-          {"date": "2023-02-09", "value": 66},
-          {"date": "2023-03-10", "value": 91},
-          {"date": "2023-04-11", "value": 92},
-          {"date": "2023-05-12", "value": 113},
-          {"date": "2023-06-13", "value": 207},
-          {"date": "2023-07-14", "value": 131},
-          {"date": "2023-08-15", "value": 281},
-      ]},
-      {key:'data 2', list:[
-        {"date": "2023-02-09", "value": 106},
-        {"date": "2023-03-10", "value": 51},
-        {"date": "2023-04-11", "value": 102},
-        {"date": "2023-05-12", "value": 123},
-        {"date": "2023-06-13", "value": 217},
-        {"date": "2023-07-14", "value": 141},
-        {"date": "2023-08-15", "value": 191},
-      ]},
-      {key:'data 3', list:[
-        {"date": "2023-02-09", "value": 96},
-        {"date": "2023-03-10", "value": 51},
-        {"date": "2023-04-11", "value": 60},
-        {"date": "2023-05-12", "value": 133},
-        {"date": "2023-06-13", "value": 127},
-        {"date": "2023-07-14", "value": 151},
-        {"date": "2023-08-15", "value": 101},
-      ]},
-      {key:'data 4', list:[
-        {"date": "2023-02-09", "value": 66},
-        {"date": "2023-03-10", "value": 91},
-        {"date": "2023-04-11", "value": 192},
-        {"date": "2023-05-12", "value": 113},
-        {"date": "2023-06-13", "value": 207},
-        {"date": "2023-07-14", "value": 31},
-        {"date": "2023-08-15", "value": 81},
-      ]},
-      {key:'data 5', list:[
-        {"date": "2023-02-09", "value": 36},
-        {"date": "2023-03-10", "value": 71},
-        {"date": "2023-04-11", "value": 50},
-        {"date": "2023-05-12", "value": 13},
-        {"date": "2023-06-13", "value": 37},
-        {"date": "2023-07-14", "value": 31},
-        {"date": "2023-08-15", "value": 81},
-      ]},
-    ];
+    // 初始化缺省孩子的数据
+    dataList = data_item[selectedKidList[0]]
+    // dataList = [
+    //   {key:'data 1', list:[
+    //       {"date": "2023-02-09", "value": 66},
+    //       {"date": "2023-03-10", "value": 91},
+    //       {"date": "2023-04-11", "value": 92},
+    //       {"date": "2023-05-12", "value": 113},
+    //       {"date": "2023-06-13", "value": 207},
+    //       {"date": "2023-07-14", "value": 131},
+    //       {"date": "2023-08-15", "value": 281},
+    //   ]},
+    //   {key:'data 2', list:[
+    //     {"date": "2023-02-09", "value": 106},
+    //     {"date": "2023-03-10", "value": 51},
+    //     {"date": "2023-04-11", "value": 102},
+    //     {"date": "2023-05-12", "value": 123},
+    //     {"date": "2023-06-13", "value": 217},
+    //     {"date": "2023-07-14", "value": 141},
+    //     {"date": "2023-08-15", "value": 191},
+    //   ]},
+    //   {key:'data 3', list:[
+    //     {"date": "2023-02-09", "value": 96},
+    //     {"date": "2023-03-10", "value": 51},
+    //     {"date": "2023-04-11", "value": 60},
+    //     {"date": "2023-05-12", "value": 133},
+    //     {"date": "2023-06-13", "value": 127},
+    //     {"date": "2023-07-14", "value": 151},
+    //     {"date": "2023-08-15", "value": 101},
+    //   ]},
+    //   {key:'data 4', list:[
+    //     {"date": "2023-02-09", "value": 66},
+    //     {"date": "2023-03-10", "value": 91},
+    //     {"date": "2023-04-11", "value": 192},
+    //     {"date": "2023-05-12", "value": 113},
+    //     {"date": "2023-06-13", "value": 207},
+    //     {"date": "2023-07-14", "value": 31},
+    //     {"date": "2023-08-15", "value": 81},
+    //   ]},
+    //   {key:'data 5', list:[
+    //     {"date": "2023-02-09", "value": 36},
+    //     {"date": "2023-03-10", "value": 71},
+    //     {"date": "2023-04-11", "value": 50},
+    //     {"date": "2023-05-12", "value": 13},
+    //     {"date": "2023-06-13", "value": 37},
+    //     {"date": "2023-07-14", "value": 31},
+    //     {"date": "2023-08-15", "value": 81},
+    //   ]},
+    // ];
+    
     var keys = [];
+    console.log(dataList)
     if(selectFlag == 0){
       selectedKeys = dataList.map(function (item) {
         return item.key;
@@ -805,15 +882,12 @@ Page({
         return {info:item.key,selected: true};
       });
     }else{
-      console.log("here")
       selectedKeys.push(dataList[0].key)
       keys = dataList.map(function (item) {
         return {info:item.key,selected: false};
       });
       keys[0].selected = true;
     }
-    console.log("here")
-    console.log(keys)
     this.setData({
       keys: keys
     })
