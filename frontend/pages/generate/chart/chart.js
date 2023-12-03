@@ -205,6 +205,7 @@ function initData(){
     seriesDataFor0.push(currentLine);
   }
   //1号chart
+  console.log(dataList)
   dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
   dateList = dataListNow.map(function (item) {
     return item.date;
@@ -583,7 +584,7 @@ Page({
         wx.showToast({
           title: "未上传"+ key +"数据",
           icon: 'error',
-          duration: 1000,
+          duration: 2000,
         })
         return
       }
@@ -761,6 +762,17 @@ Page({
    */
   onLoad(options) {
     chart_template = options.index;
+    if(chart_template == 0){
+      // 可以多选
+      selectFlag = 0;
+    }else{
+      // 必须单选
+      selectFlag = 1;
+    }
+
+    this.setData({
+      ['templates[' + chart_template + '].selected']: true
+    });
     var that = this;
     let openid
     // 获取存储的openid
@@ -774,124 +786,94 @@ Page({
           openid: openid
         })
         wx.request({
-          url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
-          method: 'GET',
-          success:function(res){
-            console.log(res.data)
-            let children_list = res.data.children_list
-            console.log(children_list.length)
-            let temp_kidList = []
-            for(let i = 0; i < children_list.length; i++){
-              let name = children_list[i].name
-              console.log(name)
-              if(i == 0){
-                temp_kidList.push({'info': name, 'selected': true})
-                selectedKidList.push(name)
-              }else{
-                temp_kidList.push({'info': name, 'selected': false})
-              }
-            }
-            that.setData({
-              kidList: temp_kidList
-            })
-        },
-        fail:function(res){
-          console.log('load page failed: ',res)
-        }
-        });
-        wx.request({
           url: that.data.host_+'user/api/generate/data'+'?openid='+openid,
           method: 'GET',
           success:function(res){
             console.log(res.data)
             data_item = res.data.data_item
+            wx.request({
+              url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+              method: 'GET',
+              success:function(res){
+                console.log(res.data)
+                let children_list = res.data.children_list
+                console.log(children_list.length)
+                // 没有孩子的情况
+                if(children_list.length == 0){
+                  wx.showToast({
+                    title: "未上传数据",
+                    icon: 'error',
+                    duration: 3000,
+                  })
+                  return
+                }
+                let temp_kidList = []
+                for(let i = 0; i < children_list.length; i++){
+                  let name = children_list[i].name
+                  console.log(name)
+                  // if(i == 0){
+                  //   temp_kidList.push({'info': name, 'selected': true})
+                  //   selectedKidList.push(name)
+                  // }else{
+                  temp_kidList.push({'info': name, 'selected': false})
+                  // }
+                }
+                // 寻找第一个有数据的孩子作为缺省选择的孩子
+                for(let i = 0; i < temp_kidList.length; i++){
+                  console.log(data_item)
+                  if(data_item[temp_kidList[i].info].length != 0){
+                    selectedKidList.push(temp_kidList[i].info);
+                    temp_kidList[i].selected = true;
+                    break;
+                  }else{
+                    if(i == temp_kidList.length - 1){
+                      wx.showToast({
+                        title: "未上传数据",
+                        icon: 'error',
+                        duration: 2000,
+                      })
+                      return
+                    }
+                  }
+                }
+                console.log('缺省的孩子：',selectedKidList[0])
+                // 初始化缺省孩子的数据
+                dataList = data_item[selectedKidList[0]]
+                var keys = [];
+                console.log(selectedKidList[0])
+                console.log(dataList)
+                if(selectFlag == 0){
+                  selectedKeys = dataList.map(function (item) {
+                    return item.key;
+                  }); 
+                  keys = dataList.map(function (item) {
+                    return {info:item.key,selected: true};
+                  });
+                }else{
+                  selectedKeys.push(dataList[0].key)
+                  keys = dataList.map(function (item) {
+                    return {info:item.key,selected: false};
+                  });
+                  keys[0].selected = true;
+                }
+    
+                
+                that.setData({
+                  kidList: temp_kidList,
+                  keys: keys
+                })
+                initData();
+            },
+            fail:function(res){
+              console.log('load page failed: ',res)
+            }
+            });
         }
         });
+        
       }
     })
-
-    if(chart_template == 0){
-      // 可以多选
-      selectFlag = 0;
-    }else{
-      // 必须单选
-      selectFlag = 1;
-    }
-
-    this.setData({
-      ['templates[' + chart_template + '].selected']: true
-    });
-
-    // 初始化缺省孩子的数据
-    dataList = data_item[selectedKidList[0]]
-    // dataList = [
-    //   {key:'data 1', list:[
-    //       {"date": "2023-02-09", "value": 66},
-    //       {"date": "2023-03-10", "value": 91},
-    //       {"date": "2023-04-11", "value": 92},
-    //       {"date": "2023-05-12", "value": 113},
-    //       {"date": "2023-06-13", "value": 207},
-    //       {"date": "2023-07-14", "value": 131},
-    //       {"date": "2023-08-15", "value": 281},
-    //   ]},
-    //   {key:'data 2', list:[
-    //     {"date": "2023-02-09", "value": 106},
-    //     {"date": "2023-03-10", "value": 51},
-    //     {"date": "2023-04-11", "value": 102},
-    //     {"date": "2023-05-12", "value": 123},
-    //     {"date": "2023-06-13", "value": 217},
-    //     {"date": "2023-07-14", "value": 141},
-    //     {"date": "2023-08-15", "value": 191},
-    //   ]},
-    //   {key:'data 3', list:[
-    //     {"date": "2023-02-09", "value": 96},
-    //     {"date": "2023-03-10", "value": 51},
-    //     {"date": "2023-04-11", "value": 60},
-    //     {"date": "2023-05-12", "value": 133},
-    //     {"date": "2023-06-13", "value": 127},
-    //     {"date": "2023-07-14", "value": 151},
-    //     {"date": "2023-08-15", "value": 101},
-    //   ]},
-    //   {key:'data 4', list:[
-    //     {"date": "2023-02-09", "value": 66},
-    //     {"date": "2023-03-10", "value": 91},
-    //     {"date": "2023-04-11", "value": 192},
-    //     {"date": "2023-05-12", "value": 113},
-    //     {"date": "2023-06-13", "value": 207},
-    //     {"date": "2023-07-14", "value": 31},
-    //     {"date": "2023-08-15", "value": 81},
-    //   ]},
-    //   {key:'data 5', list:[
-    //     {"date": "2023-02-09", "value": 36},
-    //     {"date": "2023-03-10", "value": 71},
-    //     {"date": "2023-04-11", "value": 50},
-    //     {"date": "2023-05-12", "value": 13},
-    //     {"date": "2023-06-13", "value": 37},
-    //     {"date": "2023-07-14", "value": 31},
-    //     {"date": "2023-08-15", "value": 81},
-    //   ]},
-    // ];
     
-    var keys = [];
-    console.log(dataList)
-    if(selectFlag == 0){
-      selectedKeys = dataList.map(function (item) {
-        return item.key;
-      }); 
-      keys = dataList.map(function (item) {
-        return {info:item.key,selected: true};
-      });
-    }else{
-      selectedKeys.push(dataList[0].key)
-      keys = dataList.map(function (item) {
-        return {info:item.key,selected: false};
-      });
-      keys[0].selected = true;
-    }
-    this.setData({
-      keys: keys
-    })
-    initData();
   },
 
   /**
