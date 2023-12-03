@@ -58,6 +58,7 @@ function initData() {
   });
   console.log(tagForEvent)
   tagForEvent.push('事件总数')
+  seriesForEvent = []
   seriesForEvent.push({
     name: '事件总数',
     type: 'bar',
@@ -231,7 +232,7 @@ function initEventChart(canvas, width, height, dpr) {
   });
   canvas.setChart(chart);
   const option = {
-    color:colorSet[child_id].colors,
+    color:colorSet[child_id%4].colors,
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -336,7 +337,7 @@ function initTag2Chart(canvas, width, height, dpr) {
   });
   canvas.setChart(chart);
   const option = {
-    color:colorSet[child_id].colors,
+    color:colorSet[child_id%4].colors,
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -464,7 +465,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    child_id = options.index;
+    child_id = options.index%4;
     var that = this
     this.setData({
       name: options.name

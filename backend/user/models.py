@@ -11,7 +11,7 @@ class Family(models.Model):
     token = models.CharField(max_length=20, default='000000')
     token_expiration = models.DateTimeField(null=True, default=None)
     # family id
-    family_id = models.CharField(max_length=65, default='')
+    family_id = models.CharField(max_length=65, unique=True, default='')
 
 
 
@@ -107,6 +107,7 @@ class Data(BaseRecord):
 
 class Record(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    children = models.ManyToManyField(Child)
     date = models.DateField(null=True)
     time = models.TimeField(null=True)
     key = models.CharField(max_length=24)

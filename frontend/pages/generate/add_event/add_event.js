@@ -12,6 +12,12 @@ function loadPageInfo(that){
         url: that.data.host_+'user/api/generate/timeline'+'?openid='+openid+'&types=e&tags=true', //e表示只求取event
         method:'GET',
         success:function(res){
+          that.setData({
+            loading: false,
+          });
+          that.setData({
+            buttonDisabled: false
+          });
           let uniqueTags = new Set();
           let tag_to_eventIndex_dict = {}
           const eventList = res.data.blocks_list.map((blogCard,index) => {
@@ -62,6 +68,9 @@ function loadPageInfo(that){
 }
 export function generateVideoPreview(that, id_list, video_title, audioSelected, new_page=true)
 {
+  that.setData({
+    loading: true,
+  });
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
     success: function (res) { 
@@ -81,6 +90,12 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
           'name':video_title,
         },
         success:function(res){
+          that.setData({
+            loading: false,
+          });
+          that.setData({
+            buttonDisabled: false
+          });
           wx.showToast({
             title: "提交成功",
             icon: 'success',
@@ -129,6 +144,9 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
   });
 }
 export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
+  that.setData({
+    loading: true,
+  });
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
     success: function (res) { 
@@ -149,6 +167,9 @@ export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_titl
           'name':diary_title,
         },
         success:function(res){
+          that.setData({
+            loading: false,
+          });
           wx.showToast({
             title: "提交成功",
             icon: 'success',
@@ -313,11 +334,12 @@ Page({
     this.setData({
       buttonDisabled: true
     });
-    setTimeout(function () {
-      that.setData({
-        buttonDisabled: false
-      });
-    }, 1500); 
+    console.log(this.data.buttonDisabled)
+    // setTimeout(function () {
+    //   that.setData({
+    //     buttonDisabled: false
+    //   });
+    // }, 2000); 
     var that = this;
     var category = that.data.comeFrom;
     let id_list=that.data.selectedEvents.map(ele=>{
@@ -340,9 +362,13 @@ Page({
       generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title)
     }else if (category=='video')
     {
+      that.setData({
+        loading: true,
+      });
       wx.getStorage({
         key: 'openid',  // 要获取的数据的键名
         success: function (res) { 
+          
           // 从本地存储中获取数据,在index.js文件中保存建立的
           let openid=res.data
           wx.request({
@@ -359,6 +385,12 @@ Page({
               'name':that.data.video_title,
             },
             success:function(res){
+              that.setData({
+                loading: false,
+              });
+              that.setData({
+                buttonDisabled: false
+              });
               wx.showToast({
                 title: "提交成功",
                 icon: 'success',
@@ -401,6 +433,7 @@ Page({
       this.setData({
         comeFrom:options.category,
         timeline_template:options.index,
+        buttonDisabled: false
       })
       console.log(this.data.comeFrom,this.data.timeline_template)
     }else if (category=='diary'){
@@ -409,6 +442,8 @@ Page({
         cover_index:options.cover,
         paper_index:options.paper,
         diary_title:options.title,
+        buttonDisabled: false
+
       })
     }
     else if (category=='video')
@@ -417,6 +452,8 @@ Page({
         comeFrom:options.category,
         audio_index:options.index,
         video_title:options.title,
+        buttonDisabled: false
+
       })
     }
     var that = this
