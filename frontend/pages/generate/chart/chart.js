@@ -577,6 +577,16 @@ Page({
     if (keyIndex !== -1) {
       return
     } else {
+      // 判断选中孩子是否有数据
+      console.log(data_item[key])
+      if(data_item[key].length == 0){
+        wx.showToast({
+          title: "未上传"+ key +"数据",
+          icon: 'error',
+          duration: 1000,
+        })
+        return
+      }
       // 存在单选限制
       const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
       console.log(deleteIndex)
@@ -585,7 +595,29 @@ Page({
       selectedKidList.push(key); // 选中
       this.data.kidList[index].selected = true ;
     }
-    console.log(this.data.kidList[index].info);
+    
+    // TODO:写个复用的函数
+    dataList = data_item[selectedKidList[0]]
+    var keys = [];
+    console.log(dataList)
+    if(selectFlag == 0){
+      selectedKeys = dataList.map(function (item) {
+        return item.key;
+      }); 
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: true};
+      });
+    }else{
+      selectedKeys.push(dataList[0].key)
+      keys = dataList.map(function (item) {
+        return {info:item.key,selected: false};
+      });
+      keys[0].selected = true;
+    }
+    this.setData({
+      keys: keys
+    })
+
     this.setData({
       selectedKidList: selectedKidList,
       kidList: this.data.kidList,
@@ -773,7 +805,6 @@ Page({
           success:function(res){
             console.log(res.data)
             data_item = res.data.data_item
-          
         }
         });
       }
@@ -851,15 +882,12 @@ Page({
         return {info:item.key,selected: true};
       });
     }else{
-      console.log("here")
       selectedKeys.push(dataList[0].key)
       keys = dataList.map(function (item) {
         return {info:item.key,selected: false};
       });
       keys[0].selected = true;
     }
-    console.log("here")
-    console.log(keys)
     this.setData({
       keys: keys
     })
