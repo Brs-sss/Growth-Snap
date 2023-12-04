@@ -20,7 +20,7 @@
 </view>
 
 <view class="container_event">
-  <view class="event-list" style="left: 1rpx;">
+  <view class="event-list">
     <block wx:for="{{eventList}}" wx:key="index">
       <view class="event-item"  data-index="{{index}}" bindtap="selectEvent">
         <view class="image-container {{item.checked ? 'selected' : ''}}">
