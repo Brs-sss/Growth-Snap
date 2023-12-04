@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/plan/main', views.loadPlanPage, name='load_plan_page'),
     path('api/plan/all', views.loadAllPlanPage, name='load_all_plan_page'),
     path('api/plan/certain_plan', views.loadCertainPlan, name='load_certain_plan'),
+    path('api/plan/delete_plan', views.deletePlan, name='delete_plan'),
     path('api/plan/add_plan', views.addPlan, name='add_plan'),
     path('api/plan/add_todo', views.addTodo, name='add_todo'),
     path('api/plan/update_todo', views.updateTodo, name='update_todo'),
