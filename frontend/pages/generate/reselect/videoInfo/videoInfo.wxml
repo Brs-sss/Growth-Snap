@@ -44,11 +44,12 @@
         <view class="audio-list">
           <block wx:for="{{audioList}}" wx:key="index">
             <view class="timeline-item audio-item"  data-category="audio"    data-index="{{index}}" bindtap="addAudio">
-              <image class="audio-image" src="/image/generate/audio/audio_{{index}}.png"></image>
+              <image class="audio-image {{index==audioSelected? 'selected' : ''}}" src="{{host_}}/static/frontend/audio_cover/audio_{{index}}.jpg"></image>
+              <image class="select-icon  {{index==audioSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
               <text class="timeline-name">{{item.name}}</text>
             </view>
           </block>
         </view>
-        <button bind:tap="submitChange"     data-category="video">生成</button>
+        <button bind:tap="submitChange"  style="margin-top: 1vh;"   data-category="video">生成</button>
     </view>
 </view>
