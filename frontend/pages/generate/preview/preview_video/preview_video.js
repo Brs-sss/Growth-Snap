@@ -81,7 +81,7 @@ reselectVideoInfo(){
     // this.setData({
     //   video_title:''
     // })
-    console.log("refresh")
+    console.log(this.data.video_src)
   },
   /**
    * Lifecycle function--Called when page hide
