@@ -235,6 +235,7 @@ def submitEvent(request):
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
                                              event_id=event_id, event_date=event_date)
+            
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
