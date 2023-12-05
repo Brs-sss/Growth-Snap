@@ -38,15 +38,14 @@
                     </view>
                 </view>
             </label>
-            <!-- <label class="weui-cell weui-cell_active weui-cell_switch weui-cell_disabled">
-                <view class="weui-cell__bd">标题文字</view>
+            <label class="weui-cell weui-cell_active weui-cell_switch weui-cell_disabled">
+                <view class="weui-cell__bd {{standardChecked ? 'able' : ''}}">显示标准数据</view>
                 <view class="weui-cell__ft">
                     <view class="weui-switch-cp">
-                        <checkbox class="weui-switch-cp__input" checked="true" disabled="true" />
-                        <view class="weui-switch-cp__box"></view>
+                      <switch id = 'standard' unchecked bindchange="switchStandard" color="#007bff" disabled="{{standardChecked}}" />
                     </view>
                 </view>
-            </label> -->
+            </label>
           </view>
         </view>
       </view>

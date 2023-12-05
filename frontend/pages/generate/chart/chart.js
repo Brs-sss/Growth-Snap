@@ -2,6 +2,52 @@
 const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
+// 数据参考:1.《中国7岁以下儿童生长发育参照标准》2022年 2.首都科研究所生长发育研究室《3~15岁的儿童标准身高表》(2021年)  3.教育部第八次全国学生体质与健康调研结果(2021年)
+var heightStandard_boy = [
+  {age:'0', height:50.4, weight:3.3}, 
+  {age:'1', height:76.5, weight:10.0}, 
+  {age:'2', height:88.5, weight:12.5}, 
+  {age:'3', height:96.8, weight:14.5}, 
+  {age:'4', height:104.5, weight:16.5}, 
+  {age:'5', height:112.4, weight:18.5}, 
+  {age:'6', height:119.4, weight:21.0}, 
+  {age:'7', height:125.8, weight:23.5}, 
+  {age:'8', height:131.9, weight:26.5}, 
+  {age:'9', height:137.4, weight:29.5}, 
+  {age:'10', height:142.3, weight:33.0}, 
+  {age:'11', height:147.5, weight:36.5}, 
+  {age:'12', height:154.2, weight:40.5}, 
+  {age:'13', height:161.9, weight:45.5}, 
+  {age:'14', height:168.4, weight:51.0}, 
+  {age:'15', height:172.4, weight:56.0}, 
+  {age:'16', height:174.3, weight:58.5}, 
+  {age:'17', height:175.1, weight:60.0}, 
+  {age:'18', height:175.7, weight:61.5}
+]
+
+var heightStandard_girl = [
+  {age:'0', height:50.4, weight:3.2}, 
+  {age:'1', height:76.5, weight:9.5}, 
+  {age:'2', height:88.5, weight:12.0}, 
+  {age:'3', height:96.8, weight:14.0}, 
+  {age:'4', height:104.5, weight:16.0}, 
+  {age:'5', height:112.4, weight:18.0}, 
+  {age:'6', height:119.4, weight:20.5}, 
+  {age:'7', height:125.8, weight:23.0}, 
+  {age:'8', height:131.9, weight:25.5}, 
+  {age:'9', height:137.4, weight:28.5}, 
+  {age:'10', height:142.3, weight:31.5}, 
+  {age:'11', height:147.5, weight:35.0}, 
+  {age:'12', height:154.2, weight:39.0}, 
+  {age:'13', height:161.9, weight:43.0}, 
+  {age:'14', height:168.4, weight:47.5}, 
+  {age:'15', height:172.4, weight:52.0}, 
+  {age:'16', height:174.3, weight:54.0}, 
+  {age:'17', height:175.1, weight:55.5}, 
+  {age:'18', height:175.7, weight:56.5}
+]
+
+
 var data_item = []; // 所有数据
 var dataList = []; // 当前孩子的所有数据
 var selectedKeys = [];
@@ -581,6 +627,7 @@ Page({
    */
   data: {
     switchChecked : false,
+    standardChecked : true,
     templates:[
       {id: 0, selected: false},
       {id: 1, selected: false},
@@ -699,6 +746,15 @@ Page({
       keys: this.data.keys,
       ['keys[' + index + '].selected']: this.data.keys[index].selected
     });
+    if(key=='身高' || key=='体重'){
+      this.setData({
+        standardChecked : false
+      })
+    }else{
+      this.setData({
+        standardChecked : true
+      })
+    }
     
     // 更新数据
     initData();
@@ -891,9 +947,7 @@ Page({
               url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
               method: 'GET',
               success:function(res){
-                console.log(res.data)
                 let children_list = res.data.children_list
-                console.log(children_list.length)
                 // 没有孩子的情况
                 if(children_list.length == 0){
                   wx.showToast({
@@ -906,12 +960,11 @@ Page({
                 let temp_kidList = []
                 for(let i = 0; i < children_list.length; i++){
                   let name = children_list[i].name
-                  console.log(name)
                   // if(i == 0){
                   //   temp_kidList.push({'info': name, 'selected': true})
                   //   selectedKidList.push(name)
                   // }else{
-                  temp_kidList.push({'info': name, 'selected': false})
+                  temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age})
                   // }
                 }
                 // 寻找第一个有数据的孩子作为缺省选择的孩子
@@ -932,12 +985,9 @@ Page({
                     }
                   }
                 }
-                console.log('缺省的孩子：',selectedKidList[0])
                 // 初始化缺省孩子的数据
                 dataList = data_item[selectedKidList[0]]
                 var keys = [];
-                console.log(selectedKidList[0])
-                console.log(dataList)
                 // 当前不支持多选
                 
                 // if(selectFlag == 0){
@@ -955,6 +1005,19 @@ Page({
                   });
                   keys[0].selected = true;
                 // }
+
+
+                if(keys[0].info=='身高' || key=='体重'){
+                  that.setData({
+                    standardChecked : false
+                  })
+                }else{
+                  that.setData({
+                    standardChecked : true
+                  })
+                }
+
+
                 that.setData({
                   kidList: temp_kidList,
                   keys: keys

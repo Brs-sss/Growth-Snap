@@ -162,3 +162,7 @@ ec-canvas {
 .weui-cell__bd{
   color: #007bff;
 }
+
+.weui-cell__bd.able{
+  color: #007bff4f;
+}
