@@ -57,6 +57,37 @@ Page({
     });
   },
 
+  deletePlan(){
+    var pointer = this
+    wx.getStorage({
+      key: 'openid',  // 要获取的数据的键名
+      success: function (res) { 
+        var openid = res.data
+        wx.request({
+          url: pointer.data.host_ + 'user/api/plan/delete_plan',
+          method:'POST',
+          header:{
+            'content-type': 'application/json'
+          },
+          data:{
+            'openid': openid,
+            'planTitle': pointer.data.planTitle
+          },
+          success:function(res){
+            wx.navigateBack({
+              delta: 1
+            })
+          },
+          fail:function (res) {
+            console.log('fail to delete', res)
+          }
+        });
+      },
+      fail: function(res) {
+        console.error('获取本地储存失败', res);
+      }
+    })
+  },
   addTodo(e) {
     const value = e.detail.value;
     var pointer = this

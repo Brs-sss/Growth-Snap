@@ -540,6 +540,20 @@ def loadCertainPlan(request):
             'todos': todo_list,
         })
 
+def deletePlan(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        planTitle = data.get('planTitle')
+        plan = Plan.objects.filter(user__family=now_user.family, title=planTitle).first()
+        try:
+            plan.delete()
+        except:
+            return JsonResponse({'message': 'error'})
+        return JsonResponse({
+            'message': 'ok',
+        })
 
 def getUserInfo(request):
     if request.method == 'GET':
