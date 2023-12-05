@@ -443,7 +443,6 @@ Page({
         paper_index:options.paper,
         diary_title:options.title,
         buttonDisabled: false
-
       })
     }
     else if (category=='video')
@@ -473,7 +472,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    this.setData({
+      buttonDisabled:false,
+    })
   },
 
   /**

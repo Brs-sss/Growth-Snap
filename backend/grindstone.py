@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 import time
 
-def clean_folder(folder_path, days):
+def clean_folder(folder_path, hours):
     
     def is_folder_empty(folder_path):
     # 使用 os.listdir 获取文件夹中的所有文件和子文件夹
@@ -19,7 +19,7 @@ def clean_folder(folder_path, days):
     current_time = datetime.now()
 
     # 计算过期时间
-    expiration_time = current_time - timedelta(minutes=days)
+    expiration_time = current_time - timedelta(hours=hours)
 
     # 循环遍历文件夹及其子文件夹
     
@@ -43,15 +43,15 @@ def clean_folder(folder_path, days):
 
 if __name__ == "__main__":
     # 指定要清理的文件夹路径
-    folders_needs_cleaning=["static/diary"]
+    folders_needs_cleaning=["static/diary","static/video"]
 
-    # 指定过期天数
-    expiration_days = 1
+    # 指定过期小时数
+    expiration_hours = 2
 
     # 循环运行，每隔15分钟执行一次清理操作
     while True:
         for folder_path in folders_needs_cleaning:
-            clean_folder(folder_path, expiration_days)
+            clean_folder(folder_path, expiration_hours)
 
         # 等待15分钟
-        time.sleep(30)
+        time.sleep(900)
