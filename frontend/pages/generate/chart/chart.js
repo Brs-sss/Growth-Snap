@@ -603,6 +603,7 @@ Page({
     host_: `${app.globalData.localUrl}`,
   },
   toggleChildTag: function(e) {
+    selectedKeys = [];
     const { index } = e.currentTarget.dataset;
     const key = this.data.kidList[index].info;
     const keyIndex = selectedKidList.indexOf(key);
@@ -658,6 +659,7 @@ Page({
     
     initData();
     updateChart();
+    this.switchMode();
 
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
@@ -722,35 +724,7 @@ Page({
       switchChecked: e.detail.value
     });
     console.log(e.detail.value)
-    if(e.detail.value){
-      // 按照时间均匀分布
-      // 0号chart数据更新
-      chartType[0].series = seriesDataFor0_time;
-      chartType[0].xAxis=[{
-        type: 'time',
-        boundaryGap: false,
-      }];
-      // 1号chart数据更新
-      chartType[1].xAxis = [{
-        type: 'time',
-        boundaryGap: false,
-      }];
-      chartType[1].series[0].data = timeList
-    }else{
-      // 0号chart数据更新
-      chartType[0].series = seriesDataFor0_event;
-      chartType[0].xAxis=[{
-        type: 'category',
-        boundaryGap: false,
-        data: dateList
-      }];
-      chartType[0].xAxis.data = dateList;
-      // 1号chart数据更新
-      chartType[1].xAxis = [{
-        data: dateList
-      }];
-      chartType[1].series[0].data = valueList
-    }
+    this.switchMode()
 
     //TODO: 写成可复用函数
     chartNow.clear();
@@ -850,19 +824,29 @@ Page({
       // 按照时间均匀分布
       // 0号chart数据更新
       chartType[0].series = seriesDataFor0_time;
-      chartType[0].xAxis.type= 'time';
-      chartType[0].xAxis.data= null;
+      chartType[0].xAxis=[{
+        type: 'time',
+        boundaryGap: false,
+      }];
       // 1号chart数据更新
-      chartType[1].xAxis.type= 'time';
-      chartType[1].xAxis.data= null;
+      chartType[1].xAxis = [{
+        type: 'time',
+        boundaryGap: false,
+      }];
       chartType[1].series[0].data = timeList
     }else{
       // 0号chart数据更新
       chartType[0].series = seriesDataFor0_event;
-      chartType[0].xAxis.type= 'category';
-      chartType[0].xAxis.data= dateList;
+      chartType[0].xAxis=[{
+        type: 'category',
+        boundaryGap: false,
+        data: dateList
+      }];
+      chartType[0].xAxis.data = dateList;
       // 1号chart数据更新
-      chartType[1].xAxis.data= dateList;
+      chartType[1].xAxis = [{
+        data: dateList
+      }];
       chartType[1].series[0].data = valueList
     }
   },
