@@ -59,12 +59,16 @@
   bottom: 20vh;
   margin-bottom: 0;
 }
-
+.weui-cells__group_form .weui-label {
+  margin-right: 8px;
+  max-width: 6em;
+}
 
 
 /* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
 .audio-list::-webkit-scrollbar {
   width: 0.5em;
+  color: transparent;
 }
 
 .audio-list::-webkit-scrollbar-track {

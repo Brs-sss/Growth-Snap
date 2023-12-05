@@ -3,7 +3,8 @@
 <view class='head-container'>
     <button class="allButton" bindtap="selectAll">全选</button>
     <button class="allNotButton" bindtap="disSelectAll">全部取消</button>
-    <button wx:if="{{selectedNum!==0}}" class="submitButton" bindtap="handleSubmit">提交({{selectedNum}})</button>
+    <button wx:if="{{buttonDisabled}}" class="submitButton disabledButton">提交</button>
+    <button wx:elif="{{selectedNum!==0}}" class="submitButton" bindtap="handleSubmit">提交({{selectedNum}})</button>
     <button wx:else class="submitButton disabledButton">提交</button>
     <view class="header">通过标签选择</view>
     <view class="tag-cont">
@@ -19,7 +20,7 @@
 </view>
 
 <view class="container_event">
-  <view class="event-list" style="left: 1rpx;">
+  <view class="event-list">
     <block wx:for="{{eventList}}" wx:key="index">
       <view class="event-item"  data-index="{{index}}" bindtap="selectEvent">
         <view class="image-container {{item.checked ? 'selected' : ''}}">
@@ -31,5 +32,15 @@
     </block>
   </view>
 </view>
+
+<view aria-role="alert" class="fadeIn {{hideLoading ? 'fadeOut' : ''}}" wx:if="{{loading}}">
+		<view class="weui-mask_transparent"></view>
+		<view class="weui-toast">
+			<view class="weui-primary-loading weui-primary-loading_transparent weui-icon_toast">
+        <view class="weui-primary-loading__dot"></view>
+      </view>
+			<view class="weui-toast__content">正在加载</view>
+		</view>
+	</view>
 
 

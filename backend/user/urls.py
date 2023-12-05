@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/plan/main', views.loadPlanPage, name='load_plan_page'),
     path('api/plan/all', views.loadAllPlanPage, name='load_all_plan_page'),
     path('api/plan/certain_plan', views.loadCertainPlan, name='load_certain_plan'),
+    path('api/plan/delete_plan', views.deletePlan, name='delete_plan'),
     path('api/plan/add_plan', views.addPlan, name='add_plan'),
     path('api/plan/add_todo', views.addTodo, name='add_todo'),
     path('api/plan/update_todo', views.updateTodo, name='update_todo'),
@@ -43,6 +44,7 @@ urlpatterns = [
     path('api/generate/video', views.generateVideo, name="generate_video"),
     path('api/generate/video/preview/<str:openid>/<str:video_title>', views.loadVideoThumbnail, name="video_preview"),
     path('api/generate/timeline', views.loadTimelinePage, name='load_timelinepage'),
+    path('api/generate/data', views.loadData, name='load_data'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

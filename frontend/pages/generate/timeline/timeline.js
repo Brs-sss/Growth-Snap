@@ -728,6 +728,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+    hasImg: true,
+    imgPath: "",
     host_: `${app.globalData.localUrl}`,
     templates:[
       {id: 0, selected: false},
@@ -745,6 +747,7 @@ Page({
       onInit: initChart
     }
   },
+
   changeTemplate: function(e){
     const { index } = e.currentTarget.dataset;
     if(index == timeline_template)
@@ -768,6 +771,7 @@ Page({
     chartNow = chart;
     console.log(yAxisDataFor2);
   },
+
   changeColor:function(e){
     const { index } = e.currentTarget.dataset;
     if(index == colorSetIdex)
@@ -809,6 +813,7 @@ Page({
     chartNow.setOption(option);
     chartNow = chart;
   },
+
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
     // 先保存图片到临时的本地文件，然后存入系统相册
@@ -855,7 +860,18 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-
+    
+    const ecComponent = this.selectComponent('#echart');
+    // 先保存图片到临时的本地文件，然后存入系统相册
+    ecComponent.canvasToTempFilePath({
+      success: res => {
+        console.log("tempFilePath:", res.tempFilePath)
+        this.setData({
+          hasImg: true,
+          imgPath: res.tempFilePath
+        })
+      }
+    })
   },
 
   /**

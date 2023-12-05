@@ -45,6 +45,7 @@ services:
     volumes:
       # - static-volume:/code/build/
       - ./nginx:/etc/nginx/conf.d
+      - ./nginx.conf:/etc/nginx/nginx.conf
       - .:/code
     depends_on:
       - app

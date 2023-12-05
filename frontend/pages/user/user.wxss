@@ -27,6 +27,7 @@ page {
 
 .white-box {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   width: 650rpx;
   height: 300rpx;
@@ -42,12 +43,12 @@ page {
 
 .view_image_text {
   width: 100%;
-  position: absolute;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  /* margin-top: -10px; */
+  /* margin-top: 10px; */
   /* margin-left: -150px; */
   /* padding: 2vh; */
 }
@@ -62,9 +63,13 @@ page {
 .user_name{
   margin-left: 8px;
 } */
+.user_info_container {
+  display: flex; 
+  flex-direction: row; 
+}
 .profile_view {
   margin-left: 2vh;
-  margin-top: 2vh;
+  /* margin-top: 1vh; */
   width: 80px;
 }
 
@@ -81,7 +86,8 @@ page {
   display: flex;
   flex-direction: column;
   /* align-items: center; */
-  justify-content: center;
+  /* justify-content: center; */
+  padding-top: 1vh;
   height: 70px;
 }
 
@@ -94,18 +100,19 @@ page {
   /* margin-top: 50px; */
   /* margin-left: 60px; */
   width: 30px;
-  height: 23px;
+  /* height: 23px; */
   background: #f0f8ff;
   border: 1rpx solid #4095E5;
   border-radius: 10rpx;
   font-size: 12px;
   text-align: center;
   color: #4095E5;
-  line-height: 62rpx;
+  margin-top: 1vh;
+  /* line-height: 22px; */
 }
 
 .user_info{
-  margin-top: 88px;
+  margin-top: 0px;
   width: 50%;
   color: rgb(173, 169, 169);
   font-size: 2.5vh;

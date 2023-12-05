@@ -14,7 +14,6 @@ import os
 import datetime
 import shutil
 from urllib.parse import unquote
-
 from manage import host_url
 
 # import fitz
@@ -120,7 +119,7 @@ def register(request):
             if Family.objects.filter(token=token).exists():
                 family = Family.objects.get(token=token)
                 # token是否过期
-                if family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
+                if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
                     # 过期
                     return JsonResponse({
                         'msg': 'family does not exist'
@@ -157,7 +156,6 @@ def generateFamilyToken(request):
         openid = data.get('openid')
         family = User.objects.get(openid=openid).family
         now = datetime.datetime.now()
-        # print(family.token_expiration.replace(tzinfo=None), now, family.token)
         if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < now:
             # 过期
             token = ''.join(random.sample(string.ascii_letters + string.digits, 10))
@@ -235,7 +233,9 @@ def submitEvent(request):
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
                                              event_id=event_id, event_date=event_date)
-            
+            image_path = './static/ImageBase/' + f'{event_id}/'
+            if not os.path.exists(image_path):
+                os.mkdir(image_path)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
@@ -246,6 +246,7 @@ def submitEvent(request):
         for name in children:
             child = Child.objects.get(family=now_family, name=name)
             new_event.children.add(child)
+            
 
         print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
@@ -283,6 +284,8 @@ def submitData(request):
         time = (data.get('time'))[:8]
         children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
+        now_family = user.family
+        children = data.get('children')
         print(records)
         records_json = json.loads(records)
         index = 0
@@ -295,6 +298,9 @@ def submitData(request):
                 index += 1
             new_rc = Record.objects.create(user=user, date=date, time=time,
                                            key=record['key'], value=record['value'], data_id=data_id)
+            for name in children:
+                child = Child.objects.get(family=now_family, name=name)
+                new_rc.children.add(child)
 
         if keyList.__len__() == 1:
             title = keyList[0] + '记录'
@@ -313,8 +319,6 @@ def submitData(request):
         new_data = Data.objects.create(user=user, date=date, time=time, title=title, content=content,
                                        records=records, data_id=data_id)
 
-        now_family = user.family
-        children = data.get('children')
         for name in children:
             child = Child.objects.get(family=now_family, name=name)
             new_data.children.add(child)
@@ -365,6 +369,7 @@ def loadShowPage(request):
         types = request.GET.get('types', "etd")  # 缺省值为event&text&data
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
+        family = now_user.family
         # 这里的Event将来应当替换成基类BaseRecord
         now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
                                                                               "-time") if 'e' in types else []  # 筛选的结果按照降序排列
@@ -535,6 +540,20 @@ def loadCertainPlan(request):
             'todos': todo_list,
         })
 
+def deletePlan(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        planTitle = data.get('planTitle')
+        plan = Plan.objects.filter(user__family=now_user.family, title=planTitle).first()
+        try:
+            plan.delete()
+        except:
+            return JsonResponse({'message': 'error'})
+        return JsonResponse({
+            'message': 'ok',
+        })
 
 def getUserInfo(request):
     if request.method == 'GET':
@@ -543,6 +562,7 @@ def getUserInfo(request):
         image_path = 'static/ImageBase/' + openid
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
+        print(f'profile_image {profile_image}')
         event_number = len(Event.objects.filter(user__family=now_user.family))
         plan_number = len(Plan.objects.filter(user__family=now_user.family))
         text_number = len(Text.objects.filter(user__family=now_user.family))
@@ -713,6 +733,7 @@ def getChildrenInfo(request):
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
         family = now_user.family
+        print(f'family_id: {family.family_id}')
         children_list = []
         children = Child.objects.filter(family=family)
         for child in children:
@@ -732,7 +753,7 @@ def getChildrenInfo(request):
                 age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
                 child_item['age'] = str(age)
             child_item['gender'] = child.gender
-            image_path = 'static/ImageBase/' + openid + '+' + child.child_id
+            image_path = 'static/ImageBase/' + family.family_id + '+' + child.child_id
             image_list = os.listdir(image_path)
             child_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
             children_list.append(child_item)
@@ -841,10 +862,12 @@ def addChildImage(request):
         uploaded_image = request.FILES.get('image')
         openid = request.POST.get('openid')
         child_id = request.POST.get('child_id')
-        print(child_id)
-        image_path = './static/ImageBase/' + f'{openid}+{child_id}' + '/'
-        print(image_path)
+        print(f'child_id: {child_id}')
+        now_user = User.objects.get(openid=openid)
+        family_id = now_user.family.family_id
+        image_path = './static/ImageBase/' + f'{family_id}+{child_id}' + '/'
         if not os.path.exists(image_path):
+            print(f'add child image folder: {image_path}')
             os.mkdir(image_path)
         # 删除原有的图片
         image_list = os.listdir(image_path)
@@ -854,6 +877,7 @@ def addChildImage(request):
             with open(image_path + f'{uploaded_image.name}', 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
+                print('success')
         return JsonResponse({'message': 'child profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
@@ -872,9 +896,9 @@ def getFamilyInfo(request):
             user_item = {}
             user_item['name'] = user.username
             user_item['label'] = user.label
-            event_number = len(Event.objects.filter(user__family=now_user.family))
-            plan_number = len(Plan.objects.filter(user__family=now_user.family))
-            text_number = len(Text.objects.filter(user__family=now_user.family))
+            event_number = len(Event.objects.filter(user=user))
+            plan_number = len(Plan.objects.filter(user=user))
+            text_number = len(Text.objects.filter(user=user))
             credit = event_number * 5 + plan_number * 1 + text_number * 5
             user_item['signature'] = f'{user.label}的积分是{credit}分。'
             image_path = 'static/ImageBase/' + user.openid
@@ -886,6 +910,7 @@ def getFamilyInfo(request):
 
 def generateDiary(request):
     if request.method == 'POST':
+        print("in gene")
         data = json.loads(request.body)
         to_render_list = []
         event_text_list = data.get('list')
@@ -921,6 +946,7 @@ def generateDiary(request):
         if not os.path.exists(output_base):
             os.mkdir(output_base)
         output_path = output_base + data.get('name') + '.pdf'
+        
         GenerateDiaryPDF(event_list=to_render_list, cover_idx=data.get('cover_index'),
                          paper_idx=data.get('paper_index'), output_path=output_path)
         return JsonResponse({'msg': 'success'})
@@ -934,10 +960,11 @@ def loadPDFThumbnail(request):
         pdf_name = request.GET.get('file_name')
         pdf_path = 'static/diary/' + openid + '/' + pdf_name + '.pdf'
         output_path = 'static/diary/' + openid + '/thumbnails/' + pdf_name + '/'
-        try:
-            num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
-        except Exception as e:
-            return HttpResponse("Request failed", status=500)
+        # try:
+        #     num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
+        # except Exception as e:
+        #     return HttpResponse("Request failed", status=500)
+        num, pages = GenerateThumbnail(pdf_path, output_path, max_page=5, resolution=50)
         thumbnail_list = [host_url + output_path + f'thumbnail_page_{i + 1}.jpg' for i in range(num)]
         return JsonResponse({'imageList': thumbnail_list, 'pageNum': pages})
     return JsonResponse({'msg': 'GET only'})
@@ -989,12 +1016,7 @@ def generateVideo(request):
         # print(image_path_list)
         GenerateVideo(image_path_list, audio_index, video_title, label, openid)
 
-        # output_base='static/diary/'+data.get('openid')+'/'
-        # if not os.path.exists(output_base):
-        #     os.mkdir(output_base)
-        # output_path=output_base+data.get('name')+'.pdf'
-        # GenerateDiaryPDF(event_list=to_render_list,cover_idx=data.get('cover_index'),paper_idx=data.get('paper_index'),output_path=output_path)
-        return JsonResponse({'msg': 'success', 'src': ''})
+
     return JsonResponse({'msg': 'POST only'})
 
 
@@ -1059,3 +1081,36 @@ def loadTimelinePage(request):
 
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
+
+def loadData(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        now_user = User.objects.get(openid=openid)
+        family = now_user.family
+        children = Child.objects.filter(family=family)
+        keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
+        data_item = {} # 返回的数据{{child:小明，data:child_data},{child:小红，data:child_data}}
+        print(keyList)
+        print(children)
+        for child in children:
+            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}],child_key_data]
+            for key in keyList:
+                child_key_data = {} # 保存一个孩子一个key的所有数据 {key:身高, list:[{value:,date:},{value:,date:}]
+                child_key_data['key'] = key
+                value_date_list = []
+                record_list = list(Record.objects.filter(key=key,children=child))
+                print(child,key,record_list)
+                for record in record_list:
+                    value_date_item = {}
+                    value_date_item['value'] = record.value
+                    value_date_item['date'] = record.date
+                    value_date_list.append(value_date_item)
+                child_key_data['list'] = value_date_list
+                if(record_list.__len__()):
+                    child_data.append(child_key_data)
+
+            data_item[child.name] = child_data
+     
+        print(f'data_item {data_item}')
+
+        return JsonResponse({'data_item': data_item})

@@ -16,6 +16,8 @@ class BlogCard{
 
 }
 
+var search_note = 0 //记录搜索操作判断是否收起提示框 0 for 关闭；1 for 保持
+
 //简易模糊搜索
 function fuzzySearch(text, query) {
   console.log(text,query)
@@ -75,7 +77,7 @@ function LoadShowPage(that){
             that.setData({
               blog_cards_list:res.data.blocks_list
             })
-            console.log(res.data.blocks_list)
+            // console.log(res.data.blocks_list)
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -158,6 +160,7 @@ Page({
     })
   },
   goToPage_search_detail(e) {
+    search_note = 1
     const { index } = e.currentTarget.dataset;
     const id = this.data.searchHint[index].id;
     const type = this.data.searchHint[index].type;
@@ -243,6 +246,15 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    this.hidePopup()
+    console.log('search_note:',search_note)
+    if (search_note == 0){
+      console.log("here")
+      this.clearInput()
+      this.hideInput()
+    }else{
+      search_note = 0
+    }
     var that = this
     LoadShowPage(that)
   },

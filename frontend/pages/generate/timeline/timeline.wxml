@@ -1,21 +1,26 @@
 <!--pages/generate/timeline/timeline.wxml-->
-
-<button class="submit" bindtap="handleSave">导出</button>
-
-<view class="container_template">
-  <view wx:for="{{templates}}" wx:key="index" data-index='{{index}}' class="template {{item.selected ?     'selected' : ''}}" bindtap="changeTemplate">
-    <image class="timeline-image" src="/image/generate/timeline/timeline_{{index}}.png"></image>
-  </view>
-</view>
-
-<view class="container_template" id="container_color">
-  <view wx:for="{{colorSet}}" wx:key="index" data-index='{{index}}' class="color {{item.selected ?     'selected' : ''}}" bindtap="changeColor">
-    <image class="color-image" src="/image/generate/timeline/color/color_{{index}}.png"></image>
-  </view>
-</view>
-
 <view class="ec-container">
-    <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
+  <ec-canvas canvas-id="echart" id="echart" style="height: 800px"
+   ec="{{ec}}"></ec-canvas>
+  <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
 </view>
+
+<view class="container_components">
+  <view class="container_template">
+    <view wx:for="{{templates}}" wx:key="index" data-index='{{index}}' class="template {{item.selected ?     'selected' : ''}}" bindtap="changeTemplate">
+      <image class="timeline-image" src="{{host_}}static/frontend/timeline/timeline_{{item.id}}.jpg"></image>
+    </view>
+  </view>
+
+  <view class="container_template" id="container_color">
+    <view wx:for="{{colorSet}}" wx:key="index" data-index='{{index}}' class="color {{item.selected ?     'selected' : ''}}" bindtap="changeColor">
+      <image class="color-image" src="{{host_}}/static/frontend/timeline/color/color_{{index}}.png"></image>
+    </view>
+  </view>
+  <button class="submit" bindtap="handleSave">导出</button>
+</view>
+<!-- <view class="ec-container">
+    <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
+</view> -->
 
 
