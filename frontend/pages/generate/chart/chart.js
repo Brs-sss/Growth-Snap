@@ -160,6 +160,7 @@ function initData(){
   var dataListNow = [];
   //0号chart
   seriesDataFor0= [];
+  console.log(selectedKeys)
   for (let i = 0; i < selectedKeys.length; i++) {
     dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[i])].list;
     dateList = dataListNow.map(function (item) {
@@ -230,7 +231,7 @@ function initChart(canvas, width, height, dpr) {
     devicePixelRatio: dprGlobal
   });
   canvasGlobal.setChart(chart);
-
+  console.log(selectedKeys)
   chartType = [
     // 0号chart
     {
@@ -321,7 +322,7 @@ function initChart(canvas, width, height, dpr) {
         }
       ],
       legend: {
-        data: ['line', 'bar'],
+        data: selectedKeys,
         textStyle: {
           color: '#ccc'
         }
@@ -353,7 +354,7 @@ function initChart(canvas, width, height, dpr) {
           data: lineList
         },
         {
-          name: 'bar',
+          name: selectedKeys[0],
           type: 'bar',
           barWidth: 10,
           itemStyle: {
@@ -378,7 +379,10 @@ function initChart(canvas, width, height, dpr) {
             ])
           },
           z: -12,
-          data: lineList
+          data: lineList,
+          tooltip: {
+            show:false
+          }
         },
         {
           name: 'dotted',
@@ -391,7 +395,10 @@ function initChart(canvas, width, height, dpr) {
           symbolSize: [12, 4],
           symbolMargin: 1,
           z: -10,
-          data: lineList
+          data: lineList,
+          tooltip: {
+            show:false
+          }
         }
       ]
     },
@@ -534,11 +541,14 @@ function initChart(canvas, width, height, dpr) {
 }
 
 function updateChart() {
+  console.log(seriesDataFor0)
   chartType[0].series = seriesDataFor0;
   chartType[1].xAxis[0].data = dateList;
   chartType[1].series[0].data = valueList;
+  chartType[2].legend.data = selectedKeys;
   chartType[2].xAxis.data = dateList;
   chartType[2].series[0].data = lineList;
+  chartType[2].series[1].name = selectedKeys[0];
   chartType[2].series[1].data = valueList;
   chartType[2].series[2].data = lineList;
   chartType[2].series[3].data = lineList;
@@ -645,6 +655,9 @@ Page({
     const key = this.data.keys[index].info;
     const keyIndex = selectedKeys.indexOf(key);
     if (keyIndex !== -1) {
+      if(selectedKeys.length == 1){
+        return
+      }
       selectedKeys.splice(keyIndex, 1); // 取消选中标签
       this.data.keys[index].selected = false ;
     } else {
@@ -664,7 +677,9 @@ Page({
       ['keys[' + index + '].selected']: this.data.keys[index].selected
     });
     
+    // 更新数据
     initData();
+    // 更新option
     updateChart();
 
     chartNow.clear();
@@ -680,6 +695,7 @@ Page({
     console.log(selectedKeys)
   },
   changeTemplate: function(e){
+    // 数据已经加载，直接改变图的option即可
     const { index } = e.currentTarget.dataset;
     if(index == chart_template)
       return;
@@ -769,7 +785,7 @@ Page({
       // 必须单选
       selectFlag = 1;
     }
-
+    selectedKeys = []
     this.setData({
       ['templates[' + chart_template + '].selected']: true
     });
@@ -842,22 +858,21 @@ Page({
                 var keys = [];
                 console.log(selectedKidList[0])
                 console.log(dataList)
-                if(selectFlag == 0){
-                  selectedKeys = dataList.map(function (item) {
-                    return item.key;
-                  }); 
-                  keys = dataList.map(function (item) {
-                    return {info:item.key,selected: true};
-                  });
-                }else{
+                // if(selectFlag == 0){
+                //   selectedKeys = dataList.map(function (item) {
+                //     return item.key;
+                //   }); 
+                //   keys = dataList.map(function (item) {
+                //     return {info:item.key,selected: true};
+                //   });
+                // }else{
                   selectedKeys.push(dataList[0].key)
+                  console.log(selectedKeys)
                   keys = dataList.map(function (item) {
                     return {info:item.key,selected: false};
                   });
                   keys[0].selected = true;
-                }
-    
-                
+                // }
                 that.setData({
                   kidList: temp_kidList,
                   keys: keys
