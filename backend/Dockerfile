@@ -5,9 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /code
 WORKDIR /code
-RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
-ADD requirements.txt /code/
-RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+
 # RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  wkhtmltopdf -y
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
 RUN apt-get install -y poppler-utils
@@ -15,6 +13,10 @@ RUN apt-get install -y poppler-utils
 RUN wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
     tar vxf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
     cp wkhtmltox/bin/wk* /usr/bin/
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+ADD requirements.txt /code/
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 
 # RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
@@ -31,16 +33,16 @@ RUN wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkh
 #  apt-utils ghostscript fontforge cabextract \
 #  wget
 
-RUN apt-get update \
-    && apt-get install -y \
-        curl \
-        libxrender1 \
-        libjpeg62-turbo \
-        fontconfig \
-        libxtst6 \
-        xfonts-75dpi \
-        xfonts-base \
-        xz-utils
+# RUN apt-get update \
+#     && apt-get install -y \
+#         curl \
+#         libxrender1 \
+#         libjpeg62-turbo \
+#         fontconfig \
+#         libxtst6 \
+#         xfonts-75dpi \
+#         xfonts-base \
+#         xz-utils
 # RUN curl "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb" -L -o "wkhtmltopdf.deb"
 
 # RUN dpkg -i wkhtmltopdf.deb
@@ -59,5 +61,5 @@ RUN apt-get update \
 #     dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb && \
 #     apt --fix-broken install && \
 #     rm wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
-
+COPY Fonts /usr/share/fonts/
 ADD . /code/
