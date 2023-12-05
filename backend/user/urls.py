@@ -44,7 +44,7 @@ urlpatterns = [
     path('api/generate/video', views.generateVideo, name="generate_video"),
     path('api/generate/video/preview/<str:openid>/<str:video_title>', views.loadVideoThumbnail, name="video_preview"),
     path('api/generate/timeline', views.loadTimelinePage, name='load_timelinepage'),
-    # path('api/generate/data', views.loadData, name='load_data'),
+    path('api/generate/data', views.loadData, name='load_data'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

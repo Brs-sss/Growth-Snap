@@ -6,18 +6,20 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 200vh;
-  overflow: scroll; /* 允许内容滚动 */
-  z-index: -1;
+  height: auto;
+  overflow: hidden; /* 允许内容滚动 */
+  z-index: -10;
 }
 
 ec-canvas {
   width: 100%;
   height: 100%;
-  z-index: 0;
+  /* z-index: 0; */
 }
 
 .submit{
+  position: absolute;
+  bottom: -0px;
   background-color: #4095E5;
   color: #fff;
   border-radius: 100px;
