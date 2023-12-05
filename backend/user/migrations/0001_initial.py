@@ -24,11 +24,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Child',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('child_id', models.CharField(default='', max_length=65)),
-                ('birthdate', models.DateField(null=True)),
-                ('gender', models.CharField(max_length=10, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20)),
+                ("child_id", models.CharField(default="", max_length=65)),
+                ("birthdate", models.DateField(null=True)),
+                ("gender", models.CharField(max_length=10, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -52,23 +60,43 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Data',
             fields=[
-                ('baserecord_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='user.baserecord')),
-                ('title', models.CharField(max_length=128)),
-                ('content', models.CharField(max_length=128)),
-                ('records', models.CharField(default='', max_length=512)),
-                ('data_id', models.CharField(default='', max_length=65)),
+                (
+                    "baserecord_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="user.baserecord",
+                    ),
+                ),
+                ("title", models.CharField(max_length=128)),
+                ("content", models.CharField(max_length=128)),
+                ("records", models.CharField(default="", max_length=512)),
+                ("data_id", models.CharField(default="", max_length=65)),
             ],
             bases=('user.baserecord',),
         ),
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('baserecord_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='user.baserecord')),
-                ('title', models.CharField(max_length=128)),
-                ('content', models.CharField(max_length=1024)),
-                ('tags', models.CharField(max_length=200)),
-                ('event_id', models.CharField(default='', max_length=65)),
-                ('event_date', models.DateField(default='2008-01-01', null=True)),
+                (
+                    "baserecord_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="user.baserecord",
+                    ),
+                ),
+                ("title", models.CharField(max_length=128)),
+                ("content", models.CharField(max_length=1024)),
+                ("tags", models.CharField(max_length=200)),
+                ("event_id", models.CharField(default="", max_length=65)),
+                ("event_date", models.DateField(default="2008-01-01", null=True)),
             ],
             bases=('user.baserecord',),
         ),
@@ -108,13 +136,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Record',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(null=True)),
-                ('time', models.TimeField(null=True)),
-                ('key', models.CharField(max_length=24)),
-                ('value', models.FloatField(max_length=24)),
-                ('data_id', models.CharField(default='', max_length=65)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(null=True)),
+                ("time", models.TimeField(null=True)),
+                ("key", models.CharField(max_length=24)),
+                ("value", models.FloatField(max_length=24)),
+                ("data_id", models.CharField(default="", max_length=65)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="user.user"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
@@ -128,13 +169,15 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.family'),
         ),
         migrations.AddField(
-            model_name='baserecord',
-            name='children',
-            field=models.ManyToManyField(blank=True, to='user.child'),
+            model_name="baserecord",
+            name="children",
+            field=models.ManyToManyField(blank=True, to="user.child"),
         ),
         migrations.AddField(
-            model_name='baserecord',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.user'),
+            model_name="baserecord",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="user.user"
+            ),
         ),
     ]
