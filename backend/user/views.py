@@ -1090,6 +1090,8 @@ def loadData(request):
                     value_date_item = {}
                     value_date_item['value'] = record.value
                     value_date_item['date'] = record.date
+                    value_date_item['time'] = record.date.strftime('%Y-%m-%d') + 'T' + record.time.strftime('%H:%M:%S') + 'Z'
+                    print( value_date_item['time'])
                     value_date_list.append(value_date_item)
                 child_key_data['list'] = value_date_list
                 if(record_list.__len__()):

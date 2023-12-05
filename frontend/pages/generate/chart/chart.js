@@ -161,7 +161,7 @@ function initData(){
       return item.value;
     });
     timeList = dataListNow.map(function (item) {
-      let date_time = new Date(item.date)
+      let date_time = new Date(item.time)
       return [date_time, item.value];
     });
     const currentLine_time = {
@@ -224,19 +224,6 @@ function initData(){
     seriesDataFor0_event.push(currentLine_event);
   }
 
-  //1号chart
-  // dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
-  // dateList = dataListNow.map(function (item) {
-  //   return item.date;
-  // });
-  // valueList = dataListNow.map(function (item) {
-  //   return item.value;
-  // });
-  // timeList = dataListNow.map(function (item) {
-  //   let date_time = new Date(item.date)
-  //   return [date_time, item.value];
-  // });
-
   //2号chart
   lineList = dataListNow.map(function (item) {
     return item.value*2;
@@ -276,10 +263,10 @@ function initChart(canvas, width, height, dpr) {
       },
       xAxis: [
         {
-          // type: 'category',
-          type: 'time',
+          type: 'category',
+          // type: 'time',
           boundaryGap: false,
-          // data: dateList
+          data: dateList
         }
       ],
       yAxis: [
@@ -287,7 +274,7 @@ function initChart(canvas, width, height, dpr) {
           type: 'value'
         }
       ],
-      series: seriesDataFor0_time
+      series: seriesDataFor0_event
     },
     // 1号chart
     {
@@ -313,8 +300,10 @@ function initChart(canvas, width, height, dpr) {
       },
       xAxis: [
         {
-          type: 'time',
+          // type: 'time',
+          type: 'category',
           boundaryGap: false,
+          data: dateList
         }
       ],
       yAxis: [
@@ -329,8 +318,8 @@ function initChart(canvas, width, height, dpr) {
         {
           type: 'line',
           showSymbol: false,
-          // data: valueList
-          data: timeList
+          data: valueList
+          // data: timeList
         }
       ]
     },
@@ -570,10 +559,10 @@ function initChart(canvas, width, height, dpr) {
 
 // 改变数据组之后加载不同templates中需要的数据
 function updateChart() {
-  // 缺省状态为按照时间均匀分布
-  chartType[0].series = seriesDataFor0_time;
-  chartType[0].xAxis.type = 'time';
-  chartType[0].xAxis.data = null;
+  // 缺省状态为按照事件均匀分布
+  chartType[0].series = seriesDataFor0_event;
+  chartType[0].xAxis.type = 'category';
+  chartType[0].xAxis.data = dateList;
   chartType[1].xAxis[0].data = dateList;
   chartType[1].series[0].data = valueList;
   chartType[2].legend.data = selectedKeys;
@@ -591,6 +580,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    switchChecked : false,
     templates:[
       {id: 0, selected: false},
       {id: 1, selected: false},
@@ -712,6 +702,8 @@ Page({
     initData();
     // 更新option
     updateChart();
+    // 更新排布规则
+    this.switchMode();
 
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
@@ -725,7 +717,10 @@ Page({
     chartNow = chart;
     console.log(selectedKeys)
   },
-  switchChange:function(e){
+  switchChange: function(e){
+    this.setData({
+      switchChecked: e.detail.value
+    });
     console.log(e.detail.value)
     if(e.detail.value){
       // 按照时间均匀分布
@@ -850,6 +845,27 @@ Page({
       fail: res => console.log(res)
     });
   },
+  switchMode() {
+    if(this.data.switchChecked){
+      // 按照时间均匀分布
+      // 0号chart数据更新
+      chartType[0].series = seriesDataFor0_time;
+      chartType[0].xAxis.type= 'time';
+      chartType[0].xAxis.data= null;
+      // 1号chart数据更新
+      chartType[1].xAxis.type= 'time';
+      chartType[1].xAxis.data= null;
+      chartType[1].series[0].data = timeList
+    }else{
+      // 0号chart数据更新
+      chartType[0].series = seriesDataFor0_event;
+      chartType[0].xAxis.type= 'category';
+      chartType[0].xAxis.data= dateList;
+      // 1号chart数据更新
+      chartType[1].xAxis.data= dateList;
+      chartType[1].series[0].data = valueList
+    }
+  },
 
   /**
    * 生命周期函数--监听页面加载
@@ -938,6 +954,8 @@ Page({
                 var keys = [];
                 console.log(selectedKidList[0])
                 console.log(dataList)
+                // 当前不支持多选
+                
                 // if(selectFlag == 0){
                 //   selectedKeys = dataList.map(function (item) {
                 //     return item.key;
