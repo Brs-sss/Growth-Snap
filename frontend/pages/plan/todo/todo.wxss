@@ -172,7 +172,7 @@
 .bgImg {
   position: absolute;
   height: 100%;
-  width: calc(100% + 2px);
+  width: calc(100%);
   opacity: 0.65;
   /* filter: blur(3px); */
 }

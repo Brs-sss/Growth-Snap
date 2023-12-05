@@ -100,14 +100,15 @@ page {
   /* margin-top: 50px; */
   /* margin-left: 60px; */
   width: 30px;
-  height: 23px;
+  /* height: 23px; */
   background: #f0f8ff;
   border: 1rpx solid #4095E5;
   border-radius: 10rpx;
   font-size: 12px;
   text-align: center;
   color: #4095E5;
-  line-height: 62rpx;
+  margin-top: 1vh;
+  /* line-height: 22px; */
 }
 
 .user_info{
