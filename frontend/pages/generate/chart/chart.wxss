@@ -153,3 +153,12 @@ ec-canvas {
   margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
 }
+
+.weui-form{
+  margin-top: -12vh;
+  margin-bottom: -10vh;
+}
+
+.weui-cell__bd{
+  color: #007bff;
+}
