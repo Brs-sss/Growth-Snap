@@ -14,7 +14,8 @@ var chartType = [];
 
 // 0号chart的数据处理
 const colors = ['#80ffa5', '#01bfec', '#00ddff', '#4d77ff', '#37a2ff', '#7415db', '#ff0087', '#87009d', '#ffbf00', '#e03e4c']
-var seriesDataFor0= []
+var seriesDataFor0_event= [] // 按照事件均匀排序
+var seriesDataFor0_time= [] // 按照时间均匀排序
 
 
 // 1号chart的数据
@@ -144,10 +145,12 @@ const itemStyle = {
   shadowColor: 'rgba(0,0,0,0.3)'
 };
 
+//改变数据组时使用
 function initData(){
   var dataListNow = [];
-  //0号chart
-  seriesDataFor0= [];
+  //0号chart&1号chart
+  seriesDataFor0_event= [];
+  seriesDataFor0_time= [];
   console.log(selectedKeys)
   for (let i = 0; i < selectedKeys.length; i++) {
     dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[i])].list;
@@ -161,7 +164,7 @@ function initData(){
       let date_time = new Date(item.date)
       return [date_time, item.value];
     });
-    const currentLine = {
+    const currentLine_time = {
       name: selectedKeys[i],
       type: 'line',
       smooth: true,
@@ -190,18 +193,50 @@ function initData(){
       },
       data: timeList
     };
-
-    seriesDataFor0.push(currentLine);
+    const currentLine_event = {
+      name: selectedKeys[i],
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 0
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: colors[i * 2]
+          },
+          {
+            offset: 1,
+            color: colors[i * 2 + 1]
+          }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: valueList // You can populate this array with your actual data for each line
+    };
+    seriesDataFor0_time.push(currentLine_time);
+    seriesDataFor0_event.push(currentLine_event);
   }
+
   //1号chart
-  console.log(dataList)
-  dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
-  dateList = dataListNow.map(function (item) {
-    return item.date;
-  });
-  valueList = dataListNow.map(function (item) {
-    return item.value;
-  });
+  // dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
+  // dateList = dataListNow.map(function (item) {
+  //   return item.date;
+  // });
+  // valueList = dataListNow.map(function (item) {
+  //   return item.value;
+  // });
+  // timeList = dataListNow.map(function (item) {
+  //   let date_time = new Date(item.date)
+  //   return [date_time, item.value];
+  // });
+
   //2号chart
   lineList = dataListNow.map(function (item) {
     return item.value*2;
@@ -252,7 +287,7 @@ function initChart(canvas, width, height, dpr) {
           type: 'value'
         }
       ],
-      series: seriesDataFor0
+      series: seriesDataFor0_time
     },
     // 1号chart
     {
@@ -278,7 +313,8 @@ function initChart(canvas, width, height, dpr) {
       },
       xAxis: [
         {
-          data: dateList
+          type: 'time',
+          boundaryGap: false,
         }
       ],
       yAxis: [
@@ -293,7 +329,8 @@ function initChart(canvas, width, height, dpr) {
         {
           type: 'line',
           showSymbol: false,
-          data: valueList
+          // data: valueList
+          data: timeList
         }
       ]
     },
@@ -318,6 +355,7 @@ function initChart(canvas, width, height, dpr) {
         }
       },
       xAxis: {
+        type: 'category',
         data: dateList,
         axisLine: {
           lineStyle: {
@@ -532,8 +570,10 @@ function initChart(canvas, width, height, dpr) {
 
 // 改变数据组之后加载不同templates中需要的数据
 function updateChart() {
-  console.log(seriesDataFor0)
-  chartType[0].series = seriesDataFor0;
+  // 缺省状态为按照时间均匀分布
+  chartType[0].series = seriesDataFor0_time;
+  chartType[0].xAxis.type = 'time';
+  chartType[0].xAxis.data = null;
   chartType[1].xAxis[0].data = dateList;
   chartType[1].series[0].data = valueList;
   chartType[2].legend.data = selectedKeys;
@@ -673,6 +713,51 @@ Page({
     // 更新option
     updateChart();
 
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+    console.log(selectedKeys)
+  },
+  switchChange:function(e){
+    console.log(e.detail.value)
+    if(e.detail.value){
+      // 按照时间均匀分布
+      // 0号chart数据更新
+      chartType[0].series = seriesDataFor0_time;
+      chartType[0].xAxis=[{
+        type: 'time',
+        boundaryGap: false,
+      }];
+      // 1号chart数据更新
+      chartType[1].xAxis = [{
+        type: 'time',
+        boundaryGap: false,
+      }];
+      chartType[1].series[0].data = timeList
+    }else{
+      // 0号chart数据更新
+      chartType[0].series = seriesDataFor0_event;
+      chartType[0].xAxis=[{
+        type: 'category',
+        boundaryGap: false,
+        data: dateList
+      }];
+      chartType[0].xAxis.data = dateList;
+      // 1号chart数据更新
+      chartType[1].xAxis = [{
+        data: dateList
+      }];
+      chartType[1].series[0].data = valueList
+    }
+
+    //TODO: 写成可复用函数
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,

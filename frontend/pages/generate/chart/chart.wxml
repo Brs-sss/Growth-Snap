@@ -24,7 +24,6 @@
   </view>
 </view> -->
 
-<page-meta root-font-size="system"/>
 	<view class="weui-form">
     <view class="weui-form__bd">
       <view class="weui-form__control-area">
@@ -34,7 +33,7 @@
                 <view class="weui-cell__bd">按照时间均匀分布</view>
                 <view class="weui-cell__ft">
                     <view class="weui-switch-cp">
-                        <switch checked="{{switch1Checked}}" bindchange="switchChange" color="#007bff"/>
+                        <switch checked bindchange="switchChange" color="#007bff"/>
                     </view>
                 </view>
             </label>
