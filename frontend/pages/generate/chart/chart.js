@@ -21,23 +21,11 @@ var seriesDataFor0= []
 
 var dateList = [];
 var valueList = [];
+var timeList = [];
 
 //2号chart的数据
 var lineList = [];
-// let category = [];
-// let dottedBase = +new Date();
-// let lineData = [];
-// let barData = [];
-// for (let i = 0; i < 20; i++) {
-//   let date = new Date((dottedBase += 3600 * 24 * 1000));
-//   category.push(
-//     [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
-//   );
-//   let b = Math.random() * 200;
-//   let d = Math.random() * 200;
-//   barData.push(b);
-//   lineData.push(d + b);
-// }
+
 
 // 3号chart的数据
 const dataBJ = [
@@ -169,11 +157,17 @@ function initData(){
     valueList = dataListNow.map(function (item) {
       return item.value;
     });
+    timeList = dataListNow.map(function (item) {
+      let date_time = new Date(item.date)
+      return [date_time, item.value];
+    });
     const currentLine = {
       name: selectedKeys[i],
       type: 'line',
-      stack: 'Total',
       smooth: true,
+      symbol: 'none',
+      areaStyle: {},
+      data: timeList,
       lineStyle: {
         width: 0
       },
@@ -194,15 +188,9 @@ function initData(){
       emphasis: {
         focus: 'series'
       },
-      data: valueList // You can populate this array with your actual data for each line
+      data: timeList
     };
 
-    // Assuming you have data for each line in separate arrays like dataX
-    // for (let j = 0; j < dataX.length; j++) {
-      // Populate the data array for each line
-      // You should replace this with your actual data structure or source
-      // currentLine.data.push(/* Your data for Line i on day j */);
-    // }
     seriesDataFor0.push(currentLine);
   }
   //1号chart
@@ -219,6 +207,7 @@ function initData(){
     return item.value*2;
   });
 }
+
 
 function initChart(canvas, width, height, dpr) {
   heightGlobal = height;
@@ -252,9 +241,10 @@ function initChart(canvas, width, height, dpr) {
       },
       xAxis: [
         {
-          type: 'category',
+          // type: 'category',
+          type: 'time',
           boundaryGap: false,
-          data: dateList
+          // data: dateList
         }
       ],
       yAxis: [
@@ -540,6 +530,7 @@ function initChart(canvas, width, height, dpr) {
   return chart;
 }
 
+// 改变数据组之后加载不同templates中需要的数据
 function updateChart() {
   console.log(seriesDataFor0)
   chartType[0].series = seriesDataFor0;
@@ -716,6 +707,8 @@ Page({
       }
       selectFlag = 1;
     }
+    //当前限制必须单选
+    selectFlag = 1;
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,
@@ -785,6 +778,8 @@ Page({
       // 必须单选
       selectFlag = 1;
     }
+    // 限制必须单选
+    selectFlag = 1;
     selectedKeys = []
     this.setData({
       ['templates[' + chart_template + '].selected']: true
@@ -878,6 +873,17 @@ Page({
                   keys: keys
                 })
                 initData();
+                updateChart();
+                chartNow.clear();
+                const chart = echarts.init(canvasGlobal, null, {
+                  width: widthGLobal,
+                  height: heightGlobal,
+                  devicePixelRatio: dprGlobal
+                });
+                canvasGlobal.setChart(chart);
+                const option = chartType[chart_template];
+                chartNow.setOption(option);
+                chartNow = chart;
             },
             fail:function(res){
               console.log('load page failed: ',res)
