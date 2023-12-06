@@ -613,11 +613,11 @@ function updateChart() {
   chartType[1].series[0].data = valueList;
   chartType[2].legend.data = selectedKeys;
   chartType[2].xAxis.data = dateList;
-  chartType[2].series[0].data = lineList;
+  chartType[2].series[0].data = null;
   chartType[2].series[1].name = selectedKeys[0];
   chartType[2].series[1].data = valueList;
-  chartType[2].series[2].data = lineList;
-  chartType[2].series[3].data = lineList;
+  chartType[2].series[2].data = null;
+  chartType[2].series[3].data = null;
 }
 
 Page({
@@ -628,6 +628,7 @@ Page({
   data: {
     switchChecked : false,
     standardChecked : true,
+    standardNote : false,
     templates:[
       {id: 0, selected: false},
       {id: 1, selected: false},
@@ -650,6 +651,10 @@ Page({
     host_: `${app.globalData.localUrl}`,
   },
   toggleChildTag: function(e) {
+    //关闭标准数据
+    this.setData({
+      standardNote: false
+    })
 
     selectedKeys = [];
     const { index } = e.currentTarget.dataset;
@@ -777,10 +782,16 @@ Page({
     
     // 更新数据
     initData();
+    // initChart();
     // 更新option
     updateChart();
     // 更新排布规则
     this.switchMode();
+
+    //关闭标准数据
+    this.setData({
+      standardNote: false
+    })
 
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
@@ -1052,6 +1063,13 @@ Page({
         boundaryGap: false,
       }];
       chartType[1].series[0].data = timeList
+      // 2号chart数据更新
+      // chartType[2].xAxis = [{
+      //   type: 'time',
+      //   boundaryGap: false,
+      // }];
+      // chartType[2].series[0].data = timeList
+      // chartType[2].series[1].data = timeList
     }else{
       // 0号chart数据更新
       chartType[0].series = seriesDataFor0_event;
