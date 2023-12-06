@@ -242,6 +242,14 @@ Page({
   },
 
   reselectEvent(){
+    var that=this
+    var pages = getCurrentPages();
+    var previousPage=pages[pages.length-2];
+    previousPage.setData({
+      cover_index:that.data.cover_index,
+      paper_index:that.data.paper_index,
+      pdf_name:that.data.diary_title,
+    })
     wx.navigateBack(1)
   },
 
