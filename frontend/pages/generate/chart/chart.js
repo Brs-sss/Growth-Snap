@@ -3,7 +3,8 @@ const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
 // 数据参考:1.《中国7岁以下儿童生长发育参照标准》2022年 2.首都科研究所生长发育研究室《3~15岁的儿童标准身高表》(2021年)  3.教育部第八次全国学生体质与健康调研结果(2021年)
-var heightStandard_boy = [
+var heightStandard = [
+  [
   {age:'0', height:50.4, weight:3.3}, 
   {age:'1', height:76.5, weight:10.0}, 
   {age:'2', height:88.5, weight:12.5}, 
@@ -23,9 +24,8 @@ var heightStandard_boy = [
   {age:'16', height:174.3, weight:58.5}, 
   {age:'17', height:175.1, weight:60.0}, 
   {age:'18', height:175.7, weight:61.5}
-]
-
-var heightStandard_girl = [
+],
+[
   {age:'0', height:50.4, weight:3.2}, 
   {age:'1', height:76.5, weight:9.5}, 
   {age:'2', height:88.5, weight:12.0}, 
@@ -45,8 +45,8 @@ var heightStandard_girl = [
   {age:'16', height:174.3, weight:54.0}, 
   {age:'17', height:175.1, weight:55.5}, 
   {age:'18', height:175.7, weight:56.5}
-]
-
+]]
+var standardList = []
 
 var data_item = []; // 所有数据
 var dataList = []; // 当前孩子的所有数据
@@ -650,31 +650,38 @@ Page({
     host_: `${app.globalData.localUrl}`,
   },
   toggleChildTag: function(e) {
+
     selectedKeys = [];
     const { index } = e.currentTarget.dataset;
     const key = this.data.kidList[index].info;
     const keyIndex = selectedKidList.indexOf(key);
     if (keyIndex !== -1) {
       return
-    } else {
-      // 判断选中孩子是否有数据
-      console.log(data_item[key])
-      if(data_item[key].length == 0){
-        wx.showToast({
-          title: "未上传"+ key +"数据",
-          icon: 'error',
-          duration: 2000,
-        })
-        return
-      }
-      // 存在单选限制
-      const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
-      console.log(deleteIndex)
-      this.data.kidList[deleteIndex].selected=false;
-      selectedKidList = [];
-      selectedKidList.push(key); // 选中
-      this.data.kidList[index].selected = true ;
     }
+    // 判断选中孩子是否有数据
+    console.log(data_item[key])
+    if(data_item[key].length == 0){
+      wx.showToast({
+        title: "未上传"+ key +"数据",
+        icon: 'error',
+        duration: 2000,
+      })
+      return
+    }
+    // 存在单选限制
+    const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
+    console.log(deleteIndex)
+    this.data.kidList[deleteIndex].selected=false;
+    selectedKidList = [];
+    selectedKidList.push(key); // 选中
+    this.data.kidList[index].selected = true ;
+
+    //计算标准数据
+    standardList = []
+    for (let i = this.data.kidList[index].age; i >= 0; i--) {
+      standardList.push({'height':heightStandard[this.data.kidList[index].gender][i].height,'weight':heightStandard[this.data.kidList[index].gender][i].weight})
+    }
+    console.log(standardList)
     
     // TODO:写个复用的函数
     dataList = data_item[selectedKidList[0]]
@@ -704,6 +711,18 @@ Page({
       ['kidList[' + index + '].selected']: this.data.kidList[index].selected
     });
     
+    // 显示标准数据的模板
+    console.log(selectedKeys[0],chart_template)
+    if((selectedKeys[0]=='身高' || selectedKeys[0]=='体重') && chart_template == 2){
+      this.setData({
+        standardChecked : false
+      })
+    }else{
+      this.setData({
+        standardChecked : true
+      })
+    }
+
     initData();
     updateChart();
     this.switchMode();
@@ -746,7 +765,7 @@ Page({
       keys: this.data.keys,
       ['keys[' + index + '].selected']: this.data.keys[index].selected
     });
-    if(key=='身高' || key=='体重'){
+    if((key=='身高' || key=='体重') && chart_template == 2){
       this.setData({
         standardChecked : false
       })
@@ -775,6 +794,7 @@ Page({
     chartNow = chart;
     console.log(selectedKeys)
   },
+  // 分布模式
   switchChange: function(e){
     this.setData({
       switchChecked: e.detail.value
@@ -795,7 +815,133 @@ Page({
     chartNow = chart;
     console.log(selectedKeys)
   },
+  // 显示标准数据
+  switchStandard: function (e) {
+    if(e.detail.value){
+      // 计算对应标准身高
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      console.log(standardList)
+      var standard = dateList.map(function (item) {
+        var then = new Date(item)
+        if(selectedKeys[0]=='身高')
+          return standardList[currentYear - then.getFullYear()].height;
+        else
+          return standardList[currentYear - then.getFullYear()].weight;
+      }); 
+      // 2号chart
+      chartType[2]=
+      {
+        backgroundColor: '#0f375f',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: [
+          {
+            bottom: '10%'
+          }
+        ],
+        legend: {
+          data: ['身高','标准身高'],
+          textStyle: {
+            color: '#ccc'
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: dateList,
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          }
+        },
+        yAxis: {
+          splitLine: { show: false },
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+        },
+        series: [
+          {
+            name: '身高',
+            type: 'line',
+            smooth: true,
+            showAllSymbol: true,
+            symbol: 'emptyCircle',
+            symbolSize: 15,
+            data: valueList
+          },
+          {
+            name: '标准身高',
+            type: 'bar',
+            barWidth: 10,
+            itemStyle: {
+              borderRadius: 5,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#14c8d4' },
+                { offset: 1, color: '#43eec6' },
+              ])
+            },
+            data: standard
+          },
+          {
+            name: 'line',
+            type: 'bar',
+            barGap: '-100%',
+            barWidth: 10,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(20,200,212,0.8)' },
+                { offset: 0.5, color: 'rgba(20,200,212,0.2)' },
+                { offset: 1, color: 'rgba(20,200,212,0)' }
+              ])
+            },
+            z: -12,
+            data: valueList,
+            tooltip: {
+              show:false
+            }
+          },
+          {
+            name: 'dotted',
+            type: 'pictorialBar',
+            symbol: 'rect',
+            itemStyle: {
+              color: '#0f375f'
+            },
+            symbolRepeat: true,
+            symbolSize: [12, 4],
+            symbolMargin: 1,
+            z: -10,
+            data: valueList,
+            tooltip: {
+              show:false
+            }
+          }
+        ]
+      }
+    }else{
+      updateChart();
+    }
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+  },
   changeTemplate: function(e){
+
     // 数据已经加载，直接改变图的option即可
     const { index } = e.currentTarget.dataset;
     if(index == chart_template)
@@ -819,6 +965,20 @@ Page({
     }
     //当前限制必须单选
     selectFlag = 1;
+
+    // 显示标准数据的模板
+    console.log(selectedKeys[0],chart_template)
+    if((selectedKeys[0]=='身高' || selectedKeys[0]=='体重') && chart_template == 2){
+      this.setData({
+        standardChecked : false
+      })
+    }else{
+      this.setData({
+        standardChecked : true
+      })
+    }
+
+
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,
@@ -829,6 +989,7 @@ Page({
     const option = chartType[chart_template];
     chartNow.setOption(option);
     chartNow = chart;
+
   },
   clearKey(){
     // 多选变单选时只保留第一组被选中的数据
@@ -848,6 +1009,7 @@ Page({
     });
     initData();
     updateChart();
+
   },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
@@ -964,7 +1126,11 @@ Page({
                   //   temp_kidList.push({'info': name, 'selected': true})
                   //   selectedKidList.push(name)
                   // }else{
-                  temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age})
+                  if(children_list[i].gender=='男'){
+                    temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 0})
+                  }else{
+                    temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 1})
+                  }
                   // }
                 }
                 // 寻找第一个有数据的孩子作为缺省选择的孩子
@@ -973,6 +1139,13 @@ Page({
                   if(data_item[temp_kidList[i].info].length != 0){
                     selectedKidList.push(temp_kidList[i].info);
                     temp_kidList[i].selected = true;
+
+                     //计算标准数据
+                    standardList = []
+                    for (let j = temp_kidList[i].age; j >= 0; j--) {
+                      standardList.push({'height':heightStandard[temp_kidList[i].gender][j].height,'weight':heightStandard[temp_kidList[i].gender][j].weight})
+                    }
+                    console.log(standardList)
                     break;
                   }else{
                     if(i == temp_kidList.length - 1){
@@ -1007,7 +1180,7 @@ Page({
                 // }
 
 
-                if(keys[0].info=='身高' || key=='体重'){
+                if((keys[0].info=='身高' || key=='体重') && chart_template == 2){
                   that.setData({
                     standardChecked : false
                   })
