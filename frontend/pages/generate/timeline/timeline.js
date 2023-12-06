@@ -377,7 +377,7 @@ function loadPageInfo(that){
             eventData = eventIndex.map(function(index) {
               return eventList[index];
             });
-            initData();
+            initData(that);
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -390,7 +390,7 @@ function loadPageInfo(that){
   })
 }
 
-function initData(){
+function initData(that){
   console.log("here")
   console.log(eventData);
   // eventData=[
@@ -402,6 +402,9 @@ function initData(){
   //   {date:'2023-09-15', title:'小明通过了考级'}
   // ];
   console.log(eventData);
+  that.setData({
+    ec_height: eventData.length * 250
+  })
   titleData = eventData.map(event => event.title);
   //0号时间轴
   graphDataFor0 = eventData.map(event => [event.date, 1000, event.title]);
@@ -439,9 +442,8 @@ function initData(){
   };
 }
 
-
 function initChart(canvas, width, height, dpr) {
-  console.log("init");
+  console.log("init")
   heightGlobal = height;
   widthGLobal = width;
   canvasGlobal = canvas;
@@ -728,7 +730,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    hasImg: true,
+    ec_height: 0,
+    hasImg: false,
     imgPath: "",
     host_: `${app.globalData.localUrl}`,
     templates:[
@@ -844,34 +847,40 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log("load");
     timeline_template = options.index;
     const eventsSTR = options.events;
     console.log(eventsSTR)
     eventIndex = eventsSTR.split('-').map(Number);
+    var that = this;
     this.setData({
       ['templates[' + timeline_template + '].selected']: true
     });
-    var that = this;
     loadPageInfo(that);
+
+    var that = this
+    setTimeout(function () {
+      const ecComponent = that.selectComponent('#echart');
+      // 先保存图片到临时的本地文件，然后存入系统相册
+      ecComponent.canvasToTempFilePath({
+        success: res => {
+          console.log("tempFilePath:", res.tempFilePath)
+          that.setData({
+            hasImg: true,
+            imgPath: res.tempFilePath
+          })
+        },
+        fail: res => {
+          console.log("失败")
+        }
+      })
+    }, 1000)
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    
-    const ecComponent = this.selectComponent('#echart');
-    // 先保存图片到临时的本地文件，然后存入系统相册
-    ecComponent.canvasToTempFilePath({
-      success: res => {
-        console.log("tempFilePath:", res.tempFilePath)
-        this.setData({
-          hasImg: true,
-          imgPath: res.tempFilePath
-        })
-      }
-    })
+  
   },
 
   /**
