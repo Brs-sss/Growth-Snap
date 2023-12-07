@@ -71,18 +71,20 @@ function LoadShowPage(that,start=0,delta='all',add=false){
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       wx.request({
-        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&start='+start+'&delta='+delta,
+        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&start='+start+'&delta='+delta+'&update='+that.data.force_update,
         method:'GET',
         success:function(res){
             if(add)
               that.setData({
                 blog_cards_list:that.data.blog_cards_list.concat(res.data.blocks_list),
                 start:res.data.start,
+                force_update:false,
               })
             else{
               that.setData({
                 blog_cards_list:res.data.blocks_list,
                 start:res.data.start,
+                force_update:false,
               })
             }
         },
@@ -114,6 +116,7 @@ Page({
     hasLoaded:false,
     start:0,
     delta:5,
+    force_update:false,
   },
   showInput() {
     this.setData({
