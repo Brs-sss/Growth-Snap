@@ -93,7 +93,7 @@
 
 .children-container{
   display: inline-block;
-  color: rgb(53, 30, 56);
+  color: rgb(120, 0, 136);
 }
 
 .tags-container{

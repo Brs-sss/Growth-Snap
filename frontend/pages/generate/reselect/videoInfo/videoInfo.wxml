@@ -29,7 +29,7 @@
 						</view>
 				</view>
 				</view>
-        <view class="weui-cells__title">左右滑动选择</view>
+        <!-- <view class="weui-cells__title">左右滑动选择</view> -->
 			</view>
       
     </view>
@@ -53,3 +53,13 @@
         <button bind:tap="submitChange"  style="margin-top: 1vh;"   data-category="video">生成</button>
     </view>
 </view>
+
+<view aria-role="alert" class="fadeIn {{hideLoading ? 'fadeOut' : ''}}" wx:if="{{loading}}">
+		<view class="weui-mask_transparent"></view>
+		<view class="weui-toast">
+			<view class="weui-primary-loading weui-primary-loading_transparent weui-icon_toast">
+        <view class="weui-primary-loading__dot"></view>
+      </view>
+			<view class="weui-toast__content">正在加载</view>
+		</view>
+	</view>

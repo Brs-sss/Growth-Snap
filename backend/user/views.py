@@ -1092,11 +1092,11 @@ def loadData(request):
         family = now_user.family
         children = Child.objects.filter(family=family)
         keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
-        data_item = {} # 返回的数据{{child:小明，data:child_data},{child:小红，data:child_data}}
+        data_item = {} # 返回的数据{小明: child_data, 小红:child_data}} 
         print(keyList)
         print(children)
         for child in children:
-            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}],child_key_data]
+            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}]},child_key_data]
             for key in keyList:
                 child_key_data = {} # 保存一个孩子一个key的所有数据 {key:身高, list:[{value:,date:},{value:,date:}]
                 child_key_data['key'] = key
@@ -1107,6 +1107,8 @@ def loadData(request):
                     value_date_item = {}
                     value_date_item['value'] = record.value
                     value_date_item['date'] = record.date
+                    value_date_item['time'] = record.date.strftime('%Y-%m-%d') + 'T' + record.time.strftime('%H:%M:%S')
+                    print( value_date_item['time'])
                     value_date_list.append(value_date_item)
                 child_key_data['list'] = value_date_list
                 if(record_list.__len__()):

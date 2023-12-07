@@ -16,6 +16,7 @@ Page({
     video_title: '', // 小视频标题
     audioSelected: null,
     host_: `${app.globalData.localUrl}`,
+    loading: false,
 
   },
   addAudio(e){
