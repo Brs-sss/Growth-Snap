@@ -10,6 +10,7 @@ Page({
     planTitle: '',
     icon: '',
     todoList: [],
+    childList:[],
     newTodo: '',
     today:'',
     a_week_later:'',
@@ -29,9 +30,10 @@ Page({
                '?openid=' + openid + '&plan=' + pointer.data.planTitle,
           method:'GET',
           success:function(res){
-            console.log('c_p data:', res)
+            console.log('childList', res.data.childList)
             pointer.setData({
-              todoList: res.data.todos
+              todoList: res.data.todos,
+              childList: res.data.childList
             })
           },
           fail:function (res) {

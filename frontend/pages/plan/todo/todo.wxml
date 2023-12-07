@@ -9,7 +9,13 @@
   </view>
   <view class="content">
     <view class="todo-list">
-    <text class="today">{{today}}</text>
+    <view class='plan-info'>
+      <text class="today">{{today}}</text>
+      <text wx:for="{{childList}}" class="child">{{item}}
+            <!-- <text class="tag-text">{{item}}</text> -->
+            </text>
+    </view>
+    
       <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
         <!-- 还未完成的计划项 -->
         <view class="todo-item" wx:if="{{!item.check}}">
