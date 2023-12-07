@@ -54,7 +54,6 @@ class BaseRecord(models.Model):
     #
     children = models.ManyToManyField(Child,blank=True)
 
-    
     # event, text, data
     record_type = models.CharField(max_length=10, default='event')
     # date

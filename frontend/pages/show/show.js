@@ -60,7 +60,7 @@ function fuzzySearch(text, query) {
 
 
 /* 与后端联系，获取主页的内容*/
-function LoadShowPage(that){
+function LoadShowPage(that,start=0,delta='all'){
   that.setData({
     popupVisible:false,
   })
@@ -71,13 +71,13 @@ function LoadShowPage(that){
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       wx.request({
-        url: that.data.host_+'user/api/show/all'+'?openid='+openid,
+        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&start='+start+'&delta='+delta,
         method:'GET',
         success:function(res){
             that.setData({
-              blog_cards_list:res.data.blocks_list
+              blog_cards_list:that.data.blog_cards_list.concat(res.data.blocks_list),
+              start:res.data.start,
             })
-            // console.log(res.data.blocks_list)
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -103,7 +103,10 @@ Page({
     host_: `${app.globalData.localUrl}`,
     inputShowed: false, // 搜索提示状态
     inputVal: '', // 搜索内容
-    searchHint: []
+    searchHint: [],
+    hasLoaded:false,
+    start:0,
+    delta:5,
   },
   showInput() {
     this.setData({
@@ -232,7 +235,7 @@ Page({
    */
   onLoad(options) {
     var that = this
-    LoadShowPage(that)
+    LoadShowPage(that,that.data.start,that.data.delta)
   },
 
   /**
@@ -255,8 +258,17 @@ Page({
     }else{
       search_note = 0
     }
-    var that = this
-    LoadShowPage(that)
+    if (this.data.hasLoaded){
+      var that = this
+      LoadShowPage(that,that.data.start,that.data.delta)
+    }
+    else{
+      console.log('else')
+       this.setData({
+         hasLoaded:true,
+       })
+    }
+    
   },
 
   /**
@@ -284,7 +296,8 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom() {
-
+    var that = this
+    LoadShowPage(that,that.data.start,that.data.delta)
   },
 
   /**

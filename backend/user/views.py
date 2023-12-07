@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, FileResponse
 from django.db.models import Q
+from django.core.cache import cache
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail
 import random
 import string
 import hashlib
@@ -15,6 +16,7 @@ import datetime
 import shutil
 from urllib.parse import unquote
 from manage import host_url
+
 
 # import fitz
 
@@ -261,12 +263,18 @@ def addEventImage(request):
         event_id = request.POST.get('event_id')
 
         image_path = './static/ImageBase/' + f'{event_id}/'
+        thumbnail_path = './static/Thumbnail/'+ f'{event_id}/'
         if not os.path.exists(image_path):
             os.mkdir(image_path)
+        if not os.path.exists(thumbnail_path):
+            os.mkdir(thumbnail_path)
         if uploaded_image:
-            with open(image_path + f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
+            pic_name=f'{pic_index}_{uploaded_image.name}'
+            image_path_name=image_path + pic_name
+            with open(image_path_name, 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
+            GenerateEventThumnail(src_path=image_path_name,dest_path= thumbnail_path,image_name= pic_name,target_width=200)
             return JsonResponse({'message': '文件上传成功'})
         else:
             return JsonResponse({'message': '文件不存在'})
@@ -366,7 +374,10 @@ def registerProfileImage(request):
 def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
+        start = request.GET.get('start','0')
+        delta = request.GET.get('delta','all')
         types = request.GET.get('types', "etd")  # 缺省值为event&text&data
+        
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         family = now_user.family
@@ -378,8 +389,12 @@ def loadShowPage(request):
         now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
                                  key=lambda x: (x.date, x.time), reverse=True)
         print(now_user_blocks.__len__())
+        
+        start=int(start)
+        total=len(now_user_blocks)
+        end=total if delta == 'all' else min(start+int(delta),total)
         blocks_list = []
-        for db_block in now_user_blocks:
+        for db_block in now_user_blocks[start:end]:
             block_item = {}
             block_item['type'] = db_block.record_type
             block_item['title'] = db_block.title
@@ -397,8 +412,11 @@ def loadShowPage(request):
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
+                thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+                if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
+                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0],dest_path= f'{thumnail_path}/', image_name= image_list[0], target_width=300)
+                block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -409,7 +427,7 @@ def loadShowPage(request):
             blocks_list.append(block_item)
 
         # print(blocks_list)
-        return JsonResponse({'blocks_list': blocks_list})
+        return JsonResponse({'blocks_list': blocks_list,'start':end})
 
 
 # 加载搜索结果页面
@@ -656,6 +674,7 @@ def loadEventDetail(request):
         image_list = sorted(os.listdir(image_path))
         block_item['imgSrcList'] = [host_url + f'{image_path}/' + image for image in image_list]
         block_item['tags'] = StringToList(db_block.tags)
+        block_item['children']=[child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -674,6 +693,7 @@ def loadTextDetail(request):
         block_item['year'] = date_string[0:4]
         block_item['day'] = date_string[8:10]
         block_item['tags'] = StringToList(db_block.tags)
+        block_item['children']=[child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -687,7 +707,8 @@ def loadDataDetail(request):
         date_string = date_string[0:4] + "年" + str(int(date_string[5:7])) + "月" + date_string[8:10] + "日"
         data_item = {
             'records': json.loads(db_block.records),
-            'date': date_string
+            'date': date_string,
+            'children': [child.name for child in db_block.children.all()]
         }
         return JsonResponse({'data_item': data_item})
 
@@ -1068,8 +1089,12 @@ def loadTimelinePage(request):
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
+                thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+                if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
+                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0],dest_path= f'{thumnail_path}/', image_name= image_list[0], target_width=300)
+                block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
+
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
