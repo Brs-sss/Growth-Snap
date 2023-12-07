@@ -42,7 +42,7 @@
                 <view class="weui-cell__bd {{standardChecked ? 'able' : ''}}">显示标准数据</view>
                 <view class="weui-cell__ft">
                     <view class="weui-switch-cp">
-                      <switch id = 'standard' unchecked bindchange="switchStandard" color="#007bff" disabled="{{standardChecked}}" />
+                      <switch id = 'standard' checked="{{standardNote}}" bindchange="switchStandard" color="#007bff" disabled="{{standardChecked}}" />
                     </view>
                 </view>
             </label>
