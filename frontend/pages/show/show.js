@@ -60,7 +60,7 @@ function fuzzySearch(text, query) {
 
 
 /* 与后端联系，获取主页的内容*/
-function LoadShowPage(that,start=0,delta='all'){
+function LoadShowPage(that,start=0,delta='all',add=false){
   that.setData({
     popupVisible:false,
   })
@@ -74,10 +74,17 @@ function LoadShowPage(that,start=0,delta='all'){
         url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&start='+start+'&delta='+delta,
         method:'GET',
         success:function(res){
-            that.setData({
-              blog_cards_list:that.data.blog_cards_list.concat(res.data.blocks_list),
-              start:res.data.start,
-            })
+            if(add)
+              that.setData({
+                blog_cards_list:that.data.blog_cards_list.concat(res.data.blocks_list),
+                start:res.data.start,
+              })
+            else{
+              that.setData({
+                blog_cards_list:res.data.blocks_list,
+                start:res.data.start,
+              })
+            }
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -260,7 +267,7 @@ Page({
     }
     if (this.data.hasLoaded){
       var that = this
-      LoadShowPage(that,that.data.start,that.data.delta)
+      LoadShowPage(that,0,that.data.start)
     }
     else{
       console.log('else')
@@ -297,7 +304,7 @@ Page({
    */
   onReachBottom() {
     var that = this
-    LoadShowPage(that,that.data.start,that.data.delta)
+    LoadShowPage(that,that.data.start,that.data.delta,true)
   },
 
   /**
