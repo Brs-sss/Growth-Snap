@@ -48,12 +48,12 @@ Page({
                     duration: 1000,
                     success: function () {
                       setTimeout(function () {
-                        var pages = getCurrentPages();
-                        var previousPage=pages[pages.length-2];
-                        // console.log("previousPage", previousPage)
-                        previousPage.setData({
-                          force_update:true,
-                        })
+                        // var pages = getCurrentPages();
+                        // var previousPage=pages[pages.length-2];
+                        // // console.log("previousPage", previousPage)
+                        // previousPage.setData({
+                        //   force_update:true,
+                        // })
                         wx.navigateBack(1) //成功提交，返回上个页面
                       }, 1000)
                     }

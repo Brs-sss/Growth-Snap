@@ -229,6 +229,9 @@ def submitEvent(request):
         time = (data.get('time'))[:8]
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
         tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip()) != 0])
+
+        family = now_user.family
+        family_id=family.family_id
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
         type = data.get('type')
         if type == 'event':
@@ -238,10 +241,21 @@ def submitEvent(request):
             image_path = './static/ImageBase/' + f'{event_id}/'
             if not os.path.exists(image_path):
                 os.mkdir(image_path)
+                
+            cache_key = f"loadShowPage:{family_id}:e"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
+            
+        cache_key = f"loadShowPage:{family_id}:etd"
+        if cache.get(cache_key) is not None:
+            cache.delete(cache_key)
+
+            
+
 
         now_family = now_user.family
         children = data.get('children')
@@ -381,13 +395,24 @@ def loadShowPage(request):
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         family = now_user.family
+        family_id=family.family_id
+        
+        #Redis cache
+        cache_key = f"loadShowPage:{family_id}:{types}"
+        cached_result = cache.get(cache_key)
+        
+        if cached_result is not None:
+            # 如果缓存中有结果，则返回缓存的结果 
+            now_user_blocks=cached_result
+        else:
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
-                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
-        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 't' in types else []
-        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
-                                 key=lambda x: (x.date, x.time), reverse=True)
+            now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
+                                                                                  "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+            now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
+            now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 't' in types else []
+            now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
+                                     key=lambda x: (x.date, x.time), reverse=True)
+            cache.set(cache_key, now_user_blocks, timeout=60)
         print(now_user_blocks.__len__())
         
         start=int(start)
@@ -716,10 +741,19 @@ def loadDataDetail(request):
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
+        
+        
         # 返回渲染的list
         try:
+            event=Event.objects.get(event_id=event_id)
+            family_id=event.user.family.family_id
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
             shutil.rmtree('static/ImageBase/' + event_id)
+            shutil.rmtree('static/Thumbnail/' + event_id)
             Event.objects.get(event_id=event_id).delete()
+                
         except:
             return JsonResponse({'msg': 'error'})
         return JsonResponse({'msg': 'ok'})
@@ -730,6 +764,11 @@ def deleteText(request):
         text_id = request.GET.get('text_id')
         # 返回渲染的list
         try:
+            event=Text.objects.get(text_id=text_id)
+            family_id=event.user.family.family_id
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
             Text.objects.get(text_id=text_id).delete()
         except:
             return JsonResponse({'msg': 'error'})
@@ -740,10 +779,16 @@ def deleteData(request):
     if request.method == 'GET':
         data_id = request.GET.get('data_id')
         try:
+            event=Data.objects.get(data_id =data_id)
+            family_id=event.user.family.family_id
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
             # 删除上传内容
             Data.objects.get(data_id=data_id).delete()
             # 删除数据信息
             Record.objects.filter(data_id=data_id).delete()
+
         except:
             return JsonResponse({'msg': 'fail'})
         return JsonResponse({'msg': 'ok'})

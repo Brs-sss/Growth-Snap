@@ -44,6 +44,7 @@ PyJWT==2.7.0
 PyMySQL==1.1.0
 PyPDF2==3.0.1
 pytz==2023.3.post1
+django-redis==5.4.0 
 requests==2.31.0
 reportlab==4.0.7
 ruamel.yaml==0.17.33
