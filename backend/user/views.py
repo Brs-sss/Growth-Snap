@@ -656,6 +656,7 @@ def loadEventDetail(request):
         image_list = sorted(os.listdir(image_path))
         block_item['imgSrcList'] = [host_url + f'{image_path}/' + image for image in image_list]
         block_item['tags'] = StringToList(db_block.tags)
+        block_item['children']=[child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -674,6 +675,7 @@ def loadTextDetail(request):
         block_item['year'] = date_string[0:4]
         block_item['day'] = date_string[8:10]
         block_item['tags'] = StringToList(db_block.tags)
+        block_item['children']=[child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -687,7 +689,8 @@ def loadDataDetail(request):
         date_string = date_string[0:4] + "年" + str(int(date_string[5:7])) + "月" + date_string[8:10] + "日"
         data_item = {
             'records': json.loads(db_block.records),
-            'date': date_string
+            'date': date_string,
+            'children': [child.name for child in db_block.children.all()]
         }
         return JsonResponse({'data_item': data_item})
 

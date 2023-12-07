@@ -19,7 +19,8 @@ Page({
       tags_string:null,
       host_: `${app.globalData.localUrl}`,
       event_id:null,
-      event_date: ''
+      event_date: '',
+      children:[],
   },
 
   swiperChange(e){
@@ -107,8 +108,9 @@ Page({
               tags_string:block.tags.length?block.tags.map((ele)=> ("#"+ele)).join(" "):"",
               imageList:block.imgSrcList,
               image_num:block.imgSrcList.length,
+              children:block.children,
+              children_string:block.children.length?block.children.map((ele)=> (ele)).join(" "):"",
             })
-
         },
         fail:function(res){
           console.log('load page failed: ',res)
