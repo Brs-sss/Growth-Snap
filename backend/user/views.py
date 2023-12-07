@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, FileResponse
 from django.db.models import Q
+from django.core.cache import cache
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
@@ -15,6 +16,7 @@ import datetime
 import shutil
 from urllib.parse import unquote
 from manage import host_url
+
 
 # import fitz
 
