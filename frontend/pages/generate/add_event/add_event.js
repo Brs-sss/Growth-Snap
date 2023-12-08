@@ -13,7 +13,8 @@ function loadPageInfo(that){
         method:'GET',
         success:function(res){
           that.setData({
-            loading: false,
+            // loading: false,
+            dialoge: false
           });
           that.setData({
             buttonDisabled: false
@@ -69,7 +70,8 @@ function loadPageInfo(that){
 export function generateVideoPreview(that, id_list, video_title, audioSelected, new_page=true)
 {
   that.setData({
-    loading: true,
+    // loading: true,
+    dialoge: true
   });
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
@@ -91,7 +93,8 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
         },
         success:function(res){
           that.setData({
-            loading: false,
+            // loading: false,
+            dialoge: false
           });
           that.setData({
             buttonDisabled: false
@@ -145,7 +148,8 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
 }
 export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
   that.setData({
-    loading: true,
+    // loading: true,
+    dialoge: true
   });
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
@@ -168,7 +172,8 @@ export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_titl
         },
         success:function(res){
           that.setData({
-            loading: false,
+            // loading: false,
+            dialoge: false,
           });
           wx.showToast({
             title: "提交成功",
@@ -363,7 +368,8 @@ Page({
     }else if (category=='video')
     {
       that.setData({
-        loading: true,
+        // loading: true,
+        dialoge: true,
       });
       wx.getStorage({
         key: 'openid',  // 要获取的数据的键名
@@ -386,7 +392,8 @@ Page({
             },
             success:function(res){
               that.setData({
-                loading: false,
+                // loading: false,
+                dialoge: false
               });
               that.setData({
                 buttonDisabled: false
