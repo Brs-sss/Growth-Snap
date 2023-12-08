@@ -14,6 +14,7 @@ App({
     //   }
     // })
   },
+  
   globalData: {
     // 如果 localDebug is set true, 会访问 localUrl
     localDebug:true,
