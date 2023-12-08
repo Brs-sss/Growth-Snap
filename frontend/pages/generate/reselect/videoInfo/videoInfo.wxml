@@ -63,3 +63,44 @@
 			<view class="weui-toast__content">正在加载</view>
 		</view>
 	</view>
+
+
+
+
+  <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true" aria-labelledby="js_dialog1_title">
+        <view class="weui-mask {{dialog ? 'weui-animate_fade-in' : 'weui-animate_fade-out'}}" bindtap="close"></view>
+        <view class="weui-half-screen-dialog {{dialog ? 'weui-animate_slide-up' : 'weui-animate_slide-down'}}">
+            <view class="weui-half-screen-dialog__hd">
+                <view class="weui-half-screen-dialog__hd__side">
+                    <view aria-role="button" class="weui-btn_icon weui-wa-hotarea" bindtap="close">关闭<i class="weui-icon-close-thin"></i></view>
+                    <view style="display: none;" aria-role="button" class="weui-icon-btn weui-icon-btn_close" bindtap="close">关闭</view>
+                </view>
+                <view class="weui-half-screen-dialog__hd__main">
+                    <strong class="weui-half-screen-dialog__title" id="js_dialog1_title">生成进度</strong>
+                    <!-- <view class="weui-half-screen-dialog__subtitle">标题</view> -->
+                </view>
+            </view>
+            <!-- <view class="weui-half-screen-dialog__bd" style="padding-top: 12px; height: 10px;">
+                可放自定义内容
+            </view> -->
+           
+            <view class="page__bd">
+		<view class="weui-loadmore" aria-role="alert">
+			<text aria-hidden="true" aria-label="正在加载" class="weui-primary-loading" aria-role="img">
+				<text class="weui-primary-loading__dot"></text>
+			</text>
+			<text class="weui-loadmore__tips">视频正在加载</text>
+		</view>
+    </view>
+		<view class="weui-progress" style="margin-top: 2vh;">
+			<view class="weui-progress__bar">
+				<view class="weui-progress__inner-bar js_progress" style="width: {{percent}};"></view>
+			</view>
+			<!-- <navigator class="weui-wa-hotarea weui-progress__opr" aria-role="button" url="javascript:">
+				<text aria-label="取消" class="weui-icon-cancel" aria-role="img"></text>
+			</navigator> -->
+			<text id="js_current" class="weui-hidden_abs" aria-role="alert">50%</text>
+		</view>
+		
+        </view>
+    </view>

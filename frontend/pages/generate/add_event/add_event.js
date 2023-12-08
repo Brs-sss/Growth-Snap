@@ -14,7 +14,7 @@ function loadPageInfo(that){
         success:function(res){
           that.setData({
             // loading: false,
-            dialoge: false
+            dialog: false
           });
           that.setData({
             buttonDisabled: false
@@ -71,8 +71,23 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
 {
   that.setData({
     // loading: true,
-    dialoge: true
+    dialog: true,
+    percent_int: 0,
+    percent: '0%'
+
   });
+  const t = setInterval(
+    function(){
+      let percent_int = that.data.percent_int + 1
+      let percent = percent_int.toString() + '%'
+      if (percent_int <= 95)
+      {
+        that.setData({
+        percent: percent,
+        percent_int: percent_int
+      })
+      }
+    }, 100)
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
     success: function (res) { 
@@ -92,10 +107,12 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
           'name':video_title,
         },
         success:function(res){
-          that.setData({
-            // loading: false,
-            dialoge: false
-          });
+          clearInterval(t)
+              that.setData({
+                // loading: false,
+                // dialog: false,
+                percent: '100%'
+              });
           that.setData({
             buttonDisabled: false
           });
@@ -149,7 +166,7 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
 export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
   that.setData({
     // loading: true,
-    dialoge: true
+    dialog: true
   });
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
@@ -173,7 +190,7 @@ export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_titl
         success:function(res){
           that.setData({
             // loading: false,
-            dialoge: false,
+            dialog: false,
           });
           wx.showToast({
             title: "提交成功",
@@ -218,6 +235,8 @@ export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_titl
 
 const app = getApp();
 
+
+
 Page({
 
   /**
@@ -243,7 +262,11 @@ Page({
     buttonDisabled:false,
     audio_index:null,
     video_title:null,
-    video_src: ''
+    video_src: '',
+    dialog: false,
+    percent: '0%',
+    percent_int: 0,
+    total: 0
   },
 
   toggleTag: function(e) {
@@ -367,14 +390,50 @@ Page({
       generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title)
     }else if (category=='video')
     {
+      let total = (id_list.length+1)*2+10
+      console.log(total, id_list.length)
       that.setData({
         // loading: true,
-        dialoge: true,
+        dialog: true,
+        total: total,
+        percent_int: 0,
+        percent: '0%'
+
       });
+      const t = setInterval(
+        function(){
+          let percent_int = that.data.percent_int + 1
+          let percent = percent_int.toString() + '%'
+          if (percent_int <= 95)
+          {
+            that.setData({
+            percent: percent,
+            percent_int: percent_int
+          })
+          }
+        }, 100)
+        
+          
+      
+      
+
       wx.getStorage({
         key: 'openid',  // 要获取的数据的键名
         success: function (res) { 
-          
+          // const intervalId = setInterval(() => {
+          //   // 执行定时任务
+          //   console.log('定时任务执行中...');
+          //   wx.request({
+          //     url: that.data.host_+'user/api/generate/video_process'+'?openid='+openid+'&video_title='+that.data.video_title,
+          //     method: 'GET',
+          //     success: function(res){
+          //       console.log(res.data.value)
+          //       that.setData({
+          //         percent_int: res.data.value
+          //       })
+          //     }
+          //   })
+          // }, 500);
           // 从本地存储中获取数据,在index.js文件中保存建立的
           let openid=res.data
           wx.request({
@@ -391,10 +450,14 @@ Page({
               'name':that.data.video_title,
             },
             success:function(res){
+              clearInterval(t)
               that.setData({
                 // loading: false,
-                dialoge: false
+                // dialog: false,
+                percent: '100%'
               });
+              
+              // clearInterval(intervalId);
               that.setData({
                 buttonDisabled: false
               });
@@ -427,7 +490,11 @@ Page({
       });
     }
   },
-
+close(){
+ this.setData({
+   dialog: false
+ })
+},
 
   /**
    * 生命周期函数--监听页面加载
@@ -436,6 +503,7 @@ Page({
     // 获取要生成的类型
     const category = decodeURIComponent(options.category);
     // const index = decodeURIComponent(options.index);
+
     if(category=="timeline"){
       this.setData({
         comeFrom:options.category,
@@ -458,7 +526,8 @@ Page({
         comeFrom:options.category,
         audio_index:options.index,
         video_title:options.title,
-        buttonDisabled: false
+        buttonDisabled: false,
+        dialog: false
 
       })
     }
@@ -481,6 +550,7 @@ Page({
   onShow() {
     this.setData({
       buttonDisabled:false,
+      dialog:false
     })
   },
 
