@@ -22,7 +22,7 @@
 				<view class="weui-cells__title">时间轴信息</view>
 				<view class="weui-cells weui-cells_form">
 					
-					<view class="weui-cell weui-cell_active">
+					<!-- <view class="weui-cell weui-cell_active">
 						<view class="weui-cell__hd"><label class="weui-label">标题</label></view>
 						<view class="weui-cell__bd weui-flex">
 							<input
@@ -34,7 +34,7 @@
                   id="timelineTitleBar"
               />
 						</view>
-					</view>
+					</view> -->
       
 					<view class="weui-cell weui-cell_active weui-cell_disabled">
 						<view class="weui-cell__hd">
@@ -45,17 +45,31 @@
 						</view>
 				</view>
 				</view>
-        <view class="weui-cells__title">左右滑动选择</view>
 			</view>
       
     </view>
-    <view class="audio-btn-container">
+    <view class="audio-btn-container" style="position: relative; top: -90px;">
+        <view class="weui-cells__title" style="margin-top: 0; margin-bottom: 3vh;">滑动选择模板与色系</view>
+        <view class="line"></view>
+        <!-- 模板选择区域 -->
         <view class="audio-list">
           <block wx:for="{{timelineList}}" wx:key="index">
             <view class="timeline-item audio-item"  data-category="timeline" data-index="{{index}}" bindtap="selectTemplate">
               <image class="audio-image {{item.id==templateSelected? 'selected' : ''}}" 
-              src="{{host_}}static/frontend/timeline/timeline_{{item.id}}.jpg" style="width: 36vh;"></image>
+              src="{{host_}}static/frontend/timeline/timeline_{{item.id}}.jpg" style="width: 50vw;"></image>
               <image class="select-icon  {{item.id==templateSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
+              <text class="timeline-name">{{item.name}}</text>
+            </view>
+          </block>
+        </view>
+        <!-- 颜色选择区域 -->
+        <view class="line"></view>
+        <view class="audio-list" style="height: 20vh;">
+          <block wx:for="{{colorList}}" wx:key="index">
+            <view class="timeline-item audio-item"  data-category="timeline" data-index="{{index}}" bindtap="selectColor">
+              <image class="audio-image {{item.id==colorSelected? 'selected' : ''}}" 
+              src="{{host_}}static/frontend/timeline/color/color_{{item.id}}.png" style="width: 30vw; height: 10vh;"></image>
+              <image class="select-icon  {{item.id==colorSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
               <text class="timeline-name">{{item.name}}</text>
             </view>
           </block>

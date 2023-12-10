@@ -259,6 +259,7 @@ Page({
     paper_index:null,
     diary_title:null,
     timeline_template:null,
+    timeline_color:null,
     buttonDisabled:false,
     audio_index:null,
     video_title:null,
@@ -376,11 +377,13 @@ Page({
     })
     wx.setStorageSync('generate_id_list', id_list);
     if(category=="timeline"){
-      const { timeline_template,selectedEvents } = this.data;
+      const { timeline_template, timeline_color, selectedEvents } = this.data;
+      console.log("timeline_color:", timeline_color)
       const selectedevent = selectedEvents.join('-');
       console.log(selectedevent);
       wx.navigateTo({
-        url: '/pages/generate/timeline/timeline' + '?index=' + timeline_template + '&events=' + selectedevent,
+        url: '/pages/generate/timeline/timeline' + '?index=' + timeline_template + 
+        '&color=' + timeline_color +'&events=' + selectedevent,
       })
       console.log(timeline_template);
     }
@@ -508,6 +511,7 @@ close(){
       this.setData({
         comeFrom:options.category,
         timeline_template:options.index,
+        timeline_color:options.color,
         buttonDisabled: false
       })
       console.log(this.data.comeFrom,this.data.timeline_template)

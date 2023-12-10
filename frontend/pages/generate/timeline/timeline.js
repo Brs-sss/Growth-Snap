@@ -9,7 +9,7 @@ var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
   {id: 0, backgroundColor: '#143e64', colors:["#87ceeb","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#164a7a98','#59c5e642']},
   {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b', '#b9612791', '#ffd90042']},
-  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471','#f48fb142']},
+  {id: 2, backgroundColor: '#697cad', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471','#f48fb142']},
   {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#084963a8','#a4ebb142' ]},
 ];
 var timelineType = [];
@@ -561,7 +561,7 @@ function initChart(canvas, width, height, dpr) {
     },
     //2号时间轴
     {
-      backgroundColor: '#F3C5B3',
+      backgroundColor: colorSet[colorSetIdex].backgroundColor,
       grid: {
         right: 250
       },
@@ -574,6 +574,7 @@ function initChart(canvas, width, height, dpr) {
         data: yAxisDataFor2, // 数据
         axisLabel: {
           formatter: (params) => {
+            console.log(eventData)
            return '【' + eventData[params].date + '】'+'\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
           },
           rich: imgData, //数据
@@ -737,12 +738,13 @@ Page({
       {id: 2, selected: false},
       {id: 3, selected: false}
     ],
-    colorSet:[
-      {id: 1},
-      {id: 2},
-      {id: 3},
-      {id: 4}
+    bgColor:[
+      '#143e64',
+      '#b27466',
+      '#697cad',
+      '#008080'
     ],
+    curColorIndex: null,
     ec: {
       onInit: initChart
     }
@@ -850,8 +852,11 @@ Page({
     console.log(eventsSTR)
     eventIndex = eventsSTR.split('-').map(Number);
     this.setData({
-      ['templates[' + timeline_template + '].selected']: true
-    });
+      ['templates[' + timeline_template + '].selected']: true,
+      curColorIndex: options.color
+    })
+
+    colorSetIdex = options.color;
     var that = this;
     loadPageInfo(that);
   },

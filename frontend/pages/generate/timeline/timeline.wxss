@@ -6,9 +6,31 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: auto;
+  height: 100%;
   overflow: hidden; /* 允许内容滚动 */
   z-index: -10;
+}
+
+.container_components {
+  margin-top: -2vh;
+}
+
+@keyframes fadein{
+  0% {
+    opacity: 0%;
+  }
+  40% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+.animation {
+  display: flex;
+  justify-self: center;
+  align-items: center; /* 标签垂直居中对齐 */
+  animation: fadein 2.5s ease-in-out 0s;
 }
 
 ec-canvas {
@@ -18,8 +40,6 @@ ec-canvas {
 }
 
 .submit{
-  position: absolute;
-  bottom: -0px;
   background-color: #4095E5;
   color: #fff;
   border-radius: 100px;
@@ -108,4 +128,41 @@ ec-canvas {
 .template.selected {
   background-color: #007bff67;
   color: #fff;
+}
+
+.custom-tabbar{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* bottom: 0vh; */
+  margin-left: 5%;
+  width: 90%;
+  /* backdrop-filter: blur(10px);
+  background-color: rgba(240, 242, 243, 0.3);
+  border-radius: 20px; */
+  background-color: rgba(240, 242, 243, 0.397);
+  /* box-shadow: 2px 2px 6px rgb(141, 137, 137); */
+  border-radius: 2vh;
+  backdrop-filter: blur(10px);
+}
+
+.icons {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1vh;
+  margin-left: 10%;
+  width: 80%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icons-text {
+  font-size: 1.3vh;
+  display: flex;
+  flex-direction: row;
+  margin-left: 9.5%;
+  width: 77%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1vh;
 }

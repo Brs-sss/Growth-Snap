@@ -1,23 +1,26 @@
 <!--pages/generate/timeline/timeline.wxml-->
 <view class="ec-container">
-  <ec-canvas canvas-id="echart" id="echart" style="height: 800px"
-   ec="{{ec}}"></ec-canvas>
+  <ec-canvas canvas-id="echart" id="echart" style="height: 1200px;" ec="{{ec}}"></ec-canvas>
   <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
 </view>
 
-<view class="container_components">
-  <view class="container_template">
-    <view wx:for="{{templates}}" wx:key="index" data-index='{{index}}' class="template {{item.selected ?     'selected' : ''}}" bindtap="changeTemplate">
-      <image class="timeline-image" src="{{host_}}static/frontend/timeline/timeline_{{item.id}}.jpg"></image>
+<view class="container_components" style="background-color: {{bgColor[curColorIndex]}};">
+  <view style="height: 2vh;"></view>
+  <view class='custom-tabbar'>
+    <view class='icons'>
+      <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+      <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+      <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+      <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+    </view>
+    <view class='icons-text'>
+      <text bind:tap="reselectEvent">更换事件</text>
+      <text bind:tap="reselectTemplate">更换模板</text>
+      <text bind:tap="handleSave">保存到本地</text>
+      <text bind:tap="handleShare">分享</text>
     </view>
   </view>
-
-  <view class="container_template" id="container_color">
-    <view wx:for="{{colorSet}}" wx:key="index" data-index='{{index}}' class="color {{item.selected ?     'selected' : ''}}" bindtap="changeColor">
-      <image class="color-image" src="{{host_}}/static/frontend/timeline/color/color_{{index}}.png"></image>
-    </view>
-  </view>
-  <button class="submit" bindtap="handleSave">导出</button>
+  <view style="height: 3vh;"></view>
 </view>
 <!-- <view class="ec-container">
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>

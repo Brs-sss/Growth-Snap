@@ -30,6 +30,7 @@
   align-items: center;
   margin-top: -20vh;
 }
+
 .audio-btn-container{
   position: relative;
   width: 100%;
@@ -41,11 +42,20 @@
 }
 
 
+.line {
+  margin-top: -1vh;
+  margin-bottom: 2vh;
+  left: 5%;
+  width: 90%;
+  height: 0px;
+  border: 1px dashed lightgray;
+}
+
 .audio-list {
   /* grid-area: 3/1/4/5; */
 
   width: 80vw;
-  height: 35vh;
+  height: 30vh;
   display: flex;
   overflow: scroll;
   flex-wrap: nowrap;
@@ -83,13 +93,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2vh;
 }
+
+.color-item {
+  width: 20vw;
+  height: 10vh;
+}
+
 .pick-audio {
   position: relative;
   /* left: -20vh; */
 }
-
 
 .audio-image {
   width: 20vh;
@@ -98,13 +112,14 @@
   margin-bottom: 1vh;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
 
-  display: inline;
+  /* display: inline; */
   object-fit: cover;
   max-width: 100%;
   border: 1vh solid #ffffff; /* 设置边框宽度和颜色 */
   border-radius: 2vh; /* 可选：设置边框圆角 */
   /* height: auto; */
 }
+
 .audio-image.selected{
   border: 1vh solid #4095E5; /* 设置边框宽度和颜色 */
   border-radius: 2vh; /* 可选：设置边框圆角 */

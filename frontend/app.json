@@ -32,7 +32,8 @@
     "pages/generate/preview/preview",
     "pages/generate/preview/preview_video/preview_video",
     "pages/generate/reselect/diarytemplate/diarytemplate",
-    "pages/generate/reselect/videoInfo/videoInfo"
+    "pages/generate/reselect/videoInfo/videoInfo",
+    "pages/generate/reselect/timelineInfo/timelineInfo"
   ],
   "tabBar": {
     "color": "#666666",
