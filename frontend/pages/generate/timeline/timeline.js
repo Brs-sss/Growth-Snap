@@ -9,7 +9,7 @@ var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
   {id: 0, backgroundColor: '#143e64', colors:["#87ceeb","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#164a7a98','#59c5e642']},
   {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b', '#b9612791', '#ffd90042']},
-  {id: 2, backgroundColor: '#00207496', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471','#f48fb142']},
+  {id: 2, backgroundColor: '#697cad', colors:['#f48fb1', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471','#f48fb142']},
   {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#084963a8','#a4ebb142' ]},
 ];
 var timelineType = [];
@@ -377,7 +377,7 @@ function loadPageInfo(that){
             eventData = eventIndex.map(function(index) {
               return eventList[index];
             });
-            initData(that);
+            initData();
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -390,7 +390,7 @@ function loadPageInfo(that){
   })
 }
 
-function initData(that){
+function initData(){
   console.log("here")
   console.log(eventData);
   // eventData=[
@@ -402,9 +402,6 @@ function initData(that){
   //   {date:'2023-09-15', title:'小明通过了考级'}
   // ];
   console.log(eventData);
-  that.setData({
-    ec_height: eventData.length * 250
-  })
   titleData = eventData.map(event => event.title);
   //0号时间轴
   graphDataFor0 = eventData.map(event => [event.date, 1000, event.title]);
@@ -442,8 +439,9 @@ function initData(that){
   };
 }
 
+
 function initChart(canvas, width, height, dpr) {
-  console.log("init")
+  console.log("init");
   heightGlobal = height;
   widthGLobal = width;
   canvasGlobal = canvas;
@@ -730,8 +728,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    ec_height: 0,
-    hasImg: false,
+    hasImg: true,
     imgPath: "",
     host_: `${app.globalData.localUrl}`,
     templates:[
@@ -740,12 +737,13 @@ Page({
       {id: 2, selected: false},
       {id: 3, selected: false}
     ],
-    colorSet:[
-      {id: 1},
-      {id: 2},
-      {id: 3},
-      {id: 4}
+    bgColor:[
+      '#143e64',
+      '#b27466',
+      '#697cad',
+      '#008080'
     ],
+    curColorIndex: null,
     ec: {
       onInit: initChart
     }
@@ -847,40 +845,37 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log("load");
     timeline_template = options.index;
     const eventsSTR = options.events;
     console.log(eventsSTR)
     eventIndex = eventsSTR.split('-').map(Number);
-    var that = this;
     this.setData({
-      ['templates[' + timeline_template + '].selected']: true
-    });
-    loadPageInfo(that);
+      ['templates[' + timeline_template + '].selected']: true,
+      curColorIndex: options.color
+    })
 
-    var that = this
-    setTimeout(function () {
-      const ecComponent = that.selectComponent('#echart');
-      // 先保存图片到临时的本地文件，然后存入系统相册
-      ecComponent.canvasToTempFilePath({
-        success: res => {
-          console.log("tempFilePath:", res.tempFilePath)
-          that.setData({
-            hasImg: true,
-            imgPath: res.tempFilePath
-          })
-        },
-        fail: res => {
-          console.log("失败")
-        }
-      })
-    }, 1000)
+    colorSetIdex = options.color;
+    var that = this;
+    loadPageInfo(that);
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-  
+    
+    const ecComponent = this.selectComponent('#echart');
+    // 先保存图片到临时的本地文件，然后存入系统相册
+    ecComponent.canvasToTempFilePath({
+      success: res => {
+        console.log("tempFilePath:", res.tempFilePath)
+        this.setData({
+          hasImg: true,
+          imgPath: res.tempFilePath
+        })
+      }
+    })
   },
 
   /**

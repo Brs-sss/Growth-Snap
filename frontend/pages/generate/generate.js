@@ -13,8 +13,10 @@ Page({
   data: {
     activeIndex: 2, // 初始显示的子页面
     timelineList: [], // 时间轴模板数据
+    colorList: [],
     timelineTitle: "",
     templateSelected: 0, // 当前选中的时间轴模板
+    colorSelected: 0,
     diaryActiveIndex: 0,
     coverList: [],  // 日记本封面模板数据 
     coverSelected: 0,
@@ -53,6 +55,15 @@ Page({
       templateSelected: index,
     })
   },
+
+  selectColor(e){
+    const index = e.currentTarget.dataset.index;
+    console.log(index)
+    this.setData({
+      colorSelected: index,
+    })
+  },
+
   addVideo(e){
     var that=this
     const category = e.currentTarget.dataset.category;
@@ -70,17 +81,10 @@ Page({
     console.log('generate_category:',category);
     console.log('generate_index:',index);
     if (category=="timeline"){
-      if(isEmpty(that.data.timelineTitle)){
-        wx.showToast({
-          title: "标题不能为空",
-          icon: 'error',
-          duration: 1000,
-        })
-        return;
-      }
       wx.navigateTo({
-        url: '/pages/generate/add_event/add_event?category=timeline&index='
-             + encodeURIComponent(that.data.templateSelected) + '&title=' + that.data.timelineTitle,
+        url: '/pages/generate/add_event/add_event?category=timeline&index=' + 
+        encodeURIComponent(that.data.templateSelected) + 
+        '&color=' + encodeURIComponent(that.data.colorSelected),
       })
     }else if (category=="video")
     { 
@@ -157,6 +161,12 @@ Page({
         { id: 1, name: "彩色时间轴模板" },
         { id: 2, name: "曲线时间轴模板" },
         { id: 3, name: "圆环标注模板"}
+      ],
+      colorList: [
+        { id: 0, name: "天蓝色系"},
+        { id: 1, name: "橙黄色系" },
+        { id: 2, name: "粉红色系" },
+        { id: 3, name: "淡绿色系"}
       ],
       coverList: [
         { id: 0 , selected:false},

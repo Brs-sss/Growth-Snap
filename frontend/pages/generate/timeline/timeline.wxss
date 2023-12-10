@@ -11,6 +11,10 @@
   z-index: -10;
 }
 
+.container_components {
+  margin-top: -2vh;
+}
+
 @keyframes fadein{
   0% {
     opacity: 0%;
@@ -130,7 +134,6 @@ ec-canvas {
   display: flex;
   flex-direction: column;
   position: relative;
-  margin-top: 20vh;
   /* bottom: 0vh; */
   margin-left: 5%;
   width: 90%;
