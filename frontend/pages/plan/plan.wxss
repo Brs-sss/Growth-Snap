@@ -91,7 +91,7 @@
 
 .plan-header {
   position: relative;
-  width: 70vh;
+  /* width: 70vh; */
   font-size: 20px;
   color: #0759a5;
   margin-left: 2vh;

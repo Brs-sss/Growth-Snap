@@ -78,6 +78,7 @@
 /* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
 .audio-list::-webkit-scrollbar {
   width: 0.5em;
+  color: transparent;
 }
 
 .audio-list::-webkit-scrollbar-track {
@@ -142,27 +143,55 @@
   margin-left: -60vw;
 }
 
+.image-text-box{
+  width: 12vh;
+  height: 18vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .sub-nav-item {
   font-size: 2vh;
   text-align: center;
-  flex: 1;
   cursor: pointer;
-  margin-left: 180rpx;
+  width:12vh;
+  height: 2vh;
+  margin-bottom: 1vh;
 }
 
 .sub-nav-item.active {
   font-weight: 550;
 }
 
-.selected-image {
+.two-pic-box{
   position: absolute;
+  top: 10vh;
+  display: grid;
+  width: 90vw;
+  height: 18vh;
+  grid-template-columns: 25vw 25vw 40vw;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "cover paper input"
+  "cover paper btn";
+  justify-content: center;
+  align-items: center;
+}
+
+
+.selected-image {
   width: 12vh;
   height: 16vh;
   border-radius: 1vh;
-  margin-top: -12vh;
-  margin-left: -65vw;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
   z-index: 10;
+}
+
+.cover{
+  grid-area: cover;
+}
+
+.paper{
+  grid-area: paper;
 }
 
 .scroll-view{
@@ -175,11 +204,12 @@
   border-radius: 1vh;
 }
 
+.item-container{
+  width: 100%;
+  margin-top: 5vh;
+}
 
 .cover-list{
-  position: absolute;
-  margin-top: 100rpx;
-  margin-left: 20rpx;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -225,11 +255,11 @@
 .diary-input{
   border: 0.1vh solid #4095E5;
   background-color: #f7f5f5;
-  margin-top: -650rpx;
-  margin-left: 450rpx;
   z-index: 100;
   width: 210rpx;
   height: 40rpx;
+  grid-area: input;
+  justify-self: center;
 }
 
 .submit{
@@ -242,6 +272,9 @@
   font-size: 14px;
   display: block;
   box-sizing: border-box;
+  width: 180rpx !important;
+  box-sizing: border-box; 
+  grid-area: btn;
 }
 
 .weui-form__control-area {

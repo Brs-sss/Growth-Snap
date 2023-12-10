@@ -25,6 +25,7 @@ inflection==0.5.1
 isort==5.12.0
 itypes==1.2.0
 Jinja2==3.1.2
+langdetect==1.0.9
 MarkupSafe==2.1.3
 mccabe==0.7.0
 moviepy==1.0.3
@@ -43,7 +44,9 @@ PyJWT==2.7.0
 PyMySQL==1.1.0
 PyPDF2==3.0.1
 pytz==2023.3.post1
+django-redis==5.4.0 
 requests==2.31.0
+reportlab==4.0.7
 ruamel.yaml==0.17.33
 ruamel.yaml.clib==0.2.7
 scrypt==0.8.18

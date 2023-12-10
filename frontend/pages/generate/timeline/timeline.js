@@ -561,7 +561,7 @@ function initChart(canvas, width, height, dpr) {
     },
     //2号时间轴
     {
-      backgroundColor: '#F3C5B3',
+      backgroundColor: colorSet[colorSetIdex].backgroundColor,
       grid: {
         right: 250
       },
@@ -574,6 +574,7 @@ function initChart(canvas, width, height, dpr) {
         data: yAxisDataFor2, // 数据
         axisLabel: {
           formatter: (params) => {
+            console.log(eventData)
            return '【' + eventData[params].date + '】'+'\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
           },
           rich: imgData, //数据

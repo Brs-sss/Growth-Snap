@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, FileResponse
 from django.db.models import Q
+from django.core.cache import cache
 import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail
 import random
 import string
 import hashlib
@@ -15,6 +16,7 @@ import datetime
 import shutil
 from urllib.parse import unquote
 from manage import host_url
+
 
 # import fitz
 
@@ -227,6 +229,9 @@ def submitEvent(request):
         time = (data.get('time'))[:8]
         tags = data.get('tags')  # 现在的tags是这样的：{'info': 'dd', 'checked': True}, {'info': 'ff', 'checked': False}
         tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip()) != 0])
+
+        family = now_user.family
+        family_id=family.family_id
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
         type = data.get('type')
         if type == 'event':
@@ -236,10 +241,21 @@ def submitEvent(request):
             image_path = './static/ImageBase/' + f'{event_id}/'
             if not os.path.exists(image_path):
                 os.mkdir(image_path)
+                
+            cache_key = f"loadShowPage:{family_id}:e"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
+            
+        cache_key = f"loadShowPage:{family_id}:etd"
+        if cache.get(cache_key) is not None:
+            cache.delete(cache_key)
+
+            
+
 
         now_family = now_user.family
         children = data.get('children')
@@ -261,12 +277,18 @@ def addEventImage(request):
         event_id = request.POST.get('event_id')
 
         image_path = './static/ImageBase/' + f'{event_id}/'
+        thumbnail_path = './static/Thumbnail/'+ f'{event_id}/'
         if not os.path.exists(image_path):
             os.mkdir(image_path)
+        if not os.path.exists(thumbnail_path):
+            os.mkdir(thumbnail_path)
         if uploaded_image:
-            with open(image_path + f'{pic_index}_{uploaded_image.name}', 'wb') as destination:
+            pic_name=f'{pic_index}_{uploaded_image.name}'
+            image_path_name=image_path + pic_name
+            with open(image_path_name, 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
+            GenerateEventThumnail(src_path=image_path_name,dest_path= thumbnail_path,image_name= pic_name,target_width=200)
             return JsonResponse({'message': '文件上传成功'})
         else:
             return JsonResponse({'message': '文件不存在'})
@@ -366,20 +388,38 @@ def registerProfileImage(request):
 def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
+        start = request.GET.get('start','0')
+        delta = request.GET.get('delta','all')
         types = request.GET.get('types', "etd")  # 缺省值为event&text&data
+        
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         family = now_user.family
+        family_id=family.family_id
+        
+        #Redis cache
+        cache_key = f"loadShowPage:{family_id}:{types}"
+        cached_result = cache.get(cache_key)
+        
+        if cached_result is not None:
+            # 如果缓存中有结果，则返回缓存的结果 
+            now_user_blocks=cached_result
+        else:
         # 这里的Event将来应当替换成基类BaseRecord
-        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
-                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
-        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
-        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 't' in types else []
-        now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
-                                 key=lambda x: (x.date, x.time), reverse=True)
+            now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
+                                                                                  "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+            now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
+            now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 't' in types else []
+            now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
+                                     key=lambda x: (x.date, x.time), reverse=True)
+            cache.set(cache_key, now_user_blocks, timeout=60)
         print(now_user_blocks.__len__())
+        
+        start=int(start)
+        total=len(now_user_blocks)
+        end=total if delta == 'all' else min(start+int(delta),total)
         blocks_list = []
-        for db_block in now_user_blocks:
+        for db_block in now_user_blocks[start:end]:
             block_item = {}
             block_item['type'] = db_block.record_type
             block_item['title'] = db_block.title
@@ -397,8 +437,11 @@ def loadShowPage(request):
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
+                thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+                if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
+                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0],dest_path= f'{thumnail_path}/', image_name= image_list[0], target_width=300)
+                block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -409,7 +452,7 @@ def loadShowPage(request):
             blocks_list.append(block_item)
 
         # print(blocks_list)
-        return JsonResponse({'blocks_list': blocks_list})
+        return JsonResponse({'blocks_list': blocks_list,'start':end})
 
 
 # 加载搜索结果页面
@@ -540,6 +583,20 @@ def loadCertainPlan(request):
             'todos': todo_list,
         })
 
+def deletePlan(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        openid = data.get('openid')
+        now_user = User.objects.get(openid=openid)
+        planTitle = data.get('planTitle')
+        plan = Plan.objects.filter(user__family=now_user.family, title=planTitle).first()
+        try:
+            plan.delete()
+        except:
+            return JsonResponse({'message': 'error'})
+        return JsonResponse({
+            'message': 'ok',
+        })
 
 def getUserInfo(request):
     if request.method == 'GET':
@@ -642,6 +699,7 @@ def loadEventDetail(request):
         image_list = sorted(os.listdir(image_path))
         block_item['imgSrcList'] = [host_url + f'{image_path}/' + image for image in image_list]
         block_item['tags'] = StringToList(db_block.tags)
+        block_item['children']=[child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -660,6 +718,7 @@ def loadTextDetail(request):
         block_item['year'] = date_string[0:4]
         block_item['day'] = date_string[8:10]
         block_item['tags'] = StringToList(db_block.tags)
+        block_item['children']=[child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -673,7 +732,8 @@ def loadDataDetail(request):
         date_string = date_string[0:4] + "年" + str(int(date_string[5:7])) + "月" + date_string[8:10] + "日"
         data_item = {
             'records': json.loads(db_block.records),
-            'date': date_string
+            'date': date_string,
+            'children': [child.name for child in db_block.children.all()]
         }
         return JsonResponse({'data_item': data_item})
 
@@ -681,10 +741,19 @@ def loadDataDetail(request):
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
+        
+        
         # 返回渲染的list
         try:
+            event=Event.objects.get(event_id=event_id)
+            family_id=event.user.family.family_id
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
             shutil.rmtree('static/ImageBase/' + event_id)
+            shutil.rmtree('static/Thumbnail/' + event_id)
             Event.objects.get(event_id=event_id).delete()
+                
         except:
             return JsonResponse({'msg': 'error'})
         return JsonResponse({'msg': 'ok'})
@@ -695,6 +764,11 @@ def deleteText(request):
         text_id = request.GET.get('text_id')
         # 返回渲染的list
         try:
+            event=Text.objects.get(text_id=text_id)
+            family_id=event.user.family.family_id
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
             Text.objects.get(text_id=text_id).delete()
         except:
             return JsonResponse({'msg': 'error'})
@@ -705,10 +779,16 @@ def deleteData(request):
     if request.method == 'GET':
         data_id = request.GET.get('data_id')
         try:
+            event=Data.objects.get(data_id =data_id)
+            family_id=event.user.family.family_id
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
             # 删除上传内容
             Data.objects.get(data_id=data_id).delete()
             # 删除数据信息
             Record.objects.filter(data_id=data_id).delete()
+
         except:
             return JsonResponse({'msg': 'fail'})
         return JsonResponse({'msg': 'ok'})
@@ -1054,8 +1134,12 @@ def loadTimelinePage(request):
             if db_block.record_type == 'event':  # 检查是否与子类A相关if
                 block_item['event_id'] = db_block.event_id
                 image_path = 'static/ImageBase/' + db_block.event_id
+                thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+                if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
+                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0],dest_path= f'{thumnail_path}/', image_name= image_list[0], target_width=300)
+                block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
+
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -1075,11 +1159,11 @@ def loadData(request):
         family = now_user.family
         children = Child.objects.filter(family=family)
         keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
-        data_item = {} # 返回的数据{{child:小明，data:child_data},{child:小红，data:child_data}}
+        data_item = {} # 返回的数据{小明: child_data, 小红:child_data}} 
         print(keyList)
         print(children)
         for child in children:
-            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}],child_key_data]
+            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}]},child_key_data]
             for key in keyList:
                 child_key_data = {} # 保存一个孩子一个key的所有数据 {key:身高, list:[{value:,date:},{value:,date:}]
                 child_key_data['key'] = key
@@ -1090,6 +1174,8 @@ def loadData(request):
                     value_date_item = {}
                     value_date_item['value'] = record.value
                     value_date_item['date'] = record.date
+                    value_date_item['time'] = record.date.strftime('%Y-%m-%d') + 'T' + record.time.strftime('%H:%M:%S')
+                    print( value_date_item['time'])
                     value_date_list.append(value_date_item)
                 child_key_data['list'] = value_date_list
                 if(record_list.__len__()):

@@ -19,7 +19,8 @@ Page({
       tags_string:null,
       host_: `${app.globalData.localUrl}`,
       event_id:null,
-      event_date: ''
+      event_date: '',
+      children:[],
   },
 
   swiperChange(e){
@@ -47,6 +48,12 @@ Page({
                     duration: 1000,
                     success: function () {
                       setTimeout(function () {
+                        // var pages = getCurrentPages();
+                        // var previousPage=pages[pages.length-2];
+                        // // console.log("previousPage", previousPage)
+                        // previousPage.setData({
+                        //   force_update:true,
+                        // })
                         wx.navigateBack(1) //成功提交，返回上个页面
                       }, 1000)
                     }
@@ -107,8 +114,9 @@ Page({
               tags_string:block.tags.length?block.tags.map((ele)=> ("#"+ele)).join(" "):"",
               imageList:block.imgSrcList,
               image_num:block.imgSrcList.length,
+              children:block.children,
+              children_string:block.children.length?block.children.map((ele)=> (ele)).join(" "):"",
             })
-
         },
         fail:function(res){
           console.log('load page failed: ',res)

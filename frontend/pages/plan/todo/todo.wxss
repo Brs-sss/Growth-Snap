@@ -94,6 +94,7 @@
   margin-top: 1vh;
   margin-left: 2vh;
   margin-bottom: 1vh;
+  /* margin-right: 2vh; */
 }
 .content {
   height: auto; 
@@ -112,6 +113,13 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  /* align-items: center; */
+}
+.plan-info {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
 }
 
 .todo-item {
@@ -172,7 +180,13 @@
 .bgImg {
   position: absolute;
   height: 100%;
-  width: calc(100% + 2px);
+  width: calc(100%);
   opacity: 0.65;
   /* filter: blur(3px); */
+}
+
+.child {
+  color: #0759a5;
+  margin-left: 2vh;
+
 }

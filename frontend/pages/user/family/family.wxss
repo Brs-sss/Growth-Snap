@@ -59,7 +59,7 @@
   /* margin-top: -20px; */
   font-size: 1.5vh;
   /* margin-top: 10%; */
-  height: 80%;
+  /* height: 80%; */
   padding-left: 0.5vh;
   padding-right: 0.5vh;
   background: #f0f8ff;
@@ -67,9 +67,26 @@
   border-radius: 10rpx;
   text-align: center;
   color: #4095E5;
-  line-height: 62rpx;
+  /* line-height: 62rpx; */
   margin-left: 5px;
   /* float: left; */
+}
+.user_tag{
+  /* position: absolute; */
+  /* margin-top: 50px; */
+  /* margin-left: 60px; */
+  /* width: 30px; */
+  /* height: 23px; */
+  margin-left: 5px;
+  height: 70%;
+  background: #f0f8ff;
+  border: 1rpx solid #4095E5;
+  border-radius: 10rpx;
+  font-size: 12px;
+  text-align: center;
+  color: #4095E5;
+  /* margin-top: 1vh; */
+  /* line-height: 22px; */
 }
 .token {
   margin-top: 0.5vh;

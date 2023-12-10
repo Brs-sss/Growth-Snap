@@ -2,14 +2,20 @@
 <image src="/image/plan/planBg/bg10.jpg" class="bgImg"></image>
 <!-- <view class='placeHolder'></view> -->
   <view class="container_todo">
-  <view>
-    <image src="{{icon}}" style="height: 5vh; width: 5vh; top: 1.5vh; position: relative; margin-left: 3vh;"/>
+  <view style="width: 100%;">
+    <image src="{{icon}}" style="height: 5vh; width: 5vh; top: 1.5vh; position: relative; margin-left: 2vh;"/>
     <text class="todo-header"> {{planTitle}}</text>
-
+    <image src="/image/plan/trash.png" style="height: 4vh; width: 4vh;opacity: 0.7; position: absolute; right: 1vh; top: 1.8vh; " bind:tap="deletePlan"/>
   </view>
   <view class="content">
     <view class="todo-list">
-    <text class="today">{{today}}</text>
+    <view class='plan-info'>
+      <text class="today">{{today}}</text>
+      <text wx:for="{{childList}}" class="child">{{item}}
+            <!-- <text class="tag-text">{{item}}</text> -->
+            </text>
+    </view>
+    
       <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
         <!-- 还未完成的计划项 -->
         <view class="todo-item" wx:if="{{!item.check}}">

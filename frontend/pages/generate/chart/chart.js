@@ -2,6 +2,52 @@
 const app = getApp()
 import * as echarts from '../../../components/ec-canvas/echarts';
 
+// 数据参考:1.《中国7岁以下儿童生长发育参照标准》2022年 2.首都科研究所生长发育研究室《3~15岁的儿童标准身高表》(2021年)  3.教育部第八次全国学生体质与健康调研结果(2021年)
+var heightStandard = [
+  [
+  {age:'0', height:50.4, weight:3.3}, 
+  {age:'1', height:76.5, weight:10.0}, 
+  {age:'2', height:88.5, weight:12.5}, 
+  {age:'3', height:96.8, weight:14.5}, 
+  {age:'4', height:104.5, weight:16.5}, 
+  {age:'5', height:112.4, weight:18.5}, 
+  {age:'6', height:119.4, weight:21.0}, 
+  {age:'7', height:125.8, weight:23.5}, 
+  {age:'8', height:131.9, weight:26.5}, 
+  {age:'9', height:137.4, weight:29.5}, 
+  {age:'10', height:142.3, weight:33.0}, 
+  {age:'11', height:147.5, weight:36.5}, 
+  {age:'12', height:154.2, weight:40.5}, 
+  {age:'13', height:161.9, weight:45.5}, 
+  {age:'14', height:168.4, weight:51.0}, 
+  {age:'15', height:172.4, weight:56.0}, 
+  {age:'16', height:174.3, weight:58.5}, 
+  {age:'17', height:175.1, weight:60.0}, 
+  {age:'18', height:175.7, weight:61.5}
+],
+[
+  {age:'0', height:50.4, weight:3.2}, 
+  {age:'1', height:76.5, weight:9.5}, 
+  {age:'2', height:88.5, weight:12.0}, 
+  {age:'3', height:96.8, weight:14.0}, 
+  {age:'4', height:104.5, weight:16.0}, 
+  {age:'5', height:112.4, weight:18.0}, 
+  {age:'6', height:119.4, weight:20.5}, 
+  {age:'7', height:125.8, weight:23.0}, 
+  {age:'8', height:131.9, weight:25.5}, 
+  {age:'9', height:137.4, weight:28.5}, 
+  {age:'10', height:142.3, weight:31.5}, 
+  {age:'11', height:147.5, weight:35.0}, 
+  {age:'12', height:154.2, weight:39.0}, 
+  {age:'13', height:161.9, weight:43.0}, 
+  {age:'14', height:168.4, weight:47.5}, 
+  {age:'15', height:172.4, weight:52.0}, 
+  {age:'16', height:174.3, weight:54.0}, 
+  {age:'17', height:175.1, weight:55.5}, 
+  {age:'18', height:175.7, weight:56.5}
+]]
+var standardList = []
+
 var data_item = []; // 所有数据
 var dataList = []; // 当前孩子的所有数据
 var selectedKeys = [];
@@ -14,30 +60,19 @@ var chartType = [];
 
 // 0号chart的数据处理
 const colors = ['#80ffa5', '#01bfec', '#00ddff', '#4d77ff', '#37a2ff', '#7415db', '#ff0087', '#87009d', '#ffbf00', '#e03e4c']
-var seriesDataFor0= []
+var seriesDataFor0_event= [] // 按照事件均匀排序
+var seriesDataFor0_time= [] // 按照时间均匀排序
 
 
 // 1号chart的数据
 
 var dateList = [];
 var valueList = [];
+var timeList = [];
 
 //2号chart的数据
 var lineList = [];
-// let category = [];
-// let dottedBase = +new Date();
-// let lineData = [];
-// let barData = [];
-// for (let i = 0; i < 20; i++) {
-//   let date = new Date((dottedBase += 3600 * 24 * 1000));
-//   category.push(
-//     [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
-//   );
-//   let b = Math.random() * 200;
-//   let d = Math.random() * 200;
-//   barData.push(b);
-//   lineData.push(d + b);
-// }
+
 
 // 3号chart的数据
 const dataBJ = [
@@ -156,10 +191,13 @@ const itemStyle = {
   shadowColor: 'rgba(0,0,0,0.3)'
 };
 
+//改变数据组时使用
 function initData(){
   var dataListNow = [];
-  //0号chart
-  seriesDataFor0= [];
+  //0号chart&1号chart
+  seriesDataFor0_event= [];
+  seriesDataFor0_time= [];
+  console.log(selectedKeys)
   for (let i = 0; i < selectedKeys.length; i++) {
     dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[i])].list;
     dateList = dataListNow.map(function (item) {
@@ -168,7 +206,40 @@ function initData(){
     valueList = dataListNow.map(function (item) {
       return item.value;
     });
-    const currentLine = {
+    timeList = dataListNow.map(function (item) {
+      let date_time = new Date(item.time)
+      return [date_time, item.value];
+    });
+    const currentLine_time = {
+      name: selectedKeys[i],
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      areaStyle: {},
+      data: timeList,
+      lineStyle: {
+        width: 0
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: colors[i * 2]
+          },
+          {
+            offset: 1,
+            color: colors[i * 2 + 1]
+          }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: timeList
+    };
+    const currentLine_event = {
       name: selectedKeys[i],
       type: 'line',
       stack: 'Total',
@@ -195,28 +266,16 @@ function initData(){
       },
       data: valueList // You can populate this array with your actual data for each line
     };
-
-    // Assuming you have data for each line in separate arrays like dataX
-    // for (let j = 0; j < dataX.length; j++) {
-      // Populate the data array for each line
-      // You should replace this with your actual data structure or source
-      // currentLine.data.push(/* Your data for Line i on day j */);
-    // }
-    seriesDataFor0.push(currentLine);
+    seriesDataFor0_time.push(currentLine_time);
+    seriesDataFor0_event.push(currentLine_event);
   }
-  //1号chart
-  dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[0])].list;
-  dateList = dataListNow.map(function (item) {
-    return item.date;
-  });
-  valueList = dataListNow.map(function (item) {
-    return item.value;
-  });
+
   //2号chart
   lineList = dataListNow.map(function (item) {
     return item.value*2;
   });
 }
+
 
 function initChart(canvas, width, height, dpr) {
   heightGlobal = height;
@@ -229,7 +288,7 @@ function initChart(canvas, width, height, dpr) {
     devicePixelRatio: dprGlobal
   });
   canvasGlobal.setChart(chart);
-
+  console.log(selectedKeys)
   chartType = [
     // 0号chart
     {
@@ -251,6 +310,7 @@ function initChart(canvas, width, height, dpr) {
       xAxis: [
         {
           type: 'category',
+          // type: 'time',
           boundaryGap: false,
           data: dateList
         }
@@ -260,7 +320,7 @@ function initChart(canvas, width, height, dpr) {
           type: 'value'
         }
       ],
-      series: seriesDataFor0
+      series: seriesDataFor0_event
     },
     // 1号chart
     {
@@ -286,6 +346,9 @@ function initChart(canvas, width, height, dpr) {
       },
       xAxis: [
         {
+          // type: 'time',
+          type: 'category',
+          boundaryGap: false,
           data: dateList
         }
       ],
@@ -302,6 +365,7 @@ function initChart(canvas, width, height, dpr) {
           type: 'line',
           showSymbol: false,
           data: valueList
+          // data: timeList
         }
       ]
     },
@@ -320,12 +384,13 @@ function initChart(canvas, width, height, dpr) {
         }
       ],
       legend: {
-        data: ['line', 'bar'],
+        data: selectedKeys,
         textStyle: {
           color: '#ccc'
         }
       },
       xAxis: {
+        type: 'category',
         data: dateList,
         axisLine: {
           lineStyle: {
@@ -352,7 +417,7 @@ function initChart(canvas, width, height, dpr) {
           data: lineList
         },
         {
-          name: 'bar',
+          name: selectedKeys[0],
           type: 'bar',
           barWidth: 10,
           itemStyle: {
@@ -377,7 +442,10 @@ function initChart(canvas, width, height, dpr) {
             ])
           },
           z: -12,
-          data: lineList
+          data: lineList,
+          tooltip: {
+            show:false
+          }
         },
         {
           name: 'dotted',
@@ -390,7 +458,10 @@ function initChart(canvas, width, height, dpr) {
           symbolSize: [12, 4],
           symbolMargin: 1,
           z: -10,
-          data: lineList
+          data: lineList,
+          tooltip: {
+            show:false
+          }
         }
       ]
     },
@@ -532,15 +603,21 @@ function initChart(canvas, width, height, dpr) {
   return chart;
 }
 
+// 改变数据组之后加载不同templates中需要的数据
 function updateChart() {
-  chartType[0].series = seriesDataFor0;
+  // 缺省状态为按照事件均匀分布
+  chartType[0].series = seriesDataFor0_event;
+  chartType[0].xAxis.type = 'category';
+  chartType[0].xAxis.data = dateList;
   chartType[1].xAxis[0].data = dateList;
   chartType[1].series[0].data = valueList;
+  chartType[2].legend.data = selectedKeys;
   chartType[2].xAxis.data = dateList;
-  chartType[2].series[0].data = lineList;
+  chartType[2].series[0].data = null;
+  chartType[2].series[1].name = selectedKeys[0];
   chartType[2].series[1].data = valueList;
-  chartType[2].series[2].data = lineList;
-  chartType[2].series[3].data = lineList;
+  chartType[2].series[2].data = null;
+  chartType[2].series[3].data = null;
 }
 
 Page({
@@ -549,6 +626,9 @@ Page({
    * 页面的初始数据
    */
   data: {
+    switchChecked : false,
+    standardChecked : true,
+    standardNote : false,
     templates:[
       {id: 0, selected: false},
       {id: 1, selected: false},
@@ -571,30 +651,42 @@ Page({
     host_: `${app.globalData.localUrl}`,
   },
   toggleChildTag: function(e) {
+    //关闭标准数据
+    this.setData({
+      standardNote: false
+    })
+
+    selectedKeys = [];
     const { index } = e.currentTarget.dataset;
     const key = this.data.kidList[index].info;
     const keyIndex = selectedKidList.indexOf(key);
     if (keyIndex !== -1) {
       return
-    } else {
-      // 判断选中孩子是否有数据
-      console.log(data_item[key])
-      if(data_item[key].length == 0){
-        wx.showToast({
-          title: "未上传"+ key +"数据",
-          icon: 'error',
-          duration: 1000,
-        })
-        return
-      }
-      // 存在单选限制
-      const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
-      console.log(deleteIndex)
-      this.data.kidList[deleteIndex].selected=false;
-      selectedKidList = [];
-      selectedKidList.push(key); // 选中
-      this.data.kidList[index].selected = true ;
     }
+    // 判断选中孩子是否有数据
+    console.log(data_item[key])
+    if(data_item[key].length == 0){
+      wx.showToast({
+        title: "未上传"+ key +"数据",
+        icon: 'error',
+        duration: 2000,
+      })
+      return
+    }
+    // 存在单选限制
+    const deleteIndex = this.data.kidList.findIndex(item => item.info === selectedKidList[0]);
+    console.log(deleteIndex)
+    this.data.kidList[deleteIndex].selected=false;
+    selectedKidList = [];
+    selectedKidList.push(key); // 选中
+    this.data.kidList[index].selected = true ;
+
+    //计算标准数据
+    standardList = []
+    for (let i = this.data.kidList[index].age; i >= 0; i--) {
+      standardList.push({'height':heightStandard[this.data.kidList[index].gender][i].height,'weight':heightStandard[this.data.kidList[index].gender][i].weight})
+    }
+    console.log(standardList)
     
     // TODO:写个复用的函数
     dataList = data_item[selectedKidList[0]]
@@ -624,8 +716,21 @@ Page({
       ['kidList[' + index + '].selected']: this.data.kidList[index].selected
     });
     
+    // 显示标准数据的模板
+    console.log(selectedKeys[0],chart_template)
+    if((selectedKeys[0]=='身高' || selectedKeys[0]=='体重') && chart_template == 2){
+      this.setData({
+        standardChecked : false
+      })
+    }else{
+      this.setData({
+        standardChecked : true
+      })
+    }
+
     initData();
     updateChart();
+    this.switchMode();
 
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
@@ -644,6 +749,9 @@ Page({
     const key = this.data.keys[index].info;
     const keyIndex = selectedKeys.indexOf(key);
     if (keyIndex !== -1) {
+      if(selectedKeys.length == 1){
+        return
+      }
       selectedKeys.splice(keyIndex, 1); // 取消选中标签
       this.data.keys[index].selected = false ;
     } else {
@@ -662,9 +770,28 @@ Page({
       keys: this.data.keys,
       ['keys[' + index + '].selected']: this.data.keys[index].selected
     });
+    if((key=='身高' || key=='体重') && chart_template == 2){
+      this.setData({
+        standardChecked : false
+      })
+    }else{
+      this.setData({
+        standardChecked : true
+      })
+    }
     
+    // 更新数据
     initData();
+    // initChart();
+    // 更新option
     updateChart();
+    // 更新排布规则
+    this.switchMode();
+
+    //关闭标准数据
+    this.setData({
+      standardNote: false
+    })
 
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
@@ -678,7 +805,155 @@ Page({
     chartNow = chart;
     console.log(selectedKeys)
   },
+  // 分布模式
+  switchChange: function(e){
+    this.setData({
+      switchChecked: e.detail.value
+    });
+    console.log(e.detail.value)
+    this.switchMode()
+
+    //TODO: 写成可复用函数
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+    console.log(selectedKeys)
+  },
+  // 显示标准数据
+  switchStandard: function (e) {
+    if(e.detail.value){
+      // 计算对应标准身高
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      console.log(standardList)
+      var standard = dateList.map(function (item) {
+        var then = new Date(item)
+        if(selectedKeys[0]=='身高')
+          return standardList[currentYear - then.getFullYear()].height;
+        else
+          return standardList[currentYear - then.getFullYear()].weight;
+      }); 
+      // 2号chart
+      chartType[2]=
+      {
+        backgroundColor: '#0f375f',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: [
+          {
+            bottom: '10%'
+          }
+        ],
+        legend: {
+          data: ['身高','标准身高'],
+          textStyle: {
+            color: '#ccc'
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: dateList,
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          }
+        },
+        yAxis: {
+          splitLine: { show: false },
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+        },
+        series: [
+          {
+            name: '身高',
+            type: 'line',
+            smooth: true,
+            showAllSymbol: true,
+            symbol: 'emptyCircle',
+            symbolSize: 15,
+            data: valueList
+          },
+          {
+            name: '标准身高',
+            type: 'bar',
+            barWidth: 10,
+            itemStyle: {
+              borderRadius: 5,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#14c8d4' },
+                { offset: 1, color: '#43eec6' },
+              ])
+            },
+            data: standard
+          },
+          {
+            name: 'line',
+            type: 'bar',
+            barGap: '-100%',
+            barWidth: 10,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(20,200,212,0.8)' },
+                { offset: 0.5, color: 'rgba(20,200,212,0.2)' },
+                { offset: 1, color: 'rgba(20,200,212,0)' }
+              ])
+            },
+            z: -12,
+            data: valueList,
+            tooltip: {
+              show:false
+            }
+          },
+          {
+            name: 'dotted',
+            type: 'pictorialBar',
+            symbol: 'rect',
+            itemStyle: {
+              color: '#0f375f'
+            },
+            symbolRepeat: true,
+            symbolSize: [12, 4],
+            symbolMargin: 1,
+            z: -10,
+            data: valueList,
+            tooltip: {
+              show:false
+            }
+          }
+        ]
+      }
+    }else{
+      updateChart();
+    }
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = chartType[chart_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+  },
   changeTemplate: function(e){
+
+    // 数据已经加载，直接改变图的option即可
     const { index } = e.currentTarget.dataset;
     if(index == chart_template)
       return;
@@ -699,6 +974,22 @@ Page({
       }
       selectFlag = 1;
     }
+    //当前限制必须单选
+    selectFlag = 1;
+
+    // 显示标准数据的模板
+    console.log(selectedKeys[0],chart_template)
+    if((selectedKeys[0]=='身高' || selectedKeys[0]=='体重') && chart_template == 2){
+      this.setData({
+        standardChecked : false
+      })
+    }else{
+      this.setData({
+        standardChecked : true
+      })
+    }
+
+
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
       width: widthGLobal,
@@ -709,6 +1000,7 @@ Page({
     const option = chartType[chart_template];
     chartNow.setOption(option);
     chartNow = chart;
+
   },
   clearKey(){
     // 多选变单选时只保留第一组被选中的数据
@@ -728,6 +1020,7 @@ Page({
     });
     initData();
     updateChart();
+
   },
   handleSave() {
     const ecComponent = this.selectComponent('#echart');
@@ -755,12 +1048,63 @@ Page({
       fail: res => console.log(res)
     });
   },
+  switchMode() {
+    if(this.data.switchChecked){
+      // 按照时间均匀分布
+      // 0号chart数据更新
+      chartType[0].series = seriesDataFor0_time;
+      chartType[0].xAxis=[{
+        type: 'time',
+        boundaryGap: false,
+      }];
+      // 1号chart数据更新
+      chartType[1].xAxis = [{
+        type: 'time',
+        boundaryGap: false,
+      }];
+      chartType[1].series[0].data = timeList
+      // 2号chart数据更新
+      // chartType[2].xAxis = [{
+      //   type: 'time',
+      //   boundaryGap: false,
+      // }];
+      // chartType[2].series[0].data = timeList
+      // chartType[2].series[1].data = timeList
+    }else{
+      // 0号chart数据更新
+      chartType[0].series = seriesDataFor0_event;
+      chartType[0].xAxis=[{
+        type: 'category',
+        boundaryGap: false,
+        data: dateList
+      }];
+      chartType[0].xAxis.data = dateList;
+      // 1号chart数据更新
+      chartType[1].xAxis = [{
+        data: dateList
+      }];
+      chartType[1].series[0].data = valueList
+    }
+  },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
     chart_template = options.index;
+    if(chart_template == 0){
+      // 可以多选
+      selectFlag = 0;
+    }else{
+      // 必须单选
+      selectFlag = 1;
+    }
+    // 限制必须单选
+    selectFlag = 1;
+    selectedKeys = []
+    this.setData({
+      ['templates[' + chart_template + '].selected']: true
+    });
     var that = this;
     let openid
     // 获取存储的openid
@@ -774,124 +1118,124 @@ Page({
           openid: openid
         })
         wx.request({
-          url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
-          method: 'GET',
-          success:function(res){
-            console.log(res.data)
-            let children_list = res.data.children_list
-            console.log(children_list.length)
-            let temp_kidList = []
-            for(let i = 0; i < children_list.length; i++){
-              let name = children_list[i].name
-              console.log(name)
-              if(i == 0){
-                temp_kidList.push({'info': name, 'selected': true})
-                selectedKidList.push(name)
-              }else{
-                temp_kidList.push({'info': name, 'selected': false})
-              }
-            }
-            that.setData({
-              kidList: temp_kidList
-            })
-        },
-        fail:function(res){
-          console.log('load page failed: ',res)
-        }
-        });
-        wx.request({
           url: that.data.host_+'user/api/generate/data'+'?openid='+openid,
           method: 'GET',
           success:function(res){
             console.log(res.data)
             data_item = res.data.data_item
+            wx.request({
+              url: that.data.host_+'user/api/user/children_info'+'?openid='+openid,
+              method: 'GET',
+              success:function(res){
+                let children_list = res.data.children_list
+                // 没有孩子的情况
+                if(children_list.length == 0){
+                  wx.showToast({
+                    title: "未上传数据",
+                    icon: 'error',
+                    duration: 3000,
+                  })
+                  return
+                }
+                let temp_kidList = []
+                for(let i = 0; i < children_list.length; i++){
+                  let name = children_list[i].name
+                  // if(i == 0){
+                  //   temp_kidList.push({'info': name, 'selected': true})
+                  //   selectedKidList.push(name)
+                  // }else{
+                  if(children_list[i].gender=='男'){
+                    temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 0})
+                  }else{
+                    temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 1})
+                  }
+                  // }
+                }
+                // 寻找第一个有数据的孩子作为缺省选择的孩子
+                for(let i = 0; i < temp_kidList.length; i++){
+                  console.log(data_item)
+                  if(data_item[temp_kidList[i].info].length != 0){
+                    selectedKidList.push(temp_kidList[i].info);
+                    temp_kidList[i].selected = true;
+
+                     //计算标准数据
+                    standardList = []
+                    for (let j = temp_kidList[i].age; j >= 0; j--) {
+                      standardList.push({'height':heightStandard[temp_kidList[i].gender][j].height,'weight':heightStandard[temp_kidList[i].gender][j].weight})
+                    }
+                    console.log(standardList)
+                    break;
+                  }else{
+                    if(i == temp_kidList.length - 1){
+                      wx.showToast({
+                        title: "未上传数据",
+                        icon: 'error',
+                        duration: 2000,
+                      })
+                      return
+                    }
+                  }
+                }
+                // 初始化缺省孩子的数据
+                dataList = data_item[selectedKidList[0]]
+                var keys = [];
+                // 当前不支持多选
+                
+                // if(selectFlag == 0){
+                //   selectedKeys = dataList.map(function (item) {
+                //     return item.key;
+                //   }); 
+                //   keys = dataList.map(function (item) {
+                //     return {info:item.key,selected: true};
+                //   });
+                // }else{
+                  selectedKeys.push(dataList[0].key)
+                  console.log(selectedKeys)
+                  keys = dataList.map(function (item) {
+                    return {info:item.key,selected: false};
+                  });
+                  keys[0].selected = true;
+                // }
+
+
+                if((keys[0].info=='身高' || key=='体重') && chart_template == 2){
+                  that.setData({
+                    standardChecked : false
+                  })
+                }else{
+                  that.setData({
+                    standardChecked : true
+                  })
+                }
+
+
+                that.setData({
+                  kidList: temp_kidList,
+                  keys: keys
+                })
+                initData();
+                updateChart();
+                chartNow.clear();
+                const chart = echarts.init(canvasGlobal, null, {
+                  width: widthGLobal,
+                  height: heightGlobal,
+                  devicePixelRatio: dprGlobal
+                });
+                canvasGlobal.setChart(chart);
+                const option = chartType[chart_template];
+                chartNow.setOption(option);
+                chartNow = chart;
+            },
+            fail:function(res){
+              console.log('load page failed: ',res)
+            }
+            });
         }
         });
+        
       }
     })
-
-    if(chart_template == 0){
-      // 可以多选
-      selectFlag = 0;
-    }else{
-      // 必须单选
-      selectFlag = 1;
-    }
-
-    this.setData({
-      ['templates[' + chart_template + '].selected']: true
-    });
-
-    // 初始化缺省孩子的数据
-    dataList = data_item[selectedKidList[0]]
-    // dataList = [
-    //   {key:'data 1', list:[
-    //       {"date": "2023-02-09", "value": 66},
-    //       {"date": "2023-03-10", "value": 91},
-    //       {"date": "2023-04-11", "value": 92},
-    //       {"date": "2023-05-12", "value": 113},
-    //       {"date": "2023-06-13", "value": 207},
-    //       {"date": "2023-07-14", "value": 131},
-    //       {"date": "2023-08-15", "value": 281},
-    //   ]},
-    //   {key:'data 2', list:[
-    //     {"date": "2023-02-09", "value": 106},
-    //     {"date": "2023-03-10", "value": 51},
-    //     {"date": "2023-04-11", "value": 102},
-    //     {"date": "2023-05-12", "value": 123},
-    //     {"date": "2023-06-13", "value": 217},
-    //     {"date": "2023-07-14", "value": 141},
-    //     {"date": "2023-08-15", "value": 191},
-    //   ]},
-    //   {key:'data 3', list:[
-    //     {"date": "2023-02-09", "value": 96},
-    //     {"date": "2023-03-10", "value": 51},
-    //     {"date": "2023-04-11", "value": 60},
-    //     {"date": "2023-05-12", "value": 133},
-    //     {"date": "2023-06-13", "value": 127},
-    //     {"date": "2023-07-14", "value": 151},
-    //     {"date": "2023-08-15", "value": 101},
-    //   ]},
-    //   {key:'data 4', list:[
-    //     {"date": "2023-02-09", "value": 66},
-    //     {"date": "2023-03-10", "value": 91},
-    //     {"date": "2023-04-11", "value": 192},
-    //     {"date": "2023-05-12", "value": 113},
-    //     {"date": "2023-06-13", "value": 207},
-    //     {"date": "2023-07-14", "value": 31},
-    //     {"date": "2023-08-15", "value": 81},
-    //   ]},
-    //   {key:'data 5', list:[
-    //     {"date": "2023-02-09", "value": 36},
-    //     {"date": "2023-03-10", "value": 71},
-    //     {"date": "2023-04-11", "value": 50},
-    //     {"date": "2023-05-12", "value": 13},
-    //     {"date": "2023-06-13", "value": 37},
-    //     {"date": "2023-07-14", "value": 31},
-    //     {"date": "2023-08-15", "value": 81},
-    //   ]},
-    // ];
     
-    var keys = [];
-    console.log(dataList)
-    if(selectFlag == 0){
-      selectedKeys = dataList.map(function (item) {
-        return item.key;
-      }); 
-      keys = dataList.map(function (item) {
-        return {info:item.key,selected: true};
-      });
-    }else{
-      selectedKeys.push(dataList[0].key)
-      keys = dataList.map(function (item) {
-        return {info:item.key,selected: false};
-      });
-      keys[0].selected = true;
-    }
-    this.setData({
-      keys: keys
-    })
-    initData();
   },
 
   /**

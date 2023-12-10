@@ -18,9 +18,15 @@
       <view class="event_date">{{event_date}}</view>
       <view class="text-container">{{text}}
       </view>
-      <view class="tags-container">
-        {{tags_string}}
+      <view class="children-tag-container">
+        <view class="children-container">
+          {{children_string}} 
+        </view>
+        <view class="tags-container">
+          {{tags_string}}
+        </view>
       </view>
+      
       <view class="date-delete-container">
         <view class="date-container">{{date}}</view>
         <view class="delete-container" bindtap="deleteThis">删除</view>

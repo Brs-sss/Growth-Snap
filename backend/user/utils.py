@@ -192,7 +192,6 @@ def wrap_text(text,image_height_list):
 def get_image_aspect_ratio(image_path):
     try:
         with Image.open(image_path) as img:
-            print("okkkkkkkkkkkkk")
             width, height = img.size
             aspect_ratio = height / width
             return aspect_ratio
@@ -300,6 +299,26 @@ def GenerateDiaryPDF(event_list, cover_idx, paper_idx, output_path="diary.pdf"):
     print(f"Diary PDF generated at: {output_path}")
     
 ###########################    end block 3
+
+def GenerateEventThumnail(src_path, dest_path, image_name, target_width=400):
+    try:
+        # 打开图像文件
+        if not os.path.exists(dest_path):
+             os.makedirs(dest_path)
+             
+        with Image.open(src_path) as img:
+            # 调整大小并保存缩略图
+            img = img.convert('RGB')
+            width, height = img.size
+            if target_width<width:
+                aspect_ratio = height / width
+                img_resized = img.resize((target_width,floor(target_width*aspect_ratio)))
+            else: 
+                img_resized=img
+            img_resized.save(dest_path+image_name, "JPEG")  # 可根据需要选择图像格式
+            print("Thumbnail created successfully.")
+    except Exception as e:
+        print(f"Error creating thumbnail: {e}")
 
 
 ##########################    block 4: pdf转图片，用到pdf2image，依赖poppler
