@@ -146,8 +146,11 @@ def split_english_text(c, text, font, font_size, max_width):
 def wrap_text(text,image_height_list):
     
     # 判断语言
-    language=detect(text)
-    lang_type= 'A' if language == 'zh-cn' or language == 'ja' else 'B'
+    if text.strip() == '':
+        lang_type = 'B'
+    else:
+        language = detect(text)
+        lang_type = 'A' if language == 'zh-cn' or language == 'ja' else 'B'
 
     font_size = 15.5 if lang_type == 'A' else 12
     width = 175 * mm
