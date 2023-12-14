@@ -165,8 +165,8 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
 }
 export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_title,new_page=true){  //new_page的意思：true表示是从主页选了模版来的，false表示是在preview页面点了更换模版然后提交来的
   that.setData({
-    // loading: true,
-    dialog: true
+    loading: true,
+    // dialog: true
   });
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
@@ -189,8 +189,8 @@ export function generateDiaryPDF(that,id_list,cover_index,paper_index,diary_titl
         },
         success:function(res){
           that.setData({
-            // loading: false,
-            dialog: false,
+            loading: false,
+            // dialog: false,
           });
           wx.showToast({
             title: "提交成功",
