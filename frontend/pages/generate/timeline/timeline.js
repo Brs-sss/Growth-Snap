@@ -393,15 +393,6 @@ function loadPageInfo(that){
 function initData(){
   console.log("here")
   console.log(eventData);
-  // eventData=[
-  //   {date:'2023-02-01', title:'小明今天开始学习钢琴'},
-  //   {date:'2023-03-05', title:'小明学会了第一首曲子'},
-  //   {date:'2023-04-20', title:'小明说好喜欢弹钢琴'},
-  //   {date:'2023-06-04', title:'小明开始准备第一次考级'},
-  //   {date:'2023-07-09', title:'给小明买了一台自己的钢琴'},
-  //   {date:'2023-09-15', title:'小明通过了考级'}
-  // ];
-  console.log(eventData);
   titleData = eventData.map(event => event.title);
   //0号时间轴
   graphDataFor0 = eventData.map(event => [event.date, 1000, event.title]);
@@ -438,7 +429,6 @@ function initData(){
     };
   };
 }
-
 
 function initChart(canvas, width, height, dpr) {
   console.log("init");
@@ -574,7 +564,6 @@ function initChart(canvas, width, height, dpr) {
         data: yAxisDataFor2, // 数据
         axisLabel: {
           formatter: (params) => {
-            console.log(eventData)
            return '【' + eventData[params].date + '】'+'\n' + eventData[params].title + '\n' + '{' + 'index_' + params + '| }';
           },
           rich: imgData, //数据
@@ -729,8 +718,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    hasImg: true,
-    imgPath: "",
     host_: `${app.globalData.localUrl}`,
     templates:[
       {id: 0, selected: false},
@@ -747,11 +734,12 @@ Page({
     curColorIndex: null,
     ec: {
       onInit: initChart
-    }
+    },
+    nextTemplate: null,
+    nextColor: null,
   },
 
-  changeTemplate: function(e){
-    const { index } = e.currentTarget.dataset;
+  changeTemplate(index){
     if(index == timeline_template)
       return;
     this.setData({
@@ -774,7 +762,7 @@ Page({
     console.log(yAxisDataFor2);
   },
 
-  changeColor:function(e){
+  changeColor(e){
     const { index } = e.currentTarget.dataset;
     if(index == colorSetIdex)
       return;
@@ -816,7 +804,25 @@ Page({
     chartNow = chart;
   },
 
+  reselectEvent: function(e) {
+    var pages = getCurrentPages()
+    var pre = pages[pages.length - 2]
+    pre.setData({
+      timeline_template: timeline_template,
+      timeline_color: colorSetIdex,
+    })
+    wx.navigateBack(1)
+  },
+
+  reselectTemplate: function(e) {
+    wx.navigateTo({
+      url: "/pages/generate/reselect/timelineInfo/timelineInfo" +
+      "?template=" + timeline_template + "&color=" + colorSetIdex,
+    })
+  },
+
   handleSave() {
+    console.log("handleSave")
     const ecComponent = this.selectComponent('#echart');
     // 先保存图片到临时的本地文件，然后存入系统相册
     ecComponent.canvasToTempFilePath({
@@ -842,6 +848,73 @@ Page({
       fail: res => console.log(res)
     });
   },
+
+  testChange() {
+    // console.log("Template Show!")
+    var that = this
+    var hasChange = false
+    console.log("curTemplate: ", timeline_template)
+    console.log("nextTemplate: ", that.data.nextTemplate)
+    console.log("curColor: ", colorSetIdex)
+    console.log("nextColor: ", that.data.nextColor)
+    if(that.data.nextTemplate != null && that.data.nextTemplate != timeline_template){
+      hasChange = true
+      this.setData({
+        ['templates[' + timeline_template + '].selected']: false
+      });
+      timeline_template = that.data.nextTemplate;
+      this.setData({
+        ['templates[' + timeline_template + '].selected']: true
+      });
+    }
+
+    if(that.data.nextColor != null && that.data.nextColor != timeline_template){
+      hasChange = true
+      colorSetIdex = that.data.nextColor;
+      this.setData({
+        curColorIndex: colorSetIdex
+      })
+      timelineType[timeline_template].backgroundColor=colorSet[colorSetIdex].backgroundColor;
+      if(timeline_template == 0){
+        timelineType[0].visualMap.inRange.color = colorSet[colorSetIdex].colors;
+        timelineType[0].series[0].label.color = colorSet[colorSetIdex].colors[0];
+        timelineType[0].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[9];
+      }else if(timeline_template == 1){
+        timelineType[1].color=colorSet[colorSetIdex].colors;
+        timelineType[1].series[0].label.borderColor = colorSet[colorSetIdex].colors[1]
+        timelineType[1].series[0].label.backgroundColor = colorSet[colorSetIdex].colors[10]
+      }else if(timeline_template == 2){
+        timelineType[2].yAxis.axisLabel.borderColor = colorSet[colorSetIdex].colors[2]
+        timelineType[2].yAxis.axisLabel.backgroundColor = colorSet[colorSetIdex].colors[10]
+        timelineType[2].yAxis.axisLabel.color=colorSet[colorSetIdex].colors[0];
+        timelineType[2].series[0].itemStyle.color=new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+          { offset: 0, color: colorSet[colorSetIdex].colors[1] },
+          { offset: 1, color: colorSet[colorSetIdex].colors[9] }
+        ]);
+        timelineType[2].series[1].lineStyle.color = colorSet[colorSetIdex].colors[1]
+      }else if(timeline_template == 3){
+        timelineType[3].color = colorSet[colorSetIdex].colors;
+        timelineType[3].series[0].itemStyle.borderColor = colorSet[colorSetIdex].backgroundColor;
+        timelineType[3].series[0].levels[3].itemStyle.shadowColor =  colorSet[colorSetIdex].colors[2];
+        timelineType[3].series[0].levels[3].label.color =  colorSet[colorSetIdex].colors[0];
+        timelineType[3].series[0].levels[4].itemStyle.shadowColor =  colorSet[colorSetIdex].colors[2];
+      }
+    }
+    if( !hasChange)
+      return
+    
+    chartNow.clear();
+    const chart = echarts.init(canvasGlobal, null, {
+      width: widthGLobal,
+      height: heightGlobal,
+      devicePixelRatio: dprGlobal
+    });
+    canvasGlobal.setChart(chart);
+    const option = timelineType[timeline_template];
+    chartNow.setOption(option);
+    chartNow = chart;
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -853,10 +926,10 @@ Page({
     eventIndex = eventsSTR.split('-').map(Number);
     this.setData({
       ['templates[' + timeline_template + '].selected']: true,
-      curColorIndex: options.color
+      curColorIndex: parseInt(options.color)
     })
 
-    colorSetIdex = options.color;
+    colorSetIdex = parseInt(options.color);
     var that = this;
     loadPageInfo(that);
   },
@@ -865,25 +938,13 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    
-    const ecComponent = this.selectComponent('#echart');
-    // 先保存图片到临时的本地文件，然后存入系统相册
-    ecComponent.canvasToTempFilePath({
-      success: res => {
-        console.log("tempFilePath:", res.tempFilePath)
-        this.setData({
-          hasImg: true,
-          imgPath: res.tempFilePath
-        })
-      }
-    })
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
- 
+
   },
 
   /**

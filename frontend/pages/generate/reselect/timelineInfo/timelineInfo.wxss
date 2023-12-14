@@ -1,1 +1,128 @@
 /* pages/generate/reselect/timelineInfo.wxss */
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -20vh;
+}
+
+.audio-btn-container{
+  position: relative;
+  top: -24px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2vh;
+}
+
+
+.line {
+  margin-top: -1vh;
+  margin-bottom: 2vh;
+  left: 5%;
+  width: 90%;
+  height: 0px;
+  border: 1px dashed lightgray;
+}
+
+.audio-list {
+  /* grid-area: 3/1/4/5; */
+
+  width: 80vw;
+  height: 30vh;
+  display: flex;
+  overflow: scroll;
+  flex-wrap: nowrap;
+  justify-self: center;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 25px; /* 标签之间的间距 */
+
+}
+.weui-form__opr-area {
+  position: fixed;
+  bottom: 20vh;
+  margin-bottom: 0;
+}
+.weui-cells__group_form .weui-label {
+  margin-right: 8px;
+  max-width: 6em;
+}
+
+
+/* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
+.audio-list::-webkit-scrollbar {
+  width: 0.5em;
+  color: transparent;
+}
+
+.audio-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.audio-list::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.color-item {
+  width: 20vw;
+  height: 10vh;
+}
+
+.pick-audio {
+  position: relative;
+  /* left: -20vh; */
+}
+
+.audio-image {
+  width: 20vh;
+  height: 20vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+
+  /* display: inline; */
+  object-fit: cover;
+  max-width: 100%;
+  border: 1vh solid #ffffff; /* 设置边框宽度和颜色 */
+  border-radius: 2vh; /* 可选：设置边框圆角 */
+  /* height: auto; */
+}
+
+.audio-image.selected{
+  border: 1vh solid #4095E5; /* 设置边框宽度和颜色 */
+  border-radius: 2vh; /* 可选：设置边框圆角 */
+}
+
+.timeline-image {
+  width: 50vh;
+  height: 25vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.timeline-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.select-icon{
+  position: relative;
+  margin-top: -10vh;
+  margin-bottom: 3vh;
+  margin-left: 4vh;
+  height: 8vh;
+  width: 8vh;
+  z-index: -100;
+}
+
+.select-icon.selected{
+  z-index: 1;
+}
