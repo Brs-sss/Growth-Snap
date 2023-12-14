@@ -17,6 +17,13 @@ import shutil
 from urllib.parse import unquote
 from manage import host_url
 
+from flask import Flask, jsonify
+from flasgger import Swagger
+
+app = Flask(__name__)
+swagger = Swagger(app)
+
+
 
 # import fitz
 
@@ -25,9 +32,47 @@ from manage import host_url
 
 event_image_base_path = 'static/ImageBase/'
 
-
+@app.route('/api/login/', methods=['POST'])
 def login(request):
-    print('here')
+    """用户登录接口，用户使用授权码进行登录并获取用户信息
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 登录信息
+        required: true
+        schema:
+          coda:
+            type: string
+            description: 用户授权码
+        schema:
+          type: object
+          properties:
+              code:
+                type: string
+                description: 用户授权码
+                example: j324dbjw4321wbq
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  openid:
+                    type: string
+                  errcode:
+                    type: integer
+                  errmsg:
+                    type: string
+                  exists:
+                    description: 用户是否存在
+                    type: boolean
+                    enum: [true, false]
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         code = data.get('code')
@@ -62,8 +107,7 @@ def login(request):
                 'exists': 'false'
             })
 
-
-def registerFamily(openid):
+def registerFamily(openid): 
     text_to_hash = openid + str(datetime.datetime.now())
     print('hash: ', text_to_hash)
     sha256 = hashlib.sha256()
@@ -95,7 +139,48 @@ def registerFamily(openid):
 
 
 # todo: 家庭口令的设置和验证
+@app.route('/api/register/', methods=['POST'])
 def register(request):
+    """ 用户注册接口
+    ---
+    parameters:
+      - name: username
+        in: body
+        description: 用户注册信息
+        required: true
+        schema:
+          type: object
+          properties:
+              username:
+                description: 用户名
+                type: string
+                example: 宁静致远
+              token:
+                description: 家庭ID
+                type: string
+                example: ndejwq34wenfw
+              label:
+                description: 家庭角色标签
+                type: string
+                example: 妈妈
+              openid:
+                description: 用户ID
+                type: string
+                example: sad121daswq23
+        
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                msg:
+                 type: string
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
@@ -151,8 +236,34 @@ def register(request):
                 'msg': 'register success'
             })
 
-
+@app.route('/api/user/generate_family_token/', methods=['POST'])
 def generateFamilyToken(request):
+    """ 生成家庭邀请码接口
+    ---
+    parameters:
+      - name: openid
+        in: body
+        description: 用户ID
+        required: true
+        type: string
+        example: c21aac321sdqa
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                token:
+                 type: string
+                 example: fsf2121mnke
+                time:
+                 type: integer
+                 example: 60
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
@@ -177,8 +288,35 @@ def generateFamilyToken(request):
             'msg': 'please use POST'
         })
 
-
+@app.route('/api/user/get_family_token/', methods=['GET'])
 def getFamilyToken(request):
+    """ 处理家庭邀请码接口
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户ID
+        required: true        
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                token:
+                 type: string
+                 example: fd321e1e1e
+                time:
+                 type: integer
+                 example: 60
+                code:
+                 type: integer
+                 enum: ['valid', 'invalid']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         openid = request.GET.get('openid')
         family = User.objects.get(openid=openid).family
@@ -200,8 +338,28 @@ def getFamilyToken(request):
             'msg': 'please use GET'
         })
 
-
+@app.route('/api/getSHA256/', methods=['GET'])
 def getSHA256(request):
+    """ 生成对应内容的发表时间sha256值
+    ---
+    parameters:
+      - name: text
+        in: query
+        description: 内容类型(事件或文字)
+        required: true        
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                sha256:
+                  type: string 
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         text_to_hash = request.GET.get('text')
         print('txt ', text_to_hash)
@@ -213,8 +371,72 @@ def getSHA256(request):
             'sha256': sha256_hash
         })
 
-
+@app.route('/api/show/event/submit/', methods=['POST'])
 def submitEvent(request):
+    """ 处理上传事件
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 上传事件信息
+        required: true
+        schema:
+          type: object
+          properties:
+            openid:
+             type: string
+             description: 用户ID
+             example: dn1276wdwkjndqj21sd
+            event_id:
+             type: string   
+             description: 事件ID
+             example: 231iufaq23jegoo
+            title:
+             type: string   
+             description: 标题
+             example: 小明今天过生日
+            content:
+             type: string   
+             description: 文本内容
+             example: 小明今天过生日，非常开心。和大家一起吃了蛋糕。
+            tags:
+             type: array
+             description: 选择tag列表
+             example: [{'info': '生日', 'checked': True},{'info': '社交', 'checked': True}]
+            date:
+             type: string   
+             description: 上传日期
+             example: '2023-12-14'
+            event_date:
+             type: string   
+             description: 发生日期
+             example: '2023-11-11'
+            time:
+             type: string   
+             description: 上传时间
+             example: '12:00:00'
+            children:
+             type: array
+             description: 选择的孩子tag列表
+             example:  [小明]
+            author:
+             type: string
+             description: 上传者家庭标签
+             example: 妈妈
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                message:
+                  type: string 
+                  enum: ['Data submitted successfully']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
 
@@ -267,10 +489,45 @@ def submitEvent(request):
         print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
-        return JsonResponse({'message': 'Data submitted successfully'})
+        return JsonResponse({'message': 'please use POST'})
 
-
+@app.route('/api/show/event/upload_image/', methods=['POST'])
 def addEventImage(request):
+    """ 处理上传事件中的图片上传
+    ---
+    parameters:
+      - name: image
+        in: body
+        description: 图片的路径
+        required: true
+        type: string
+        example: 'a.png'
+      - name: pic_index
+        in: formData
+        description: 图片的index
+        required: true
+        example: 2
+        type: integer
+      - name: event_id
+        in: formData
+        description: 图片对应事件ID
+        required: true
+        type: string
+        example: nbjk123jk13n13ls
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                message:
+                  type: string 
+                  enum: ['File uploaded successfully','File is not exist']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         uploaded_image = request.FILES.get('image')
         pic_index = request.POST.get('pic_index')
@@ -289,14 +546,66 @@ def addEventImage(request):
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
             GenerateEventThumnail(src_path=image_path_name,dest_path= thumbnail_path,image_name= pic_name,target_width=200)
-            return JsonResponse({'message': '文件上传成功'})
+            return JsonResponse({'message': 'File uploaded successfully'})
         else:
-            return JsonResponse({'message': '文件不存在'})
+            return JsonResponse({'message': 'File is not exist'})
     else:
-        return JsonResponse({'message': '请使用POST方法'})
+        return JsonResponse({'message': 'please use POST'})
 
-
+@app.route('/api/show/data/submit/', methods=['POST'])
 def submitData(request):
+    """ 处理上传数据
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 上传数据信息
+        required: true
+        schema:
+          type: object
+          properties:
+            openid:
+             type: string
+             description: 用户ID
+             example: dn1276wdwkjndqj21sd
+            data_id:
+             type: string   
+             description: 数据ID
+             example: 231iufaq23jegoo
+            date:
+             type: string   
+             description: 上传日期
+             example: '2023-12-14'
+            time:
+             type: string   
+             description: 上传时间
+             example: '12:00:00'
+            children:
+             type: array
+             description: 选择的孩子tag列表
+             example:  [小明]
+            record:
+             type: array
+             descripstion: 上传的数据列表
+             example: [{"key": '身高', "value": 180},{"key": '体重', "value": 60}]
+            author:
+             type: string
+             description: 上传者家庭标签
+             example: 妈妈
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+            type: object
+            properties:
+                message:
+                  type: string 
+                  enum: ['Data submitted successfully']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
@@ -349,8 +658,36 @@ def submitData(request):
     else:
         return JsonResponse({'message': 'Please use POST'})
 
-
+@app.route('/api/show/data/getkeys/', methods=['GET'])
 def getKeys(request):
+    """获取已添加的数据类型
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  keyList:
+                    description: 已添加的数据类型列表
+                    type: array
+                    example: ['身高','体重']
+                  message:
+                    description: 获取成功
+                    type: string
+                    enum: ['Successfully get the keys']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -364,7 +701,38 @@ def getKeys(request):
         return JsonResponse({'message': 'Please use GET'})
 
 
+@app.route('/api/register_profile_image/', methods=['POST'])
 def registerProfileImage(request):
+    """用户上传头像
+    ---
+    parameters:
+      - name: openid
+        in: formData
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+      - name: image
+        in: body
+        description: 图片的路径
+        required: true
+        type: string
+        example: 'a.png'
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                    description: 获取成功
+                    type: string
+                    enum: ['profile image submitted successfully']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         profile_image = request.FILES.get('image')
         openid = request.POST.get('openid')
@@ -1186,3 +1554,8 @@ def loadData(request):
         print(f'data_item {data_item}')
 
         return JsonResponse({'data_item': data_item})
+    
+
+
+
+app.run(debug=True)
