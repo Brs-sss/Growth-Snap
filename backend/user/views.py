@@ -141,7 +141,7 @@ def registerFamily(openid):
 # todo: 家庭口令的设置和验证
 @app.route('/api/register/', methods=['POST'])
 def register(request):
-    """ 用户创建家庭接口
+    """ 用户注册接口
     ---
     parameters:
       - name: username
@@ -658,7 +658,36 @@ def submitData(request):
     else:
         return JsonResponse({'message': 'Please use POST'})
 
+@app.route('/api/show/data/getkeys/', methods=['GET'])
 def getKeys(request):
+    """获取已添加的数据类型
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  keyList:
+                    description: 已添加的数据类型列表
+                    type: array
+                    example: ['身高','体重']
+                  message:
+                    description: 获取成功
+                    type: string
+                    enum: ['Successfully get the keys']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -672,7 +701,38 @@ def getKeys(request):
         return JsonResponse({'message': 'Please use GET'})
 
 
+@app.route('/api/register_profile_image/', methods=['POST'])
 def registerProfileImage(request):
+    """用户上传头像
+    ---
+    parameters:
+      - name: openid
+        in: formData
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+      - name: image
+        in: body
+        description: 图片的路径
+        required: true
+        type: string
+        example: 'a.png'
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                    description: 获取成功
+                    type: string
+                    enum: ['profile image submitted successfully']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         profile_image = request.FILES.get('image')
         openid = request.POST.get('openid')
