@@ -113,8 +113,30 @@ Page({
         if (!res.cancel) {
           if (res.tapIndex === 0) {　// 执行转发邀请链接的操作
             console.log('share the link')
-          } else if (res.tapIndex === 1) {　// 执行生成验证码的操作
-            if (that.data.generate_token == true)
+          } else if (res.tapIndex === 1)
+           {　// 执行生成验证码的操作
+            
+            // that.setData({
+            //   generate_token: true,
+            //   time: 60*1000*1
+            // })
+            // wx.setStorage({
+            //   key:'generate_token',
+            //   data: 'true'
+            // })
+          }
+        }
+      }
+    })
+    // wx.navigateTo({
+    //   url: '/pages/user/family/addmember/addmember',
+    // })
+  },
+  familycode()
+  {
+    console.log('code')
+    var that = this
+    if (that.data.generate_token == true)
             {
               wx.showToast({
                 title: '家庭验证码已生成',
@@ -140,21 +162,6 @@ Page({
                 })
               },
             })
-            // that.setData({
-            //   generate_token: true,
-            //   time: 60*1000*1
-            // })
-            // wx.setStorage({
-            //   key:'generate_token',
-            //   data: 'true'
-            // })
-          }
-        }
-      }
-    })
-    // wx.navigateTo({
-    //   url: '/pages/user/family/addmember/addmember',
-    // })
   },
   tick (delta) {
     if (this.data.time == 0)
@@ -261,6 +268,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    return {
+			title: '邀请家庭新成员',
+			path: '/pages/register/register',
+      imageUrl: '/image/user/card_image.jpg',
+      
+		}
   }
 })

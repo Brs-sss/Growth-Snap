@@ -33,10 +33,30 @@
   <text class="token">{{token}}</text>
   <image src="../../../image/user/duplicate.png" style="height: 4vh; width: 4vh;  position: absolute; right: 5vh;" bind:tap="copy"/>
 </view>
-
-
 </view>
 
-<button class="add" bindtap="addmember">添加家庭成员</button>
+<!-- <view>
+  <button class="add" bindtap="addmember">添加家庭成员</button>
+  <button class="add" bindtap="addmember">添加家庭成员</button>
+</view> -->
+<view class='custom-tabbar'>
+  <!-- <view class='icons'>
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+  </view>
+  <view class='icons-text'>
+  </view> -->
+  <button class="action-item">
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
+    <text class="icons-text" bind:tap="familycode">生成验证码</text>
+  </button>
+  <button class="action-item" open-type="share">
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <text class="icons-text" bind:tap="reselectTemplate">转发邀请链接</text>
+  </button>
+</view>
+
+<view style="height: 10vh;">
+</view>
 
 
