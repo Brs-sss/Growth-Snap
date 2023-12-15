@@ -974,9 +974,9 @@ def getUserInfo(request):
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
         print(f'profile_image {profile_image}')
-        event_number = len(Event.objects.filter(user__family=now_user.family))
-        plan_number = len(Plan.objects.filter(user__family=now_user.family))
-        text_number = len(Text.objects.filter(user__family=now_user.family))
+        event_number = len(Event.objects.filter(user=now_user))
+        plan_number = len(Plan.objects.filter(user=now_user))
+        text_number = len(Text.objects.filter(user=now_user))
         credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
