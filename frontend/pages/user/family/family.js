@@ -4,7 +4,8 @@ function LoadFamilyPage(that){
   // var that = this
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
-    success: function (res) { 
+    success: function (res) 
+    { 
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       that.setData({
@@ -41,6 +42,18 @@ function LoadFamilyPage(that){
             console.log('yes', that.data.token, that.data.time)
             
           }
+          wx.request({
+            url: that.data.host_+'user/api/get_familyid?openid='+openid,
+            method: 'GET',
+            success: function(res){
+              console.log('res: ', res)
+              // familyid = res.data.family_id
+              that.setData({
+                familyid: res.data.family_id
+              })
+              console.log('family_id: ', that.data.familyid)
+            }
+          })
           
         },
 
@@ -49,6 +62,9 @@ function LoadFamilyPage(that){
     fail:function(res){
       console.log('get openid failed: ',res)
     }
+
+    
+
    })
   //  wx.getStorage({
   //    key: 'generate_token',
@@ -70,6 +86,8 @@ function LoadFamilyPage(that){
   //      })
   //    }
   //  })
+
+    
 }
 
 const app = getApp();
@@ -101,7 +119,8 @@ Page({
     token: 'token',
     time: 0,
     countdown: '',
-    openid: ''
+    openid: '',
+    familyid: ''
   },
   addmember() {
     // TODO: 跳转到对应页面的处理逻辑
@@ -268,11 +287,13 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
+    
+    console.log('here')
+    console.log('familyid: ', this.data.familyid)
     return {
-			title: '邀请家庭新成员',
-			path: '/pages/register/register',
+      title: '邀请家庭新成员',
+      path: '/pages/index/index?family_id='+this.data.familyid,
       imageUrl: '/image/user/card_image.jpg',
-      
-		}
+    }
   }
 })

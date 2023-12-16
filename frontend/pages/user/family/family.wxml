@@ -51,8 +51,8 @@
     <text class="icons-text" bind:tap="familycode">生成验证码</text>
   </button>
   <button class="action-item" open-type="share">
-    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
-    <text class="icons-text" bind:tap="reselectTemplate">转发邀请链接</text>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" ></image>
+    <text class="icons-text" >转发邀请链接</text>
   </button>
 </view>
 
