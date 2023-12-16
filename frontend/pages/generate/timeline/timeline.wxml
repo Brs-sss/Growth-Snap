@@ -10,7 +10,7 @@
     <view class='icons'>
       <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
       <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
-      <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+      <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleSave"></image>
       <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
     </view>
     <view class='icons-text'>
