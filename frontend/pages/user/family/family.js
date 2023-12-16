@@ -291,7 +291,7 @@ Page({
     console.log('here')
     console.log('familyid: ', this.data.familyid)
     return {
-      title: '邀请家庭新成员',
+      title: '邀请你加入家庭~',
       path: '/pages/index/index?family_id='+this.data.familyid,
       imageUrl: '/image/user/card_image.jpg',
     }
