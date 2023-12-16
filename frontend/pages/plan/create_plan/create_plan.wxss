@@ -1,7 +1,7 @@
 /* pages/show/event/event.wxss */
 .whole-page-grid{
   display: grid;
-  grid-template-rows: 25vh 12vh 1fr 10vh 10vh;
+  grid-template-rows: 25vh 15vh 1fr 10vh 10vh;
   grid-template-columns: 1fr;
   grid-template-areas:
   "A"
@@ -86,7 +86,7 @@
 }
 
 .container_tag{
-  /* margin-top: 3vh; */
+  margin-top: 1vh;
   display: flex;
   flex-wrap: wrap;
   align-items: center; /* 标签垂直居中对齐 */
