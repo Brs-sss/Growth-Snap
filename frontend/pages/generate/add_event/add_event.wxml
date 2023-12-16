@@ -33,7 +33,7 @@
   </view>
 </view>
 
-<!-- <view aria-role="alert" class="fadeIn {{hideLoading ? 'fadeOut' : ''}}" wx:if="{{loading}}">
+<view aria-role="alert" class="fadeIn {{hideLoading ? 'fadeOut' : ''}}" wx:if="{{loading}}">
 		<view class="weui-mask_transparent"></view>
 		<view class="weui-toast">
 			<view class="weui-primary-loading weui-primary-loading_transparent weui-icon_toast">
@@ -41,7 +41,7 @@
       </view>
 			<view class="weui-toast__content">正在加载</view>
 		</view>
-	</view> -->
+	</view>
   
   <view wx:if="{{dialog}}" aria-role="dialog" aria-modal="true" aria-labelledby="js_dialog1_title">
         <view class="weui-mask {{dialog ? 'weui-animate_fade-in' : 'weui-animate_fade-out'}}" bindtap="close"></view>

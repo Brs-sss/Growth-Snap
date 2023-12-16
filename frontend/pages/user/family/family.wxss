@@ -132,7 +132,7 @@
 
 .custom-tabbar{
   display: flex;
-  padding: 1vh;
+  padding-bottom: 1vh;
   flex-direction: row;
   position: relative;
   margin-top: 4vh;

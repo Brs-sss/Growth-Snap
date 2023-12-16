@@ -40,18 +40,12 @@
   <button class="add" bindtap="addmember">添加家庭成员</button>
 </view> -->
 <view class='custom-tabbar'>
-  <!-- <view class='icons'>
-    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
-    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
-  </view>
-  <view class='icons-text'>
-  </view> -->
   <button class="action-item">
-    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
+    <image src="/image/user/code.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
     <text class="icons-text" bind:tap="familycode">生成验证码</text>
   </button>
   <button class="action-item" open-type="share">
-    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" ></image>
+    <image src="/image/user/link.png" style="height: 6vh; width: 6vh" ></image>
     <text class="icons-text" >转发邀请链接</text>
   </button>
 </view>
