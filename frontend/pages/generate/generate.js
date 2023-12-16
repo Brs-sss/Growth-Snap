@@ -49,8 +49,6 @@ Page({
   },
   selectTemplate(e){
     const index = e.currentTarget.dataset.index;
-    console.log(index)
-    console.log(this.data.timelineList[index].name)
     this.setData({
       templateSelected: index,
     })
@@ -58,7 +56,6 @@ Page({
 
   selectColor(e){
     const index = e.currentTarget.dataset.index;
-    console.log(index)
     this.setData({
       colorSelected: index,
     })
