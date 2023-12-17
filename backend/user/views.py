@@ -7,7 +7,8 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, \
+    GenerateEventThumnail
 import random
 import string
 import hashlib
@@ -17,13 +18,11 @@ import shutil
 from urllib.parse import unquote
 from manage import host_url
 
-from flask import Flask, jsonify
-from flasgger import Swagger
+# from flask import Flask, jsonify
+# from flasgger import Swagger
 
-app = Flask(__name__)
-swagger = Swagger(app)
-
-
+# app = Flask(__name__)
+# swagger = Swagger(app)
 
 # import fitz
 
@@ -32,7 +31,8 @@ swagger = Swagger(app)
 
 event_image_base_path = 'static/ImageBase/'
 
-@app.route('/api/login/', methods=['POST'])
+
+# @app.route('/api/login/', methods=['POST'])
 def login(request):
     """用户登录接口，用户使用授权码进行登录并获取用户信息
     ---
@@ -107,7 +107,8 @@ def login(request):
                 'exists': 'false'
             })
 
-def registerFamily(openid): 
+
+def registerFamily(openid):
     text_to_hash = openid + str(datetime.datetime.now())
     print('hash: ', text_to_hash)
     sha256 = hashlib.sha256()
@@ -139,7 +140,7 @@ def registerFamily(openid):
 
 
 # todo: 家庭口令的设置和验证
-@app.route('/api/register/', methods=['POST'])
+# @app.route('/api/register/', methods=['POST'])
 def register(request):
     """ 用户注册接口
     ---
@@ -206,7 +207,8 @@ def register(request):
             if Family.objects.filter(token=token).exists():
                 family = Family.objects.get(token=token)
                 # token是否过期
-                if family.token_expiration == None or family.token_expiration.replace(tzinfo=None) < datetime.datetime.now():
+                if family.token_expiration == None or family.token_expiration.replace(
+                        tzinfo=None) < datetime.datetime.now():
                     # 过期
                     return JsonResponse({
                         'msg': 'family does not exist'
@@ -218,7 +220,7 @@ def register(request):
 
         # family存在
         # 检查这个用户是否已经存在
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username=username, family=family).exists():
             # 如果存在，报错：username already exists
             return JsonResponse({
                 'msg': 'username already exists'
@@ -236,7 +238,8 @@ def register(request):
                 'msg': 'register success'
             })
 
-@app.route('/api/user/generate_family_token/', methods=['POST'])
+
+# @app.route('/api/user/generate_family_token/', methods=['POST'])
 def generateFamilyToken(request):
     """ 生成家庭邀请码接口
     ---
@@ -288,7 +291,8 @@ def generateFamilyToken(request):
             'msg': 'please use POST'
         })
 
-@app.route('/api/user/get_family_token/', methods=['GET'])
+
+# @app.route('/api/user/get_family_token/', methods=['GET'])
 def getFamilyToken(request):
     """ 处理家庭邀请码接口
     ---
@@ -338,7 +342,8 @@ def getFamilyToken(request):
             'msg': 'please use GET'
         })
 
-@app.route('/api/getSHA256/', methods=['GET'])
+
+# @app.route('/api/getSHA256/', methods=['GET'])
 def getSHA256(request):
     """ 生成对应内容的发表时间sha256值
     ---
@@ -371,7 +376,8 @@ def getSHA256(request):
             'sha256': sha256_hash
         })
 
-@app.route('/api/show/event/submit/', methods=['POST'])
+
+# @app.route('/api/show/event/submit/', methods=['POST'])
 def submitEvent(request):
     """ 处理上传事件
     ---
@@ -453,7 +459,7 @@ def submitEvent(request):
         tags = ListToString([tag['info'].strip() for tag in tags if tag['checked'] and len(tag['info'].strip()) != 0])
 
         family = now_user.family
-        family_id=family.family_id
+        family_id = family.family_id
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
         type = data.get('type')
         if type == 'event':
@@ -463,7 +469,7 @@ def submitEvent(request):
             image_path = './static/ImageBase/' + f'{event_id}/'
             if not os.path.exists(image_path):
                 os.mkdir(image_path)
-                
+
             cache_key = f"loadShowPage:{family_id}:e"
             if cache.get(cache_key) is not None:
                 cache.delete(cache_key)
@@ -471,27 +477,24 @@ def submitEvent(request):
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
-            
+
         cache_key = f"loadShowPage:{family_id}:etd"
         if cache.get(cache_key) is not None:
             cache.delete(cache_key)
-
-            
-
 
         now_family = now_user.family
         children = data.get('children')
         for name in children:
             child = Child.objects.get(family=now_family, name=name)
             new_event.children.add(child)
-            
 
         print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
 
-@app.route('/api/show/event/upload_image/', methods=['POST'])
+
+# @app.route('/api/show/event/upload_image/', methods=['POST'])
 def addEventImage(request):
     """ 处理上传事件中的图片上传
     ---
@@ -534,25 +537,27 @@ def addEventImage(request):
         event_id = request.POST.get('event_id')
 
         image_path = './static/ImageBase/' + f'{event_id}/'
-        thumbnail_path = './static/Thumbnail/'+ f'{event_id}/'
+        thumbnail_path = './static/Thumbnail/' + f'{event_id}/'
         if not os.path.exists(image_path):
             os.mkdir(image_path)
         if not os.path.exists(thumbnail_path):
             os.mkdir(thumbnail_path)
         if uploaded_image:
-            pic_name=f'{pic_index}_{uploaded_image.name}'
-            image_path_name=image_path + pic_name
+            pic_name = f'{pic_index}_{uploaded_image.name}'
+            image_path_name = image_path + pic_name
             with open(image_path_name, 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
-            GenerateEventThumnail(src_path=image_path_name,dest_path= thumbnail_path,image_name= pic_name,target_width=200)
+            GenerateEventThumnail(src_path=image_path_name, dest_path=thumbnail_path, image_name=pic_name,
+                                  target_width=200)
             return JsonResponse({'message': 'File uploaded successfully'})
         else:
             return JsonResponse({'message': 'File is not exist'})
     else:
         return JsonResponse({'message': 'please use POST'})
 
-@app.route('/api/show/data/submit/', methods=['POST'])
+
+# @app.route('/api/show/data/submit/', methods=['POST'])
 def submitData(request):
     """ 处理上传数据
     ---
@@ -658,7 +663,8 @@ def submitData(request):
     else:
         return JsonResponse({'message': 'Please use POST'})
 
-@app.route('/api/show/data/getkeys/', methods=['GET'])
+
+# @app.route('/api/show/data/getkeys/', methods=['GET'])
 def getKeys(request):
     """获取已添加的数据类型
     ---
@@ -701,7 +707,7 @@ def getKeys(request):
         return JsonResponse({'message': 'Please use GET'})
 
 
-@app.route('/api/register_profile_image/', methods=['POST'])
+# @app.route('/api/register_profile_image/', methods=['POST'])
 def registerProfileImage(request):
     """用户上传头像
     ---
@@ -756,36 +762,39 @@ def registerProfileImage(request):
 def loadShowPage(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
-        start = request.GET.get('start','0')
-        delta = request.GET.get('delta','all')
+        start = request.GET.get('start', '0')
+        delta = request.GET.get('delta', 'all')
         types = request.GET.get('types', "etd")  # 缺省值为event&text&data
-        
+
         used_by_addEvent_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
         family = now_user.family
-        family_id=family.family_id
-        
-        #Redis cache
+        family_id = family.family_id
+
+        # Redis cache
         cache_key = f"loadShowPage:{family_id}:{types}"
         cached_result = cache.get(cache_key)
-        
+
         if cached_result is not None:
             # 如果缓存中有结果，则返回缓存的结果 
-            now_user_blocks=cached_result
+            now_user_blocks = cached_result
         else:
-        # 这里的Event将来应当替换成基类BaseRecord
+            # 这里的Event将来应当替换成基类BaseRecord
             now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
-                                                                                  "-time") if 'e' in types else []  # 筛选的结果按照降序排列
-            now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
-            now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 't' in types else []
-            now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
-                                     key=lambda x: (x.date, x.time), reverse=True)
+                                                                                                 "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+            now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date",
+                                                                                              "-time") if 'd' in types else []
+            now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date",
+                                                                                              "-time") if 't' in types else []
+            now_user_blocks = sorted(
+                list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
+                key=lambda x: (x.date, x.time), reverse=True)
             cache.set(cache_key, now_user_blocks, timeout=60)
         print(now_user_blocks.__len__())
-        
-        start=int(start)
-        total=len(now_user_blocks)
-        end=total if delta == 'all' else min(start+int(delta),total)
+
+        start = int(start)
+        total = len(now_user_blocks)
+        end = total if delta == 'all' else min(start + int(delta), total)
         blocks_list = []
         for db_block in now_user_blocks[start:end]:
             block_item = {}
@@ -808,7 +817,8 @@ def loadShowPage(request):
                 thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
                 if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
-                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0],dest_path= f'{thumnail_path}/', image_name= image_list[0], target_width=300)
+                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0], dest_path=f'{thumnail_path}/',
+                                          image_name=image_list[0], target_width=300)
                 block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
 
             if db_block.record_type == 'data':
@@ -820,7 +830,7 @@ def loadShowPage(request):
             blocks_list.append(block_item)
 
         # print(blocks_list)
-        return JsonResponse({'blocks_list': blocks_list,'start':end})
+        return JsonResponse({'blocks_list': blocks_list, 'start': end})
 
 
 # 加载搜索结果页面
@@ -836,9 +846,12 @@ def loadSearchPage(request):
         event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
         text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
 
-        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).filter(event_filter).order_by("-date", "-time")
-        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date", "-time") if 'd' in types else []
-        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).filter(text_filter).order_by("-date", "-time")
+        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).filter(event_filter).order_by(
+            "-date", "-time")
+        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date",
+                                                                                          "-time") if 'd' in types else []
+        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).filter(text_filter).order_by("-date",
+                                                                                                              "-time")
         # 暂时不支持data的搜索
         now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_text),
                                  key=lambda x: (x.date, x.time), reverse=True)
@@ -951,6 +964,7 @@ def loadCertainPlan(request):
             'todos': todo_list,
         })
 
+
 def deletePlan(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -965,6 +979,7 @@ def deletePlan(request):
         return JsonResponse({
             'message': 'ok',
         })
+
 
 def getUserInfo(request):
     if request.method == 'GET':
@@ -1067,7 +1082,7 @@ def loadEventDetail(request):
         image_list = sorted(os.listdir(image_path))
         block_item['imgSrcList'] = [host_url + f'{image_path}/' + image for image in image_list]
         block_item['tags'] = StringToList(db_block.tags)
-        block_item['children']=[child.name for child in db_block.children.all()]
+        block_item['children'] = [child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -1086,7 +1101,7 @@ def loadTextDetail(request):
         block_item['year'] = date_string[0:4]
         block_item['day'] = date_string[8:10]
         block_item['tags'] = StringToList(db_block.tags)
-        block_item['children']=[child.name for child in db_block.children.all()]
+        block_item['children'] = [child.name for child in db_block.children.all()]
         return JsonResponse({'block_item': block_item})
 
 
@@ -1109,19 +1124,18 @@ def loadDataDetail(request):
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
-        
-        
+
         # 返回渲染的list
         try:
-            event=Event.objects.get(event_id=event_id)
-            family_id=event.user.family.family_id
+            event = Event.objects.get(event_id=event_id)
+            family_id = event.user.family.family_id
             cache_key = f"loadShowPage:{family_id}:etd"
             if cache.get(cache_key) is not None:
                 cache.delete(cache_key)
             shutil.rmtree('static/ImageBase/' + event_id)
             shutil.rmtree('static/Thumbnail/' + event_id)
             Event.objects.get(event_id=event_id).delete()
-                
+
         except:
             return JsonResponse({'msg': 'error'})
         return JsonResponse({'msg': 'ok'})
@@ -1132,8 +1146,8 @@ def deleteText(request):
         text_id = request.GET.get('text_id')
         # 返回渲染的list
         try:
-            event=Text.objects.get(text_id=text_id)
-            family_id=event.user.family.family_id
+            event = Text.objects.get(text_id=text_id)
+            family_id = event.user.family.family_id
             cache_key = f"loadShowPage:{family_id}:etd"
             if cache.get(cache_key) is not None:
                 cache.delete(cache_key)
@@ -1147,8 +1161,8 @@ def deleteData(request):
     if request.method == 'GET':
         data_id = request.GET.get('data_id')
         try:
-            event=Data.objects.get(data_id =data_id)
-            family_id=event.user.family.family_id
+            event = Data.objects.get(data_id=data_id)
+            family_id = event.user.family.family_id
             cache_key = f"loadShowPage:{family_id}:etd"
             if cache.get(cache_key) is not None:
                 cache.delete(cache_key)
@@ -1380,7 +1394,7 @@ def generateDiary(request):
         if not os.path.exists(output_base):
             os.mkdir(output_base)
         output_path = output_base + data.get('name') + '.pdf'
-        
+
         GenerateDiaryPDF(event_list=to_render_list, cover_idx=data.get('cover_index'),
                          paper_idx=data.get('paper_index'), output_path=output_path)
         return JsonResponse({'msg': 'success'})
@@ -1450,7 +1464,6 @@ def generateVideo(request):
         # print(image_path_list)
         GenerateVideo(image_path_list, audio_index, video_title, label, openid)
 
-
     return JsonResponse({'msg': 'POST only'})
 
 
@@ -1478,7 +1491,7 @@ def loadTimelinePage(request):
         now_user = User.objects.get(openid=openid)
         # 这里的Event将来应当替换成基类BaseRecord
         now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by("-date",
-                                                                              "-time") if 'e' in types else []  # 筛选的结果按照降序排列
+                                                                                             "-time") if 'e' in types else []  # 筛选的结果按照降序排列
         now_user_blocks = sorted(list(now_user_blocks_events),
                                  key=lambda x: (x.date, x.time), reverse=True)
         print(now_user_blocks.__len__())
@@ -1505,9 +1518,9 @@ def loadTimelinePage(request):
                 thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
                 if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
-                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0],dest_path= f'{thumnail_path}/', image_name= image_list[0], target_width=300)
+                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0], dest_path=f'{thumnail_path}/',
+                                          image_name=image_list[0], target_width=300)
                 block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
-
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -1520,6 +1533,7 @@ def loadTimelinePage(request):
         # print(blocks_list)
         return JsonResponse({'blocks_list': blocks_list})
 
+
 def loadData(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
@@ -1527,35 +1541,33 @@ def loadData(request):
         family = now_user.family
         children = Child.objects.filter(family=family)
         keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
-        data_item = {} # 返回的数据{小明: child_data, 小红:child_data}} 
+        data_item = {}  # 返回的数据{小明: child_data, 小红:child_data}}
         print(keyList)
         print(children)
         for child in children:
-            child_data = [] # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}]},child_key_data]
+            child_data = []  # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}]},child_key_data]
             for key in keyList:
-                child_key_data = {} # 保存一个孩子一个key的所有数据 {key:身高, list:[{value:,date:},{value:,date:}]
+                child_key_data = {}  # 保存一个孩子一个key的所有数据 {key:身高, list:[{value:,date:},{value:,date:}]
                 child_key_data['key'] = key
                 value_date_list = []
-                record_list = list(Record.objects.filter(key=key,children=child))
-                print(child,key,record_list)
+                record_list = list(Record.objects.filter(key=key, children=child))
+                print(child, key, record_list)
                 for record in record_list:
                     value_date_item = {}
                     value_date_item['value'] = record.value
                     value_date_item['date'] = record.date
                     value_date_item['time'] = record.date.strftime('%Y-%m-%d') + 'T' + record.time.strftime('%H:%M:%S')
-                    print( value_date_item['time'])
+                    print(value_date_item['time'])
                     value_date_list.append(value_date_item)
                 child_key_data['list'] = value_date_list
-                if(record_list.__len__()):
+                if (record_list.__len__()):
                     child_data.append(child_key_data)
 
             data_item[child.name] = child_data
-     
+
         print(f'data_item {data_item}')
 
         return JsonResponse({'data_item': data_item})
-    
 
 
-
-app.run(debug=True)
+# app.run(debug=True)
