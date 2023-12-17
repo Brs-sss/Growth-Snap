@@ -56,25 +56,27 @@ bindGenderChange(e){
   })
 },
   
-  handleSubmit() {
-    if(this.data.birthdate == '')
-    {
-      wx.showToast({
-        title: '出生日期不可为空',
-        icon: 'error',
-        duration: 1000
-      })
-      return
-    }
+  handleSubmit() 
+  {
     if(this.data.inputName == '')
     {
       wx.showToast({
-        title: '姓名不可为空',
+        title: '未填写姓名',
         icon: 'error',
         duration: 1000
       })
       return
     }
+    if(this.data.birthdate == '')
+    {
+      wx.showToast({
+        title: '未填写出生日期',
+        icon: 'error',
+        duration: 1000
+      })
+      return
+    }
+    
     var that = this
     wx.getStorage({
       key: 'openid',  // 要获取的数据的键名
