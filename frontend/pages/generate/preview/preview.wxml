@@ -10,7 +10,7 @@
     </view>
 
   <view class='custom-tabbar'>
-  <view class='icons'>
+  <!-- <view class='icons'>
     <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
     <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
     <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
@@ -21,7 +21,23 @@
     <text bind:tap="reselectTemplate">更换模板</text>
     <text bind:tap="handleDownload">保存到本地</text>
     <text bind:tap="handleShare">分享</text>
-  </view>
+  </view> -->
+  <button class="action-item">
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <text class="icons-text" bind:tap="reselectEvent">更换事件</text>
+  </button>
+  <button class="action-item">
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <text class="icons-text" bind:tap="reselectTemplate">更换信息</text>
+  </button>
+  <button class="action-item">
+    <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <text class="icons-text" bind:tap="handleDownload">保存到本地</text>
+  </button>
+  <button class="action-item" open-type="share">
+    <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+    <text class="icons-text" bind:tap="handleShare">分享</text>
+  </button>
 </view>
 
     <!-- <view id="button-box">

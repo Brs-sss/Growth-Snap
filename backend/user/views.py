@@ -7,8 +7,7 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, \
-    GenerateEventThumnail
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail, GenerateProfileThumnail
 import random
 import string
 import hashlib
@@ -18,13 +17,13 @@ import shutil
 from urllib.parse import unquote
 from manage import host_url
 
-# from flask import Flask, jsonify
-# from flasgger import Swagger
+from flask import Flask, jsonify
+from flasgger import Swagger
 
-# app = Flask(__name__)
-# swagger = Swagger(app)
+app = Flask(__name__)
+swagger = Swagger(app)
 
-# import fitz
+import fitz
 
 # Create your views here.
 
@@ -42,7 +41,7 @@ def login(request):
         description: 登录信息
         required: true
         schema:
-          coda:
+          code:
             type: string
             description: 用户授权码
         schema:
@@ -138,14 +137,13 @@ def registerFamily(openid):
     #     print('hashed: ', sha256_hash)
     return sha256_hash
 
-
 # todo: 家庭口令的设置和验证
 # @app.route('/api/register/', methods=['POST'])
 def register(request):
     """ 用户注册接口
     ---
     parameters:
-      - name: username
+      - name: data
         in: body
         description: 用户注册信息
         required: true
@@ -197,6 +195,16 @@ def register(request):
             family_id = registerFamily(openid)
             # 创建新家庭
             family = Family.objects.create(family_id=family_id)
+        elif token[0:9] == 'family_id':
+            family_id = token[9:]
+            print(f'family_id here: {family_id}')
+            # 验证家庭是否存在
+            family = Family.objects.get(family_id=family_id)
+            if family == None:
+                return JsonResponse({
+                    'msg': 'family does not exist'
+                })
+
         else:
             # 验证家庭是否存在
             # token不能为默认值：000000
@@ -225,6 +233,11 @@ def register(request):
             return JsonResponse({
                 'msg': 'username already exists'
             })
+        if User.objects.filter(openid=openid).exists():
+            # 如果存在，报错：openid already exists
+            return JsonResponse({
+                'msg': 'openid already exists'
+            })
         else:
             # 如果不存在，就创建新用户
             user = User.objects.create(
@@ -237,6 +250,16 @@ def register(request):
             return JsonResponse({
                 'msg': 'register success'
             })
+
+
+def getFamilyID(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        family_id = User.objects.get(openid=openid).family.family_id
+        print(f'family_id {family_id}')
+        return JsonResponse({
+            'family_id': family_id
+        })
 
 
 # @app.route('/api/user/generate_family_token/', methods=['POST'])
@@ -753,13 +776,55 @@ def registerProfileImage(request):
             with open(image_path + f'{profile_image.name}', 'wb') as destination:
                 for chunk in profile_image.chunks():
                     destination.write(chunk)
+            GenerateProfileThumnail(src_path=image_path + f'{profile_image.name}', dest_path=image_path, image_name=profile_image.name, target_width=400)
         return JsonResponse({'message': 'profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
 
 
 # 加载主页 只返回必要的信息
+# @app.route('/api/show/all/', methods=['GET'])
 def loadShowPage(request):
+    """加载主页接口，只返回必要的信息
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+      - name: start
+        in: query
+        description: 开始的位置
+        required: true
+        type: integer
+        example: 1
+      - name: delta
+        in: query
+        description: 
+        required: true
+        type: boolean
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  blocks_list:
+                    description: 事件列表
+                    type: array
+                    example: [{author: "大状", content: "hhhhhhhhhhh", day: "14", event_id: "67dcf24eb695ba2b4d9d7672ecdb3a",imgSrc: "http://43.138.42.129:8000/static/Thumbnail/67dcf24eb695ba2b4d9d7672ecdb3a/0_4TDWPodKu4eee73998b55.jpeg",month: "12月",title: "莫说青山多障碍",type: "event",year: "2023"}]
+                  start:
+                    description: 加载的最后一个事件序号
+                    type: integer
+                    example: 10
+                    
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         openid = request.GET.get('openid')
         start = request.GET.get('start', '0')
@@ -834,7 +899,43 @@ def loadShowPage(request):
 
 
 # 加载搜索结果页面
+# @app.route('/api/show/search/', methods=['GET'])
 def loadSearchPage(request):
+    """加载搜索结果，支持模糊搜索
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+      - name: searchKey
+        in: query
+        description: 搜索的关键字
+        required: true
+        type: string
+        example: 生日
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  blocks_list:
+                    description: 搜索结果事件列表
+                    type: array
+                    example: [{author: "大状", content: "hhhhhhhhhhh今天过生日", day: "14", event_id: "67dcf24eb695ba2b4d9d7672ecdb3a",imgSrc: "http://43.138.42.129:8000/static/Thumbnail/67dcf24eb695ba2b4d9d7672ecdb3a/0_4TDWPodKu4eee73998b55.jpeg",month: "12月",title: "莫说青山多障碍",type: "event",year: "2023"}]
+                  start:
+                    description: 加载的最后一个事件序号
+                    type: integer
+                    example: 10
+                    
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         openid = request.GET.get('openid')
         search_key = unquote(request.GET.get('searchKey'))
@@ -888,8 +989,40 @@ def loadSearchPage(request):
 
         return JsonResponse({'blocks_list': blocks_list})
 
-
+# @app.route('/api/plan/main/', methods=['GET'])
 def loadPlanPage(request):
+    """加载计划页面接口，根据事件排序显示部分计划
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  plan_list:
+                    description: 根据事件排序部分计划列表
+                    type: array
+                    example: [{icon: "/image/plan/icons/computer.png", title: "测试"},{icon: "/image/plan/icons/piano.png", title: "钢琴计划"}]
+                  not_finished_todo_list:
+                    description: 未完成todo列表
+                    type: array
+                    example: [{complete: false, leftDay: 1, task: 明天的todo, todo_id: a978e02543fb63348f6b67ad292f41b995490}]
+                  finished_todo_list:
+                    description: 已完成todo列表
+                    type: array
+                    example: [{complete: false, leftDay: 0, task: 今天的todo, todo_id: jdfnsfdsnfdfb631f6b67ad292fb9dvs32134}]
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     print('Enter load plan page')
     if request.method == 'GET':
         openid = request.GET.get('openid')
@@ -927,8 +1060,32 @@ def loadPlanPage(request):
             'plan_list': plan_list
         })
 
-
+# @app.route('/api/plan/all/', methods=['GET'])
 def loadAllPlanPage(request):
+    """加载所有计划接口
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  plan_list:
+                    description: 所有计划列表
+                    type: array
+                    example: [{icon: "/image/plan/icons/piano.png",title: "钢琴计划"},{icon: "/image/plan/icons/brush.png",title: "画画计划"},{icon: "/image/plan/icons/travel.png",title: "环球旅行"}]
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'GET':
         openid = request.GET.get('openid')
         print(openid)
@@ -943,8 +1100,47 @@ def loadAllPlanPage(request):
             'plan_list': plan_list,
         })
 
-
+# @app.route('/api/plan/certain_plan/', methods=['GET'])
 def loadCertainPlan(request):
+    """加载具体计划页面接口
+    ---
+    parameters:
+      - name: openid
+        in: query
+        description: 用户id
+        required: true
+        type: string
+        example: ndkjdl21b311dk2
+      - name: plan
+        in: query
+        description: 请求计划的标题
+        required: true
+        type: string
+        example: 钢琴计划
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                    description: 响应成功
+                    type: string
+                    example: ok
+                  icon:
+                    description: 计划图标
+                    type: string
+                    example: '/image/plan/icons/piano.png'
+                  todo:
+                    description: todo列表
+                    type: array
+                    example: [{check: true, ddl: "2023-12-07",task: "六级考试",todo_id: "25c570342564e6c57fe45ed329526ba"},{check: false, ddl: "2023-12-15", task: "七级考试", todo_id: "cc05e9fea06491ee036f7782e6e448b"}]
+                    
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """  
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -964,8 +1160,41 @@ def loadCertainPlan(request):
             'todos': todo_list,
         })
 
-
+@app.route('/api/plan/delete_plan/', methods=['POST'])
 def deletePlan(request):
+    """删除计划接口
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 删除计划信息
+        required: true
+        schema:
+          type: object
+          properties:
+              openid:
+                type: string
+                description: 用户ID
+                example: j324dbjw4321wbq
+              planTitle:
+                type: string
+                description: 待删除计划标题
+                example: 钢琴计划
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                    description: 响应成功
+                    type: string
+                    enum: ['ok', 'error']
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """  
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
@@ -980,8 +1209,61 @@ def deletePlan(request):
             'message': 'ok',
         })
 
-
+@app.route('/api/user/get_user_info/', methods=['GET'])
 def getUserInfo(request):
+    """获得用户信息接口
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 删除计划信息
+        required: true
+        schema:
+          type: object
+          properties:
+              openid:
+                type: string
+                description: 用户ID
+                example: j324dbjw4321wbq
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  credit: 
+                    type: integer
+                    description: 积分
+                    example: 74
+                  event_number:
+                    type: integer
+                    description: 事件数量
+                    example: 14
+                  label:
+                    type: string
+                    description: 家庭标签
+                    example: 爷爷
+                  plan_number:
+                    type: integer
+                    description: 计划数量
+                    example: 4               
+                  profile_image:
+                    type: string
+                    description: 头像图片地址
+                    example: "http://43.138.42.129:8000/static/ImageBase/oq64WzkR88/sm43e674c3.png"
+                  text_number: 
+                    type: integer
+                    description: 文字数量
+                    example: 0 
+                  username: 
+                    type: string
+                    description: 用户名
+                    example: "爷爷"   
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """  
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -989,17 +1271,58 @@ def getUserInfo(request):
         image_list = os.listdir(image_path)
         profile_image = host_url + f'{image_path}/' + image_list[0]
         print(f'profile_image {profile_image}')
-        event_number = len(Event.objects.filter(user__family=now_user.family))
-        plan_number = len(Plan.objects.filter(user__family=now_user.family))
-        text_number = len(Text.objects.filter(user__family=now_user.family))
+        event_number = len(Event.objects.filter(user=now_user))
+        plan_number = len(Plan.objects.filter(user=now_user))
+        text_number = len(Text.objects.filter(user=now_user))
         credit = event_number * 5 + plan_number * 1 + text_number * 5
 
         return JsonResponse({'username': now_user.username, 'label': now_user.label, 'profile_image': profile_image,
                              'event_number': event_number, 'plan_number': plan_number, 'text_number': text_number,
                              'credit': credit})
 
-
+# @app.route('/api/plan/add_plan/', methods=['POST'])
 def addPlan(request):
+    """添加计划接口
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 添加计划信息
+        required: true
+        schema:
+          type: object
+          properties:
+              openid:
+                type: string
+                description: 用户ID
+                example: j324dbjw4321wbq
+              child:
+                type: string
+                description: 选择的孩子
+                example: 小明
+              icon:
+                type: string
+                description: 选择的计划图标
+                example: /image/plan/icons/piano.png
+              title:
+                type: string
+                description: 添加的计划标题
+                example: 钢琴计划
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                     description: 响应成功提示
+                     type: string 
+                     example: Successfully add the plan. 
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """
     if request.method == 'POST':
         print('enter add plan')
         data = json.loads(request.body)
@@ -1020,8 +1343,53 @@ def addPlan(request):
         print(new_plan)
         return JsonResponse({'message': 'Successfully add the plan.'})
 
-
+# @app.route('/api/plan/add_todo/', methods=['POST'])
 def addTodo(request):
+    """添加todo接口
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 添加todo信息
+        required: true
+        schema:
+          type: object
+          properties:
+              openid:
+                type: string
+                description: 用户ID
+                example: j324dbjw4321wbq
+              title:
+                type: string
+                description: todo标题
+                example: 通过八级考试
+              id:
+                type: string
+                description: todoID
+                example: he21iu3y1o3yekqjw
+              deadline:
+                type: string
+                description: todo的ddl日期
+                example: 2023-12-16
+              planTitle:
+                type: string
+                description: 添加todo对应plan的计划
+                example: 钢琴计划
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                     description: 响应成功提示
+                     type: string 
+                     example: Successfully add the todo. 
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """   
     if request.method == 'POST':
         print('enter add todo')
         data = json.loads(request.body)
@@ -1035,8 +1403,53 @@ def addTodo(request):
         new_todo = Todo.objects.create(user=now_user, plan=plan, title=title, deadline=deadline, todo_id=todo_id)
         return JsonResponse({'message': 'Successfully add the todo.'})
 
-
+# @app.route('/api/plan/update_todo/', methods=['POST'])
 def updateTodo(request):
+    """更新todo接口
+    ---
+    parameters:
+      - name: data
+        in: body
+        description: 添加todo信息
+        required: true
+        schema:
+          type: object
+          properties:
+              openid:
+                type: string
+                description: 用户ID
+                example: j324dbjw4321wbq
+              title:
+                type: string
+                description: todo标题
+                example: 通过八级考试
+              id:
+                type: string
+                description: todoID
+                example: he21iu3y1o3yekqjw
+              deadline:
+                type: string
+                description: todo的ddl日期
+                example: 2023-12-16
+              planTitle:
+                type: string
+                description: 添加todo对应plan的计划
+                example: 钢琴计划
+    responses:
+      '200':
+          description: 成功响应
+          schema:
+                type: object
+                properties:
+                  message:
+                     description: 响应成功提示
+                     type: string 
+                     example: Successfully add the todo. 
+      '400':
+          description: 请求参数错误
+      '500':
+          description: 服务器内部错误
+    """   
     if request.method == 'POST':
         print('enter update todo')
         data = json.loads(request.body)
@@ -1325,7 +1738,8 @@ def addChildImage(request):
             with open(image_path + f'{uploaded_image.name}', 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
-                print('success')
+            GenerateProfileThumnail(src_path=image_path + f'{uploaded_image.name}', dest_path=image_path, image_name=uploaded_image.name, target_width=400)
+            print('success')
         return JsonResponse({'message': 'child profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
@@ -1570,4 +1984,5 @@ def loadData(request):
         return JsonResponse({'data_item': data_item})
 
 
-# app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -45,10 +45,12 @@
         </view>
         <!-- 已经完成的计划项 -->
         <view class="todo-item" wx:else>
+          <view class="todo-checkbox-text">
           <checkbox-group id="checkbox{{index}}" bindchange="checkTask">
             <checkbox value="{{item.task}}" checked="ture" bindChange="checkTask"></checkbox>
           </checkbox-group>
           <view class="task_name" style="color: rgb(70, 101, 109); text-decoration: line-through;">{{item.task}}</view>
+          </view>
           <view class="left_days" style="color: rgb(70, 101, 109)">已完成</view>
           <view class="delete-btn" bindtap="deleteTodo" data-index="{{index}}">
           <image src="/image/plan/trash.png" style="height: 3vh; width: 3vh;opacity: 0.4;"/>

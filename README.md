@@ -114,6 +114,8 @@ python views.py
 
 对`views.py`进行修改，文档会自动重加载。注意存在语法错误时会自动结束，需要在修正后重新运行。
 
+要导出文件，则点击`/apispec_1.json`，复制所有内容使用chatGPT修改成合法格式，使用https://app.apifox.com/，即可转化为md、pdf等类型文件。
+
 #### 添加修改API信息
 
 参见https://github.com/flasgger/flasgger，目前`views.py`中使用了 Swagger 的 YAML 格式描述。

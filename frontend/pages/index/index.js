@@ -12,6 +12,7 @@ Page({
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'), // 如需尝试获取用户信息可改为false
     host_: `${app.globalData.localUrl}`,
     openid: '', // 用户的openid
+    familyid: ''
   },
   // 事件处理函数
   bindViewTap() {
@@ -19,8 +20,14 @@ Page({
       url: '../logs/logs'
     })
   },
-  onLoad() {
-    console.log("load")
+  onLoad(options) {
+    console.log('options: ', options)
+    if (options.family_id)
+    {
+      this.setData({
+        familyid: options.family_id
+      })
+    }
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
@@ -100,11 +107,22 @@ Page({
                     icon: 'none',
                     duration: 1000,
                     success: function () {
-                      setTimeout(function () {
-                        wx.redirectTo({
-                          url: '../register/register?openid='+res.data.openid
-                        })
-                      }, 1000)
+                      if (that.data.familyid == '')
+                      {
+                        setTimeout(function () {
+                          wx.redirectTo({
+                            url: '../register/register?openid='+res.data.openid
+                          })
+                        }, 1000)
+                      }
+                      else{
+                        setTimeout(function () {
+                          wx.redirectTo({
+                            url: '../register_fix/register_fix?openid='+res.data.openid+'&familyid='+that.data.familyid
+                          })
+                        }, 1000)
+                      }
+                      
                     }
                   })
                 }
@@ -122,6 +140,12 @@ Page({
                       }, 1000)
                     }
                   })
+                  
+                //   setTimeout(function () {
+                //     wx.redirectTo({
+                //       url: '../register_fix/register_fix?openid='+res.data.openid+'&familyid='+that.data.familyid
+                //     })
+                //   }, 1000)
                 }
                 
                 // wx.switchTab({
