@@ -2,7 +2,7 @@
 
 .overall-outfit{
   padding: 20rpx;
-  width: 100%;
+  width: 90%;
 }
 
 .weui-cells__title {
@@ -262,7 +262,10 @@
 
 .container_6 {
   grid-area: F;
-  width: 100%;
+  width: 90%;
+  margin: auto;
+  /* margin-left: 5%; */
+  /* margin-right: 5%; */
   justify-self: center;
   font-size: 14px;
   display: flex;

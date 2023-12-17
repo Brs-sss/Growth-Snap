@@ -1,0 +1,74 @@
+<!--pages/register/register.wxml-->
+
+<view class="whole-page-grid">
+<view class="weui-form__control-area">
+  <view class="weui-cells__group weui-cells__group_form">
+    <view class="weui-cells weui-cells_form">
+      <view class="weui-cell weui-cell_active">
+        <view class="weui-cell__hd"><label class="weui-label">昵称</label></view>
+        <view class="weui-cell__bd weui-flex">
+          <input
+                class="weui-input"
+                type="text"
+                placeholder="请输入"
+                placeholder-class="weui-input__placeholder"
+                bindinput="handleInputUsername"
+            />
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_active">
+        <view class="weui-cell__hd"><label class="weui-label">上传头像</label></view>
+      </view>
+          <view id="image-grid-container" style="{{imgGridStyle}}">
+              <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="changeImage" data-index="{{index}}">
+                  <image src="{{item}}" mode="aspectFill" data-index="{{index}}"></image> 
+              </view>
+              <view wx:if="{{firsttime_selected_img}}" class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
+      </view>
+    
+      <view class="weui-cell weui-cell_active">
+          <view class="weui-cell__hd"><label class="weui-label">家庭验证码</label></view>
+            <view class="weui-cell__bd weui-flex">
+              <input
+                    class="weui-input"
+                    type="text"
+                    placeholder="请输入"
+                    placeholder-class="weui-input__placeholder"
+                    bindinput="handleInputFamilyId"
+                    disabled='true'
+                    value='已填写验证码'
+                />
+            </view>
+          </view>
+        </view>
+        <p class='create-familyId' bind:tap='create_familyId' style='display: none'>创建新家庭</p>
+        <p class='cancel' style='display: none;' bind:tap='cancel'>取消</p>
+    </view>
+  </view>
+</view>
+
+<view class="weui-form__control-area" style="margin-top: 12vh;">
+  <view class="weui-cells__group weui-cells__group_form">
+    <view class="weui-cells weui-cells_form">
+      <view class="weui-cell weui-cell_active">
+        <view class="weui-cell__hd"><label class="weui-label">家庭角色</label></view>
+          <view class="weui-cell__bd weui-flex">
+            <input
+                  class="weui-input"
+                  type="text"
+                  placeholder="请输入"
+                  placeholder-class="weui-input__placeholder"
+                  bindinput="handleInputLabel"
+              />
+          </view>
+        </view>
+    </view>
+  </view>
+</view>
+
+
+  <button class="submit" bindtap="handleSubmit">提交</button>
+
+
+<!-- </view> -->

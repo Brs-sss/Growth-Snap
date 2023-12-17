@@ -153,7 +153,7 @@
             </view>
           </block>
         </view>
-        <button bind:tap="addEvent"     data-category="video">生成</button>
+        <button bind:tap="addEvent"   style="margin-top: 2vh;"  data-category="video">生成</button>
     </view>
 
     <!-- <view class="weui-form__opr-area">

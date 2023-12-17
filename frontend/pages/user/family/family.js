@@ -4,7 +4,8 @@ function LoadFamilyPage(that){
   // var that = this
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
-    success: function (res) { 
+    success: function (res) 
+    { 
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       that.setData({
@@ -41,6 +42,18 @@ function LoadFamilyPage(that){
             console.log('yes', that.data.token, that.data.time)
             
           }
+          wx.request({
+            url: that.data.host_+'user/api/get_familyid?openid='+openid,
+            method: 'GET',
+            success: function(res){
+              console.log('res: ', res)
+              // familyid = res.data.family_id
+              that.setData({
+                familyid: res.data.family_id
+              })
+              console.log('family_id: ', that.data.familyid)
+            }
+          })
           
         },
 
@@ -49,6 +62,9 @@ function LoadFamilyPage(that){
     fail:function(res){
       console.log('get openid failed: ',res)
     }
+
+    
+
    })
   //  wx.getStorage({
   //    key: 'generate_token',
@@ -70,6 +86,8 @@ function LoadFamilyPage(that){
   //      })
   //    }
   //  })
+
+    
 }
 
 const app = getApp();
@@ -101,7 +119,8 @@ Page({
     token: 'token',
     time: 0,
     countdown: '',
-    openid: ''
+    openid: '',
+    familyid: ''
   },
   addmember() {
     // TODO: 跳转到对应页面的处理逻辑
@@ -113,8 +132,30 @@ Page({
         if (!res.cancel) {
           if (res.tapIndex === 0) {　// 执行转发邀请链接的操作
             console.log('share the link')
-          } else if (res.tapIndex === 1) {　// 执行生成验证码的操作
-            if (that.data.generate_token == true)
+          } else if (res.tapIndex === 1)
+           {　// 执行生成验证码的操作
+            
+            // that.setData({
+            //   generate_token: true,
+            //   time: 60*1000*1
+            // })
+            // wx.setStorage({
+            //   key:'generate_token',
+            //   data: 'true'
+            // })
+          }
+        }
+      }
+    })
+    // wx.navigateTo({
+    //   url: '/pages/user/family/addmember/addmember',
+    // })
+  },
+  familycode()
+  {
+    console.log('code')
+    var that = this
+    if (that.data.generate_token == true)
             {
               wx.showToast({
                 title: '家庭验证码已生成',
@@ -140,21 +181,6 @@ Page({
                 })
               },
             })
-            // that.setData({
-            //   generate_token: true,
-            //   time: 60*1000*1
-            // })
-            // wx.setStorage({
-            //   key:'generate_token',
-            //   data: 'true'
-            // })
-          }
-        }
-      }
-    })
-    // wx.navigateTo({
-    //   url: '/pages/user/family/addmember/addmember',
-    // })
   },
   tick (delta) {
     if (this.data.time == 0)
@@ -261,6 +287,13 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    
+    console.log('here')
+    console.log('familyid: ', this.data.familyid)
+    return {
+      title: '邀请你加入家庭~',
+      path: '/pages/index/index?family_id='+this.data.familyid,
+      imageUrl: '/image/user/card_image.jpg',
+    }
   }
 })

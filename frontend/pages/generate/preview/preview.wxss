@@ -112,8 +112,9 @@ scroll-view ::-webkit-scrollbar {
 
 
 .custom-tabbar{
+  padding-bottom: 1vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
   margin-top: 10vh;
   /* bottom: 0vh; */
@@ -144,14 +145,24 @@ scroll-view ::-webkit-scrollbar {
   align-items: center;
   justify-content: space-between;
 }
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: none;
+  padding: 0;
+  font-size: 28rpx;
+}
 
 .icons-text {
   font-size: 1.3vh;
-  display: flex;
+  /* display: flex;
   flex-direction: row;
   margin-left: 9.5%;
   width: 77%;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1vh;
+  margin-bottom: 1vh; */
 }

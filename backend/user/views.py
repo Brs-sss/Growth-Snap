@@ -7,7 +7,7 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail, GenerateProfileThumnail
 import random
 import string
 import hashlib
@@ -195,6 +195,16 @@ def register(request):
             family_id = registerFamily(openid)
             # 创建新家庭
             family = Family.objects.create(family_id=family_id)
+        elif token[0:9] == 'family_id':
+            family_id = token[9:]
+            print(f'family_id here: {family_id}')
+            # 验证家庭是否存在
+            family = Family.objects.get(family_id=family_id)
+            if family == None:
+                return JsonResponse({
+                    'msg': 'family does not exist'
+                })
+
         else:
             # 验证家庭是否存在
             # token不能为默认值：000000
@@ -222,6 +232,11 @@ def register(request):
             return JsonResponse({
                 'msg': 'username already exists'
             })
+        if User.objects.filter(openid=openid).exists():
+            # 如果存在，报错：openid already exists
+            return JsonResponse({
+                'msg': 'openid already exists'
+            })
         else:
             # 如果不存在，就创建新用户
             user = User.objects.create(
@@ -234,6 +249,17 @@ def register(request):
             return JsonResponse({
                 'msg': 'register success'
             })
+
+
+def getFamilyID(request):
+    if request.method == 'GET':
+        openid = request.GET.get('openid')
+        family_id = User.objects.get(openid=openid).family.family_id
+        print(f'family_id {family_id}')
+        return JsonResponse({
+            'family_id': family_id
+        })
+
 
 @app.route('/api/user/generate_family_token/', methods=['POST'])
 def generateFamilyToken(request):
@@ -746,6 +772,7 @@ def registerProfileImage(request):
             with open(image_path + f'{profile_image.name}', 'wb') as destination:
                 for chunk in profile_image.chunks():
                     destination.write(chunk)
+            GenerateProfileThumnail(src_path=image_path + f'{profile_image.name}', dest_path=image_path, image_name=profile_image.name, target_width=400)
         return JsonResponse({'message': 'profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
@@ -1701,7 +1728,8 @@ def addChildImage(request):
             with open(image_path + f'{uploaded_image.name}', 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
-                print('success')
+            GenerateProfileThumnail(src_path=image_path + f'{uploaded_image.name}', dest_path=image_path, image_name=uploaded_image.name, target_width=400)
+            print('success')
         return JsonResponse({'message': 'child profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
