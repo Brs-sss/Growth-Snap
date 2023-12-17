@@ -423,21 +423,6 @@ Page({
       wx.getStorage({
         key: 'openid',  // 要获取的数据的键名
         success: function (res) { 
-          // const intervalId = setInterval(() => {
-          //   // 执行定时任务
-          //   console.log('定时任务执行中...');
-          //   wx.request({
-          //     url: that.data.host_+'user/api/generate/video_process'+'?openid='+openid+'&video_title='+that.data.video_title,
-          //     method: 'GET',
-          //     success: function(res){
-          //       console.log(res.data.value)
-          //       that.setData({
-          //         percent_int: res.data.value
-          //       })
-          //     }
-          //   })
-          // }, 500);
-          // 从本地存储中获取数据,在index.js文件中保存建立的
           let openid=res.data
           wx.request({
             url: that.data.host_+'user/api/generate/'+that.data.comeFrom, //et表示只求取event和text

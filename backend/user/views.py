@@ -7,7 +7,7 @@ import requests
 import json
 from django.contrib.contenttypes.models import ContentType
 from .models import User, Family, BaseRecord, Event, Text, Data, Record, Plan, Child, Todo
-from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail
+from .utils import ListToString, StringToList, GenerateDiaryPDF, GenerateThumbnail, GenerateVideo, GenerateLongImage, GenerateEventThumnail, GenerateProfileThumnail
 import random
 import string
 import hashlib
@@ -773,6 +773,7 @@ def registerProfileImage(request):
             with open(image_path + f'{profile_image.name}', 'wb') as destination:
                 for chunk in profile_image.chunks():
                     destination.write(chunk)
+            GenerateProfileThumnail(src_path=image_path + f'{profile_image.name}', dest_path=image_path, image_name=profile_image.name, target_width=400)
         return JsonResponse({'message': 'profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
@@ -1337,7 +1338,8 @@ def addChildImage(request):
             with open(image_path + f'{uploaded_image.name}', 'wb') as destination:
                 for chunk in uploaded_image.chunks():
                     destination.write(chunk)
-                print('success')
+            GenerateProfileThumnail(src_path=image_path + f'{uploaded_image.name}', dest_path=image_path, image_name=uploaded_image.name, target_width=400)
+            print('success')
         return JsonResponse({'message': 'child profile image submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})

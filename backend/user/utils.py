@@ -460,8 +460,28 @@ def GenerateVideo(image_path_list, audio_index, video_title, label, openid):
     # video.reader.close()
     # video.audio.reader.close_proc()
 
-
-
+# 对profile进行压缩，取中间的部分
+def GenerateProfileThumnail(src_path, dest_path, image_name, target_width=400):
+    try:
+        # 打开图像文件
+        if not os.path.exists(dest_path):
+             os.makedirs(dest_path)
+             
+        with Image.open(src_path) as img:
+            # 调整大小并保存缩略图
+            img = img.convert('RGB')
+            width, height = img.size
+            print(f'width: {width}, height: {height}')
+            # 先取正方形
+            if width > height:
+                img = img.crop((int((width - height) / 2), 0, int((width + height) / 2), height))
+            else:
+                img = img.crop((0, int((height - width) / 2), width, int((height + width) / 2)))
+            img_resized = img.resize((target_width, target_width))
+            img_resized.save(dest_path+image_name, "JPEG")
+            print("Profile Thumbnail created successfully.")
+    except Exception as e:
+        print(f"Error creating thumbnail: {e}")
 
 
 
