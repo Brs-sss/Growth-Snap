@@ -13,9 +13,6 @@ class Family(models.Model):
     # family id
     family_id = models.CharField(max_length=65, unique=True, default='')
 
-
-
-
     def __str__(self):
         return self.token
 
@@ -52,7 +49,7 @@ class BaseRecord(models.Model):
     # 每一个用户都有自己的事件、想法、记录和计划，所以这里用外键可以实现一对多的关系(一个用户对应多个事件、想法、记录和计划)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     #
-    children = models.ManyToManyField(Child,blank=True)
+    children = models.ManyToManyField(Child, blank=True)
 
     # event, text, data
     record_type = models.CharField(max_length=10, default='event')
@@ -71,7 +68,7 @@ class Event(BaseRecord):
     content = models.CharField(max_length=1024)
     tags = models.CharField(max_length=200)
     event_id = models.CharField(max_length=65, default="")
-    event_date = models.DateField(null=True,default="2008-01-01")
+    event_date = models.DateField(null=True, default="2008-01-01")
 
     def __str__(self):
         return str(
@@ -112,7 +109,7 @@ class Record(models.Model):
     key = models.CharField(max_length=24)
     value = models.FloatField(max_length=24)
     # corresponding data record
-    data_id = models.CharField(max_length=65, default=""    )
+    data_id = models.CharField(max_length=65, default="")
 
 
 class Plan(models.Model):

@@ -88,11 +88,12 @@ APP_SECRET  = "8b2f15860acffc34690fc374907fc2d0"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'test_db',
     }
 }
 
-# # mysql
+# mysql
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.mysql",
