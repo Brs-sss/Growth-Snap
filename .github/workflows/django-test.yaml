@@ -1,4 +1,4 @@
-name: GitHub Action Test
+name: Django Test
 on: [push, pull_request]
 jobs:
   build:
