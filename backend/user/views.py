@@ -17,13 +17,13 @@ import shutil
 from urllib.parse import unquote
 from manage import host_url
 
-from flask import Flask, jsonify
-from flasgger import Swagger
+# from flask import Flask, jsonify
+# from flasgger import Swagger
 
-app = Flask(__name__)
-swagger = Swagger(app)
+# app = Flask(__name__)
+# swagger = Swagger(app)
 
-import fitz
+# import fitz
 
 # Create your views here.
 
@@ -1160,7 +1160,7 @@ def loadCertainPlan(request):
             'todos': todo_list,
         })
 
-@app.route('/api/plan/delete_plan/', methods=['POST'])
+# @app.route('/api/plan/delete_plan/', methods=['POST'])
 def deletePlan(request):
     """删除计划接口
     ---
@@ -1209,7 +1209,7 @@ def deletePlan(request):
             'message': 'ok',
         })
 
-@app.route('/api/user/get_user_info/', methods=['GET'])
+# @app.route('/api/user/get_user_info/', methods=['GET'])
 def getUserInfo(request):
     """获得用户信息接口
     ---
