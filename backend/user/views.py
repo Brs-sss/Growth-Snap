@@ -29,6 +29,7 @@ import fitz
 
 
 event_image_base_path = 'static/ImageBase/'
+use_redis_cache = False
 
 
 # @app.route('/api/login/', methods=['POST'])
@@ -467,8 +468,8 @@ def submitEvent(request):
           description: 服务器内部错误
     """
     if request.method == 'POST':
+        print("received")
         data = json.loads(request.body)
-
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         event_id = data.get('event_id')
@@ -484,26 +485,30 @@ def submitEvent(request):
         family = now_user.family
         family_id = family.family_id
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
+
         type = data.get('type')
         if type == 'event':
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
                                              event_id=event_id, event_date=event_date)
+
             image_path = './static/ImageBase/' + f'{event_id}/'
             if not os.path.exists(image_path):
                 os.mkdir(image_path)
 
-            cache_key = f"loadShowPage:{family_id}:e"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:e"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
 
-        cache_key = f"loadShowPage:{family_id}:etd"
-        if cache.get(cache_key) is not None:
-            cache.delete(cache_key)
+        if use_redis_cache:
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
 
         now_family = now_user.family
         children = data.get('children')
@@ -635,6 +640,7 @@ def submitData(request):
           description: 服务器内部错误
     """
     if request.method == 'POST':
+        print('here')
         data = json.loads(request.body)
         openid = data.get('openid')
         user = User.objects.get(openid=openid)
@@ -645,7 +651,6 @@ def submitData(request):
         records = data.get('records')
         now_family = user.family
         children = data.get('children')
-        print(records)
         records_json = json.loads(records)
         index = 0
         keyList = []
@@ -837,10 +842,12 @@ def loadShowPage(request):
         family_id = family.family_id
 
         # Redis cache
-        cache_key = f"loadShowPage:{family_id}:{types}"
-        cached_result = cache.get(cache_key)
+        if use_redis_cache:
+            cache_key = f"loadShowPage:{family_id}:{types}"
+            cached_result = cache.get(cache_key)
+        
 
-        if cached_result is not None:
+        if use_redis_cache and cached_result is not None:
             # 如果缓存中有结果，则返回缓存的结果 
             now_user_blocks = cached_result
         else:
@@ -854,7 +861,9 @@ def loadShowPage(request):
             now_user_blocks = sorted(
                 list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
                 key=lambda x: (x.date, x.time), reverse=True)
-            cache.set(cache_key, now_user_blocks, timeout=60)
+            
+            if use_redis_cache:
+                cache.set(cache_key, now_user_blocks, timeout=60)
         print(now_user_blocks.__len__())
 
         start = int(start)
@@ -1542,9 +1551,10 @@ def deleteEvent(request):
         try:
             event = Event.objects.get(event_id=event_id)
             family_id = event.user.family.family_id
-            cache_key = f"loadShowPage:{family_id}:etd"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:etd"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
             shutil.rmtree('static/ImageBase/' + event_id)
             shutil.rmtree('static/Thumbnail/' + event_id)
             Event.objects.get(event_id=event_id).delete()
@@ -1561,9 +1571,10 @@ def deleteText(request):
         try:
             event = Text.objects.get(text_id=text_id)
             family_id = event.user.family.family_id
-            cache_key = f"loadShowPage:{family_id}:etd"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:etd"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
             Text.objects.get(text_id=text_id).delete()
         except:
             return JsonResponse({'msg': 'error'})
@@ -1576,9 +1587,10 @@ def deleteData(request):
         try:
             event = Data.objects.get(data_id=data_id)
             family_id = event.user.family.family_id
-            cache_key = f"loadShowPage:{family_id}:etd"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:etd"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
             # 删除上传内容
             Data.objects.get(data_id=data_id).delete()
             # 删除数据信息

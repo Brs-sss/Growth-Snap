@@ -12,6 +12,8 @@ class TestRegister(TestCase):
         self.valid_code = '0f37GZ000FfdeR183E20097KRl37GZ0Q'
         self.openid = 'randomly_generated_ajksilkdnf'
         self.openid_another = 'randomly_generated_oadhfoaisnu'
+        
+        self.event_id = 'randomly_generated_asjfbooqfno'
 
     def test_register(self):
         # 未注册直接登陆
@@ -97,6 +99,42 @@ class TestRegister(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json['msg'], 'register success')
 
+    def test_upload_and_load(self):
+        # 用户注册
+        response = self.client.post(
+            reverse(user_view.register),
+            data={
+                'username': "test user",
+                'label': "test label",
+                'openid': self.openid,
+                'token': "new_family"
+            },
+            content_type='application/json'
+        )
+        json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json['msg'], 'register success')
+
+        # 上传事件
+        response = self.client.post(
+            reverse(user_view.submitEvent),
+            data={
+                'openid': self.openid,
+                'event_id': self.event_id,
+                'event_data': '2023-11-11',
+                'date': '2023-11-11',
+                'time': '12:00:00',
+                'title': 'test submit event',
+                'content': 'test submit event',
+                'tags': [{'info': 'test', 'checked': True}, {'info': 'real', 'checked': False}],
+                'children': [],
+                'author': 'test user',
+                'type': 'event',
+            },  
+            content_type='application/json'
+        )
+        json = response.json()
+        self.assertEqual(json['message'], 'Data submitted successfully')
 
 if __name__ == '__main__':
     unittest.main()
