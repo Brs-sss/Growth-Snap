@@ -468,7 +468,6 @@ def submitEvent(request):
           description: 服务器内部错误
     """
     if request.method == 'POST':
-        print("received")
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -640,14 +639,12 @@ def submitData(request):
           description: 服务器内部错误
     """
     if request.method == 'POST':
-        print('here')
         data = json.loads(request.body)
         openid = data.get('openid')
         user = User.objects.get(openid=openid)
         data_id = data.get('data_id')
         date = data.get('date')
         time = (data.get('time'))[:8]
-        children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
         now_family = user.family
         children = data.get('children')
@@ -664,7 +661,8 @@ def submitData(request):
                                            key=record['key'], value=record['value'], data_id=data_id)
             for name in children:
                 child = Child.objects.get(family=now_family, name=name)
-                new_rc.children.add(child)
+                if child is not None:
+                    new_rc.children.add(child)
 
         if keyList.__len__() == 1:
             title = keyList[0] + '记录'

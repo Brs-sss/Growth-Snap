@@ -2,18 +2,21 @@ import unittest
 
 from django.test import TestCase
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+import json
 
-from user.models import Family, User, Child, Event
 import user.views as user_view
 
 
 class TestRegister(TestCase):
     def setUp(self):
         self.valid_code = '0f37GZ000FfdeR183E20097KRl37GZ0Q'
-        self.openid = 'randomly_generated_ajksilkdnf'
-        self.openid_another = 'randomly_generated_oadhfoaisnu'
+        self.openid = 'manually_randomly_generated_ajksilkdnfu'
+        self.openid_another = 'manually_randomly_generated_oadhfoaisnu'
         
-        self.event_id = 'randomly_generated_asjfbooqfno'
+        self.event_id = 'manually_randomly_generated_asjfbooqfno'
+        self.text_id = 'manually_randomly_generated_wfqinfodnla'
+        self.data_id = 'manually_randomly_generated_paiqfnpqnvm'
 
     def test_register(self):
         # 未注册直接登陆
@@ -24,8 +27,8 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
-        self.assertEqual(json['exists'], 'false')
+        res_json = response.json()
+        self.assertEqual(res_json['exists'], 'false')
 
         # 进行注册，token错误
         response = self.client.post(
@@ -38,9 +41,9 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
+        res_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json['msg'], 'family does not exist')
+        self.assertEqual(res_json['msg'], 'family does not exist')
 
         # 进行注册，token为新建家庭
         response = self.client.post(
@@ -53,9 +56,9 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
+        res_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json['msg'], 'register success')
+        self.assertEqual(res_json['msg'], 'register success')
 
         # 生成家庭token
         response = self.client.post(
@@ -65,9 +68,9 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
+        res_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.curToken = json['token']
+        self.curToken = res_json['token']
 
         # 重复注册
         response = self.client.post(
@@ -80,9 +83,9 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
+        res_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json['msg'], 'username already exists')
+        self.assertEqual(res_json['msg'], 'username already exists')
 
         # 注册同一家庭新用户
         response = self.client.post(
@@ -95,9 +98,9 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
+        res_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json['msg'], 'register success')
+        self.assertEqual(res_json['msg'], 'register success')
 
     def test_upload_and_load(self):
         # 用户注册
@@ -111,9 +114,9 @@ class TestRegister(TestCase):
             },
             content_type='application/json'
         )
-        json = response.json()
+        res_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json['msg'], 'register success')
+        self.assertEqual(res_json['msg'], 'register success')
 
         # 上传事件
         response = self.client.post(
@@ -133,8 +136,65 @@ class TestRegister(TestCase):
             },  
             content_type='application/json'
         )
-        json = response.json()
-        self.assertEqual(json['message'], 'Data submitted successfully')
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Data submitted successfully')
+
+        # 上传事件对应图片
+        img_path = './user/res/test.png'
+        with open(img_path, 'rb') as img:
+            response = self.client.post(
+                reverse(user_view.addEventImage),
+                data={
+                    'event_id': self.event_id,
+                    'pic_index': 0,
+                    'type': 'event',
+                    'image': img
+                }
+            )
+            res_json = response.json()
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(res_json['message'], 'File uploaded successfully')
+
+        # 上传文本
+        response = self.client.post(
+            reverse(user_view.submitEvent),
+            data={
+                'openid': self.openid,
+                'event_id': self.text_id,
+                'event_date': '2023-11-11',
+                'date': '2023-11-11',
+                'time': '12:00:00',
+                'title': 'test submit event',
+                'content': 'test submit event',
+                'tags': [{'info': 'test', 'checked': True}, {'info': 'real', 'checked': False}],
+                'children': [],
+                'author': 'test user',
+                'type': 'event',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Data submitted successfully')
+
+        # 上传数据
+        response = self.client.post(
+            reverse(user_view.submitData),
+            data={
+                'openid': self.openid,
+                'data_id': self.data_id,
+                'date': '2023-11-11',
+                'time': '12:00:00',
+                'title': 'test submit event',
+                'records': json.dumps([{'key':'test_v1', 'value':'1'}, {'key':'test_v2', 'value':'2'}]),
+                'children': [],
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Data submitted successfully')
 
 if __name__ == '__main__':
     unittest.main()
