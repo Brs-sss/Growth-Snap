@@ -3,7 +3,7 @@ import * as echarts from '../../../components/ec-canvas/echarts';
 
 const app = getApp();
 
-var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow;
+var heightGlobal, widthGLobal, canvasGlobal, dprGlobal, chartNow=null;
 var timeline_template = 0; // 当前的模板id
 var colorSetIdex = 0; // 当前的色彩id
 var colorSet = [
@@ -944,7 +944,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    if(chartNow!=null){
+      chartNow.clear();
+    }
   },
 
   /**
