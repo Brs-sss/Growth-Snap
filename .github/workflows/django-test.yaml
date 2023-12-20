@@ -1,4 +1,4 @@
-name: GitHub Action Test
+name: Django Test
 on: [push, pull_request]
 jobs:
   build:
@@ -14,12 +14,17 @@ jobs:
         python-version: 3.8
         cache: pip
     # 安装项目依赖   
-    - name: Install requirements
+    - name: Install backend/requirements
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r backend/requirements.txt
+        wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
+        tar vxf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
+        sudo cp wkhtmltox/bin/wk* /usr/bin/
+        
     # 运行测试用例
     - name: Run tests
       run: |
+        cd backend
         python manage.py test
 
