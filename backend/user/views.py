@@ -998,7 +998,7 @@ def loadSearchPage(request):
         return JsonResponse({'blocks_list': blocks_list})
 
 # @app.route('/api/plan/main/', methods=['GET'])
-def loadPlanPage(request):
+def loadPlanMain(request):
     """加载计划页面接口，根据事件排序显示部分计划
     ---
     parameters:
@@ -1031,8 +1031,8 @@ def loadPlanPage(request):
       '500':
           description: 服务器内部错误
     """
-    print('Enter load plan page')
     if request.method == 'GET':
+        print('Enter load plan page')
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
         # 先获得最近7天的Todo
@@ -1042,8 +1042,6 @@ def loadPlanPage(request):
         seven_days_later = today + datetime.timedelta(days=7)
         todos = Todo.objects.filter(user__family=now_user.family).order_by('deadline')
         for todo in todos:
-            print(todo.deadline)
-            print(today <= todo.deadline <= seven_days_later)
             if today <= todo.deadline <= seven_days_later:
                 left_days = (todo.deadline - today).days
                 todo_item = {'task': todo.title, 'leftDay': left_days, 'complete': todo.is_finished,
@@ -1054,14 +1052,13 @@ def loadPlanPage(request):
                     not_finished_todo_list.append(todo_item)
         # 获取部分计划
         now_user_plans = Plan.objects.filter(user__family=now_user.family)
-        print(list(now_user_plans))
         plan_list = []
         for db_block in now_user_plans:
             block_item = {'title': db_block.title, 'icon': db_block.icon}
             plan_list.append(block_item)
             if plan_list.__len__() >= 2:
                 break
-        print(plan_list)
+        print("---------------here-------------")
         return JsonResponse({
             'finished_todo_list': finished_todo_list,
             'not_finished_todo_list': not_finished_todo_list,
@@ -1095,6 +1092,7 @@ def loadAllPlanPage(request):
           description: 服务器内部错误
     """
     if request.method == 'GET':
+        print('Enter load all plan page')
         openid = request.GET.get('openid')
         print(openid)
         now_user = User.objects.get(openid=openid)
@@ -1161,7 +1159,6 @@ def loadCertainPlan(request):
             todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
                          'todo_id': todo.todo_id}
             todo_list.append(todo_item)
-        print(todo_list)
         return JsonResponse({
             'message': 'ok',
             'icon': icon,
@@ -1456,26 +1453,25 @@ def updateTodo(request):
           description: 服务器内部错误
     """   
     if request.method == 'POST':
-        print('enter update todo')
+        print('Enter updateTodo ......')
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         todo_id = data.get('id')
         todo = Todo.objects.get(user__family=now_user.family, todo_id=todo_id)
         content = data.get('content')
-        print(content)
         if content == 'ddl':
             ddl = data.get('ddl')
             todo.deadline = ddl
-            print(ddl)
             todo.save()
         elif content == 'finish':
             finish = data.get('finish')
+            print('here', finish)
             todo.is_finished = finish
             todo.save()
         elif content == 'delete':
             todo.delete()
-        return JsonResponse({'message': 'Successfully update the todo.'})
+        return JsonResponse({'message': 'Successfully updated todo'})
 
 
 def loadEventDetail(request):
