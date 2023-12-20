@@ -29,6 +29,7 @@ import fitz
 
 
 event_image_base_path = 'static/ImageBase/'
+use_redis_cache = False
 
 
 # @app.route('/api/login/', methods=['POST'])
@@ -468,7 +469,6 @@ def submitEvent(request):
     """
     if request.method == 'POST':
         data = json.loads(request.body)
-
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         event_id = data.get('event_id')
@@ -484,26 +484,30 @@ def submitEvent(request):
         family = now_user.family
         family_id = family.family_id
         # print(openid,title,content,tags)  #aa ss ['j j j', 'dd']
+
         type = data.get('type')
         if type == 'event':
             new_event = Event.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                              tags=tags,
                                              event_id=event_id, event_date=event_date)
+
             image_path = './static/ImageBase/' + f'{event_id}/'
             if not os.path.exists(image_path):
                 os.mkdir(image_path)
 
-            cache_key = f"loadShowPage:{family_id}:e"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:e"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
         elif type == 'text':
             new_event = Text.objects.create(user=now_user, date=date, time=time, title=title, content=content,
                                             tags=tags,
                                             text_id=event_id)
 
-        cache_key = f"loadShowPage:{family_id}:etd"
-        if cache.get(cache_key) is not None:
-            cache.delete(cache_key)
+        if use_redis_cache:
+            cache_key = f"loadShowPage:{family_id}:etd"
+            if cache.get(cache_key) is not None:
+                cache.delete(cache_key)
 
         now_family = now_user.family
         children = data.get('children')
@@ -556,6 +560,7 @@ def addEventImage(request):
     """
     if request.method == 'POST':
         uploaded_image = request.FILES.get('image')
+        print('uploaded image', uploaded_image)
         pic_index = request.POST.get('pic_index')
         event_id = request.POST.get('event_id')
 
@@ -641,11 +646,9 @@ def submitData(request):
         data_id = data.get('data_id')
         date = data.get('date')
         time = (data.get('time'))[:8]
-        children = data.get('children')  # TODO: 绑定孩子信息
         records = data.get('records')
         now_family = user.family
         children = data.get('children')
-        print(records)
         records_json = json.loads(records)
         index = 0
         keyList = []
@@ -659,7 +662,8 @@ def submitData(request):
                                            key=record['key'], value=record['value'], data_id=data_id)
             for name in children:
                 child = Child.objects.get(family=now_family, name=name)
-                new_rc.children.add(child)
+                if child is not None:
+                    new_rc.children.add(child)
 
         if keyList.__len__() == 1:
             title = keyList[0] + '记录'
@@ -837,10 +841,12 @@ def loadShowPage(request):
         family_id = family.family_id
 
         # Redis cache
-        cache_key = f"loadShowPage:{family_id}:{types}"
-        cached_result = cache.get(cache_key)
+        if use_redis_cache:
+            cache_key = f"loadShowPage:{family_id}:{types}"
+            cached_result = cache.get(cache_key)
+        
 
-        if cached_result is not None:
+        if use_redis_cache and cached_result is not None:
             # 如果缓存中有结果，则返回缓存的结果 
             now_user_blocks = cached_result
         else:
@@ -854,7 +860,9 @@ def loadShowPage(request):
             now_user_blocks = sorted(
                 list(now_user_blocks_events) + list(now_user_blocks_data) + list(now_user_blocks_text),
                 key=lambda x: (x.date, x.time), reverse=True)
-            cache.set(cache_key, now_user_blocks, timeout=60)
+            
+            if use_redis_cache:
+                cache.set(cache_key, now_user_blocks, timeout=60)
         print(now_user_blocks.__len__())
 
         start = int(start)
@@ -1324,9 +1332,7 @@ def addPlan(request):
           description: 服务器内部错误
     """
     if request.method == 'POST':
-        print('enter add plan')
         data = json.loads(request.body)
-        print(data)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         title = data.get('title')
@@ -1341,7 +1347,7 @@ def addPlan(request):
             child = Child.objects.filter(name=child_name)[0]
             new_plan.children.add(child)
         print(new_plan)
-        return JsonResponse({'message': 'Successfully add the plan.'})
+        return JsonResponse({'message': 'Successfully added plan'})
 
 # @app.route('/api/plan/add_todo/', methods=['POST'])
 def addTodo(request):
@@ -1391,7 +1397,6 @@ def addTodo(request):
           description: 服务器内部错误
     """   
     if request.method == 'POST':
-        print('enter add todo')
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -1401,7 +1406,7 @@ def addTodo(request):
         deadline = data.get('deadline')
         todo_id = data.get('id')
         new_todo = Todo.objects.create(user=now_user, plan=plan, title=title, deadline=deadline, todo_id=todo_id)
-        return JsonResponse({'message': 'Successfully add the todo.'})
+        return JsonResponse({'message': 'Successfully added todo'})
 
 # @app.route('/api/plan/update_todo/', methods=['POST'])
 def updateTodo(request):
@@ -1537,14 +1542,14 @@ def loadDataDetail(request):
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
-
         # 返回渲染的list
         try:
             event = Event.objects.get(event_id=event_id)
             family_id = event.user.family.family_id
-            cache_key = f"loadShowPage:{family_id}:etd"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:etd"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
             shutil.rmtree('static/ImageBase/' + event_id)
             shutil.rmtree('static/Thumbnail/' + event_id)
             Event.objects.get(event_id=event_id).delete()
@@ -1561,9 +1566,10 @@ def deleteText(request):
         try:
             event = Text.objects.get(text_id=text_id)
             family_id = event.user.family.family_id
-            cache_key = f"loadShowPage:{family_id}:etd"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:etd"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
             Text.objects.get(text_id=text_id).delete()
         except:
             return JsonResponse({'msg': 'error'})
@@ -1576,9 +1582,10 @@ def deleteData(request):
         try:
             event = Data.objects.get(data_id=data_id)
             family_id = event.user.family.family_id
-            cache_key = f"loadShowPage:{family_id}:etd"
-            if cache.get(cache_key) is not None:
-                cache.delete(cache_key)
+            if use_redis_cache:
+                cache_key = f"loadShowPage:{family_id}:etd"
+                if cache.get(cache_key) is not None:
+                    cache.delete(cache_key)
             # 删除上传内容
             Data.objects.get(data_id=data_id).delete()
             # 删除数据信息
