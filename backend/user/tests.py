@@ -8,7 +8,7 @@ import json
 import user.views as user_view
 
 
-class TestRegister(TestCase):
+class Tests(TestCase):
     def setUp(self):
         self.valid_code = '0f37GZ000FfdeR183E20097KRl37GZ0Q'
         self.openid = 'manually_randomly_generated_ajksilkdnfu'
@@ -18,6 +18,11 @@ class TestRegister(TestCase):
         self.text_id = 'manually_randomly_generated_wfqinfodnla'
         self.data_id = 'manually_randomly_generated_paiqfnpqnvm'
 
+        self.todo_id_1 = 'manually_randomly_generated_rwinmqpocony'
+        self.todo_id_2 = 'manually_randomly_generated_pmoniacbqjke'
+        self.todo_id_3 = 'manually_randomly_generated_hogsibommvli'
+
+    # 还需要添加：上传个人头像
     def test_register(self):
         # 未注册直接登陆
         response = self.client.post(
@@ -101,7 +106,8 @@ class TestRegister(TestCase):
         res_json = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(res_json['msg'], 'register success')
-
+    
+    # 还需要添加：加载具体页面，loadKeys
     def test_upload_and_load(self):
         # 用户注册
         response = self.client.post(
@@ -339,8 +345,264 @@ class TestRegister(TestCase):
                           'year': '2023', 'day': '11', 'text_id': 
                           'manually_randomly_generated_wfqinfodnla'})
         
+    def test_plan(self):
+        # 用户注册
+        response = self.client.post(
+            reverse(user_view.register),
+            data={
+                'username': "test user",
+                'label': "test label",
+                'openid': self.openid,
+                'token': "new_family"
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['msg'], 'register success')
 
+        # 创建计划
+        response = self.client.post(
+            reverse(user_view.addPlan),
+            data={
+                'openid': self.openid,
+                'title': 'test plan',
+                'icon': '',
+                'child': []
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully added plan')
 
+        # 创建重名计划
+        response = self.client.post(
+            reverse(user_view.addPlan),
+            data={
+                'openid': self.openid,
+                'title': 'test plan',
+                'icon': '',
+                'child': []
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Duplicate plan name')
+
+        # 为上述计划新建两个TODO
+        from datetime import datetime, timedelta
+        today = datetime.today()
+        tomorrow = today + timedelta(days=1)
+        late = today + timedelta(days=10)
+        formatted_today = today.strftime("%Y-%m-%d")
+        formatted_tomorrow = tomorrow.strftime("%Y-%m-%d")
+        formatted_late = late.strftime("%Y-%m-%d")
+
+        response = self.client.post(
+            reverse(user_view.addTodo),
+            data={
+                'openid': self.openid,
+                'planTitle': 'test plan',
+                'title': 'test todo 1',
+                'deadline': formatted_tomorrow,
+                'id': self.todo_id_1,
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully added todo')
+
+        response = self.client.post(
+            reverse(user_view.addTodo),
+            data={
+                'openid': self.openid,
+                'planTitle': 'test plan',
+                'title': 'test todo 2',
+                'deadline': formatted_late,
+                'id': self.todo_id_2,
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully added todo')
+
+        # 创建另一计划
+        response = self.client.post(
+            reverse(user_view.addPlan),
+            data={
+                'openid': self.openid,
+                'title': 'test plan another',
+                'icon': '',
+                'child': []
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully added plan')
+
+        # 为上述计划新建TODO
+        response = self.client.post(
+            reverse(user_view.addTodo),
+            data={
+                'openid': self.openid,
+                'planTitle': 'test plan another',
+                'title': 'test todo 3',
+                'deadline': formatted_today,
+                'id': self.todo_id_3,
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully added todo')
+
+        # 加载计划页面
+        response = self.client.get(
+            reverse(user_view.loadPlanMain),
+            data={
+                'openid': self.openid
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['finished_todo_list'].__len__(), 0)
+        self.assertEqual(res_json['not_finished_todo_list'].__len__(), 2)
+        self.assertEqual(res_json['plan_list'].__len__(), 2)
+
+        # 加载全部计划
+        response = self.client.get(
+            reverse(user_view.loadAllPlanPage),
+            data={
+                'openid': self.openid
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['plan_list'].__len__(), 2)
+        self.assertEqual(res_json['plan_list'][0]['title'], 'test plan')
+        self.assertEqual(res_json['plan_list'][1]['title'], 'test plan another')
+
+        # 加载具体计划页面
+        response = self.client.get(
+            reverse(user_view.loadCertainPlan),
+            data={
+                'openid': self.openid,
+                'plan': 'test plan'
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['todos'].__len__(), 2)
+        self.assertEqual(res_json['todos'][0]['task'], 'test todo 1')
+        self.assertEqual(res_json['todos'][1]['task'], 'test todo 2')
+
+        # 更新todo状态
+        response = self.client.post(
+            reverse(user_view.updateTodo),
+            data={
+                'openid': self.openid,
+                'id': self.todo_id_1,
+                'content': 'finish',
+                'finish': True
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully updated todo')
+
+        response = self.client.post(
+            reverse(user_view.updateTodo),
+            data={
+                'openid': self.openid,
+                'id': self.todo_id_2,
+                'content': 'ddl',
+                'ddl': formatted_today
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully updated todo')
+
+        # 检查更改结果
+        response = self.client.get(
+            reverse(user_view.loadCertainPlan),
+            data={
+                'openid': self.openid,
+                'plan': 'test plan'
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['todos'].__len__(), 2)
+        self.assertEqual(res_json['todos'][0]['task'], 'test todo 2')
+        self.assertEqual(res_json['todos'][0]['ddl'], formatted_today)
+        self.assertEqual(res_json['todos'][1]['task'], 'test todo 1')
+        self.assertEqual(res_json['todos'][1]['check'], True)
+
+        # 删除todo
+        response = self.client.post(
+            reverse(user_view.updateTodo),
+            data={
+                'openid': self.openid,
+                'id': self.todo_id_3,
+                'content': 'delete',
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Successfully updated todo')
+
+        # 检查删除结果
+        response = self.client.get(
+            reverse(user_view.loadCertainPlan),
+            data={
+                'openid': self.openid,
+                'plan': 'test plan another'
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['todos'].__len__(), 0)
+
+        # 删除计划
+        response = self.client.post(
+            reverse(user_view.deletePlan),
+            data={
+                'openid': self.openid,
+                'planTitle': 'test plan another'
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'ok')
+
+        # 检查删除情况
+        response = self.client.get(
+            reverse(user_view.loadPlanMain),
+            data={
+                'openid': self.openid
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['finished_todo_list'].__len__(), 1)
+        self.assertEqual(res_json['not_finished_todo_list'].__len__(), 1)
+        self.assertEqual(res_json['plan_list'].__len__(), 1)
 
 if __name__ == '__main__':
     unittest.main()
