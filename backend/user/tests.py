@@ -163,14 +163,14 @@ class TestRegister(TestCase):
                 'openid': self.openid,
                 'event_id': self.text_id,
                 'event_date': '2023-11-11',
-                'date': '2023-11-11',
+                'date': '2023-11-10',
                 'time': '12:00:00',
-                'title': 'test submit event',
-                'content': 'test submit event',
+                'title': 'test submit text',
+                'content': 'test submit text',
                 'tags': [{'info': 'test', 'checked': True}, {'info': 'real', 'checked': False}],
                 'children': [],
                 'author': 'test user',
-                'type': 'event',
+                'type': 'text',
             },  
             content_type='application/json'
         )
@@ -184,7 +184,7 @@ class TestRegister(TestCase):
             data={
                 'openid': self.openid,
                 'data_id': self.data_id,
-                'date': '2023-11-11',
+                'date': '2023-11-12',
                 'time': '12:00:00',
                 'title': 'test submit event',
                 'records': json.dumps([{'key':'test_v1', 'value':'1'}, {'key':'test_v2', 'value':'2'}]),
@@ -195,6 +195,152 @@ class TestRegister(TestCase):
         res_json = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(res_json['message'], 'Data submitted successfully')
+
+        # 获取已上传内容
+        response = self.client.get(
+            reverse(user_view.loadShowPage),
+            data={
+                'openid': self.openid,
+                'start': 0,
+                'delta': 'all',
+                'types': 'etd',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['blocks_list'].__len__(), 3)
+        self.assertEqual(res_json['blocks_list'][0]['day'], '12')
+        self.assertEqual(res_json['blocks_list'][1]['day'], '11')
+        self.assertEqual(res_json['blocks_list'][2]['day'], '10')
+
+        # 删除事件
+        response = self.client.get(
+            reverse(user_view.deleteEvent),
+            data={
+                'event_id': self.event_id,
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['msg'], 'ok')
+
+        # 检查删除
+        response = self.client.get(
+            reverse(user_view.loadShowPage),
+            data={
+                'openid': self.openid,
+                'start': 0,
+                'delta': 'all',
+                'types': 'etd',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['blocks_list'].__len__(), 2)
+
+        # 删除文本
+        response = self.client.get(
+            reverse(user_view.deleteText),
+            data={
+                'text_id': self.text_id,
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['msg'], 'ok')
+
+        # 检查删除
+        response = self.client.get(
+            reverse(user_view.loadShowPage),
+            data={
+                'openid': self.openid,
+                'start': 0,
+                'delta': 'all',
+                'types': 'etd',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['blocks_list'].__len__(), 1)
+
+        # 删除数据
+        response = self.client.get(
+            reverse(user_view.deleteData),
+            data={
+                'data_id': self.data_id,
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['msg'], 'ok')
+
+        # 检查删除
+        response = self.client.get(
+            reverse(user_view.loadShowPage),
+            data={
+                'openid': self.openid,
+                'start': 0,
+                'delta': 'all',
+                'types': 'etd',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['blocks_list'].__len__(), 0)
+
+        # 上传文本
+        response = self.client.post(
+            reverse(user_view.submitEvent),
+            data={
+                'openid': self.openid,
+                'event_id': self.text_id,
+                'event_date': '2023-11-11',
+                'date': '2023-11-11',
+                'time': '12:00:00',
+                'title': 'test submit text again',
+                'content': 'test submit text again',
+                'tags': [{'info': 'test', 'checked': True}, {'info': 'again', 'checked': True}],
+                'children': [],
+                'author': 'test user',
+                'type': 'text',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['message'], 'Data submitted successfully')
+
+        # 检查二次上传
+        response = self.client.get(
+            reverse(user_view.loadShowPage),
+            data={
+                'openid': self.openid,
+                'start': 0,
+                'delta': 'all',
+                'types': 'etd',
+            },  
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['blocks_list'].__len__(), 1)
+        self.assertEqual(res_json['blocks_list'][0], 
+                         {'type': 'text', 
+                          'title': 'test submit text again', 
+                          'content': 'test submit text again', 
+                          'author': 'test label', 'month': '11月', 
+                          'year': '2023', 'day': '11', 'text_id': 
+                          'manually_randomly_generated_wfqinfodnla'})
+        
+
+
 
 if __name__ == '__main__':
     unittest.main()

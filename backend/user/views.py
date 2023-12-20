@@ -560,6 +560,7 @@ def addEventImage(request):
     """
     if request.method == 'POST':
         uploaded_image = request.FILES.get('image')
+        print('uploaded image', uploaded_image)
         pic_index = request.POST.get('pic_index')
         event_id = request.POST.get('event_id')
 
@@ -1331,9 +1332,7 @@ def addPlan(request):
           description: 服务器内部错误
     """
     if request.method == 'POST':
-        print('enter add plan')
         data = json.loads(request.body)
-        print(data)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
         title = data.get('title')
@@ -1348,7 +1347,7 @@ def addPlan(request):
             child = Child.objects.filter(name=child_name)[0]
             new_plan.children.add(child)
         print(new_plan)
-        return JsonResponse({'message': 'Successfully add the plan.'})
+        return JsonResponse({'message': 'Successfully added plan'})
 
 # @app.route('/api/plan/add_todo/', methods=['POST'])
 def addTodo(request):
@@ -1398,7 +1397,6 @@ def addTodo(request):
           description: 服务器内部错误
     """   
     if request.method == 'POST':
-        print('enter add todo')
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -1408,7 +1406,7 @@ def addTodo(request):
         deadline = data.get('deadline')
         todo_id = data.get('id')
         new_todo = Todo.objects.create(user=now_user, plan=plan, title=title, deadline=deadline, todo_id=todo_id)
-        return JsonResponse({'message': 'Successfully add the todo.'})
+        return JsonResponse({'message': 'Successfully added todo'})
 
 # @app.route('/api/plan/update_todo/', methods=['POST'])
 def updateTodo(request):
@@ -1544,7 +1542,6 @@ def loadDataDetail(request):
 def deleteEvent(request):
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
-
         # 返回渲染的list
         try:
             event = Event.objects.get(event_id=event_id)
