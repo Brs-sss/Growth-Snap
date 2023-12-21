@@ -26,6 +26,7 @@ var maxdataFortag1 = 0;
 // 事件数量柱状/折线图数据
 var tagForEvent = [];
 var seriesForEvent = [];
+var seriesForEvent_1 = [];
 
 function initData() {
   // 事件标签饼图数据
@@ -47,8 +48,8 @@ function initData() {
   }
   console.log('min:',mindataFortag1)
   console.log('max:',maxdataFortag1)
-  maxdataFortag1 = maxdataFortag1 * 1.5 + 2;
-  mindataFortag1 = mindataFortag1 * 0.8 - 2; 
+  maxdataFortag1 = maxdataFortag1 * 1.1 + 1;
+  mindataFortag1 = mindataFortag1 * 0.8 - 1; 
   console.log('min:',mindataFortag1)
   console.log('max:',maxdataFortag1)
 
@@ -59,6 +60,7 @@ function initData() {
   console.log(tagForEvent)
   tagForEvent.push('事件总数')
   seriesForEvent = []
+  seriesForEvent_1 = []
   seriesForEvent.push({
     name: '事件总数',
     type: 'bar',
@@ -79,8 +81,19 @@ function initData() {
         focus: 'series'
       },
       data: event_tag_list[i].month_count,
+    }),
+    seriesForEvent_1.push({
+      name: event_tag_list[i].tag,
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: event_tag_list[i].month_count,
     })
   }
+  console.log(seriesForEvent)
 }
 
 function initRadarChart(canvas, width, height, dpr) {
@@ -101,11 +114,11 @@ function initRadarChart(canvas, width, height, dpr) {
     radar: [
       {
         indicator: [
-          { text: '体力' },
-          { text: '耐力' },
-          { text: '积极性' },
-          { text: '自控' },
-          { text: '自信' }
+          { text: '艺术' },
+          { text: '学习' },
+          { text: '运动' },
+          { text: '健康' },
+          { text: '人格' }
         ],
         center: ['32%', '50%'],
         radius: 110,
@@ -146,11 +159,11 @@ function initRadarChart(canvas, width, height, dpr) {
         data: [
           {
             value: [100, 8, 0.4, 80, 2000],
-            name: '2022年'
+            name: '2023秋'
           },
           {
             value: [60, 5, 0.3, 100, 1500],
-            name: '2023年',
+            name: '2023冬',
             areaStyle: {
               color: colorSet[child_id].colors[9]
             }
@@ -268,63 +281,7 @@ function initEventChart(canvas, width, height, dpr) {
       }
     ],
     series: seriesForEvent,
-    // [
-    //   {
-    //     name: '事件总数',
-    //     type: 'bar',
-    //     stack: 'Total',
-    //     areaStyle: {},
-    //     emphasis: {
-    //       focus: 'series'
-    //     },
-    //     data: event_list
-    //   },
-      // {
-      //   name: '学习',
-      //   type: 'line',
-      //   stack: 'Total',
-      //   areaStyle: {},
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [22, 18, 19, 23, 29, 33, 31]
-      // },
-      // {
-      //   name: '运动',
-      //   type: 'line',
-      //   stack: 'Total',
-      //   areaStyle: {},
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [15, 23, 20, 15, 19, 33, 41]
-      // },
-      // {
-      //   name: '阅读',
-      //   type: 'line',
-      //   stack: 'Total',
-      //   areaStyle: {},
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [32, 33, 30, 33, 39, 33, 32]
-      // },
-      // {
-      //   name: '艺术',
-      //   type: 'line',
-      //   stack: 'Total',
-      //   label: {
-      //     show: true,
-      //     position: 'top'
-      //   },
-      //   areaStyle: {},
-      //   emphasis: {
-      //     focus: 'series'
-      //   },
-      //   data: [8, 9, 9, 9, 12, 13, 13]
-      // }
-    // ]
-  }
+      }
   chart.setOption(option);
   return chart;
 }
@@ -348,7 +305,7 @@ function initTag2Chart(canvas, width, height, dpr) {
       }
     },
     legend: {
-      data: ['自然', '学习', '阅读', '运动', '艺术']
+      data: tagForEvent
     },
     grid: {
       left: '3%',
@@ -360,7 +317,7 @@ function initTag2Chart(canvas, width, height, dpr) {
       {
         type: 'category',
         boundaryGap: false,
-        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
+        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
         axisTick:{
           length: 2,
         }
@@ -371,62 +328,7 @@ function initTag2Chart(canvas, width, height, dpr) {
         type: 'value'
       }
     ],
-    series: [
-      {
-        name: '自然',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
-        },
-        data: [12, 13, 10, 13, 9, 23, 21]
-      },
-      {
-        name: '学习',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
-        },
-        data: [22, 18, 19, 23, 29, 33, 31]
-      },
-      {
-        name: '运动',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
-        },
-        data: [15, 23, 20, 15, 19, 33, 41]
-      },
-      {
-        name: '阅读',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
-        },
-        data: [32, 33, 30, 33, 39, 33, 32]
-      },
-      {
-        name: '艺术',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: true,
-          position: 'top'
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series'
-        },
-        data: [8, 9, 9, 9, 12, 13, 13]
-      }
-    ]
+    series: seriesForEvent_1
   }
   chart.setOption(option);
   return chart;
