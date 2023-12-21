@@ -11,6 +11,7 @@ Page({
     host_: `${app.globalData.localUrl}`,
     video_src: '',
     show: true,
+    not_show: 'none',
     title_text: '预览生成的小视频，可进行更换、保存与分享'
   },
 handleDownload(){
@@ -61,7 +62,8 @@ reselectVideoInfo(){
       console.log("share")
       this.setData({
         show: 'none',
-        title_text: '使用小程序乖乖记，get同款小视频~'
+        not_show: true,
+        title_text: '打开乖乖记，get同款小视频~'
       })
     }
     this.setData({
@@ -87,6 +89,11 @@ reselectVideoInfo(){
    */
   onShow() {
 
+  },
+  open(){
+    wx.navigateTo({
+      url: '/pages/index/index',
+    })
   },
   Refresh(){
     // this.setData({
