@@ -39,3 +39,5 @@
     <text class="icons-text" bind:tap="handleShare">分享</text>
   </button>
 </view>
+
+<button style="display: {{not_show}}; margin-top: 5vh;" bind:tap="open">打开乖乖记</button>
