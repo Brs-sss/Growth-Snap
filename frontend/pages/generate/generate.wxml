@@ -53,7 +53,7 @@
             </view>
           </block>
         </view>
-        <button bind:tap="addEvent" data-category="timeline">修改</button>
+        <button bind:tap="addEvent" data-category="timeline">生成</button>
     </view>
   </block>
   <block wx:if="{{activeIndex==1}}">
