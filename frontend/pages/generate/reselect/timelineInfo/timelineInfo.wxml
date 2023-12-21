@@ -45,6 +45,6 @@
           </block>
         </view>
         <view style="height: 3vh;"></view>
-        <button bind:tap="changeInfo" data-category="timeline">生成</button>
+        <button bind:tap="changeInfo" data-category="timeline">修改</button>
     </view>
   </block>

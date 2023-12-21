@@ -2,14 +2,14 @@
 <view>
   <view class="weui-form__text-area">
 			<h2 class="weui-form__title">{{video_title}}</h2>
-			<view class="weui-form__desc" style="color: var(--weui-FG-1); font-size: 15px;">预览生成的小视频，可进行更换、保存与分享</view>
+			<view class="weui-form__desc" style="color: var(--weui-FG-1); font-size: 15px;">{{title_text}}</view>
 		</view>
   <!-- <view class="title">{{video_title}}</view> -->
   <video class="video" src="{{video_src}}" binderror="videoErrorCallback" bindenterpictureinpicture='bindVideoEnterPictureInPicture' bindleavepictureinpicture='bindVideoLeavePictureInPicture' object-fit="contain" show-fullscreen-btn="true" direction="0">
   </video>
 </view>
 
-<view class='custom-tabbar'>
+<view class='custom-tabbar' style="display: {{show}};">
   <!-- <view class='icons'>
     <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
     <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectVideoInfo"></image>
