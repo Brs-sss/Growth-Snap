@@ -19,6 +19,9 @@ var colorSet = [
   {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#a4ebb1', ]},
 ];
 
+// 计划饼图数据
+var dataForPlan =[];
+
 // 事件标签饼图数据
 var dataFortag1 = [];
 var mindataFortag1 = 100;
@@ -29,6 +32,21 @@ var seriesForEvent = [];
 var seriesForEvent_1 = [];
 
 function initData() {
+  // 计划雷达图数据
+  dataForPlan = [1, 1, 1, 1, 1]
+  for (let item of icon_list) {
+    if (item.icon.includes("music") || item.icon.includes("brush"))
+      dataForPlan[0] += item.number*2
+    if (item.icon.includes("math") || item.icon.includes("book") || item.icon.includes("article"))
+      dataForPlan[1] += item.number*2
+    if (item.icon.includes("sport"))
+      dataForPlan[2] += item.number*2
+    if (item.icon.includes("health"))
+      dataForPlan[3] += item.number*2
+    if (item.icon.includes("heart"))
+      dataForPlan[4] += item.number*2
+  }
+  console.log(dataForPlan)
   // 事件标签饼图数据
   dataFortag1 = event_tag_list.map(item => {
     return {
@@ -36,6 +54,9 @@ function initData() {
       name: item.tag
     };
   });
+  if(events == 0){
+    dataFortag1=[{name: '还没有添加事件~', value: 0}]
+  }
       // 获取图表对应颜色参数
   for (let i = 0; i < dataFortag1.length; i++) {
     if (dataFortag1[i].value > maxdataFortag1) {
@@ -93,7 +114,18 @@ function initData() {
       data: event_tag_list[i].month_count,
     })
   }
-  console.log(seriesForEvent)
+  if(events == 0){
+    seriesForEvent_1.push({
+      name: '事件总数',
+      type: 'bar',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: event_list
+    })
+  }
 }
 
 function initRadarChart(canvas, width, height, dpr) {
@@ -114,11 +146,11 @@ function initRadarChart(canvas, width, height, dpr) {
     radar: [
       {
         indicator: [
-          { text: '艺术' },
-          { text: '学习' },
-          { text: '运动' },
-          { text: '健康' },
-          { text: '人格' }
+          { text: '艺术文化' },
+          { text: '知识学习' },
+          { text: '运动健康' },
+          { text: '日常习惯' },
+          { text: '人格发展' }
         ],
         center: ['32%', '50%'],
         radius: 110,
@@ -132,8 +164,6 @@ function initRadarChart(canvas, width, height, dpr) {
         splitArea: {
           areaStyle: {
             color: colorSet[child_id].colors,
-            shadowColor: colorSet[child_id].colors[1],
-            shadowBlur: 10
           }
         },
         axisLine: {
@@ -158,12 +188,8 @@ function initRadarChart(canvas, width, height, dpr) {
         },
         data: [
           {
-            value: [100, 8, 0.4, 80, 2000],
-            name: '2023秋'
-          },
-          {
-            value: [60, 5, 0.3, 100, 1500],
-            name: '2023冬',
+            value: dataForPlan,
+            // name: '2023冬',
             areaStyle: {
               color: colorSet[child_id].colors[9]
             }
@@ -222,8 +248,6 @@ function initTag1Chart(canvas, width, height, dpr) {
         },
         itemStyle: {
           color: colorSet[child_id].colors[0],
-          shadowBlur: 10,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
         },
         animationType: 'scale',
         animationEasing: 'elasticOut',
