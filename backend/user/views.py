@@ -76,7 +76,7 @@ def login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         code = data.get('code')
-        print(code)
+        print('Enter login, code:', code)
         url = f'https://api.weixin.qq.com/sns/jscode2session?appid={settings.APP_ID}&secret={settings.APP_SECRET}&js_code={code}&grant_type=authorization_code'
         response = requests.get(url)
         data = response.json()
@@ -187,10 +187,6 @@ def register(request):
         openid = data.get('openid')
         label = data.get('label')
         token = data.get('token')
-        print(username)
-        print(openid)
-        print(label)
-        print(token)
         # 看是新家庭还是加入家庭
         if token == 'new_family':
             family_id = registerFamily(openid)
@@ -198,7 +194,6 @@ def register(request):
             family = Family.objects.create(family_id=family_id)
         elif token[0:9] == 'family_id':
             family_id = token[9:]
-            print(f'family_id here: {family_id}')
             # 验证家庭是否存在
             family = Family.objects.get(family_id=family_id)
             if family == None:
@@ -257,7 +252,6 @@ def getFamilyID(request):
     if request.method == 'GET':
         openid = request.GET.get('openid')
         family_id = User.objects.get(openid=openid).family.family_id
-        print(f'family_id {family_id}')
         return JsonResponse({
             'family_id': family_id
         })
@@ -391,11 +385,9 @@ def getSHA256(request):
     """
     if request.method == 'GET':
         text_to_hash = request.GET.get('text')
-        print('txt ', text_to_hash)
         sha256 = hashlib.sha256()
         sha256.update(text_to_hash.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
-        print('hash ', sha256_hash)
         return JsonResponse({
             'sha256': sha256_hash
         })
@@ -515,7 +507,7 @@ def submitEvent(request):
             child = Child.objects.get(family=now_family, name=name)
             new_event.children.add(child)
 
-        print(new_event.children, new_event.children.all())
+        # print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
@@ -560,7 +552,6 @@ def addEventImage(request):
     """
     if request.method == 'POST':
         uploaded_image = request.FILES.get('image')
-        print('uploaded image', uploaded_image)
         pic_index = request.POST.get('pic_index')
         event_id = request.POST.get('event_id')
 
@@ -863,7 +854,6 @@ def loadShowPage(request):
             
             if use_redis_cache:
                 cache.set(cache_key, now_user_blocks, timeout=60)
-        print(now_user_blocks.__len__())
 
         start = int(start)
         total = len(now_user_blocks)
@@ -1058,7 +1048,6 @@ def loadPlanMain(request):
             plan_list.append(block_item)
             if plan_list.__len__() >= 2:
                 break
-        print("---------------here-------------")
         return JsonResponse({
             'finished_todo_list': finished_todo_list,
             'not_finished_todo_list': not_finished_todo_list,
@@ -1453,7 +1442,6 @@ def updateTodo(request):
           description: 服务器内部错误
     """   
     if request.method == 'POST':
-        print('Enter updateTodo ......')
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -1466,7 +1454,6 @@ def updateTodo(request):
             todo.save()
         elif content == 'finish':
             finish = data.get('finish')
-            print('here', finish)
             todo.is_finished = finish
             todo.save()
         elif content == 'delete':

@@ -35,6 +35,20 @@ class Tests(TestCase):
         res_json = response.json()
         self.assertEqual(res_json['exists'], 'false')
 
+        # 添加用户头像
+        img_path = './user/res/test.png'
+        with open(img_path, 'rb') as img:
+            response = self.client.post(
+                reverse(user_view.registerProfileImage),
+                data={
+                    'openid': self.openid,
+                    'image': img
+                }
+            )
+            res_json = response.json()
+            self.assertEqual(res_json['message'], 'profile image submitted successfully')
+
+
         # 进行注册，token错误
         response = self.client.post(
             reverse(user_view.register),
@@ -344,7 +358,8 @@ class Tests(TestCase):
                           'author': 'test label', 'month': '11月', 
                           'year': '2023', 'day': '11', 'text_id': 
                           'manually_randomly_generated_wfqinfodnla'})
-        
+
+    # 目前功能完善       
     def test_plan(self):
         # 用户注册
         response = self.client.post(
@@ -603,6 +618,22 @@ class Tests(TestCase):
         self.assertEqual(res_json['finished_todo_list'].__len__(), 1)
         self.assertEqual(res_json['not_finished_todo_list'].__len__(), 1)
         self.assertEqual(res_json['plan_list'].__len__(), 1)
+
+    def test_child(self):
+        # 用户注册
+        response = self.client.post(
+            reverse(user_view.register),
+            data={
+                'username': "test user",
+                'label': "test label",
+                'openid': self.openid,
+                'token': "new_family"
+            },
+            content_type='application/json'
+        )
+        res_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_json['msg'], 'register success')
 
 if __name__ == '__main__':
     unittest.main()
