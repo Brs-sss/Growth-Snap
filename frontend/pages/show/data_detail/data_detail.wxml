@@ -15,6 +15,9 @@
 
   <view id="info_area">
     <view class="line"></view>
+    <view class="children-container">
+      <text wx:for="{{children}}">{{item}} </text>
+    </view>
     <text id="date">{{date}}</text>
     <text id="delete_btn" bind:tap="deleteThis">删除</text>
   </view>

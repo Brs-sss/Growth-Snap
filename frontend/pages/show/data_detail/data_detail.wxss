@@ -61,3 +61,8 @@
   left: 1.8em;
   color: rgb(27,52,113);
 }
+
+.children-container{
+  font-size: 1.1em;
+  color: rgb(120, 0, 136);
+}
