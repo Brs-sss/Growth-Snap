@@ -11,9 +11,7 @@
     <view class="todo-list">
     <view class='plan-info'>
       <text class="today">{{today}}</text>
-      <text wx:for="{{childList}}" class="child">{{item}}
-            <!-- <text class="tag-text">{{item}}</text> -->
-            </text>
+      <text wx:for="{{childList}}" class="child">{{item}}</text>
     </view>
     
       <block wx:for="{{todoList}}" wx:key="task"  wx:for-index = "index">
