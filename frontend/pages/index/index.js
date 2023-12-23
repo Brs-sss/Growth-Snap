@@ -12,7 +12,8 @@ Page({
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'), // 如需尝试获取用户信息可改为false
     host_: `${app.globalData.localUrl}`,
     openid: '', // 用户的openid
-    familyid: ''
+    familyid: '',
+    share: false
   },
   // 事件处理函数
   bindViewTap() {
@@ -25,7 +26,8 @@ Page({
     if (options.family_id)
     {
       this.setData({
-        familyid: options.family_id
+        familyid: options.family_id,
+        share: true
       })
     }
     if (wx.getUserProfile) {
@@ -34,6 +36,14 @@ Page({
       })
     }
     console.log(this.data.canIUseGetUserProfile)
+    // wx.getStorage({
+    //   key:'shareTicket',
+    //   success: function(res){
+    //     // console.log(res)
+    //     let shareTicket = res.data
+    //     console.log("get share:", shareTicket)
+    //   }
+    // })
   },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
@@ -60,6 +70,7 @@ Page({
   jumpPage:function() {
     console.log("jump")
     var that = this
+    let flag = true
     wx.login({
       success: (res) => {
         if (res.code)
@@ -97,7 +108,60 @@ Page({
                     console.log('数据存储失败');
                   }
                 });
-
+                // console.log('share?:',that.data.share)
+                // 判断是否是分享来的
+                // if (that.data.share)
+                // {
+                //   console.log('here enter')
+                //   wx.getStorage({
+                //     key: 'shareTicket',
+                //     success: function(res)
+                //     {
+                //       let shareTicket = res.data
+                //       console.log('shareTicket:', shareTicket)
+                //     wx.authPrivateMessage({
+                //       shareTicket: shareTicket,
+                //       success(res) {
+                //         console.log('access: ', res)
+                //       if(res.valid == true)
+                //       {
+                //           //提示这个人是私密分享的接受者 可以参与活动
+                //           console.log("have access")
+                //       }else
+                //       {
+                //         console.log('have no access')
+                //         flag = false;
+                //           //提示这个人是不是私密分享的接受者
+                //           wx.showToast({
+                //             title: '该邀请链接不可二次转发',
+                //             icon: 'error',
+                //             duration: 2000,
+                //             success: function () {
+                //               setTimeout(function () {
+                //               }, 1000)
+                //             }
+                //           })
+                //           return
+                          
+                //       }
+                //       },
+                //       fail(res) {
+                //       console.log('ticket fail')
+                //       }
+                //     })
+                //     },
+                //     fail(res){
+                //       return
+                //     }
+                    
+                //   })
+                // }
+                // console.log(flag, 'falg')
+                // if (flag == false)
+                // {
+                //   console.log('false')
+                //   return;
+                // }
                 // 判断是否第一次登录
                 console.log(res.data.exists)
                 if (res.data.exists == 'false')

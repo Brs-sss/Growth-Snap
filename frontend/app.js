@@ -1,8 +1,16 @@
 // app.js
 import './utils/addInterceptor'
 App({
-  onLaunch() {
+  onLaunch(res) {
     // 展示本地存储能力
+    if (res.shareTicket)
+    {
+      console.log('shareTicket: ', res.shareTicket)
+      wx.setStorage({
+        key: 'shareTicket', 
+        data: res.shareTicket
+      })
+    }
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
