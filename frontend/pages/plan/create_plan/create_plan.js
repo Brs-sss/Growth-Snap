@@ -22,7 +22,7 @@ Page({
     host_: `${app.globalData.localUrl}`,
 
     openid: '',
-    iconList: ['/image/plan/icons/basketball.png', '/image/plan/icons/biking.png', '/image/plan/icons/book.png', '/image/plan/icons/clock.png', '/image/plan/icons/computer.png', '/image/plan/icons/pencil.png', '/image/plan/icons/piano.png', '/image/plan/icons/shirt.png', '/image/plan/icons/swimmer.png', '/image/plan/icons/cat.png', '/image/plan/icons/carrot.png', '/image/plan/icons/brush.png', '/image/plan/icons/travel.png', '/image/plan/icons/fish.png'],
+    iconList: ['/image/plan/icons/article.png', '/image/plan/icons/math.png', '/image/plan/icons/book.png', '/image/plan/icons/brush.png', '/image/plan/icons/music.png', '/image/plan/icons/sport.png', '/image/plan/icons/heart.png', '/image/plan/icons/health.png'],
     selected_icon_index: 0
   },
 
