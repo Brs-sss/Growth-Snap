@@ -8,6 +8,9 @@
   </view>
 </view>
 
+<view  class="tag {{time ? 'selected' : ''}}" bindtap="toggleTimeTag">
+    <text class="tag-text">{{timeText}}</text>
+</view>
 
 <view class="container">
   <view class="cards-container">

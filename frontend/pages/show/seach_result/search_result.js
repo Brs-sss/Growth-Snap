@@ -30,7 +30,7 @@ function LoadShowPage(that){
         url: that.data.host_+'user/api/show/search'+'?openid='+openid+'&searchKey='+encodeURIComponent(that.data.searchKey),
         method:'GET',
         success:function(res){
-            console.log(res.data.blocks_list)
+            console.log(res)
             let uniqueTags = new Set();
             let tag_to_eventIndex_dict = {}
             const eventList = res.data.blocks_list.map((blogCard,index) => {
@@ -93,7 +93,9 @@ Page({
     isTagsEmpty:false,
     selectedTags: [], // 已选中的标签列表
     tag_to_eventIndex_dict: {},
-    eventList: []
+    eventList: [],
+    timeText: '按时间正序',
+    time: 0
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -141,6 +143,33 @@ Page({
       selectedTags: selectedTags,
       eventList: eventList,
       ['tags[' + index + '].checked']: this.data.tags[index].checked,
+      blog_cards_list: selectedEvents
+    });
+  },
+  toggleTimeTag: function(e) {
+    var selectedEvents = this.data.blog_cards_list
+    var { time, timeText} = this.data;
+    time = 1 - time;
+    if(time){
+      // 最新的放前面
+      timeText = '按时间正序'
+      selectedEvents.sort((a, b) => {
+        const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
+        const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+        return dateB - dateA;
+      });
+    }else{
+      // 最新的放后面
+      timeText = '按时间倒序'
+      selectedEvents.sort((a, b) => {
+        const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
+        const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+        return dateA - dateB;
+      });
+    }
+    this.setData({
+      time: time,
+      timeText: timeText,
       blog_cards_list: selectedEvents
     });
   },
