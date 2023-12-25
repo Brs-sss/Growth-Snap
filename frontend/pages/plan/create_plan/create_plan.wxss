@@ -194,6 +194,7 @@
   box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
   font-size: 14px;
 }
+
 .icon-container {
   margin-top: 2vh;
   display: flex;

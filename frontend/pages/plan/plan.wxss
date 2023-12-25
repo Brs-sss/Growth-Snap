@@ -119,6 +119,7 @@
   padding-left: 1vh;
   position: relative;
   top: -1vh;
+  white-space: pre;
 }
 .add-text{
   color: rgb(56, 98, 109);
