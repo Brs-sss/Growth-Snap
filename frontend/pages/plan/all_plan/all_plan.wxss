@@ -71,7 +71,7 @@
   /* color: #FFF; */
   font-size: 22px;
   /* font-weight: bold; */
-
+  white-space: pre;
   /* text-shadow: 2px 2px 4px rgba(128, 128, 128, 0.75); */
   /* -webkit-text-stroke: 0.5rpx #000; */
 }

@@ -1153,9 +1153,14 @@ def loadCertainPlan(request):
         planTitle = request.GET.get('plan')
         plan = Plan.objects.filter(user__family=now_user.family, title=planTitle).first()
         icon = plan.icon
-        todos = plan.todo_set.all().order_by("deadline")
+        not_finished_todos = plan.todo_set.filter(is_finished=False).order_by("deadline")
+        finished_todos = plan.todo_set.filter(is_finished=True).order_by("deadline")
         todo_list = []
-        for todo in todos:
+        for todo in not_finished_todos:
+            todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
+                         'todo_id': todo.todo_id}
+            todo_list.append(todo_item)
+        for todo in finished_todos:
             todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
                          'todo_id': todo.todo_id}
             todo_list.append(todo_item)
