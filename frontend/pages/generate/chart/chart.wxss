@@ -1,4 +1,18 @@
 /* pages/generate/chart/chart.wxss */
+.title {
+  font-size: 17px;
+  white-space: pre;
+  color:  gray;
+}
+
+.line {
+  position: relative;
+  left: 1em;
+  width: 60%;
+  height: 0px;
+  margin-bottom: 1vh;
+  border-top: lightgray solid 1px;
+}
 
 .submit{
   background-color: #4095E5;
@@ -12,6 +26,8 @@
 }
 
 .container_tag{
+  position: relative;
+  left: 10px;
   width: 95vw;
   height: 8vh;
   display: flex;
@@ -67,6 +83,8 @@
 
 
 .ec-container {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   align-items: center;

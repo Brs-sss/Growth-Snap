@@ -1,14 +1,15 @@
 <!--pages/generate/chart/chart.wxml-->
-
-<button class="submit" bindtap="handleSave">导出</button>
-
-<view class="container_tag">
+<view class="title">    选择数据内容</view>
+<view class="line"></view>
+<view class="container_tag" style="position: relative; top: 6px;">
+  <view style="color: gray;"> 选择孩子:</view>
   <view wx:for="{{kidList}}" wx:key="index" data-index='{{index}}' class="tag {{item.selected ? 'selected' : ''}}" bindtap="toggleChildTag">
       <text class="tag-text">{{item.info}}</text>
     </view>
 </view>
 
 <view class="container_tag">
+  <view style="color: gray;"> 选择tag:</view>
   <view wx:for="{{keys}}" wx:key="index" data-index='{{index}}' class="tag {{item.selected ? 'selected' : ''}}" bindtap="toggleTag">
       <text class="tag-text">{{item.info}}</text>
     </view>
@@ -59,4 +60,6 @@
     <image class="timeline-image" src="{{host_}}/static/frontend/chart/chart_{{index}}.jpg"></image>
   </view>
 </view>
+
+<button class="submit" bindtap="handleSave">导出</button>
 
