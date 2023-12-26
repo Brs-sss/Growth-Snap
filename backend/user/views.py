@@ -366,7 +366,20 @@ def getFamilyToken(request):
             'msg': 'please use GET'
         })
 
-
+def getActivityID(request):
+    if request.method == 'GET':
+        # 获取access_token url=https://api.weixin.qq.com/cgi-bin/token 
+        access_token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={settings.APP_ID}&secret={settings.APP_SECRET}'
+        response = requests.get(access_token_url)
+        access_token = response.json().get('access_token')
+        # get url = https://api.weixin.qq.com/cgi-bin/message/wxopen/activityid/create?access_token=ACCESS_TOKEN 
+        get_url = f'https://api.weixin.qq.com/cgi-bin/message/wxopen/activityid/create?access_token={access_token}'
+        response = requests.get(get_url)
+        activity_id = response.json().get('activity_id')
+        return JsonResponse({
+            'activity_id': activity_id
+        })
+        
 # @app.route('/api/getSHA256/', methods=['GET'])
 def getSHA256(request):
     """ 生成对应内容的发表时间sha256值
