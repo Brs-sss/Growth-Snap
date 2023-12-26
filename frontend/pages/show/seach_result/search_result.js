@@ -35,16 +35,19 @@ function LoadShowPage(that){
             let tag_to_eventIndex_dict = {}
             const eventList = res.data.blocks_list.map((blogCard,index) => {
               let {imgSrc}=blogCard;
-              const { title, type, tags } = blogCard;
-              tags.forEach(tag=>{
-                uniqueTags.add(tag);
-                if(tag_to_eventIndex_dict[tag]==undefined){
-                  tag_to_eventIndex_dict[tag]=[index]
-                }
-                else{
-                  tag_to_eventIndex_dict[tag].push(index)
-                }
-              })
+              var { title, type, tags } = blogCard;
+              console.log(blogCard)
+              if(blogCard.hasOwnProperty("tags")){
+                tags.forEach(tag=>{
+                  uniqueTags.add(tag);
+                  if(tag_to_eventIndex_dict[tag]==undefined){
+                    tag_to_eventIndex_dict[tag]=[index]
+                  }
+                  else{
+                    tag_to_eventIndex_dict[tag].push(index)
+                  }
+                })
+              }
 
               var id;
               if(type=='event'){
@@ -95,7 +98,8 @@ Page({
     tag_to_eventIndex_dict: {},
     eventList: [],
     timeText: '按时间正序',
-    time: 0
+    time: 0, //标记时间顺序
+    corre: 0, //相关性 
   },
   toggleTag: function(e) {
     const { index } = e.currentTarget.dataset;
@@ -146,6 +150,34 @@ Page({
       blog_cards_list: selectedEvents
     });
   },
+  toggleCorreTag: function(e) {
+    var selectedEvents = this.data.blog_cards_list
+    var { corre } = this.data;
+    corre = 1 - corre
+
+    if(corre){
+      selectedEvents.sort((a, b) => {
+        return b.similarity - a.similarity;
+      });
+    }else{
+      selectedEvents.sort((a, b) => {
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
+        return dateB - dateA;
+      });
+    }
+
+    // 时间恢复缺省状态
+    var time = 0;
+    var timeText = '按时间正序'
+
+    this.setData({
+      time: time,
+      timeText: timeText,
+      blog_cards_list: selectedEvents,
+      corre: corre
+    });
+  },
   toggleTimeTag: function(e) {
     var selectedEvents = this.data.blog_cards_list
     var { time, timeText} = this.data;
@@ -154,23 +186,28 @@ Page({
       // 最新的放前面
       timeText = '按时间正序'
       selectedEvents.sort((a, b) => {
-        const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
-        const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
         return dateB - dateA;
       });
     }else{
       // 最新的放后面
       timeText = '按时间倒序'
       selectedEvents.sort((a, b) => {
-        const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
-        const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
         return dateA - dateB;
       });
     }
+    // 相关性恢复初始状态
+    // 时间恢复缺省状态
+    var corre = 0;
+
     this.setData({
       time: time,
       timeText: timeText,
-      blog_cards_list: selectedEvents
+      blog_cards_list: selectedEvents,
+      corre: corre
     });
   },
   showDetail(e){  //进入详细展示页面
