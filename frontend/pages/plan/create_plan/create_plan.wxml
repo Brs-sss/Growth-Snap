@@ -79,7 +79,7 @@
   
   <view  class="icon-container">
     <view wx:for="{{iconList}}" wx:key="index" data-index='{{index}}' class="icon-item{{index==selected_icon_index ? '-hover' : ''}} " bind:tap="iconChange" >
-    <image class="picker-icon" src="{{item}}" style="height: 5vh; width: 5vh; " />
+    <image class="picker-icon" src="{{item}}" style="height: 8vw; width: 8vw;" />
   </view>
   </view>
 </view>

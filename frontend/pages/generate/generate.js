@@ -204,10 +204,10 @@ Page({
         { id: 7 , name:'EverytimeWeTouch'},
       ],
       chartList: [
-        { id: 0 },
-        { id: 1 },
-        { id: 2 },
-        { id: 3 }
+        { id: 0 , title: "累 加 图"},
+        { id: 1 , title: "折 线 图"},
+        { id: 2 , title: "柱 状 图"},
+        { id: 3 , title: "点 云 图"}
       ]
     });
   },

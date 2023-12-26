@@ -2,6 +2,17 @@
 function LoadFamilyPage(that){
   // 获取存储的openid
   // var that = this
+  wx.request({
+    url: that.data.host_+'user/api/user/get_activity_id',
+    method: 'GET',
+    success: function(res)
+    {
+      console.log('res activity_id:', res)
+      that.setData({
+        activity_id: res.activity_id
+      })
+    }
+  })
   wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
     success: function (res) 
@@ -120,7 +131,8 @@ Page({
     time: 0,
     countdown: '',
     openid: '',
-    familyid: ''
+    familyid: '',
+    activity_id: '',
   },
   addmember() {
     // TODO: 跳转到对应页面的处理逻辑
@@ -290,10 +302,19 @@ Page({
     
     console.log('here')
     console.log('familyid: ', this.data.familyid)
+    wx.updateShareMenu({
+      withShareTicket: true,
+      isPrivateMessage: true,
+      activityId: this.data.activity_id,
+    })
     return {
       title: '邀请你加入家庭~',
       path: '/pages/index/index?family_id='+this.data.familyid,
       imageUrl: '/image/user/card_image.jpg',
+      success: function(res){
+        console.log('hihihihi')
+        console.log(res.shareTicket)
+      }
     }
   }
 })

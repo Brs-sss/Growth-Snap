@@ -11,6 +11,7 @@ Page({
     records: [{key: "身高", value: "120"}, 
               {key: "体重", value: "43"},
               {key: "数学成绩", value: "99"}],
+    children: [],
     date: "2023年11月21日",
     host_: `${app.globalData.localUrl}`
   },
@@ -78,7 +79,8 @@ Page({
             that.setData({
               data_id: data_id,
               date: data_item.date,
-              records: data_item.records
+              records: data_item.records,
+              children: data_item.children,
             })
 
         },

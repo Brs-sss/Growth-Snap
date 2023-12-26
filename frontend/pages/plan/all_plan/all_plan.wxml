@@ -8,11 +8,11 @@
   <!-- <image src="/image/plan/planBg/bg{{bgList[index]}}.jpg" class="bgImg"></image> -->
   <view class="iconBg"></view>
   <image class="planIcon" src="{{item.icon}}"/>
-  <text class="planName">{{item.title}}</text>
+  <text class="planName"> {{item.title}}</text>
   <view class="edit">编辑</view>
 </view>
 
 <view id="placeHolder" style="height: 35px;"></view>
 <view id="bar"> 
-  <image src="/image/show/add.png" bind:tap="goToCreate"></image>
+  <image src="/image/show/add.png" style="width: 50px;height: 50px;" bind:tap="goToCreate"></image>
 </view>

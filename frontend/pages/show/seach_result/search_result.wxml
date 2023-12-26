@@ -1,5 +1,16 @@
 <!--pages/show/seach_result/search_result.wxml-->
 
+<view class="container_tag">
+  <view wx:for="{{tags}}" wx:key="index" 
+    data-index='{{index}}' 
+    class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
+    <text class="tag-text">{{item.info}}</text>
+  </view>
+</view>
+
+<view  class="tag {{time ? 'selected' : ''}}" bindtap="toggleTimeTag">
+    <text class="tag-text">{{timeText}}</text>
+</view>
 
 <view class="container">
   <view class="cards-container">

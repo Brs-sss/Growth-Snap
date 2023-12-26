@@ -21,8 +21,7 @@
 </view>
 
 <view class="ec-container">
-  <ec-canvas canvas-id="echart" ec="{{ec_radar}}" ></ec-canvas>
-  <view class="weui-cell weui-cell_active" style="{{plans ? 'display: none;' : ''}}">还没有添加过计划哦</view>
+  <ec-canvas canvas-id="echart" ec="{{ec_radar}}"></ec-canvas>
 </view>
 
 <view class="weui-form__control-area" style="margin-top: -2vh;margin-bottom: 1vh;">
@@ -37,7 +36,6 @@
 
 <view class="ec-container">
      <ec-canvas canvas-id="echart" ec="{{ec_tag1}}" ></ec-canvas>
-     <view class="weui-cell weui-cell_active" style="{{events ? 'display: none;' : ''}}">还没有添加过事件哦</view>
 </view>
 
 <view class="weui-form__control-area" style="margin-top: -4vh;margin-bottom: 1vh;">
@@ -52,7 +50,6 @@
 
 <view class="ec-container_2">
      <ec-canvas canvas-id="echart" ec="{{ec_event}}"></ec-canvas>
-     <view class="weui-cell weui-cell_active" style="{{events ? 'display: none;' : ''}}">还没有添加过事件哦</view>
 </view>
 
 <view class="weui-form__control-area" style="margin-top: 1vh;margin-bottom: 1vh;">
@@ -67,5 +64,4 @@
 
 <view class="ec-container_2">
      <ec-canvas canvas-id="echart" ec="{{ec_tag2}}"></ec-canvas>
-     <view class="weui-cell weui-cell_active" style="{{events ? 'display: none;' : ''}}">还没有添加过事件哦</view>
 </view>

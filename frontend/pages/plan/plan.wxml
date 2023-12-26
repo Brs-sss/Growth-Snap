@@ -43,8 +43,8 @@
   <view class="plan-list">
     <block wx:for="{{planList}}" wx:key="index">
       <view class="plan-item"  data-value='{{item}}' bindtap="goToTodoList">
-        <image src="{{item.icon}}" style="height: 4vh; width: 4vh;"/>
-        <text class="plan-name">{{item.title}}</text>
+        <image src="{{item.icon}}" style="height: 4vh; width: 4vh; margin-left: 2vw;"/>
+        <text class="plan-name">   {{item.title}}</text>
       </view>
       <!-- <image class="image-arrow" src="/image/user/arrow.png"></image> -->
       <view class="line"></view>

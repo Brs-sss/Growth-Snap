@@ -30,15 +30,46 @@ function LoadShowPage(that){
         url: that.data.host_+'user/api/show/search'+'?openid='+openid+'&searchKey='+encodeURIComponent(that.data.searchKey),
         method:'GET',
         success:function(res){
+            console.log(res)
+            let uniqueTags = new Set();
+            let tag_to_eventIndex_dict = {}
+            const eventList = res.data.blocks_list.map((blogCard,index) => {
+              let {imgSrc}=blogCard;
+              const { title, type, tags } = blogCard;
+              tags.forEach(tag=>{
+                uniqueTags.add(tag);
+                if(tag_to_eventIndex_dict[tag]==undefined){
+                  tag_to_eventIndex_dict[tag]=[index]
+                }
+                else{
+                  tag_to_eventIndex_dict[tag].push(index)
+                }
+              })
+
+              var id;
+              if(type=='event'){
+                const {event_id}=blogCard
+                id=event_id
+              }
+              else if(type=='text'){
+                const {text_id}=blogCard
+                id=text_id
+              }
+              
+              return { imgSrc, title, id, type, tags, checked: false };
+            });
+            let tag_array=Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}})
             that.setData({
-              blog_cards_list:res.data.blocks_list
+              blog_cards_list:res.data.blocks_list,
+              eventList: res.data.blocks_list,
+              tags: tag_array,
+              tag_to_eventIndex_dict: tag_to_eventIndex_dict
             })
-            console.log(res.data.blocks_list)
         },
         fail:function(res){
           console.log('load page failed: ',res)
         }
-      
+        
       })
     },
     fail:function(res){
@@ -58,6 +89,89 @@ Page({
     blog_cards_list:[],  //所有卡片BlogCard的list
     host_: `${app.globalData.localUrl}`,
     searchKey: '', // 搜索关键词
+    tags: [], // 已保存的标签列表
+    isTagsEmpty:false,
+    selectedTags: [], // 已选中的标签列表
+    tag_to_eventIndex_dict: {},
+    eventList: [],
+    timeText: '按时间正序',
+    time: 0
+  },
+  toggleTag: function(e) {
+    const { index } = e.currentTarget.dataset;
+    const { selectedTags, eventList} = this.data;
+    const tag = this.data.tags[index].info;
+    const tagIndex = selectedTags.indexOf(tag);
+    var relatedEvents=this.data.tag_to_eventIndex_dict[tag];
+    console.log(selectedTags)
+    var selectedEvents = []
+    if(selectedTags.length!==0)
+      selectedEvents = this.data.blog_cards_list
+    if (tagIndex !== -1) {
+      selectedEvents = [];
+      selectedTags.splice(tagIndex, 1); // 取消选中标签
+      this.data.tags[index].checked = false ;
+      selectedTags.forEach(item=>{
+        console.log(item);
+        relatedEvents=this.data.tag_to_eventIndex_dict[item];
+        relatedEvents.forEach(idx=>{
+          var eventIndex = selectedEvents.indexOf(eventList[idx])
+          console.log(eventIndex)
+          if(eventIndex == -1){
+            selectedEvents.push(eventList[idx])
+          }
+        })
+      })
+    } else {
+      selectedTags.push(tag); // 选中
+      this.data.tags[index].checked = true ;
+      relatedEvents.forEach(idx=>{
+        var eventIndex = selectedEvents.indexOf(eventList[idx])
+        console.log(eventIndex)
+        if(eventIndex == -1){
+          selectedEvents.push(eventList[idx])
+        }
+      })
+    }
+    console.log(selectedEvents)
+    selectedEvents.sort((a, b) => {
+      const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
+      const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+      return dateA - dateB;
+    });
+    this.setData({
+      selectedTags: selectedTags,
+      eventList: eventList,
+      ['tags[' + index + '].checked']: this.data.tags[index].checked,
+      blog_cards_list: selectedEvents
+    });
+  },
+  toggleTimeTag: function(e) {
+    var selectedEvents = this.data.blog_cards_list
+    var { time, timeText} = this.data;
+    time = 1 - time;
+    if(time){
+      // 最新的放前面
+      timeText = '按时间正序'
+      selectedEvents.sort((a, b) => {
+        const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
+        const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+        return dateB - dateA;
+      });
+    }else{
+      // 最新的放后面
+      timeText = '按时间倒序'
+      selectedEvents.sort((a, b) => {
+        const dateA = new Date(`${a.year}-${parseInt(a.month)}-${a.day}`);
+        const dateB = new Date(`${b.year}-${parseInt(b.month)}-${b.day}`);
+        return dateA - dateB;
+      });
+    }
+    this.setData({
+      time: time,
+      timeText: timeText,
+      blog_cards_list: selectedEvents
+    });
   },
   showDetail(e){  //进入详细展示页面
     const { index,type } = e.currentTarget.dataset;
