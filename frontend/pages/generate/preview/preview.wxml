@@ -28,7 +28,7 @@
   </button>
   <button class="action-item">
     <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
-    <text class="icons-text" bind:tap="reselectTemplate">更换信息</text>
+    <text class="icons-text" bind:tap="reselectTemplate">更换模版</text>
   </button>
   <button class="action-item">
     <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>

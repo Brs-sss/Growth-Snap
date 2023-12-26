@@ -49,6 +49,7 @@ Page({
     var that=this
     const {coverSelected,paperSelected,diary_title}=that.data
     var id_list = wx.getStorageSync('generate_id_list');
+    console.log('reselected:',that.data.selectCover,that.data.selectPaper)
     generateDiaryPDF(that,id_list,coverSelected,paperSelected,diary_title,false)
   },
 

@@ -46,8 +46,7 @@ function loadPreview(that,options){
         pdf_name:pdf_name,
         hasLoaded:true,
       })
-      //that.renderPDF(pdf_url);
-      //that.WXpreviewPDF(pdf_url)
+
       that.AskForPreviewImages(that,openid,pdf_name,category)
 
     },
