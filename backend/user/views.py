@@ -1177,10 +1177,16 @@ def loadCertainPlan(request):
             todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
                          'todo_id': todo.todo_id}
             todo_list.append(todo_item)
+        childList = []
+        children = plan.children.all()
+        for child in children:
+            childList.append(child.name)
+
         return JsonResponse({
             'message': 'ok',
             'icon': icon,
             'todos': todo_list,
+            'childList': childList
         })
 
 # @app.route('/api/plan/delete_plan/', methods=['POST'])

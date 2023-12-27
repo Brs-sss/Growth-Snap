@@ -3,7 +3,7 @@
 <!-- <view class='placeHolder'></view> -->
   <view class="container_todo">
   <view style="width: 100%;">
-    <image src="{{icon}}" style="height: 4vh; width: 4vh; padding: 0.5vh; top: 1.5vh; position: relative; margin-left: 2vh;"/>
+    <image src="{{icon}}" style="height: 3.5vh; width: 3.5vh; padding: 0.5vh; top: 1.5vh; position: relative; margin-left: 2vh; margin-right: 1vh;"/>
     <text class="todo-header"> {{planTitle}}</text>
     <image src="/image/plan/trash.png" style="height: 4vh; width: 4vh;opacity: 0.7; position: absolute; right: 1vh; top: 1.8vh; " bind:tap="deletePlan"/>
   </view>
