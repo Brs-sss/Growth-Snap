@@ -197,6 +197,9 @@ function initData(){
   //0号chart&1号chart
   seriesDataFor0_event= [];
   seriesDataFor0_time= [];
+  lineList = [];
+  dateList = [];
+  valueList = [];
   console.log(selectedKeys)
   for (let i = 0; i < selectedKeys.length; i++) {
     dataListNow = dataList[dataList.findIndex(item => item.key === selectedKeys[i])].list;
@@ -271,6 +274,8 @@ function initData(){
   }
 
   //2号chart
+  lineList = []
+  console.log(valueList)
   lineList = dataListNow.map(function (item) {
     return item.value*2;
   });
@@ -1063,13 +1068,6 @@ Page({
         boundaryGap: false,
       }];
       chartType[1].series[0].data = timeList
-      // 2号chart数据更新
-      // chartType[2].xAxis = [{
-      //   type: 'time',
-      //   boundaryGap: false,
-      // }];
-      // chartType[2].series[0].data = timeList
-      // chartType[2].series[1].data = timeList
     }else{
       // 0号chart数据更新
       chartType[0].series = seriesDataFor0_event;
@@ -1140,10 +1138,6 @@ Page({
                 let temp_kidList = []
                 for(let i = 0; i < children_list.length; i++){
                   let name = children_list[i].name
-                  // if(i == 0){
-                  //   temp_kidList.push({'info': name, 'selected': true})
-                  //   selectedKidList.push(name)
-                  // }else{
                   if(children_list[i].gender=='男'){
                     temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 0})
                   }else{
