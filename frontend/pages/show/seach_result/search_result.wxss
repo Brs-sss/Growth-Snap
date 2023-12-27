@@ -132,7 +132,7 @@
   display: inline-block;
   height: 5vw;
   margin-left: 10px;
-  margin-right: -10px;
+  margin-right: 5px;
   padding: 4px 8px;
   border-radius: 4px;
   background: #f0f8ff;

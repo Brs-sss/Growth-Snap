@@ -12,6 +12,10 @@
     <text class="tag-text">{{timeText}}</text>
 </view>
 
+<view  class="tag {{corre ? 'selected' : ''}}" bindtap="toggleCorreTag">
+    <text class="tag-text">按相关度排序</text>
+</view>
+
 <view class="container">
   <view class="cards-container">
     <view wx:for="{{blog_cards_list}}" wx:key="index" data-index='{{index}}' data-type='{{item.type}}' bindtap="showDetail">
