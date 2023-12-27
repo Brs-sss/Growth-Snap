@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/user/add_child_image', views.addChildImage, name='add_child_image'),
     path('api/user/get_family_info', views.getFamilyInfo, name='get_family_info'),
     path('api/user/generate_family_token', views.generateFamilyToken, name='generate_family_token'),
+    path('api/user/get_activity_id', views.getActivityID, name='get_activity_id'),
     path('api/user/get_family_token', views.getFamilyToken, name='get_family_token'),
     path('api/show/event/detail', views.loadEventDetail, name='event_detail'),
     path('api/show/text/detail', views.loadTextDetail, name='text_detail'),

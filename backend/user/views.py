@@ -372,7 +372,20 @@ def getFamilyToken(request):
             'msg': 'please use GET'
         })
 
-
+def getActivityID(request):
+    if request.method == 'GET':
+        # 获取access_token url=https://api.weixin.qq.com/cgi-bin/token 
+        access_token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={settings.APP_ID}&secret={settings.APP_SECRET}'
+        response = requests.get(access_token_url)
+        access_token = response.json().get('access_token')
+        # get url = https://api.weixin.qq.com/cgi-bin/message/wxopen/activityid/create?access_token=ACCESS_TOKEN 
+        get_url = f'https://api.weixin.qq.com/cgi-bin/message/wxopen/activityid/create?access_token={access_token}'
+        response = requests.get(get_url)
+        activity_id = response.json().get('activity_id')
+        return JsonResponse({
+            'activity_id': activity_id
+        })
+        
 # @app.route('/api/getSHA256/', methods=['GET'])
 def getSHA256(request):
     """ 生成对应内容的发表时间sha256值
@@ -1233,10 +1246,16 @@ def loadCertainPlan(request):
             todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
                          'todo_id': todo.todo_id}
             todo_list.append(todo_item)
+        childList = []
+        children = plan.children.all()
+        for child in children:
+            childList.append(child.name)
+
         return JsonResponse({
             'message': 'ok',
             'icon': icon,
             'todos': todo_list,
+            'childList': childList
         })
 
 # @app.route('/api/plan/delete_plan/', methods=['POST'])

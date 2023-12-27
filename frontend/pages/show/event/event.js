@@ -43,7 +43,8 @@ Page({
     isEditing: false, // 是否处于编辑模式
     imgGridStyle:getImageGridStyle(1),
     host_: `${app.globalData.localUrl}`,
-    event_date:''
+    event_date:'',
+    today_date:''
   },
 
   handleInputTitle(e) {  //输入标题的处理
@@ -343,7 +344,8 @@ Page({
         console.log("openid:",openid)
         that.setData({
           openid: openid,
-          event_date:getTodayYYYYMMDD()
+          event_date:getTodayYYYYMMDD(),
+          today_date:getTodayYYYYMMDD()
         })
 
 
