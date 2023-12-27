@@ -50,7 +50,7 @@
                 <label class="weui-label" style="width: 3em;">时间</label>
               </view>
               <view class="weui-cell__bd">
-                              <picker mode="date" end="{{event_date}}" bindchange="bindDateChange">
+                              <picker mode="date" end="{{today_date}}" bindchange="bindDateChange">
                                   <view class="weui-select">{{event_date}}</view>
                               </picker>
                               <!-- <picker mode="date" aria-role="combobox"  header-text="选择时间"  data-index="{{index}}" value="{{item.ddl}}" bindchange="bindDateChange"></picker> -->
