@@ -50,8 +50,8 @@
 .planIcon {
   position: absolute;
   left: 6vw;
-  width: 32px;
-  height: 32px;
+  width: 3.5vh;
+  height: 3.5vh;
 }
 
 .iconBg {
