@@ -16,7 +16,7 @@ var colorSet = [
   {id: 0, backgroundColor: '#143e64', colors:["#87ceeb","#59c4e6","#a5e7f0", '#add8e6', '#b5e4e6','#7cb9e8', '#5c9cc2', '#87ceeb', '#add8e6', '#164a7a98']},
   {id: 1, backgroundColor: '#b27466', colors:['#ffd700', '#f0e68c', '#eedc82', '#ffec8b','#ffd700', '#ffdb58', '#f0e68c', '#eedc82', '#ffec8b', '#b9612791']},
   {id: 2, backgroundColor: '#00207496', colors:['#c23531', '#ff6f94', '#ff5983', '#f4506e','#f48fb1', '#ff9eb4', '#ff6f94', '#ff5983', '#f4506e', '#23007471']},
-  {id: 3, backgroundColor: '#008080', colors:['#a4ebb1', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#a4ebb1', ]},
+  {id: 3, backgroundColor: '#008080', colors:['#008080', '#bdf9ca', '#c7fdc9', '#d3ffc8', '#e1ffdb', '#e7ffe5', '#c4f5c7', '#a4e7a0', '#83d968','#a4ebb1', ]},
 ];
 
 // 计划饼图数据
@@ -33,18 +33,18 @@ var seriesForEvent_1 = [];
 
 function initData() {
   // 计划雷达图数据
-  dataForPlan = [1, 1, 1, 1, 1]
+  dataForPlan = [0, 0, 0, 0, 0]
   for (let item of icon_list) {
     if (item.icon.includes("music") || item.icon.includes("brush"))
-      dataForPlan[0] += item.number*2
+      dataForPlan[0] += item.number
     if (item.icon.includes("math") || item.icon.includes("book") || item.icon.includes("article"))
-      dataForPlan[1] += item.number*2
+      dataForPlan[1] += item.number
     if (item.icon.includes("sport"))
-      dataForPlan[2] += item.number*2
+      dataForPlan[2] += item.number
     if (item.icon.includes("health"))
-      dataForPlan[3] += item.number*2
+      dataForPlan[3] += item.number
     if (item.icon.includes("heart"))
-      dataForPlan[4] += item.number*2
+      dataForPlan[4] += item.number
   }
   console.log(dataForPlan)
   // 事件标签饼图数据
@@ -158,8 +158,8 @@ function initRadarChart(canvas, width, height, dpr) {
         splitNumber: 4,
         shape: 'circle',
         axisName: {
-          formatter: '【{value}】',
-          color: colorSet[child_id].colors[0]
+          formatter: '{value}',
+          color: colorSet[child_id].colors[1]
         },
         splitArea: {
           areaStyle: {
@@ -237,7 +237,7 @@ function initTag1Chart(canvas, width, height, dpr) {
         }),
         roseType: 'radius',
         label: {
-          color: colorSet[child_id].colors[0]
+          color: colorSet[child_id].colors[1]
         },
         labelLine: {
           lineStyle: {
@@ -247,7 +247,7 @@ function initTag1Chart(canvas, width, height, dpr) {
           length2: 20
         },
         itemStyle: {
-          color: colorSet[child_id].colors[0],
+          color: colorSet[child_id].colors[1],
         },
         animationType: 'scale',
         animationEasing: 'elasticOut',

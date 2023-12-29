@@ -408,6 +408,7 @@ function initData(){
     name: `${event.date} \n ${event.title} \n`+ '{' + 'index_' + eventData.indexOf(event) + '| }'
   }));
   //2号时间轴
+  yAxisDataFor2 = []
   eventData.forEach(function(event) {
     var dataItem = {
         value: eventData.indexOf(event), 
@@ -921,6 +922,9 @@ Page({
   onLoad(options) {
     console.log("load");
     timeline_template = options.index;
+    if(timeline_template==0){
+      timeline_template = 1;
+    }
     const eventsSTR = options.events;
     console.log(eventsSTR)
     eventIndex = eventsSTR.split('-').map(Number);

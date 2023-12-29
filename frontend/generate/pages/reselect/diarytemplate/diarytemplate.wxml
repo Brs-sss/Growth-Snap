@@ -13,7 +13,7 @@
           src="{{host_}}static/frontend/paper/paper_{{paperSelected}}.jpg"></image>
         </view>
         <input class="diary-input" bindinput="handleInputTitle" placeholder="请输入标题" />
-        <button class="submit" data-category="diary" data-index="{{100*coverSelec+paperSelected}}" bindtap="addEvent">更改</button>
+        <button class="submit" data-category="diary" bindtap="submitChange">更改</button>
     </view>
     
     <view class="item-container">

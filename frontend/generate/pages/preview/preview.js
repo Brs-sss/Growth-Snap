@@ -10,7 +10,28 @@ const app = getApp();
 function loadPreview(that,options){
   let pdf_name=options.title
   let category=options.category
-  wx.getStorage({
+  let src_openid=options.src_openid
+  let is_sharing=false
+  if(options.is_sharing=="true"){
+    is_sharing=true
+  }
+  if(is_sharing){
+    let openid=src_openid;
+    let pdf_url=that.data.host_+'static/diary/'+openid+'/'+pdf_name+'.pdf'
+    that.setData({
+      openid:openid,
+      category:category,
+      cover_index:options.cover,
+      paper_index:options.paper,
+      pdf_url:pdf_url,
+      pdf_name:pdf_name,
+      hasLoaded:true,
+    })
+    //that.renderPDF(pdf_url);
+    //that.WXpreviewPDF(pdf_url)
+    that.AskForPreviewImages(that,openid,pdf_name,category)
+  }
+  else wx.getStorage({
     key: 'openid',  // 要获取的数据的键名
     success: function (res) { 
       // 从本地存储中获取数据,在index.js文件中保存建立的
@@ -25,8 +46,7 @@ function loadPreview(that,options){
         pdf_name:pdf_name,
         hasLoaded:true,
       })
-      //that.renderPDF(pdf_url);
-      //that.WXpreviewPDF(pdf_url)
+
       that.AskForPreviewImages(that,openid,pdf_name,category)
 
     },
@@ -63,6 +83,8 @@ Page({
     category:null,
     cover_index:null,
     paper_index:null,
+    is_sharing:false,
+    src_openid:null,
   },
 
   renderPDF: function(url) {
@@ -324,6 +346,12 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    this.setData({
+      is_sharing:true,
+    })
+    return {
+      title: '快来看看我生成的日记本~',
+      path: 'pages/generate/preview/preview?share=true&openid='+this.data.openid+'&title='+this.data.pdf_name+'&category='+this.data.category+'&src_openid='+this.data.openid+'&is_sharing=true',
+    }
   }
 })
