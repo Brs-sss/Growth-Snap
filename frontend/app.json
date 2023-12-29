@@ -5,37 +5,61 @@
     "pages/register_fix/register_fix",
     "pages/logs/logs",
     "pages/show/show",
-    "pages/show/event/event",
-    "pages/show/text/text",
-    "pages/show/data/data",
-    "pages/show/data_templates/data_templates",
     "pages/plan/plan",
-    "pages/plan/todo/todo",
-    "pages/plan/create_plan/create_plan",
-    "pages/plan/all_plan/all_plan",
     "pages/generate/generate",
-    "pages/generate/add_event/add_event",
-    "pages/generate/chart/chart",
-    "pages/generate/timeline/timeline",
-    "pages/user/family/family",
-    "pages/user/user",
-    "pages/user/family/addmember/addmember",
-    "pages/user/child/child",
-    "pages/user/child/addchild/addchild",
-    "pages/user/child/child_detail/child_detail",
-    "pages/user/setting/setting",
-    "pages/user/about_us/about_us",
-    "pages/user/comments/comments",
-    "pages/show/event_detail/event_detail",
-    "pages/show/text_detail/text_detail",
-    "pages/show/data_detail/data_detail",
-    "pages/show/seach_result/search_result",
-    "pages/generate/preview/preview",
-    "pages/generate/preview/preview_video/preview_video",
-    "pages/generate/reselect/diarytemplate/diarytemplate",
-    "pages/generate/reselect/videoInfo/videoInfo",
-    "pages/generate/reselect/timelineInfo/timelineInfo"
+    "pages/user/user"
   ],
+
+  "subPackages": [
+    {
+      "root": "show",
+      "pages": [
+        "pages/event/event",
+        "pages/text/text",
+        "pages/data/data",
+        "pages/data_templates/data_templates",
+        "pages/event_detail/event_detail",
+        "pages/text_detail/text_detail",
+        "pages/data_detail/data_detail",
+        "pages/seach_result/search_result"
+      ]
+    },
+    {
+      "root": "plan",
+      "pages": [
+        "pages/todo/todo",
+        "pages/create_plan/create_plan",
+        "pages/all_plan/all_plan"
+      ]
+    },
+    {
+      "root": "generate",
+      "pages": [
+        "pages/add_event/add_event",
+        "pages/chart/chart",
+        "pages/timeline/timeline",
+        "pages/preview/preview",
+        "pages/preview/preview_video/preview_video",
+        "pages/reselect/diarytemplate/diarytemplate",
+        "pages/reselect/videoInfo/videoInfo",
+        "pages/reselect/timelineInfo/timelineInfo"
+      ]
+    },
+    {
+      "root": "user",
+      "pages": [
+        "pages/family/family",
+        "pages/family/addmember/addmember",
+        "pages/child/child",
+        "pages/child/addchild/addchild",
+        "pages/child/child_detail/child_detail",
+        "pages/setting/setting",
+        "pages/about_us/about_us",
+        "pages/comments/comments"
+      ]
+    }
+  ],
+
   "tabBar": {
     "color": "#666666",
     "selectedColor": "#4095E5",

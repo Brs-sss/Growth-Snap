@@ -63,7 +63,7 @@ Page({
     const planValue = e.currentTarget.dataset.value;
     console.log(planValue);
     wx.navigateTo({
-      url: '/pages/plan/todo/todo?plan=' + encodeURIComponent(JSON.stringify(planValue))
+      url: '/plan/pages/todo/todo?plan=' + encodeURIComponent(JSON.stringify(planValue))
     })
 
   wx.request({
@@ -73,7 +73,7 @@ Page({
 
   goToAllPlan(e) {
     wx.navigateTo({
-      url: '/pages/plan/all_plan/all_plan',
+      url: '/plan/pages/all_plan/all_plan',
     })
   },
 
