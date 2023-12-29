@@ -1,6 +1,0 @@
-<view class="view_image_text">
-      <image class="user_profile" src="{{imgSrc}}" />
-      <text class="user_name">{{name}}</text>
-      <text class="user_tag">{{label}}</text>
-      <text class="user_signature">{{signature}}</text>
-</view>

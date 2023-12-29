@@ -44,7 +44,7 @@ Page({
   navigateTochart(e){
     const index = e.currentTarget.dataset.index;
     wx.navigateTo({
-      url: '/pages/generate/chart/chart?index=' + encodeURIComponent(index),
+      url: '/generate/pages/chart/chart?index=' + encodeURIComponent(index),
     })
   },
   selectTemplate(e){
@@ -68,7 +68,7 @@ Page({
     console.log('generate_category:',category);
     // console.log('generate_index:',index);
     wx.navigateTo({
-      url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category)
+      url: '/generate/pages/add_event/add_event?category=' + encodeURIComponent(category)
     })
   },
   addEvent(e) {
@@ -79,7 +79,7 @@ Page({
     console.log('generate_index:',index);
     if (category=="timeline"){
       wx.navigateTo({
-        url: '/pages/generate/add_event/add_event?category=timeline&index=' + 
+        url: '/generate/pages/add_event/add_event?category=timeline&index=' + 
         encodeURIComponent(that.data.templateSelected) + 
         '&color=' + encodeURIComponent(that.data.colorSelected),
       })
@@ -95,7 +95,7 @@ Page({
       }
       wx.setStorageSync('audioSelected', this.data.audioSelected)
       wx.navigateTo({
-        url: '/pages/generate/add_event/add_event?category=video' + "&index=" + encodeURIComponent(this.data.audioSelected)+"&title="+this.data.videoTitle,
+        url: '/generate/pages/add_event/add_event?category=video' + "&index=" + encodeURIComponent(this.data.audioSelected)+"&title="+this.data.videoTitle,
       })
 
     }else if (category=="diary"){
@@ -108,7 +108,7 @@ Page({
         return;
       }
       wx.navigateTo({
-        url: '/pages/generate/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected+"&title="+that.data.diaryTitle,
+        url: '/generate/pages/add_event/add_event?category=' + encodeURIComponent(category) + "&index=" + encodeURIComponent(index)+ "&cover=" + that.data.coverSelected+"&paper="+that.data.paperSelected+"&title="+that.data.diaryTitle,
       })
     }
   },

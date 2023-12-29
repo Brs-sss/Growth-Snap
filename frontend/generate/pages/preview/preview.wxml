@@ -1,0 +1,56 @@
+<!--pages/generate/preview/preview.wxml-->
+<view class="container">
+  <view class="preview_container">
+    <view class="banner">共生成{{ pages_num }}页，最多预览5页</view>
+    <view class="image-player">
+      <view wx:for="{{previewList}}" wx:key="index" class='image-container'>
+         <image src="{{item}}" mode="aspectFill"/>
+      </view>
+      <!-- PDF.js的 现在似乎用不了<canvas canvas-id="pdf-canvas" style="width: 100%; height: 100vh;"></canvas> -->
+    </view>
+
+  <view class='custom-tabbar'>
+  <!-- <view class='icons'>
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+  </view>
+  <view class='icons-text'>
+    <text bind:tap="reselectEvent">更换事件</text>
+    <text bind:tap="reselectTemplate">更换模板</text>
+    <text bind:tap="handleDownload">保存到本地</text>
+    <text bind:tap="handleShare">分享</text>
+  </view> -->
+  <button class="action-item">
+    <image src="/generate/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <text class="icons-text" bind:tap="reselectEvent">更换事件</text>
+  </button>
+  <button class="action-item">
+    <image src="/generate/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <text class="icons-text" bind:tap="reselectTemplate">更换信息</text>
+  </button>
+  <button class="action-item">
+    <image src="/generate/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <text class="icons-text" bind:tap="handleDownload">保存到本地</text>
+  </button>
+  <button class="action-item" open-type="share">
+    <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+    <text class="icons-text" bind:tap="handleShare">分享</text>
+  </button>
+</view>
+
+    <!-- <view id="button-box">
+          <button class="submit" bindtap="reselectEvent">更换事件</button>
+    </view>
+    <view id="button-box">
+          <button class="submit" bindtap="reselectTemplate">更换模版</button>
+    </view>
+    <view id="button-box">
+          <button class="submit" bindtap="handleDownload">保存到本地</button>
+    </view>
+    <view id="button-box">
+          <button class="submit" bindtap="handleShare">分享</button>
+    </view> -->
+  </view>
+</view>

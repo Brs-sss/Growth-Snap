@@ -56,31 +56,31 @@ Page({
   goToPage_family() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/user/family/family',
+      url: '../../user/pages/family/family',
     })
   },
   goToPage_child() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/user/child/child',
+      url: '../../user/pages/child/child',
     })
   },
   goToPage_setting() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/user/setting/setting',
+      url: '../../user/pages/setting/setting',
     })
   },
   goToPage_about_us() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/user/about_us/about_us',
+      url: '../../user/pages/about_us/about_us',
     })
   },
   goToPage_comments() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/user/comments/comments',
+      url: '../../user/pages/comments/comments',
     })
   },
   /**
