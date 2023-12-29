@@ -169,7 +169,7 @@ Page({
   },
   handlesearch(e){
     wx.navigateTo({
-      url: '/pages/show/seach_result/search_result'+'?searchKey='+encodeURIComponent(this.data.inputVal),
+      url: '/show/pages/seach_result/search_result'+'?searchKey='+encodeURIComponent(this.data.inputVal),
     })
   },
   goToPage_search_detail(e) {
@@ -179,11 +179,11 @@ Page({
     const type = this.data.searchHint[index].type;
     if(type == 'event'){
       wx.navigateTo({
-        url: `/pages/show/event_detail/event_detail?event_id=${id}`,
+        url: `/show/pages/event_detail/event_detail?event_id=${id}`,
       })
     }else if(type == 'text'){
       wx.navigateTo({
-        url: `/pages/show/text_detail/text_detail?text_id=${id}`,
+        url: `/show/pages/text_detail/text_detail?text_id=${id}`,
       })
     }
   },
@@ -200,19 +200,19 @@ Page({
   goToPage_event() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/show/event/event',
+      url: '/show/pages/event/event',
     })
   },
   goToPage_text() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/show/text/text',
+      url: '/show/pages/text/text',
     })
   },
   goToPage_data() {
     // TODO: 跳转到对应页面的处理逻辑
     wx.navigateTo({
-      url: '/pages/show/data/data',
+      url: '/show/pages/data/data',
     })
   },
   showDetail(e){  //进入详细展示页面
@@ -222,21 +222,21 @@ Page({
     if(type=="event"){
       let event_id=this.data.blog_cards_list[index].event_id;
       wx.navigateTo({
-        url: `/pages/show/event_detail/event_detail?event_id=${event_id}`,
+        url: `../../show/pages/event_detail/event_detail?event_id=${event_id}`,
       })
     }
     else if(type=="text"){
         //TODO
         let text_id=this.data.blog_cards_list[index].text_id;
         wx.navigateTo({
-          url: `/pages/show/text_detail/text_detail?text_id=${text_id}`,
+          url: `../../show/pages/text_detail/text_detail?text_id=${text_id}`,
         })
 
     }else if(type=="data"){
       let data_id=this.data.blog_cards_list[index].data_id;
       console.log(data_id)
       wx.navigateTo({
-        url: `/pages/show/data_detail/data_detail?data_id=${data_id}`,
+        url: `../../show/pages/data_detail/data_detail?data_id=${data_id}`,
       })
     }
   },

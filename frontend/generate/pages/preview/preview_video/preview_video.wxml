@@ -1,0 +1,43 @@
+<!--pages/generate/preview/preview_video/preview_video.wxml-->
+<view>
+  <view class="weui-form__text-area">
+			<h2 class="weui-form__title">{{video_title}}</h2>
+			<view class="weui-form__desc" style="color: var(--weui-FG-1); font-size: 15px;">{{title_text}}</view>
+		</view>
+  <!-- <view class="title">{{video_title}}</view> -->
+  <video class="video" src="{{video_src}}" binderror="videoErrorCallback" bindenterpictureinpicture='bindVideoEnterPictureInPicture' bindleavepictureinpicture='bindVideoLeavePictureInPicture' object-fit="contain" show-fullscreen-btn="true" direction="0">
+  </video>
+</view>
+
+<view class='custom-tabbar' style="display: {{show}};">
+  <!-- <view class='icons'>
+    <image src="/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <image src="/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectVideoInfo"></image>
+    <image src="/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <image src="/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+  </view>
+  <view class='icons-text'>
+    <text bind:tap="reselectEvent">更换事件</text>
+    <text bind:tap="reselectVideoInfo">更换信息</text>
+    <text bind:tap="handleDownload">保存到本地</text>
+    <text bind:tap="handleShare">分享</text>
+  </view> -->
+  <button class="action-item">
+    <image src="/generate/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <text class="icons-text" bind:tap="reselectEvent">更换事件</text>
+  </button>
+  <button class="action-item">
+    <image src="/generate/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectVideoInfo"></image>
+    <text class="icons-text" bind:tap="reselectVideoInfo">更换信息</text>
+  </button>
+  <button class="action-item">
+    <image src="/generate/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <text class="icons-text" bind:tap="handleDownload">保存到本地</text>
+  </button>
+  <button class="action-item" open-type="share">
+    <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+    <text class="icons-text" bind:tap="handleShare">分享</text>
+  </button>
+</view>
+
+<button style="display: {{not_show}}; margin-top: 5vh;" bind:tap="open">打开乖乖记</button>
