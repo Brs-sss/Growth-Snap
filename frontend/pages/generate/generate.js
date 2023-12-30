@@ -144,8 +144,10 @@ Page({
     });
   },
   handleInputVideoTitle(e) {  //输入标题的处理
+    var randomInt = Math.floor(Math.random() * 10) + 1;
+    console.log(randomInt);
     this.setData({
-      videoTitle: e.detail.value
+      videoTitle: e.detail.value+randomInt.toString()
     });
   },
   /**
