@@ -111,8 +111,10 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
               that.setData({
                 // loading: false,
                 // dialog: false,
+                // video_title: res.data.video_title,
                 percent: '100%'
               });
+          // video_title = res.data.video_title
           that.setData({
             buttonDisabled: false
           });
@@ -136,7 +138,8 @@ export function generateVideoPreview(that, id_list, video_title, audioSelected, 
                   // console.log("previousPage", previousPage)
                   previousPage.setData({
                     video_src: that.data.host_+'user/api/generate/video/preview'+'/'+openid+'/'+video_title,
-                    video_title:video_title
+                    video_title:video_title.slice(0,-1),
+                    audioSelected: audioSelected
                   })
                   previousPage.Refresh()
                   wx.navigateBack({
@@ -440,6 +443,7 @@ Page({
             success:function(res){
               clearInterval(t)
               that.setData({
+                // video_title: res.data.video_title,
                 // loading: false,
                 // dialog: false,
                 percent: '100%'
@@ -461,7 +465,7 @@ Page({
                       video_src: that.data.host_+'user/api/generate/video/preview'+'/'+openid+'/'+that.data.video_title
                     })
                     wx.navigateTo({
-                      url: '/generate/pages/preview/preview_video/preview_video'+'?video_title='+that.data.video_title+'&category='+that.data.comeFrom+'&openid='+openid,
+                      url: '/generate/pages/preview/preview_video/preview_video'+'?video_title='+that.data.video_title+'&category='+that.data.comeFrom+'&openid='+openid+'&audioSelected='+that.data.audio_index,
                     })//成功提交，返回上个页面
                   }, 1000)
                 }
