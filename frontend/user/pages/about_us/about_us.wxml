@@ -1,5 +1,12 @@
 <!--pages/user/about_us/about_us.wxml-->
-
+<view class="icon-container">
+<image src="/user/image/icon.png" class="icon">
+</image>
+<!-- <view aria-role="heading" aria-level="4" class="weui-article__h1">乖乖记</view> -->
+<text style="font-size: 22px; font-weight: 500;">乖乖记</text>
+<text style="font-size: 17px;">Version 1.0.0</text>
+</view>
+<!-- 
 <view class="weui-form__control-area">
   <view class="weui-cells__group weui-cells__group_form">
     <view class="weui-cells weui-cells_form">
@@ -39,4 +46,19 @@
       </view>
     </view>
   </view>
+</view> -->
+
+<view class="weui-footer weui-footer_fixed-bottom">
+			<view class="weui-footer__links">
+				<navigator class="weui-footer__link weui-wa-hotarea" url=""> Terms of Service</navigator>
+			</view>
+      <view class="weui-footer__links">
+				<navigator class="weui-footer__link weui-wa-hotarea" url=""> Privacy Policy Summary</navigator>
+				<navigator class="weui-footer__link weui-wa-hotarea" url=""> Privacy Policy</navigator>
+			</view>
+      <view class="weui-footer__text">备案号：京ICP备2023041084号-1X</view>
+      <view class="weui-footer__text">Customer Service: 400 670 0700</view>
+      <view class="weui-footer__text">阿诺蒂队 版权所有</view>
+			<view class="weui-footer__text">Copyright &copy; 2023-2024 阿诺蒂队. All Rights Reserved</view>
+			
 </view>

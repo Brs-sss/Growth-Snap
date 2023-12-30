@@ -374,7 +374,7 @@ def resizeVideoImage(image_path_list, video_title, label):
     font_title = ImageFont.truetype('Ye.ttf', 50, encoding='utf-8')
     font_label = ImageFont.truetype('Ye.ttf', 30, encoding='utf-8')
     draw = ImageDraw.Draw(black)
-    draw.text((100, 100), video_title, fill=(255, 255, 255), font=font_title)
+    draw.text((100, 100), video_title[:-1], fill=(255, 255, 255), font=font_title)
     draw.text((100, 175), label, fill=(255, 255, 255), font=font_label)
     date = datetime.now().strftime('%Y-%m-%d')
     draw.text((100, 200), date, fill=(255, 255, 255), font=font_label)
@@ -451,7 +451,7 @@ def GenerateVideo(image_path_list, audio_index, video_title, label, openid):
     video = VideoFileClip(video_dir)
     # video = VideoFileClip('static/video/temp.mp4')
     duration = video.duration  # 视频时长
-    videos = video.set_audio(AudioFileClip(f'static/video/audio/audio_{audio_index}.mp3').subclip(0, duration))  # 音频文件
+    videos = video.set_audio(AudioFileClip(f'static/audio/audio_{audio_index}.mp3').subclip(0, duration))  # 音频文件
     videos.write_videofile(f'static/video/{openid}/{video_title}.mp4', audio_codec='aac')  # 保存合成视频，注意加上参数audio_codec='aac'，否则音频无声音/
     # 删除resized文件夹
     shutil.rmtree('static/video/resized')
@@ -459,6 +459,7 @@ def GenerateVideo(image_path_list, audio_index, video_title, label, openid):
     os.remove(video_dir)
     # video.reader.close()
     # video.audio.reader.close_proc()
+    # return video_title
 
 # 对profile进行压缩，取中间的部分
 def GenerateProfileThumnail(src_path, dest_path, image_name, target_width=400):

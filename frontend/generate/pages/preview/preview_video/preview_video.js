@@ -12,7 +12,8 @@ Page({
     video_src: '',
     show: true,
     not_show: 'none',
-    title_text: '预览生成的小视频，可进行更换、保存与分享'
+    title_text: '预览生成的小视频，可进行更换、保存与分享',
+    audioSelected: 0
   },
 handleDownload(){
   var that=this
@@ -68,14 +69,30 @@ reselectVideoInfo(){
     }
     this.setData({
       openid: options.openid,
-      video_title: options.video_title,
+      video_title: options.video_title.slice(0,-1),
       video_src: this.data.host_+'user/api/generate/video/preview'+'/'+options.openid+'/'+encodeURIComponent(options.video_title)
     })
     console.log("video_src: ", this.data.video_src)
 
   },
   reselectEvent(){
-    wx.navigateBack(1)
+    // wx.navigateBack(1)
+    let index = wx.getStorageSync('audioSelected')
+    let pages = getCurrentPages(); //获取当前页面js里面的pages里的所有信息。
+    let prevPage = pages[ pages.length - 2 ];  
+    prevPage.setData({
+      comeFrom:'video',
+        audio_index:index,
+        video_title:this.data.video_title+'1',
+    })
+
+      wx.navigateBack({
+        delta: 1  // 返回上一级页面。
+      })
+
+    // wx.navigateTo({
+    //   url: '/generate/pages/add_event/add_event?category=video' + "&index=" +index+"&title="+this.data.video_title+'1',
+    // })
   },
   /**
    * Lifecycle function--Called when page is initially rendered

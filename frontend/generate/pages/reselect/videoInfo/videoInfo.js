@@ -27,8 +27,11 @@ Page({
       audioSelected: index,
       
     })
+    wx.setStorageSync('audioSelected', this.data.audioSelected)
+
   },
   handleInputVideoTitle(e) {  //输入标题的处理
+    
     this.setData({
       video_title: e.detail.value
     });
@@ -44,8 +47,11 @@ submitChange(){
     })
     return;
   }
+  var randomInt = Math.floor(Math.random() * 9) + 1;
+    // console.log(randomInt);
+  
   var id_list = wx.getStorageSync('generate_id_list');
-  generateVideoPreview(that, id_list, that.data.video_title, that.data.audioSelected, false);
+  generateVideoPreview(that, id_list, that.data.video_title+randomInt.toString(), that.data.audioSelected, false);
 },
   /**
    * Lifecycle function--Called when page load
