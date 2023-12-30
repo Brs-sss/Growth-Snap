@@ -144,9 +144,12 @@ Page({
     });
   },
   handleInputVideoTitle(e) {  //输入标题的处理
+    var randomInt = Math.floor(Math.random() * 9) + 1;
+    // console.log(randomInt);
     this.setData({
-      videoTitle: e.detail.value
+      videoTitle: e.detail.value+randomInt.toString()
     });
+    console.log(this.data.videoTitle)
   },
   /**
    * 生命周期函数--监听页面加载
