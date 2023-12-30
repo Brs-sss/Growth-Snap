@@ -78,9 +78,21 @@ reselectVideoInfo(){
   reselectEvent(){
     // wx.navigateBack(1)
     let index = wx.getStorageSync('audioSelected')
-    wx.navigateTo({
-      url: '/generate/pages/add_event/add_event?category=video' + "&index=" +index+"&title="+this.data.video_title+'1',
+    let pages = getCurrentPages(); //获取当前页面js里面的pages里的所有信息。
+    let prevPage = pages[ pages.length - 2 ];  
+    prevPage.setData({
+      comeFrom:'video',
+        audio_index:index,
+        video_title:this.data.video_title+'1',
     })
+
+      wx.navigateBack({
+        delta: 1  // 返回上一级页面。
+      })
+
+    // wx.navigateTo({
+    //   url: '/generate/pages/add_event/add_event?category=video' + "&index=" +index+"&title="+this.data.video_title+'1',
+    // })
   },
   /**
    * Lifecycle function--Called when page is initially rendered
