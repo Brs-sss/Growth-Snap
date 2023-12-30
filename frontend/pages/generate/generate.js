@@ -154,10 +154,8 @@ Page({
   onLoad(options) {
     this.setData({
       timelineList: [
-        { id: 0, name: "日历标注模板"},
-        { id: 1, name: "彩色时间轴模板" },
-        { id: 2, name: "曲线时间轴模板" },
-        { id: 3, name: "圆环标注模板"}
+        { id: 0, name: "彩色时间轴模板" },
+        { id: 1, name: "曲线时间轴模板" }
       ],
       colorList: [
         { id: 0, name: "天蓝色系"},
