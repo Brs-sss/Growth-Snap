@@ -1,0 +1,28 @@
+/* pages/show/event/event.wxss */
+
+@import "/show/pages/event/event.wxss";
+
+.whole-page-grid-text{
+  display: grid;
+  grid-template-rows: 10vh 30vh 10vh 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+  "A"
+  "C"
+  "D"
+  "E";
+  height:100vh;
+  justify-content: stretch;
+  align-items: stretch; 
+}
+
+.weui-cells__title {
+  font-size: 1.7vh;
+}
+.weui-label{
+  font-size: 2vh;
+  color: rgb(68, 68, 68);
+}
+.weui-input {
+  font-size: 2vh;
+}

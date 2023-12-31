@@ -53,7 +53,7 @@
             </view>
           </block>
         </view>
-        <button bind:tap="addEvent" data-category="timeline">修改</button>
+        <button bind:tap="addEvent" data-category="timeline">生成</button>
     </view>
   </block>
   <block wx:if="{{activeIndex==1}}">
@@ -162,11 +162,18 @@
   </block>
   <block wx:if="{{activeIndex==3}}">
     <!-- 数据图 -->
-    <view class="timeline-list">
+    <view class="charm-list">
+      <view class="charm-title"> 数据图模板选择</view>
+      <view style="width: 60%; height: 0px; border: #6dafec solid 0.5px; position: relative; top: -220rpx;"></view>
+      <view class="charm-line"></view>
       <block wx:for="{{chartList}}" wx:key="index">
-        <view class="timeline-item"  data-category="timeline" data-index="{{index}}" bindtap="navigateTochart">
-          <image class="timeline-image" src="{{host_}}/static/frontend/chart/chart_{{index}}.jpg"></image>
+        <view class="charm-container">
+          <view class="charm-item {{index%2 != 0 ? 'charm-to-right' : ''}}"  data-category="timeline" data-index="{{index}}" bindtap="navigateTochart">
+            <image class="charm-image" src="{{host_}}/static/frontend/chart/chart_{{index}}.jpg"></image>
+          </view>
+          <text class="charm-info" style="left: {{index%2 != 0 ? '5%' : '87%'}};">{{item.title}}</text>
         </view>
+        <view class="charm-line"></view>
       </block>
     </view>
   </block>

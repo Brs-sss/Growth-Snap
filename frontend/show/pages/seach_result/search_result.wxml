@@ -1,0 +1,30 @@
+<!--pages/show/seach_result/search_result.wxml-->
+
+<view class="container_tag">
+  <view wx:for="{{tags}}" wx:key="index" 
+    data-index='{{index}}' 
+    class="tag {{item.checked ? 'selected' : ''}}" bindtap="toggleTag">
+    <text class="tag-text">{{item.info}}</text>
+  </view>
+</view>
+
+<view  class="tag {{time ? 'selected' : ''}}" bindtap="toggleTimeTag">
+    <text class="tag-text">{{timeText}}</text>
+</view>
+
+<view  class="tag {{corre ? 'selected' : ''}}" bindtap="toggleCorreTag">
+    <text class="tag-text">按相关度排序</text>
+</view>
+
+<view class="container">
+  <view class="cards-container">
+    <view wx:for="{{blog_cards_list}}" wx:key="index" data-index='{{index}}' data-type='{{item.type}}' bindtap="showDetail">
+        <event-card wx:if="{{item.type=='event'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}" imgSrc="{{item.imgSrc}}" ></event-card>
+        <text-card wx:elif="{{item.type=='text'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}} " title="{{item.title}}" body="{{item.content}}" ></text-card>
+        <data-card wx:elif="{{item.type=='data'}}" day="{{item.day}}" month="{{item.month}}" author="{{item.author}}" title="{{item.title}}" body="{{item.content}}" ></data-card>
+    </view>
+
+  </view>
+  
+</view>
+

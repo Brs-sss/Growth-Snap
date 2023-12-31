@@ -17,13 +17,19 @@ import shutil
 from urllib.parse import unquote
 from manage import host_url
 
-from flask import Flask, jsonify
-from flasgger import Swagger
+import jieba
 
-app = Flask(__name__)
-swagger = Swagger(app)
 
-import fitz
+from fuzzywuzzy import process
+from fuzzywuzzy import fuzz
+
+# from flask import Flask, jsonify
+# from flasgger import Swagger
+
+# app = Flask(__name__)
+# swagger = Swagger(app)
+
+# import fitz
 
 # Create your views here.
 
@@ -360,7 +366,20 @@ def getFamilyToken(request):
             'msg': 'please use GET'
         })
 
-
+def getActivityID(request):
+    if request.method == 'GET':
+        # 获取access_token url=https://api.weixin.qq.com/cgi-bin/token 
+        access_token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={settings.APP_ID}&secret={settings.APP_SECRET}'
+        response = requests.get(access_token_url)
+        access_token = response.json().get('access_token')
+        # get url = https://api.weixin.qq.com/cgi-bin/message/wxopen/activityid/create?access_token=ACCESS_TOKEN 
+        get_url = f'https://api.weixin.qq.com/cgi-bin/message/wxopen/activityid/create?access_token={access_token}'
+        response = requests.get(get_url)
+        activity_id = response.json().get('activity_id')
+        return JsonResponse({
+            'activity_id': activity_id
+        })
+        
 # @app.route('/api/getSHA256/', methods=['GET'])
 def getSHA256(request):
     """ 生成对应内容的发表时间sha256值
@@ -941,49 +960,112 @@ def loadSearchPage(request):
         used_by_add_event_page = (request.GET.get('tags', "false") == "true")
         now_user = User.objects.get(openid=openid)
 
-        # Fuzzy search in title and content for Event and Text
-        event_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 'e' in types else Q()
-        text_filter = Q(title__icontains=search_key) | Q(content__icontains=search_key) if 't' in types else Q()
-
-        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).filter(event_filter).order_by(
+        now_user_blocks_events = Event.objects.filter(user__family=now_user.family).order_by(
             "-date", "-time")
-        now_user_blocks_data = Data.objects.filter(user__family=now_user.family).order_by("-date",
-                                                                                          "-time") if 'd' in types else []
-        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).filter(text_filter).order_by("-date",
-                                                                                                              "-time")
+        now_user_blocks_text = Text.objects.filter(user__family=now_user.family).order_by("-date",
+                                                                                            "-time")
+        # now_user_blocks = []
+
+        # # 对每个事件进行相似度计算
+        # for event in now_user_blocks_events:
+        #     # 将标题和内容分词
+        #     seg_list = jieba.cut(event.title + " " + event.content, cut_all=True)
+        #     title_content = " ".join(seg_list)
+
+        #     # 计算相似度
+        #     similarity = fuzz.token_sort_ratio(title_content, search_key)
+
+        #     # 相似度大于0则加入结果列表
+        #     if similarity > 0:
+        #         now_user_blocks.append((event, similarity))
+        
+        now_user_blocks_search = []
+        blocks_list = []
+
         # 暂时不支持data的搜索
         now_user_blocks = sorted(list(now_user_blocks_events) + list(now_user_blocks_text),
                                  key=lambda x: (x.date, x.time), reverse=True)
+        # 对每个文本进行相似度计算
+        for text in now_user_blocks:
+            # 将标题分词
+            seg_list = list(jieba.cut(text.title, cut_all=True))
+            title_content = " ".join(seg_list)
 
-        blocks_list = []
-        for db_block in now_user_blocks:
-            block_item = {}
-            block_item['type'] = db_block.record_type
-            block_item['title'] = db_block.title
+            # 计算相似度
+            similarity = (fuzz.token_set_ratio(title_content, search_key) + fuzz.partial_ratio(title_content, search_key) + fuzz.token_sort_ratio(title_content, search_key))/3
 
-            if used_by_add_event_page:
-                block_item['tags'] = StringToList(db_block.tags)
-            else:
-                block_item['content'] = db_block.content
-                block_item['author'] = db_block.user.label
-                date_string = str(db_block.date)
-                block_item['month'] = str(int(date_string[5:7])) + "月"
-                block_item['year'] = date_string[0:4]
-                block_item['day'] = date_string[8:10]
+            # 将内容分词
+            seg_list = list(jieba.cut(text.content, cut_all=True))
+            content_content = " ".join(seg_list)
 
-            if db_block.record_type == 'event':
-                block_item['event_id'] = db_block.event_id
-                image_path = 'static/ImageBase/' + db_block.event_id
-                image_list = sorted(os.listdir(image_path))
-                block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+            # 计算相似度
+            similarity = max(similarity, (fuzz.token_set_ratio(content_content, search_key) + fuzz.partial_ratio(content_content, search_key) + fuzz.token_sort_ratio(content_content, search_key))/3)
 
-            if db_block.record_type == 'data':
-                block_item['data_id'] = db_block.data_id
+            # 相似度大于0则加入结果列表
+            if similarity > 0:
+                now_user_blocks_search.append((text))
+                db_block = text
+                block_item = {}
+                block_item['similarity'] = similarity  # 添加相似度信息
+                block_item['type'] = db_block.record_type
+                block_item['title'] = db_block.title
 
-            elif db_block.record_type == 'text':
-                block_item['text_id'] = db_block.text_id
+                if used_by_add_event_page:
+                    block_item['tags'] = StringToList(db_block.tags)
+                else:
+                    block_item['tags'] = StringToList(db_block.tags)
+                    block_item['content'] = db_block.content
+                    block_item['author'] = db_block.user.label
+                    date_string = str(db_block.date)
+                    block_item['month'] = str(int(date_string[5:7])) + "月"
+                    block_item['year'] = date_string[0:4]
+                    block_item['day'] = date_string[8:10]
+                    block_item['time'] = db_block.date.strftime('%Y-%m-%d') + 'T' + db_block.time.strftime('%H:%M:%S')
 
-            blocks_list.append(block_item)
+                if db_block.record_type == 'event':
+                    block_item['event_id'] = db_block.event_id
+                    image_path = 'static/ImageBase/' + db_block.event_id
+                    image_list = sorted(os.listdir(image_path))
+                    block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+
+                if db_block.record_type == 'data':
+                    block_item['data_id'] = db_block.data_id
+
+                elif db_block.record_type == 'text':
+                    block_item['text_id'] = db_block.text_id
+
+                blocks_list.append(block_item)
+
+
+
+        # for db_block in now_user_blocks_search:
+        #     block_item = {}
+        #     block_item['type'] = db_block.record_type
+        #     block_item['title'] = db_block.title
+
+        #     if used_by_add_event_page:
+        #         block_item['tags'] = StringToList(db_block.tags)
+        #     else:
+        #         block_item['content'] = db_block.content
+        #         block_item['author'] = db_block.user.label
+        #         date_string = str(db_block.date)
+        #         block_item['month'] = str(int(date_string[5:7])) + "月"
+        #         block_item['year'] = date_string[0:4]
+        #         block_item['day'] = date_string[8:10]
+
+        #     if db_block.record_type == 'event':
+        #         block_item['event_id'] = db_block.event_id
+        #         image_path = 'static/ImageBase/' + db_block.event_id
+        #         image_list = sorted(os.listdir(image_path))
+        #         block_item['imgSrc'] = host_url + f'{image_path}/' + image_list[0]
+
+        #     if db_block.record_type == 'data':
+        #         block_item['data_id'] = db_block.data_id
+
+        #     elif db_block.record_type == 'text':
+        #         block_item['text_id'] = db_block.text_id
+
+        #     blocks_list.append(block_item)
 
         return JsonResponse({'blocks_list': blocks_list})
 
@@ -1142,19 +1224,30 @@ def loadCertainPlan(request):
         planTitle = request.GET.get('plan')
         plan = Plan.objects.filter(user__family=now_user.family, title=planTitle).first()
         icon = plan.icon
-        todos = plan.todo_set.all().order_by("deadline")
+        not_finished_todos = plan.todo_set.filter(is_finished=False).order_by("deadline")
+        finished_todos = plan.todo_set.filter(is_finished=True).order_by("deadline")
         todo_list = []
-        for todo in todos:
+        for todo in not_finished_todos:
             todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
                          'todo_id': todo.todo_id}
             todo_list.append(todo_item)
+        for todo in finished_todos:
+            todo_item = {'task': todo.title, 'ddl': str(todo.deadline), 'check': todo.is_finished,
+                         'todo_id': todo.todo_id}
+            todo_list.append(todo_item)
+        childList = []
+        children = plan.children.all()
+        for child in children:
+            childList.append(child.name)
+
         return JsonResponse({
             'message': 'ok',
             'icon': icon,
             'todos': todo_list,
+            'childList': childList
         })
 
-@app.route('/api/plan/delete_plan/', methods=['POST'])
+# @app.route('/api/plan/delete_plan/', methods=['POST'])
 def deletePlan(request):
     """删除计划接口
     ---
@@ -1203,7 +1296,7 @@ def deletePlan(request):
             'message': 'ok',
         })
 
-@app.route('/api/user/get_user_info/', methods=['GET'])
+# @app.route('/api/user/get_user_info/', methods=['GET'])
 def getUserInfo(request):
     """获得用户信息接口
     ---

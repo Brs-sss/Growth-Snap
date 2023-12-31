@@ -1,0 +1,186 @@
+/* pages/generate/chart/chart.wxss */
+.title {
+  font-size: 17px;
+  white-space: pre;
+  color:  gray;
+}
+
+.line {
+  position: relative;
+  left: 1em;
+  width: 60%;
+  height: 0px;
+  margin-bottom: 1vh;
+  border-top: lightgray solid 1px;
+}
+
+.submit{
+  background-color: #4095E5;
+  color: #fff;
+  border-radius: 100px;
+  box-shadow: 0 10rpx 10rpx rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+  display: block;
+  box-sizing: border-box;
+  margin-bottom: 10rpx;
+}
+
+.container_tag{
+  position: relative;
+  left: 10px;
+  width: 95vw;
+  height: 8vh;
+  display: flex;
+  overflow: scroll;
+  flex-wrap: nowrap;
+  justify-self: center;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 15px; /* 标签之间的间距 */
+  margin-left: 4vw;
+}
+
+.tag-empty-tip{
+  color: #999;
+}
+
+/* 添加滚动条样式，这样滚动条就不可见了，但仍然可以滑动 */
+.container_tag::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.container_tag::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.container_tag::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.tag {
+  display: inline-block;
+  height: 5vw;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1rpx solid #4095e57a;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+  color: #4095E5;
+  cursor: pointer;
+  white-space: nowrap; 
+}
+
+.tag.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.tag .tag-text {
+  /* margin-bottom: 3px; */
+  font-size: 14px;
+}
+
+
+.ec-container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 30vh;
+}
+
+ec-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.container_template{
+  width: 100vw;
+  height: 20vh;
+  display: flex;
+  overflow: scroll;
+  flex-wrap: nowrap;
+  justify-self: center;
+  align-items: center; /* 标签垂直居中对齐 */
+  gap: 15px; /* 标签之间的间距 */
+}
+
+.container_template::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.container_template::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.container_template::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.template {
+  width: 50vh;
+  height: 15vh;
+  padding: 8rpx 16rpx;
+  border-radius: 4rpx;
+  background: #f0f8ff;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: #4095e598;
+  color: #143e64;
+  cursor: pointer; 
+  margin-left: 2vw;
+}
+
+.timeline-image {
+  width: 20vh;
+  height: 15vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.template.selected {
+  background-color: #007bff67;
+  color: #fff;
+}
+
+#container_color{
+  height: 8vh;
+  margin-bottom: -2vh;
+}
+
+.color {
+  width: 8vh;
+  height: 5vh;
+  padding: 8rpx 16rpx;
+  border-radius: 5vh;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  cursor: pointer; 
+  margin-left: 1vh;
+}
+
+.color-image {
+  width: 8vh;
+  height: 5vh;
+  border-radius: 2vh;
+  margin-bottom: 1vh;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.16);
+}
+
+.weui-form{
+  margin-top: -12vh;
+  margin-bottom: -10vh;
+}
+
+.weui-cell__bd{
+  color: #007bff;
+}
+
+.weui-cell__bd.able{
+  color: #007bff4f;
+}

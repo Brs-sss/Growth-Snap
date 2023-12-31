@@ -1,0 +1,47 @@
+
+
+<view class="container">
+  <view class="two-pic-box"> 
+        <view class="image-text-box cover">
+          <text class="sub-nav-item {{diaryActiveIndex==0?'active':''}}" bindtap="navigateToSubPage" data-index="0">封面</text>
+          <image class="selected-image" bindtap="navigateToSubPage" data-index="0" 
+          src="{{host_}}static/frontend/cover/cover_{{coverSelected}}.jpg"></image>
+        </view>
+        <view class="image-text-box paper">
+          <text class="sub-nav-item {{diaryActiveIndex==1?'active':''}}" bindtap="navigateToSubPage" data-index="1">纸张</text>
+          <image class="selected-image" bindtap="navigateToSubPage" data-index="1" 
+          src="{{host_}}static/frontend/paper/paper_{{paperSelected}}.jpg"></image>
+        </view>
+        <input class="diary-input" bindinput="handleInputTitle" placeholder="请输入标题" />
+        <button class="submit" data-category="diary" bindtap="submitChange">更改</button>
+    </view>
+    
+    <view class="item-container">
+      <block wx:if="{{diaryActiveIndex==0}}">
+      <!-- 封面 -->
+      <!-- <scroll-view class="scroll-view" scroll-y="true"> -->
+        <view class="cover-list" >
+          <block wx:for="{{coverList}}" wx:key="index">
+            <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectCover">
+              <image class="cover-image {{index==coverSelected ? 'selected' : ''}}" src="{{host_}}static/frontend/cover/cover_{{index}}.jpg"></image>
+              <image class="select-icon  {{index==coverSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
+            </view>
+          </block>
+        </view>
+      <!-- </scroll-view> -->
+      </block>
+      <block wx:if="{{diaryActiveIndex==1}}">
+      <!-- 纸张 -->
+      <!-- <scroll-view class="scroll-view" scroll-y="true"> -->
+        <view class="cover-list">
+          <block wx:for="{{paperList}}" wx:key="index">
+            <view class="cover-item"  data-category="timeline" data-index="{{index}}" bindtap="selectPaper">
+              <image class="cover-image {{index==paperSelected ? 'selected' : ''}}" src="{{host_}}static/frontend/paper/paper_{{index}}.jpg"></image>
+              <image class="select-icon  {{index==paperSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
+            </view>
+          </block>
+        </view>
+      <!-- </scroll-view> -->
+      </block>
+    </view>
+  </view>

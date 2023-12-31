@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "ec-canvas": "../../../../components/ec-canvas/ec-canvas",
+    "mp-form-page": "/miniprogram_npm/weui-miniprogram/form-page/form-page",
+    "mp-form": "/miniprogram_npm/weui-miniprogram/form/form"
+  }
+}

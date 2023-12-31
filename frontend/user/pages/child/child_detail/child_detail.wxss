@@ -1,0 +1,19 @@
+/* pages/user/child/child_detail/child_detail.wxss */
+
+.ec-container {
+  width: 150vw;
+  height: 50vh;
+  z-index: -1;
+}
+
+.ec-container_2 {
+  width: 100vw;
+  height: 40vh;
+  z-index: -1;
+}
+
+ec-canvas {
+  width: 80%;
+  height: 80%;
+}
+

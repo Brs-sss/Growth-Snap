@@ -1,0 +1,16 @@
+/* pages/user/about_us/about_us.wxss */
+.icon-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 100rpx 0;
+  box-sizing: border-box;
+}
+.icon{
+  height: 30vh;
+  width: 30vh;
+  border-radius: 50%;
+  margin-bottom: 5vh;
+}

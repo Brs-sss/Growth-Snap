@@ -1,0 +1,96 @@
+
+<view class="weui-form__control-area">
+    <view class="weui-cells__group weui-cells__group_form">
+      <view class="weui-cells__title">上传意见反馈</view>
+			<view class="weui-cells weui-cells_form">
+        <view class="weui-cell weui-cell_active">
+          <view class="weui-cell__hd">
+          <label class="weui-label">标题</label>
+          <view class="weui-cell__desc">选填</view>
+          </view>
+          <view class="weui-cell__bd weui-flex">
+            <input
+                              class="weui-input"
+                              type="text"
+                              placeholder="请输入"
+                              placeholder-class="weui-input__placeholder"
+                          />
+          </view>
+        </view>
+
+
+        <view class="weui-cell weui-cell_active" style="flex-direction:row;margin-bottom: 1vh;">
+        <view style='width: 100%;'>
+          <view class="weui-cell__hd">
+          <label class="weui-label">内容</label>
+          </view>
+          <!-- <textarea class="input_text" bindinput="handleInputText" placeholder="请输入" maxlength="1024"/> -->
+          <view class="weui-cell__bd" style="margin-top: 2vh; font-size: 2vh;">
+                      <textarea class="weui-textarea" placeholder="请描述事件内容" placeholder-class="weui-input__placeholder" rows="3" ></textarea>
+                      <!-- <view aria-role="option" class="weui-textarea-counter"><span>0</span>/200</view> -->
+          </view>
+
+        </view>
+          
+        </view>
+
+        <view class="weui-cell weui-cell_active" style="flex-direction:row">
+        <view style="width: 100%;">
+          <view class="weui-cell__hd" >
+          <label class="weui-label">屏幕截图</label>
+          <view class="weui-cell__desc"  style="margin-bottom: 2vh;">选填</view>
+          </view>
+          <!-- <view class="weui-cell__bd weui-flex">
+            <input
+                              class="weui-input"
+                              type="text"
+                              placeholder="请输入"
+                              placeholder-class="weui-input__placeholder"
+                              bindinput="handleInputTitle"
+                          />
+          </view> -->
+          <view>
+        </view>
+          
+            <view id="image-grid-container" style="{{imgGridStyle}}">
+            <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="changeImage" data-index="{{index}}">
+                <image src="{{item}}" mode="aspectFill" data-index="{{index}}"></image> 
+                <view class="image_delete" catchtap="handleDelete" data-index="{{index}}">
+                    <image src="/image/show/cross.png" style="height: 20px;"/>
+                </view>
+            </view>
+            <view class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>
+          </view>
+          </view>
+          
+        </view>
+
+        <view class="weui-cell weui-cell_active">
+          <view class="weui-cell__hd">
+          <label class="weui-label">联系电话</label>
+          <view class="weui-cell__desc">选填</view>
+          </view>
+          <view class="weui-cell__bd weui-flex">
+            <input
+                              class="weui-input"
+                              type="text"
+                              placeholder="我们将通过该电话联系您"
+                              placeholder-class="weui-input__placeholder"
+                              
+                          />
+          </view>
+        </view>
+
+
+        
+      </view>
+    </view>
+  </view>
+
+
+<view id="button-box">
+  <button class="submit" bindtap="handleSubmit" >提交</button>
+</view>
+<view class="place-holder" style="height: 4vh;">
+</view>
+

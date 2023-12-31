@@ -17,6 +17,7 @@ RUN wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkh
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
 ADD requirements.txt /code/
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+RUN pip install jieba -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 
 
 # RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
