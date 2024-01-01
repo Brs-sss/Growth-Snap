@@ -35,7 +35,7 @@
           <block wx:for="{{timelineList}}" wx:key="index">
             <view class="timeline-item audio-item"  data-category="timeline" data-index="{{index}}" bindtap="selectTemplate">
               <image class="audio-image {{item.id==templateSelected? 'selected' : ''}}" 
-              src="{{host_}}static/frontend/timeline/timeline_{{item.id}}.jpg" style="width: 50vw;"></image>
+              src="{{host_}}static/frontend/timeline/timeline_{{item.id+1}}.jpg" style="width: 50vw;"></image>
               <image class="select-icon  {{item.id==templateSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
               <text class="timeline-name">{{item.name}}</text>
             </view>

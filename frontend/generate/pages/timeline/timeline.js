@@ -43,302 +43,6 @@ const itemStyle = {
     color: colors[3]
   }
 };
-const data = [
-  {
-    name: '2023年\n小明读书记录',
-    itemStyle: {
-      color: colors[2]
-    },
-    children: [
-      {
-        name: '1月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '无界面交互'
-              }
-            ]
-          },
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '数字绘图的光照与渲染技术'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '2月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '《痛点》'
-              }
-            ]
-          },
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《进化》'
-              },
-              {
-                name: '《后物欲时代的来临》'
-              }
-            ]
-          },
-          {
-            name: '3☆',
-            children: [
-              {
-                name: '《疯癫与文明》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '3月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '《我们时代的神经症人格》'
-              }
-            ]
-          },
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《皮格马利翁效应》'
-              },
-              {
-                name: '《受伤的人》'
-              }
-            ]
-          },
-          {
-            name: '3☆'
-          },
-          {
-            name: '2☆',
-            children: [
-              {
-                name: '《迷恋》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '4月',
-        children: [
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《把房子住成家》'
-              },
-              {
-                name: '《只过必要生活》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '5月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '《设计诗》'
-              }
-            ]
-          },
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《假如生活糊弄了你》'
-              }
-            ]
-          },
-          {
-            name: '3☆',
-            children: [
-              {
-                name: '《方向》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '6月',
-        children: [
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《人生的智慧》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '7月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '《代码整洁之道》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '8月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '《慈悲》'
-              },
-              {
-                name: '《楼下的房客》'
-              }
-            ]
-          },
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《虚无的十字架》'
-              },
-              {
-                name: '《童年的终结》'
-              }
-            ]
-          },
-          {
-            name: '3☆',
-            children: [
-              {
-                name: '《疯癫老人日记》'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: '9月',
-        children: [
-          {
-            name: '5☆',
-            children: [
-              {
-                name: '《纳博科夫短篇小说全集》'
-              }
-            ]
-          },
-          {
-            name: '4☆',
-            children: [
-              {
-                name: '《安魂曲》'
-              },
-              {
-                name: '《人生拼图版》'
-              }
-            ]
-          },
-          {
-            name: '3☆',
-            children: [
-              {
-                name: '《比起爱你，我更需要你》'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-];
-for (let j = 0; j < data.length; ++j) {
-  let level1 = data[j].children;
-  for (let i = 0; i < level1.length; ++i) {
-    let block = level1[i].children;
-    let bookScore = [];
-    let bookScoreId;
-    for (let star = 0; star < block.length; ++star) {
-      let style = (function (name) {
-        switch (name) {
-          case '5☆':
-            bookScoreId = 0;
-            return itemStyle.star5;
-          case '4☆':
-            bookScoreId = 1;
-            return itemStyle.star4;
-          case '3☆':
-            bookScoreId = 2;
-            return itemStyle.star3;
-          case '2☆':
-            bookScoreId = 3;
-            return itemStyle.star2;
-        }
-      })(block[star].name);
-      block[star].label = {
-        color: style.color,
-        downplay: {
-          opacity: 0.5
-        }
-      };
-      if (block[star].children) {
-        style = {
-          opacity: 1,
-          color: style.color
-        };
-        block[star].children.forEach(function (book) {
-          book.value = 1;
-          book.itemStyle = style;
-          book.label = {
-            color: style.color
-          };
-          let value = 1;
-          if (bookScoreId === 0 || bookScoreId === 3) {
-            value = 5;
-          }
-          if (bookScore[bookScoreId]) {
-            bookScore[bookScoreId].value += value;
-          } else {
-            bookScore[bookScoreId] = {
-              color: colors[bookScoreId],
-              value: value
-            };
-          }
-        });
-      }
-    }
-    level1[i].itemStyle = {
-      color: data[j].itemStyle.color
-    };
-  }
-}
 
 
 
@@ -355,28 +59,47 @@ function loadPageInfo(that){
         url: that.data.host_+'user/api/generate/timeline'+'?openid='+openid+'&types=e&tags=false', //e表示只求取event
         method:'GET',
         success:function(res){
-          console.log(res.data.blocks_list)
+          console.log(res.data.blocks_list.length)
           let uniqueTags = new Set();
           let tag_to_eventIndex_dict = {}
-          const eventList = res.data.blocks_list.map((blogCard) => {
+          var eventList = [];
+          // if(res.data.blocks_list.length>6 && timeline_template==1){
+          //   eventList = res.data.blocks_list.map((blogCard) => {
+          //     let { imgSrc } = blogCard;
+          //     let { title, event_date } = blogCard;
+          //     (imgSrc == undefined) ? imgSrc = '/image/show/txt.png' : null;
+          //     let date = event_date;
+          //     return { imgSrc, date, title };
+          //   }).slice(0, 7);
+          // }else{
+            eventList = res.data.blocks_list.map((blogCard) => {
               let {imgSrc}=blogCard;
               let { title, event_date} = blogCard;
               (imgSrc==undefined)?imgSrc='/image/show/txt.png':null;
               let date = event_date;
               return { imgSrc, date, title};
             });
+            if(eventList.length>6){
+            var newArray = [];
+            newArray[0]=eventList[0];
+            newArray[1]=eventList[1];
+            newArray[2]=eventList[2];
+            newArray[3]=eventList[3];
+            newArray[4]=eventList[4];
+            newArray[5]=eventList[5];
+            }else{
+              newArray = eventList
+            }
+          // }
             let tag_array=Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}})
             that.setData({
               blog_cards_list: res.data.blocks_list,
-              eventList: eventList,
-
+              eventList: newArray,
               tags:tag_array,
               isTagsEmpty:tag_array.length==0,
               tag_to_event_index_dict:tag_to_eventIndex_dict,
             })
-            eventData = eventIndex.map(function(index) {
-              return eventList[index];
-            });
+            eventData = newArray;
             initData();
         },
         fail:function(res){
@@ -464,7 +187,6 @@ function initChart(canvas, width, height, dpr) {
         left: '30',
         top: '0',
         inRange: {
-          // color: ["#516b91","#59c4e6","#a5e7f0"]
           color: colorSet[colorSetIdex].colors
         },
       },
@@ -617,79 +339,6 @@ function initChart(canvas, width, height, dpr) {
         }
       ]
     },
-    //3号时间轴
-    {
-      backgroundColor: colorSet[colorSetIdex].backgroundColor,
-      color: colorSet[colorSetIdex].colors,
-      series: [
-        {
-          type: 'sunburst',
-          center: ['50%', '30%'],
-          data: data, //数据
-          sort: function (a, b) {
-            if (a.depth === 1) {
-              return b.getValue() - a.getValue();
-            } else {
-              return a.dataIndex - b.dataIndex;
-            }
-          },
-          label: {
-            rotate: 'radial',
-            color: bgColor
-          },
-          itemStyle: {
-            borderColor: bgColor,
-            borderWidth: 2
-          },
-          levels: [
-            {},
-            {
-              r0: 0,
-              r: 40,
-              label: {
-                rotate: 0
-              }
-            },
-            {
-              r0: 40,
-              r: 105
-            },
-            {
-              r0: 115,
-              r: 140,
-              itemStyle: {
-                shadowBlur: 2,
-                shadowColor: colorSet[colorSetIdex].colors[2],
-                color: 'transparent'
-              },
-              label: {
-                rotate: 'tangential',
-                fontSize: 5,
-                color: colorSet[colorSetIdex].colors[0]
-              }
-            },
-            {
-              r0: 140,
-              r: 145,
-              itemStyle: {
-                shadowBlur: 80,
-                shadowColor: colorSet[colorSetIdex].colors[0]
-              },
-              label: {
-                position: 'outside',
-                textShadowBlur: 5,
-                textShadowColor: '#333'
-              },
-              downplay: {
-                label: {
-                  opacity: 0.5
-                }
-              }
-            }
-          ]
-        }
-      ]
-    }
 
   ]; 
 
@@ -922,9 +571,7 @@ Page({
   onLoad(options) {
     console.log("load");
     timeline_template = options.index;
-    if(timeline_template==0){
-      timeline_template = 1;
-    }
+    timeline_template++;
     const eventsSTR = options.events;
     console.log(eventsSTR)
     eventIndex = eventsSTR.split('-').map(Number);
@@ -936,6 +583,9 @@ Page({
     colorSetIdex = parseInt(options.color);
     var that = this;
     loadPageInfo(that);
+    initData();
+    this.changeTemplate(timeline_template);
+    console.log("here")
   },
 
   /**
@@ -948,9 +598,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    if(chartNow!=null){
-      chartNow.clear();
-    }
+    // if(chartNow!=null){
+    //   chartNow.clear();
+    // }
   },
 
   /**
