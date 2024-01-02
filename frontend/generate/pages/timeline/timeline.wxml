@@ -20,7 +20,7 @@
       <text bind:tap="handleShare">分享</text>
     </view>
   </view>
-  <view style="height: 3vh;"></view>
+  <view style="height: 10vh;"></view>
 </view>
 <!-- <view class="ec-container">
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
