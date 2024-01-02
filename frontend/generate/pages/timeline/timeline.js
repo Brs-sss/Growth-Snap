@@ -79,16 +79,24 @@ function loadPageInfo(that){
               let date = event_date;
               return { imgSrc, date, title};
             });
-            if(eventList.length>6){
-            var newArray = [];
-            newArray[0]=eventList[0];
-            newArray[1]=eventList[1];
-            newArray[2]=eventList[2];
-            newArray[3]=eventList[3];
-            newArray[4]=eventList[4];
-            newArray[5]=eventList[5];
+            eventData = eventIndex.map(function(index) {
+              return eventList[index];
+            });
+            if(eventData.length>6){
+              wx.showToast({
+                title: "选择事件过多，显示前6张",
+                icon: 'success',
+                duration: 1000,
+              })
+              var newArray = [];
+              newArray[0]=eventData[0];
+              newArray[1]=eventData[1];
+              newArray[2]=eventData[2];
+              newArray[3]=eventData[3];
+              newArray[4]=eventData[4];
+              newArray[5]=eventData[5];
             }else{
-              newArray = eventList
+              newArray = eventData
             }
           // }
             let tag_array=Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}})
