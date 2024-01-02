@@ -80,13 +80,18 @@ function loadPageInfo(that){
               return { imgSrc, date, title};
             });
             if(eventList.length>6){
-            var newArray = [];
-            newArray[0]=eventList[0];
-            newArray[1]=eventList[1];
-            newArray[2]=eventList[2];
-            newArray[3]=eventList[3];
-            newArray[4]=eventList[4];
-            newArray[5]=eventList[5];
+              wx.showToast({
+                title: "选择事件过多，显示前6张",
+                icon: 'success',
+                duration: 1000,
+              })
+              var newArray = [];
+              newArray[0]=eventList[0];
+              newArray[1]=eventList[1];
+              newArray[2]=eventList[2];
+              newArray[3]=eventList[3];
+              newArray[4]=eventList[4];
+              newArray[5]=eventList[5];
             }else{
               newArray = eventList
             }
