@@ -11,13 +11,13 @@
       <image src="/generate/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
       <image src="/generate/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
       <image src="/generate/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleSave"></image>
-      <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+      <!-- <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image> -->
     </view>
     <view class='icons-text'>
       <text bind:tap="reselectEvent">更换事件</text>
       <text bind:tap="reselectTemplate">更换模板</text>
       <text bind:tap="handleSave">保存到本地</text>
-      <text bind:tap="handleShare">分享</text>
+      <!-- <text bind:tap="handleShare">分享</text> -->
     </view>
   </view>
   <view style="height: 10vh;"></view>
