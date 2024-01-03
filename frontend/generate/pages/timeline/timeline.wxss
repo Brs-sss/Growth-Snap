@@ -161,7 +161,7 @@ ec-canvas {
   display: flex;
   flex-direction: row;
   margin-left: 9.5%;
-  width: 77%;
+  width: 80%;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1vh;

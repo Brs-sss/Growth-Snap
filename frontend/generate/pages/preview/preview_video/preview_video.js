@@ -157,7 +157,7 @@ reselectVideoInfo(){
      */
     return {
       title: '快来看看我生成的视频~',
-      path: 'pages/generate/preview/preview_video/preview_video?share=true&openid='+this.data.openid+'&video_title='+this.data.video_title,
+      path: 'generate/pages/preview/preview_video/preview_video?share=true&openid='+this.data.openid+'&video_title='+this.data.video_title,
     }
   }
 })
