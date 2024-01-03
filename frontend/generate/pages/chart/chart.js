@@ -637,8 +637,7 @@ Page({
     templates:[
       {id: 0, selected: false},
       {id: 1, selected: false},
-      {id: 2, selected: false},
-      {id: 3, selected: false}
+      {id: 2, selected: false}
     ],
     keys : [],
     selectedKeys : [],
@@ -673,6 +672,14 @@ Page({
     if(data_item[key].length == 0){
       wx.showToast({
         title: "未上传"+ key +"数据",
+        icon: 'error',
+        duration: 2000,
+      })
+      return
+    }
+    if(data_item[key].length == 1){
+      wx.showToast({
+        title: key +"数据仅一条，不足",
         icon: 'error',
         duration: 2000,
       })
@@ -1138,8 +1145,9 @@ Page({
                 let temp_kidList = []
                 for(let i = 0; i < children_list.length; i++){
                   let name = children_list[i].name
+                  var age = +children_list[i].age
                   if(children_list[i].gender=='男'){
-                    temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 0})
+                    temp_kidList.push({'info': name, 'selected': false, 'age': 1+age, 'gender': 0})
                   }else{
                     temp_kidList.push({'info': name, 'selected': false, 'age': children_list[i].age, 'gender': 1})
                   }
@@ -1154,6 +1162,8 @@ Page({
 
                      //计算标准数据
                     standardList = []
+                    console.log(temp_kidList[i].info)
+                    console.log(temp_kidList[i].age)
                     for (let j = temp_kidList[i].age; j >= 0; j--) {
                       standardList.push({'height':heightStandard[temp_kidList[i].gender][j].height,'weight':heightStandard[temp_kidList[i].gender][j].weight})
                     }
