@@ -19,6 +19,7 @@ Page({
 
   selectColor(e){
     const index = e.currentTarget.dataset.index;
+    console.log(index)
     this.setData({
       colorSelected: index,
     })

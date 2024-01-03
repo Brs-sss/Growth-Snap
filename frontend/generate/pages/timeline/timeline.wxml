@@ -1,11 +1,8 @@
 <!--pages/generate/timeline/timeline.wxml-->
-<view class="ec-container">
-  <ec-canvas canvas-id="echart" id="echart" style="height: 1200px;" ec="{{ec}}"></ec-canvas>
-  <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
-</view>
+
 
 <view class="container_components" style="background-color: {{bgColor[curColorIndex]}};">
-  <view style="height: 2vh;"></view>
+  <view style="height: 5vh;"></view>
   <view class='custom-tabbar'>
     <view class='icons'>
       <image src="/generate/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
@@ -20,8 +17,14 @@
       <text bind:tap="handleShare">分享</text>
     </view>
   </view>
-  <view style="height: 10vh;"></view>
+  <view style="height: 2vh;"></view>
 </view>
+
+<view class="ec-container">
+  <ec-canvas canvas-id="echart" id="echart" style="height: 1200px;" ec="{{ec}}"></ec-canvas>
+  <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
+</view>
+
 <!-- <view class="ec-container">
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
 </view> -->
