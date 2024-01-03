@@ -304,14 +304,27 @@ Page({
         // 已存在相同的标签
         wx.showToast({
           title: '标签已存在',
-          icon: 'none'
+          icon: 'error'
+        });
+        
+        this.setData({
+          tags: tags,
+          showInput: false,
+          inputTag: ''
+        });
+      } 
+      else if (value.length>10){
+        wx.showToast({
+          title: '标签过长',
+          icon: 'error'
         });
         this.setData({
           tags: tags,
           showInput: false,
           inputTag: ''
         });
-      } else {
+      }
+      else {
         tags.push({info: value, checked: false});
         this.setData({
           tags: tags,
