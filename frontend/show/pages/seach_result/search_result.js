@@ -59,15 +59,33 @@ function LoadShowPage(that){
                 id=text_id
               }
               
-              return { imgSrc, title, id, type, tags, checked: false };
+              return blogCard;
             });
             let tag_array=Array.from(uniqueTags).map(tag=>{return {'info':tag,'checked':false}})
             that.setData({
               blog_cards_list:res.data.blocks_list,
-              eventList: res.data.blocks_list,
+              eventList: eventList,
               tags: tag_array,
               tag_to_eventIndex_dict: tag_to_eventIndex_dict
             })
+            var selectedEvents = that.data.blog_cards_list
+            var { corre } = that.data;
+            corre = 1 
+      
+            selectedEvents.sort((a, b) => {
+              return b.similarity - a.similarity;
+            });
+
+            // 时间恢复缺省状态
+            var time = 0;
+            var timeText = '按时间正序'
+        
+            that.setData({
+              time: time,
+              timeText: timeText,
+              blog_cards_list: selectedEvents,
+              corre: corre
+            });
         },
         fail:function(res){
           console.log('load page failed: ',res)
@@ -108,6 +126,8 @@ Page({
     const tagIndex = selectedTags.indexOf(tag);
     var relatedEvents=this.data.tag_to_eventIndex_dict[tag];
     console.log(selectedTags)
+    console.log(eventList)
+    console.log(relatedEvents)
     var selectedEvents = []
     if(selectedTags.length!==0)
       selectedEvents = this.data.blog_cards_list
@@ -149,6 +169,13 @@ Page({
       ['tags[' + index + '].checked']: this.data.tags[index].checked,
       blog_cards_list: selectedEvents
     });
+    if(selectedTags.length==0){
+      wx.showToast({
+        title: "未选择任何tag，请添加",
+        icon: 'error',
+        duration: 2000,
+      })
+    }
   },
   toggleCorreTag: function(e) {
     var selectedEvents = this.data.blog_cards_list
