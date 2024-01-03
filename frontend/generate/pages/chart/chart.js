@@ -677,7 +677,8 @@ Page({
       })
       return
     }
-    if(data_item[key].length == 1){
+    console.log(data_item)
+    if(data_item[key][0].list.length == 1){
       wx.showToast({
         title: key +"数据仅一条，不足",
         icon: 'error',
