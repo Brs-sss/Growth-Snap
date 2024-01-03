@@ -511,10 +511,10 @@ Page({
     // console.log("Template Show!")
     var that = this
     var hasChange = false
-    console.log("curTemplate: ", timeline_template)
-    console.log("nextTemplate: ", that.data.nextTemplate)
-    console.log("curColor: ", colorSetIdex)
-    console.log("nextColor: ", that.data.nextColor)
+    // console.log("curTemplate: ", timeline_template)
+    // console.log("nextTemplate: ", that.data.nextTemplate)
+    // console.log("curColor: ", colorSetIdex)
+    // console.log("nextColor: ", that.data.nextColor)
     if(that.data.nextTemplate != null && that.data.nextTemplate != timeline_template){
       hasChange = true
       this.setData({
@@ -526,7 +526,7 @@ Page({
       });
     }
 
-    if(that.data.nextColor != null && that.data.nextColor != timeline_template){
+    if(that.data.nextColor != null && that.data.nextColor != colorSetIdex){
       hasChange = true
       colorSetIdex = that.data.nextColor;
       this.setData({

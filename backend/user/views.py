@@ -39,7 +39,7 @@ use_redis_cache = False
 
 
 # @app.route('/api/login/', methods=['POST'])
-def login(request):
+def login(request): # tested
     """用户登录接口，用户使用授权码进行登录并获取用户信息
     ---
     parameters:
@@ -82,7 +82,7 @@ def login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         code = data.get('code')
-        print(code)
+        print('Enter login, code:', code)
         url = f'https://api.weixin.qq.com/sns/jscode2session?appid={settings.APP_ID}&secret={settings.APP_SECRET}&js_code={code}&grant_type=authorization_code'
         response = requests.get(url)
         data = response.json()
@@ -114,7 +114,7 @@ def login(request):
             })
 
 
-def registerFamily(openid):
+def registerFamily(openid): # tested
     text_to_hash = openid + str(datetime.datetime.now())
     print('hash: ', text_to_hash)
     sha256 = hashlib.sha256()
@@ -122,31 +122,11 @@ def registerFamily(openid):
     sha256_hash = sha256.hexdigest()
     sha256_hash = str(sha256_hash)
     print('hashed: ', sha256_hash)
-    # # 随机生成6位数字+字母的familyId
-    # familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
-    # # 判断有没有重复的familyId
-    # while Family.objects.filter(familyId=familyId).exists():
-    #     familyId = ''.join(random.sample(string.ascii_letters + string.digits, 6))
-    # # 创建新的family
-    # Family.objects.create(familyId=familyId)
-    # print(familyId)
-    # return JsonResponse({
-    #     'familyId': familyId
-    # })
-    #  判断有没有重复的family_id
-    # while Family.objects.filter(family_id=sha256_hash).exists():
-    #     text_to_hash = openid + str(datetime.datetime.now())
-    #     print('hash: ', text_to_hash)
-    #     sha256 = hashlib.sha256()
-    #     sha256.update(text_to_hash.encode('utf-8'))
-    #     sha256_hash = sha256.hexdigest()
-    #     sha256_hash = str(sha256_hash)
-    #     print('hashed: ', sha256_hash)
     return sha256_hash
 
 # todo: 家庭口令的设置和验证
 # @app.route('/api/register/', methods=['POST'])
-def register(request):
+def register(request): # tested
     """ 用户注册接口
     ---
     parameters:
@@ -193,10 +173,6 @@ def register(request):
         openid = data.get('openid')
         label = data.get('label')
         token = data.get('token')
-        print(username)
-        print(openid)
-        print(label)
-        print(token)
         # 看是新家庭还是加入家庭
         if token == 'new_family':
             family_id = registerFamily(openid)
@@ -204,7 +180,6 @@ def register(request):
             family = Family.objects.create(family_id=family_id)
         elif token[0:9] == 'family_id':
             family_id = token[9:]
-            print(f'family_id here: {family_id}')
             # 验证家庭是否存在
             family = Family.objects.get(family_id=family_id)
             if family == None:
@@ -259,18 +234,17 @@ def register(request):
             })
 
 
-def getFamilyID(request):
+def getFamilyID(request): # tested
     if request.method == 'GET':
         openid = request.GET.get('openid')
         family_id = User.objects.get(openid=openid).family.family_id
-        print(f'family_id {family_id}')
         return JsonResponse({
             'family_id': family_id
         })
 
 
 # @app.route('/api/user/generate_family_token/', methods=['POST'])
-def generateFamilyToken(request):
+def generateFamilyToken(request): # tested
     """ 生成家庭邀请码接口
     ---
     parameters:
@@ -323,7 +297,7 @@ def generateFamilyToken(request):
 
 
 # @app.route('/api/user/get_family_token/', methods=['GET'])
-def getFamilyToken(request):
+def getFamilyToken(request): # tested
     """ 处理家庭邀请码接口
     ---
     parameters:
@@ -372,7 +346,8 @@ def getFamilyToken(request):
             'msg': 'please use GET'
         })
 
-def getActivityID(request):
+
+def getActivityID(request): # tested
     if request.method == 'GET':
         # 获取access_token url=https://api.weixin.qq.com/cgi-bin/token 
         access_token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={settings.APP_ID}&secret={settings.APP_SECRET}'
@@ -387,7 +362,7 @@ def getActivityID(request):
         })
         
 # @app.route('/api/getSHA256/', methods=['GET'])
-def getSHA256(request):
+def getSHA256(request): # tested
     """ 生成对应内容的发表时间sha256值
     ---
     parameters:
@@ -410,18 +385,16 @@ def getSHA256(request):
     """
     if request.method == 'GET':
         text_to_hash = request.GET.get('text')
-        print('txt ', text_to_hash)
         sha256 = hashlib.sha256()
         sha256.update(text_to_hash.encode('utf-8'))
         sha256_hash = sha256.hexdigest()
-        print('hash ', sha256_hash)
         return JsonResponse({
             'sha256': sha256_hash
         })
 
 
 # @app.route('/api/show/event/submit/', methods=['POST'])
-def submitEvent(request):
+def submitEvent(request): # tested
     """ 处理上传事件
     ---
     parameters:
@@ -534,14 +507,14 @@ def submitEvent(request):
             child = Child.objects.get(family=now_family, name=name)
             new_event.children.add(child)
 
-        print(new_event.children, new_event.children.all())
+        # print(new_event.children, new_event.children.all())
         return JsonResponse({'message': 'Data submitted successfully'})
     else:
         return JsonResponse({'message': 'please use POST'})
 
 
 # @app.route('/api/show/event/upload_image/', methods=['POST'])
-def addEventImage(request):
+def addEventImage(request): # tested
     """ 处理上传事件中的图片上传
     ---
     parameters:
@@ -579,7 +552,6 @@ def addEventImage(request):
     """
     if request.method == 'POST':
         uploaded_image = request.FILES.get('image')
-        print('uploaded image', uploaded_image)
         pic_index = request.POST.get('pic_index')
         event_id = request.POST.get('event_id')
 
@@ -605,7 +577,7 @@ def addEventImage(request):
 
 
 # @app.route('/api/show/data/submit/', methods=['POST'])
-def submitData(request):
+def submitData(request): # tested
     """ 处理上传数据
     ---
     parameters:
@@ -711,7 +683,7 @@ def submitData(request):
 
 
 # @app.route('/api/show/data/getkeys/', methods=['GET'])
-def getKeys(request):
+def getKeys(request): # tested
     """获取已添加的数据类型
     ---
     parameters:
@@ -754,7 +726,7 @@ def getKeys(request):
 
 
 # @app.route('/api/register_profile_image/', methods=['POST'])
-def registerProfileImage(request):
+def registerProfileImage(request): # tested
     """用户上传头像
     ---
     parameters:
@@ -807,7 +779,7 @@ def registerProfileImage(request):
 
 # 加载主页 只返回必要的信息
 # @app.route('/api/show/all/', methods=['GET'])
-def loadShowPage(request):
+def loadShowPage(request): # tested
     """加载主页接口，只返回必要的信息
     ---
     parameters:
@@ -882,7 +854,6 @@ def loadShowPage(request):
             
             if use_redis_cache:
                 cache.set(cache_key, now_user_blocks, timeout=60)
-        print(now_user_blocks.__len__())
 
         start = int(start)
         total = len(now_user_blocks)
@@ -927,7 +898,7 @@ def loadShowPage(request):
 
 # 加载搜索结果页面
 # @app.route('/api/show/search/', methods=['GET'])
-def loadSearchPage(request):
+def loadSearchPage(request): # tested
     """加载搜索结果，支持模糊搜索
     ---
     parameters:
@@ -1080,7 +1051,7 @@ def loadSearchPage(request):
         return JsonResponse({'blocks_list': blocks_list})
 
 # @app.route('/api/plan/main/', methods=['GET'])
-def loadPlanMain(request):
+def loadPlanMain(request): # tested
     """加载计划页面接口，根据事件排序显示部分计划
     ---
     parameters:
@@ -1140,7 +1111,6 @@ def loadPlanMain(request):
             plan_list.append(block_item)
             if plan_list.__len__() >= 2:
                 break
-        print("---------------here-------------")
         return JsonResponse({
             'finished_todo_list': finished_todo_list,
             'not_finished_todo_list': not_finished_todo_list,
@@ -1148,7 +1118,7 @@ def loadPlanMain(request):
         })
 
 # @app.route('/api/plan/all/', methods=['GET'])
-def loadAllPlanPage(request):
+def loadAllPlanPage(request): # tested
     """加载所有计划接口
     ---
     parameters:
@@ -1189,7 +1159,7 @@ def loadAllPlanPage(request):
         })
 
 # @app.route('/api/plan/certain_plan/', methods=['GET'])
-def loadCertainPlan(request):
+def loadCertainPlan(request): # tested
     """加载具体计划页面接口
     ---
     parameters:
@@ -1259,7 +1229,7 @@ def loadCertainPlan(request):
         })
 
 # @app.route('/api/plan/delete_plan/', methods=['POST'])
-def deletePlan(request):
+def deletePlan(request): # tested
     """删除计划接口
     ---
     parameters:
@@ -1308,7 +1278,7 @@ def deletePlan(request):
         })
 
 # @app.route('/api/user/get_user_info/', methods=['GET'])
-def getUserInfo(request):
+def getUserInfo(request): # tested
     """获得用户信息接口
     ---
     parameters:
@@ -1379,7 +1349,7 @@ def getUserInfo(request):
                              'credit': credit})
 
 # @app.route('/api/plan/add_plan/', methods=['POST'])
-def addPlan(request):
+def addPlan(request): # tested
     """添加计划接口
     ---
     parameters:
@@ -1440,7 +1410,7 @@ def addPlan(request):
         return JsonResponse({'message': 'Successfully added plan'})
 
 # @app.route('/api/plan/add_todo/', methods=['POST'])
-def addTodo(request):
+def addTodo(request): # tested
     """添加todo接口
     ---
     parameters:
@@ -1499,7 +1469,7 @@ def addTodo(request):
         return JsonResponse({'message': 'Successfully added todo'})
 
 # @app.route('/api/plan/update_todo/', methods=['POST'])
-def updateTodo(request):
+def updateTodo(request): # tested
     """更新todo接口
     ---
     parameters:
@@ -1546,7 +1516,6 @@ def updateTodo(request):
           description: 服务器内部错误
     """   
     if request.method == 'POST':
-        print('Enter updateTodo ......')
         data = json.loads(request.body)
         openid = data.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -1559,7 +1528,6 @@ def updateTodo(request):
             todo.save()
         elif content == 'finish':
             finish = data.get('finish')
-            print('here', finish)
             todo.is_finished = finish
             todo.save()
         elif content == 'delete':
@@ -1567,7 +1535,7 @@ def updateTodo(request):
         return JsonResponse({'message': 'Successfully updated todo'})
 
 
-def loadEventDetail(request):
+def loadEventDetail(request): # tested
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
         # 返回渲染的list
@@ -1577,8 +1545,9 @@ def loadEventDetail(request):
         block_item['title'] = db_block.title
         block_item['content'] = db_block.content
         event_date = str(db_block.event_date)
-        block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + \
-                                   event_date.split('-')[2] + '日'
+        if event_date != None:
+            block_item['event_date'] = event_date.split('-')[0] + '年' + event_date.split('-')[1] + '月' + \
+                                       event_date.split('-')[2] + '日'
         block_item['author'] = db_block.user.label  # 爸爸、妈妈、大壮、奶奶
         date_string = str(db_block.date)
         block_item['month'] = str(int(date_string[5:7])) + "月"
@@ -1593,7 +1562,7 @@ def loadEventDetail(request):
         return JsonResponse({'block_item': block_item})
 
 
-def loadTextDetail(request):
+def loadTextDetail(request): # tested
     if request.method == 'GET':
         text_id = request.GET.get('text_id')
         # 返回渲染的list
@@ -1612,7 +1581,7 @@ def loadTextDetail(request):
         return JsonResponse({'block_item': block_item})
 
 
-def loadDataDetail(request):
+def loadDataDetail(request): # tested
     if request.method == 'GET':
         data_id = request.GET.get('data_id')
         # 返回渲染的list
@@ -1628,7 +1597,7 @@ def loadDataDetail(request):
         return JsonResponse({'data_item': data_item})
 
 
-def deleteEvent(request):
+def deleteEvent(request): # tested
     if request.method == 'GET':
         event_id = request.GET.get('event_id')
         # 返回渲染的list
@@ -1648,7 +1617,7 @@ def deleteEvent(request):
         return JsonResponse({'msg': 'ok'})
 
 
-def deleteText(request):
+def deleteText(request): # tested
     if request.method == 'GET':
         text_id = request.GET.get('text_id')
         # 返回渲染的list
@@ -1665,7 +1634,7 @@ def deleteText(request):
         return JsonResponse({'msg': 'ok'})
 
 
-def deleteData(request):
+def deleteData(request): # tested
     if request.method == 'GET':
         data_id = request.GET.get('data_id')
         try:
@@ -1685,7 +1654,7 @@ def deleteData(request):
         return JsonResponse({'msg': 'ok'})
 
 
-def getChildrenInfo(request):
+def getChildrenInfo(request): # tested
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -1694,19 +1663,15 @@ def getChildrenInfo(request):
         children_list = []
         children = Child.objects.filter(family=family)
         for child in children:
-            # print("test")
-            # print(child.name, child.child_id)
             child_item = {}
             child_item['name'] = child.name
-            # child_item['birthday'] = child.birthday
-            # todo: 添加孩子的真实信息
+
             child_item['age'] = 6
 
             # 计算孩子的年龄，根据出生日期
             birthdate = child.birthdate
             if birthdate:
                 today = datetime.date.today()
-                # print(f'birthdate {birthdate}')
                 age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
                 child_item['age'] = str(age)
             child_item['gender'] = child.gender
@@ -1717,7 +1682,7 @@ def getChildrenInfo(request):
         return JsonResponse({'children_list': children_list})
 
 
-def loadChildDetail(request):
+def loadChildDetail(request): # tested
     if request.method == 'GET':
         name = request.GET.get('name')
         child = Child.objects.get(name=name)
@@ -1787,7 +1752,7 @@ def loadChildDetail(request):
         return JsonResponse({'child_item': child_item})
 
 
-def addChild(request):
+def addChild(request): # tested
     if request.method == 'POST':
         data = json.loads(request.body)
         openid = data.get('openid')
@@ -1795,7 +1760,6 @@ def addChild(request):
         name = data.get('name')
         # 检查是否有这个孩子
         if Child.objects.filter(name=name).exists():
-            print('Duplicate child name')
             return JsonResponse({'message': 'Duplicate child name'})
         birthdate = data.get('birthdate')
         gender = data.get('gender')
@@ -1806,14 +1770,13 @@ def addChild(request):
         print(f'sha256_hash {sha256_hash}')
         new_child = Child.objects.create(family=now_user.family, name=name, child_id=str(sha256_hash),
                                          birthdate=birthdate, gender=gender)
-        # print(str(sha256_hash))
         return JsonResponse({
             'message': 'Data submitted successfully',
             'child_id': sha256_hash
         })
 
 
-def addChildImage(request):
+def addChildImage(request): # tested
     if request.method == 'POST':
         print('enter')
         uploaded_image = request.FILES.get('image')
@@ -1842,7 +1805,7 @@ def addChildImage(request):
 
 
 # todo: signature 替换成数据, 更新credit的计算方法
-def getFamilyInfo(request):
+def getFamilyInfo(request): # tested
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -1993,7 +1956,7 @@ def loadVideoThumbnail(request, openid, video_title):
         return HttpResponse("Request failed", status=500)
 
 
-def loadTimelinePage(request):
+def loadTimelinePage(request): # tested
     if request.method == 'GET':
         openid = request.GET.get('openid')
         types = request.GET.get('types', "etd")  # 缺省值为event&text&data
@@ -2044,7 +2007,7 @@ def loadTimelinePage(request):
         return JsonResponse({'blocks_list': blocks_list})
 
 
-def loadData(request):
+def loadData(request): # tested
     if request.method == 'GET':
         openid = request.GET.get('openid')
         now_user = User.objects.get(openid=openid)
@@ -2052,8 +2015,6 @@ def loadData(request):
         children = Child.objects.filter(family=family)
         keyList = list(Record.objects.filter(user__family=now_user.family).values_list('key', flat=True).distinct())
         data_item = {}  # 返回的数据{小明: child_data, 小红:child_data}}
-        print(keyList)
-        print(children)
         for child in children:
             child_data = []  # 保存一个孩子的所有数据 [{key:身高, list:[{value:,date:},{value:,date:}]},child_key_data]
             for key in keyList:

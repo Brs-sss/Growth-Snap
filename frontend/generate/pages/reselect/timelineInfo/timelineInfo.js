@@ -12,6 +12,7 @@ Page({
 
   selectTemplate(e){
     const index = e.currentTarget.dataset.index;
+    console.log(typeof(index))
     this.setData({
       templateSelected: index,
     })
@@ -19,7 +20,6 @@ Page({
 
   selectColor(e){
     const index = e.currentTarget.dataset.index;
-    console.log(index)
     this.setData({
       colorSelected: index,
     })
@@ -30,8 +30,8 @@ Page({
     var pre = pages[pages.length - 2]
     var that = this
     pre.setData({
-      nextTemplate: that.data.templateSelected,
-      nextColor: that.data.colorSelected
+      nextTemplate: parseInt(that.data.templateSelected),
+      nextColor: parseInt(that.data.colorSelected)
     })
     wx.navigateBack(1)
     pre.testChange()
@@ -43,7 +43,6 @@ Page({
   onLoad(options) {
     this.setData({
       timelineList: [
-        { id: 0, name: "梯度时间轴模板"},
         { id: 1, name: "彩色时间轴模板" },
         { id: 2, name: "曲线时间轴模板" }
       ],

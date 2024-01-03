@@ -11,7 +11,7 @@
                             <label class="weui-label">模板</label>
                         </view>
 						<view class="weui-cell__bd">
-							<input class="weui-input" placeholder="请输入微信号" value="{{timelineList[templateSelected].name}}" disabled />
+							<input class="weui-input" placeholder="请输入微信号" value="{{timelineList[templateSelected-1].name}}" disabled />
 						</view>
 				</view>
 				</view>
@@ -24,7 +24,7 @@
         <!-- 模板选择区域 -->
         <view class="audio-list">
           <block wx:for="{{timelineList}}" wx:key="index">
-            <view class="timeline-item audio-item"  data-category="timeline" data-index="{{index}}" bindtap="selectTemplate">
+            <view class="timeline-item audio-item"  data-category="timeline" data-index="{{item.id}}" bindtap="selectTemplate">
               <image class="audio-image {{item.id==templateSelected? 'selected' : ''}}" 
               src="{{host_}}static/frontend/timeline/timeline_{{item.id}}.jpg" style="width: 50vw;"></image>
               <image class="select-icon  {{item.id==templateSelected ? 'selected' : ''}}" src="/image/generate/check-circle.png"></image>
