@@ -41,11 +41,11 @@
 </view> -->
 <view class='custom-tabbar'>
   <button class="action-item">
-    <image src="/image/user/code.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
+    <image src="/user/image/code.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
     <text class="icons-text" bind:tap="familycode">生成验证码</text>
   </button>
   <button class="action-item" open-type="share">
-    <image src="/image/user/link.png" style="height: 6vh; width: 6vh" ></image>
+    <image src="/user/image/link.png" style="height: 6vh; width: 6vh" ></image>
     <text class="icons-text" >转发邀请链接</text>
   </button>
 </view>

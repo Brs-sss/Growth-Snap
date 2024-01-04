@@ -310,7 +310,7 @@ Page({
     return {
       title: '邀请你加入家庭~',
       path: '/pages/index/index?family_id='+this.data.familyid,
-      imageUrl: '/image/user/card_image.jpg',
+      imageUrl: '/user/image/card_image.jpg',
       success: function(res){
         console.log('hihihihi')
         console.log(res.shareTicket)

@@ -51,7 +51,7 @@
           </view>
           <view class="left_days" style="color: rgb(70, 101, 109)">已完成</view>
           <view class="delete-btn" bindtap="deleteTodo" data-index="{{index}}">
-          <image src="/image/plan/trash.png" style="height: 3vh; width: 3vh;opacity: 0.4;"/>
+          <image src="/plan/image/trash.png" style="height: 3vh; width: 3vh;opacity: 0.4;"/>
         </view>
         <view class='edit-todo' bindtap="editTodo" data-index="{{index}}">
           <image src="/image/user/about_us.png" style="height: 4vh; width: 4vh;opacity: 0.6;"/>
