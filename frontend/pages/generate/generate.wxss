@@ -285,16 +285,12 @@
 }
 
 .charm-title {
-  position: relative;
-  top: -220rpx;
-
   color: #333333;
   font-size: 18px;
 }
 
 .charm-container {
   position: relative;
-  top: -180rpx;
   width: 100%;
 }
 
@@ -313,9 +309,12 @@
   left: 20%;
 }
 
-.charm-line {
+.charm-list {
   position: relative;
-  top: -180rpx;
+  top: -220rpx;
+}
+
+.charm-line {
   width: 100%;
   height: 0;
   border-top: 1px solid #DDDDDD;

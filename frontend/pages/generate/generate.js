@@ -217,8 +217,7 @@ Page({
       chartList: [
         { id: 0 , title: "累 加 图"},
         { id: 1 , title: "折 线 图"},
-        { id: 2 , title: "柱 状 图"},
-        { id: 3 , title: "点 云 图"}
+        { id: 2 , title: "柱 状 图"}
       ]
     });
   },

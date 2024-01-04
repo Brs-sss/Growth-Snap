@@ -164,17 +164,19 @@
     <!-- 数据图 -->
     <view class="charm-list">
       <view class="charm-title"> 数据图模板选择</view>
-      <view style="width: 60%; height: 0px; border: #6dafec solid 0.5px; position: relative; top: -220rpx;"></view>
-      <view class="charm-line"></view>
-      <block wx:for="{{chartList}}" wx:key="index">
-        <view class="charm-container">
-          <view class="charm-item {{index%2 != 0 ? 'charm-to-right' : ''}}"  data-category="timeline" data-index="{{index}}" bindtap="navigateTochart">
-            <image class="charm-image" src="{{host_}}/static/frontend/chart/chart_{{index}}.jpg"></image>
-          </view>
-          <text class="charm-info" style="left: {{index%2 != 0 ? '5%' : '87%'}};">{{item.title}}</text>
-        </view>
+      <view style="width: 60%; height: 0px; border: #6dafec solid 0.5px;"></view>
+      <view style="position: relative; top: 24rpx">
         <view class="charm-line"></view>
-      </block>
+        <block wx:for="{{chartList}}" wx:key="index">
+          <view class="charm-container">
+            <view class="charm-item {{index%2 != 0 ? 'charm-to-right' : ''}}"  data-category="timeline" data-index="{{index}}" bindtap="navigateTochart">
+              <image class="charm-image" src="{{host_}}/static/frontend/chart/chart_{{index}}.jpg"></image>
+            </view>
+            <text class="charm-info" style="left: {{index%2 != 0 ? '5%' : '87%'}};">{{item.title}}</text>
+          </view>
+          <view class="charm-line"></view>
+        </block>
+      </view>
     </view>
   </block>
 </view>
