@@ -989,7 +989,7 @@ Page({
     }
     //当前限制必须单选
     selectFlag = 1;
-
+    updateChart();
     // 显示标准数据的模板
     console.log(selectedKeys[0],chart_template)
     if((selectedKeys[0]=='身高' || selectedKeys[0]=='体重') && chart_template == 2){
@@ -1002,6 +1002,9 @@ Page({
       })
     }
 
+    this.setData({
+      standardNote : false
+    })
 
     chartNow.clear();
     const chart = echarts.init(canvasGlobal, null, {
