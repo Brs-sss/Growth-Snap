@@ -171,7 +171,7 @@ function initRadarChart(canvas, width, height, dpr) {
           { text: '日常习惯' },
           { text: '人格发展' }
         ],
-        center: ['32%', '50%'],
+        center: ['50%', '50%'],
         radius: 110,
         startAngle: 90,
         splitNumber: 4,
@@ -249,7 +249,7 @@ function initTag1Chart(canvas, width, height, dpr) {
         name: 'Access From',
         type: 'pie',
         radius: '50%',
-        center: ['32%', '30%'],
+        center: ['50%', '30%'],
         data: dataFortag1.sort(function (a, b) {
           return a.value - b.value;
         }),
