@@ -1,21 +1,37 @@
 <!--pages/generate/timeline/timeline.wxml-->
 
-
-<view class="container_components" style="background-color: {{bgColor[curColorIndex]}};">
+<view style="background-color: {{bgColor[curColorIndex]}};">
+  <view class="container_components" style="background-color: {{bgColor[curColorIndex]}};">
   <view style="height: 5vh;"></view>
   <view class='custom-tabbar'>
-    <view class='icons'>
+    <button class="action-item">
+    <image src="/generate/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
+    <text class="icons-text" bind:tap="reselectEvent">更换事件</text>
+  </button>
+  <button class="action-item">
+    <image src="/generate/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
+    <text class="icons-text" bind:tap="reselectTemplate">更换信息</text>
+  </button>
+  <button class="action-item">
+    <image src="/generate/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
+    <text class="icons-text" bind:tap="handleSave">保存到本地</text>
+  </button>
+  <button class="action-item" open-type="share">
+    <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
+    <text class="icons-text" bind:tap="handleShare">分享</text>
+  </button>
+    <!-- <view class='icons'>
       <image src="/generate/image/preview/gallery.png" style="height: 6vh; width: 6vh" bind:tap="reselectEvent"></image>
       <image src="/generate/image/preview/template.png" style="height: 6vh; width: 6vh" bind:tap="reselectTemplate"></image>
       <image src="/generate/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleSave"></image>
-      <!-- <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image> -->
+      <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
     </view>
     <view class='icons-text'>
       <text bind:tap="reselectEvent">更换事件</text>
       <text bind:tap="reselectTemplate">更换模板</text>
       <text bind:tap="handleSave">保存到本地</text>
-      <!-- <text bind:tap="handleShare">分享</text> -->
-    </view>
+      <text bind:tap="handleShare">分享</text>
+    </view> -->
   </view>
   <view style="height: 2vh;"></view>
 </view>
@@ -24,6 +40,8 @@
   <ec-canvas canvas-id="echart" id="echart" style="height: 1200px;" ec="{{ec}}"></ec-canvas>
   <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
 </view>
+</view>
+
 
 <!-- <view class="ec-container">
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>

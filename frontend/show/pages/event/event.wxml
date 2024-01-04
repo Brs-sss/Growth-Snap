@@ -36,7 +36,7 @@
             <view wx:for="{{imageList}}" wx:key="index" class="image-grid-item" bindtap="changeImage" data-index="{{index}}">
                 <image src="{{item}}" mode="aspectFill" data-index="{{index}}"></image> 
                 <view class="image_delete" catchtap="handleDelete" data-index="{{index}}">
-                    <image src="/image/show/cross.png" style="height: 20px;"/>
+                    <image src="/show/image/show/cross.png" style="height: 20px;"/>
                 </view>
             </view>
             <view class="image-grid-item add-image-butn" bindtap="chooseImage">+</view>

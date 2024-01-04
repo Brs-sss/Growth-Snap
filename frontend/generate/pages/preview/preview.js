@@ -351,7 +351,7 @@ Page({
     })
     return {
       title: '快来看看我生成的日记本~',
-      path: 'pages/generate/preview/preview?share=true&openid='+this.data.openid+'&title='+this.data.pdf_name+'&category='+this.data.category+'&src_openid='+this.data.openid+'&is_sharing=true',
+      path: 'generate/pages/preview/preview?share=true&openid='+this.data.openid+'&title='+this.data.pdf_name+'&category='+this.data.category+'&src_openid='+this.data.openid+'&is_sharing=true',
     }
   }
 })

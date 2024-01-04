@@ -93,6 +93,15 @@ Page({
         })
         return;
       }
+    if (that.data.videoTitle.length > 16)
+    {
+      wx.showToast({
+        title: '标题过长',
+        icon: 'error'
+      })
+      
+      return
+    }
       wx.setStorageSync('audioSelected', this.data.audioSelected)
       wx.navigateTo({
         url: '/generate/pages/add_event/add_event?category=video' + "&index=" + encodeURIComponent(this.data.audioSelected)+"&title="+this.data.videoTitle,
@@ -144,6 +153,7 @@ Page({
     });
   },
   handleInputVideoTitle(e) {  //输入标题的处理
+    
     var randomInt = Math.floor(Math.random() * 9) + 1;
     // console.log(randomInt);
     this.setData({
