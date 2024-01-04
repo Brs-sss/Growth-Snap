@@ -31,7 +31,7 @@
 </view>
 <view style="display: flex; flex-direction: row;">
   <text class="token">{{token}}</text>
-  <image src="../../../image/user/duplicate.png" style="height: 4vh; width: 4vh;  position: absolute; right: 5vh;" bind:tap="copy"/>
+  <image src="/user/image/user/duplicate.png" style="height: 4vh; width: 4vh;  position: absolute; right: 5vh;" bind:tap="copy"/>
 </view>
 </view>
 
@@ -41,11 +41,11 @@
 </view> -->
 <view class='custom-tabbar'>
   <button class="action-item">
-    <image src="/user/image/code.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
+    <image src="/user/image/user/code.png" style="height: 6vh; width: 6vh" bind:tap="familycode"></image>
     <text class="icons-text" bind:tap="familycode">生成验证码</text>
   </button>
   <button class="action-item" open-type="share">
-    <image src="/user/image/link.png" style="height: 6vh; width: 6vh" ></image>
+    <image src="/user/image/user/link.png" style="height: 6vh; width: 6vh" ></image>
     <text class="icons-text" >转发邀请链接</text>
   </button>
 </view>
