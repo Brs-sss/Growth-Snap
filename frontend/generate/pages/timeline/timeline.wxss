@@ -5,7 +5,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  margin-left: 10%;
+  width: 80%;
   height: 100%;
   overflow: hidden; /* 允许内容滚动 */
   z-index: -10;
