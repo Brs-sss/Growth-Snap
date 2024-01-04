@@ -1,7 +1,10 @@
 /* pages/user/child/child_detail/child_detail.wxss */
 
+.left{
+}
+
 .ec-container {
-  width: 150vw;
+  width: 100vw;
   height: 50vh;
   z-index: -1;
 }

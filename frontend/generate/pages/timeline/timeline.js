@@ -56,7 +56,7 @@ function loadPageInfo(that){
       // 从本地存储中获取数据,在index.js文件中保存建立的
       let openid=res.data
       wx.request({
-        url: that.data.host_+'user/api/generate/timeline'+'?openid='+openid+'&types=e&tags=false', //e表示只求取event
+        url: that.data.host_+'user/api/show/all'+'?openid='+openid+'&types=e&tags=false&timeline=true', //e表示只求取event
         method:'GET',
         success:function(res){
           console.log(res.data.blocks_list.length)
@@ -643,6 +643,8 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    return{
+      title:'快来看看我生成的时间轴'
+    }
   }
 })

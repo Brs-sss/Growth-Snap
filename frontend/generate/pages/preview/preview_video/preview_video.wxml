@@ -34,10 +34,10 @@
     <image src="/generate/image/preview/download.png" style="height: 6vh; width: 6vh" bind:tap="handleDownload"></image>
     <text class="icons-text" bind:tap="handleDownload">保存到本地</text>
   </button>
-  <!-- <button class="action-item" open-type="share">
+  <button class="action-item" open-type="share">
     <image src="/generate/image/preview/share.png" style="height: 6vh; width: 6vh" bind:tap="handleShare"></image>
     <text class="icons-text" bind:tap="handleShare">分享</text>
-  </button> -->
+  </button>
 </view>
 
 <button style="display: {{not_show}}; margin-top: 5vh;" bind:tap="open">打开乖乖记</button>

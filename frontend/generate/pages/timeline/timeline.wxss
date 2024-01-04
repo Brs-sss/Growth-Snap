@@ -5,7 +5,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  margin-left: 10%;
+  width: 80%;
   height: 100%;
   overflow: hidden; /* 允许内容滚动 */
   z-index: -10;
@@ -131,9 +132,11 @@ ec-canvas {
 }
 
 .custom-tabbar{
+  padding-bottom: 1vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
+  margin-top: 10vh;
   /* bottom: 0vh; */
   margin-left: 5%;
   width: 90%;
@@ -144,6 +147,16 @@ ec-canvas {
   /* box-shadow: 2px 2px 6px rgb(141, 137, 137); */
   border-radius: 2vh;
   backdrop-filter: blur(10px);
+}
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: none;
+  padding: 0;
+  font-size: 28rpx;
 }
 
 .icons {
@@ -158,11 +171,11 @@ ec-canvas {
 
 .icons-text {
   font-size: 1.3vh;
-  display: flex;
+  /* display: flex;
   flex-direction: row;
   margin-left: 9.5%;
   width: 80%;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1vh;
+  margin-bottom: 1vh; */
 }
