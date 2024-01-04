@@ -20,8 +20,10 @@
   </view>
 </view>
 
-<view class="ec-container">
-  <ec-canvas canvas-id="echart" ec="{{ec_radar}}"></ec-canvas>
+<view class="left">
+  <view class="ec-container">
+    <ec-canvas canvas-id="echart" ec="{{ec_radar}}"></ec-canvas>
+  </view>
 </view>
 
 <view class="weui-form__control-area" style="margin-top: -2vh;margin-bottom: 1vh;">
