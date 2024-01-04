@@ -13,7 +13,8 @@ Page({
     show: true,
     not_show: 'none',
     title_text: '预览生成的小视频，可进行更换、保存与分享',
-    audioSelected: 0
+    audioSelected: 0,
+    options_video_title: ''
   },
 handleDownload(){
   var that=this
@@ -70,7 +71,8 @@ reselectVideoInfo(){
     this.setData({
       openid: options.openid,
       video_title: options.video_title.slice(0,-1),
-      video_src: this.data.host_+'user/api/generate/video/preview'+'/'+options.openid+'/'+encodeURIComponent(options.video_title)
+      video_src: this.data.host_+'user/api/generate/video/preview'+'/'+options.openid+'/'+encodeURIComponent(options.video_title),
+      options_video_title: options.video_title
     })
     console.log("video_src: ", this.data.video_src)
 
@@ -155,9 +157,9 @@ reselectVideoInfo(){
       video_title: options.video_title,
       video_src: this.data.host_+'user/api/generate/video/preview'+'/'+options.openid+'/'+encodeURIComponent(options.video_title)
      */
-    // return {
-    //   title: '快来看看我生成的视频~',
-    //   path: 'generate/pages/preview/preview_video/preview_video?share=true&openid='+this.data.openid+'&video_title='+this.data.video_title,
-    // }
+    return {
+      title: '快来看看我生成的视频~',
+      path: 'generate/pages/preview/preview_video/preview_video?share=true&openid='+this.data.openid+'&video_title='+this.data.options_video_title,
+    }
   }
 })
