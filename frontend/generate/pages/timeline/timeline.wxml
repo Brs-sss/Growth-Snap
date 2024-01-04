@@ -1,7 +1,7 @@
 <!--pages/generate/timeline/timeline.wxml-->
 
-
-<view class="container_components" style="background-color: {{bgColor[curColorIndex]}};">
+<view style="background-color: {{bgColor[curColorIndex]}};">
+  <view class="container_components" style="background-color: {{bgColor[curColorIndex]}};">
   <view style="height: 5vh;"></view>
   <view class='custom-tabbar'>
     <button class="action-item">
@@ -40,6 +40,8 @@
   <ec-canvas canvas-id="echart" id="echart" style="height: 1200px;" ec="{{ec}}"></ec-canvas>
   <!-- <image src="{{imgPath}}" hidden="{{! hasImg}}"></image> -->
 </view>
+</view>
+
 
 <!-- <view class="ec-container">
     <ec-canvas canvas-id="echart" id="echart" ec="{{ec}}"></ec-canvas>
