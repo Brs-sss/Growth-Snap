@@ -267,7 +267,7 @@ function initData(){
       emphasis: {
         focus: 'series'
       },
-      data: valueList // You can populate this array with your actual data for each line
+      data: valueList 
     };
     seriesDataFor0_time.push(currentLine_time);
     seriesDataFor0_event.push(currentLine_event);
@@ -429,6 +429,7 @@ function initChart(canvas, width, height, dpr) {
             borderRadius: 5,
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: '#14c8d4' },
+              { offset: 0, color: '#14c8d4' },
               { offset: 1, color: '#43eec6' },
             ])
           },
@@ -441,8 +442,6 @@ function initChart(canvas, width, height, dpr) {
           barWidth: 10,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(20,200,212,0.8)' },
-              { offset: 0.5, color: 'rgba(20,200,212,0.2)' },
               { offset: 1, color: 'rgba(20,200,212,0)' }
             ])
           },
@@ -921,8 +920,8 @@ Page({
             barWidth: 10,
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: 'rgba(20,200,212,0.8)' },
-                { offset: 0.5, color: 'rgba(20,200,212,0.2)' },
+                { offset: 0, color: 'rgba(20,200,212,0.3)' },
+                { offset: 0.5, color: 'rgba(20,200,212,0.1)' },
                 { offset: 1, color: 'rgba(20,200,212,0)' }
               ])
             },
