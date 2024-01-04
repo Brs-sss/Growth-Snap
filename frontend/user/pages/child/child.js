@@ -60,7 +60,7 @@ Page({
   },
   goToPage_addchild(){
     wx.navigateTo({
-      url: '/pages/user/child/addchild/addchild',
+      url: '/user/pages/child/addchild/addchild',
     })
   },
   goToPage_detail: function(e){

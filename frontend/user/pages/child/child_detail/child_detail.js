@@ -31,6 +31,26 @@ var tagForEvent = [];
 var seriesForEvent = [];
 var seriesForEvent_1 = [];
 
+var glo_canvas_ra;
+var glo_width_ra;
+var glo_height_ra;
+var glo_dpr_ra;
+
+var glo_canvas_ca1;
+var glo_width_ca1;
+var glo_height_ca1;
+var glo_dpr_ca1;
+
+var glo_canvas_ca2;
+var glo_width_ca2;
+var glo_height_ca2;
+var glo_dpr_ca2;
+
+var glo_canvas_e;
+var glo_width_e;
+var glo_height_e;
+var glo_dpr_e;
+
 function initData() {
   // 计划雷达图数据
   dataForPlan = [0, 0, 0, 0, 0]
@@ -129,6 +149,10 @@ function initData() {
 }
 
 function initRadarChart(canvas, width, height, dpr) {
+  glo_canvas_ra = canvas;
+  glo_width_ra = width;
+  glo_height_ra =height;
+  glo_dpr_ra = dpr;
   const chart = echarts.init(canvas, null, {
     width: width,
     height: height,
@@ -138,11 +162,6 @@ function initRadarChart(canvas, width, height, dpr) {
   const option = {
     color: colorSet[child_id].colors,
     legend: {},
-    toolbox: {
-      feature: {
-        saveAsImage: {}
-      }
-    },
     radar: [
       {
         indicator: [
@@ -203,6 +222,10 @@ function initRadarChart(canvas, width, height, dpr) {
 }
 
 function initTag1Chart(canvas, width, height, dpr) {
+  glo_canvas_ca1 = canvas;
+  glo_width_ca1 = width;
+  glo_height_ca1 =height;
+  glo_dpr_ca1 = dpr;
   const chart = echarts.init(canvas, null, {
     width: width,
     height: height,
@@ -212,11 +235,6 @@ function initTag1Chart(canvas, width, height, dpr) {
   const option = {
     tooltip: {
       trigger: 'item'
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {}
-      }
     },
     visualMap: {
       show: false,
@@ -262,6 +280,10 @@ function initTag1Chart(canvas, width, height, dpr) {
 }
 
 function initEventChart(canvas, width, height, dpr) {
+  glo_canvas_e = canvas;
+  glo_width_e = width;
+  glo_height_e =height;
+  glo_dpr_e = dpr;
   const chart = echarts.init(canvas, null, {
     width: width,
     height: height,
@@ -311,6 +333,10 @@ function initEventChart(canvas, width, height, dpr) {
 }
 
 function initTag2Chart(canvas, width, height, dpr) {
+  glo_canvas_ca2 = canvas;
+  glo_width_ca2 = width;
+  glo_height_ca2 =height;
+  glo_dpr_ca2 = dpr;
   const chart = echarts.init(canvas, null, {
     width: width,
     height: height,
@@ -365,10 +391,11 @@ Page({
    */
   data: {
     ec_radar: {
-      onInit: initRadarChart
+      onInit: initRadarChart,
+      onShow: initRadarChart,
     },
     ec_tag1: {
-      onInit: initTag1Chart
+      onInit: initTag1Chart,
     },
     ec_event: {
       onInit: initEventChart
@@ -424,6 +451,10 @@ Page({
         console.log('texts:', that.data.texts)
         console.log('text_tag_list:', that.data.text_tag_list)
         initData();
+        initRadarChart(glo_canvas_ra, glo_width_ra, glo_height_ra, glo_dpr_ra)
+        initTag1Chart(glo_canvas_ca1, glo_width_ca1, glo_height_ca1, glo_dpr_ca1)
+        initTag2Chart(glo_canvas_ca2, glo_width_ca2, glo_height_ca2, glo_dpr_ca2)
+        initEventChart(glo_canvas_e, glo_width_e, glo_height_e, glo_dpr_e)
       }
     })
   },

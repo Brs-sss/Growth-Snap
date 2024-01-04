@@ -19,7 +19,6 @@ from manage import host_url
 
 import jieba
 
-
 from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
 
@@ -879,10 +878,18 @@ def loadShowPage(request): # tested
                 image_path = 'static/ImageBase/' + db_block.event_id
                 thumnail_path = 'static/Thumbnail/' + db_block.event_id
                 image_list = sorted(os.listdir(image_path))
-                if not os.path.exists(f'{thumnail_path}/' + image_list[0]):
-                    GenerateEventThumnail(src_path=f'{image_path}/' + image_list[0], dest_path=f'{thumnail_path}/',
-                                          image_name=image_list[0], target_width=300)
-                block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[0]
+                if len(image_list)==0:
+                    block_item['imgSrc'] = host_url + 'static/frontend/show/default.jpg'
+                else: #不为空
+                    first_exist_pos=-1
+                    for i in range(len(image_list)):
+                        if os.path.exists(f'{thumnail_path}/' + image_list[i]):
+                            first_exist_pos=i
+                            break
+                    if not os.path.exists(f'{thumnail_path}/' + image_list[first_exist_pos]):
+                        GenerateEventThumnail(src_path=f'{image_path}/' + image_list[first_exist_pos], dest_path=f'{thumnail_path}/',
+                                              image_name=image_list[first_exist_pos], target_width=500)
+                    block_item['imgSrc'] = host_url + f'{thumnail_path}/' + image_list[first_exist_pos]
 
             if db_block.record_type == 'data':
                 block_item['data_id'] = db_block.data_id
@@ -1220,6 +1227,7 @@ def loadCertainPlan(request): # tested
         children = plan.children.all()
         for child in children:
             childList.append(child.name)
+        print(f'childList {childList}')
 
         return JsonResponse({
             'message': 'ok',
@@ -1227,6 +1235,7 @@ def loadCertainPlan(request): # tested
             'todos': todo_list,
             'childList': childList
         })
+
 
 # @app.route('/api/plan/delete_plan/', methods=['POST'])
 def deletePlan(request): # tested
@@ -1710,7 +1719,7 @@ def loadChildDetail(request): # tested
         child_item['events'] = all_events.__len__()
         child_item['event_list'] = []
         for i in range(1, 13):
-            count = all_events.filter(event_date__year=now.year, event_date__month=i).__len__()
+            count = all_events.filter(event_date__month=i).__len__()
             child_item['event_list'].append(count)
 
         # 获得不同tag的事件数量
@@ -1725,7 +1734,8 @@ def loadChildDetail(request): # tested
             tag_item['number'] = all_events.filter(tags__icontains=tag).__len__()
             event_month = []
             for i in range(1, 13):
-                count = all_events.filter(event_date__year=now.year, tags__icontains=tag, event_date__month=i).__len__()
+                count = all_events.filter(tags__icontains=tag, event_date__month=i).__len__()
+                # count = all_events.filter(tags__icontains=tag).__len__()
                 event_month.append(count)
             tag_item['month_count'] = event_month
             tag_list.append(tag_item)
