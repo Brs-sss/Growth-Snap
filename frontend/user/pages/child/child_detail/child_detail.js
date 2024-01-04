@@ -246,7 +246,7 @@ function initTag1Chart(canvas, width, height, dpr) {
     },
     series: [
       {
-        name: 'Access From',
+        name: '事件标签',
         type: 'pie',
         radius: '50%',
         center: ['50%', '30%'],
